@@ -8,11 +8,9 @@ import {
   sendWhatsApp,
   type Channel,
 } from "@/lib/messaging/providers";
-import {
-  applyCompliance,
-  emailHtml,
-  resolveTemplate,
-} from "@/lib/messaging/templates";
+import { composeEmail } from "@/lib/email/compose";
+import { renderEmail } from "@/lib/email/render";
+import { applyCompliance, resolveTemplate } from "@/lib/messaging/templates";
 import { buildVariables } from "@/lib/messaging/variables";
 import { createServiceClient } from "@/lib/supabase/server";
 
@@ -110,12 +108,21 @@ export async function dispatchMessage(
     channel,
   });
 
-  const body = applyCompliance(
-    channel,
-    resolveTemplate(message.body, variables),
-    variables.unsubscribe_link
-  );
+  const resolved = resolveTemplate(message.body, variables);
+  const body = applyCompliance(channel, resolved, variables.unsubscribe_link);
   const subject = resolveTemplate(message.subject ?? "", variables);
+
+  // Email carries its unsubscribe in the footer, so the HTML is built from the
+  // resolved copy rather than the compliance-appended one — otherwise the link
+  // appears twice, once as a bare URL in the body.
+  const content = composeEmail({
+    subject,
+    body: resolved,
+    variables,
+    templateKey: message.template_key,
+    brandName: settings?.from_name ?? "Loopinglive",
+    unsubscribeLink: variables.unsubscribe_link,
+  });
 
   const result =
     channel === "email"
@@ -128,7 +135,7 @@ export async function dispatchMessage(
             "onboarding@resend.dev",
           replyTo: settings?.reply_to_email,
           subject: subject || "A message about your webinar",
-          html: emailHtml(body, variables.unsubscribe_link),
+          html: renderEmail(content),
           text: body,
         })
       : channel === "sms"

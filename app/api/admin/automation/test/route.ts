@@ -8,9 +8,10 @@ import {
   sendWhatsApp,
   type Channel,
 } from "@/lib/messaging/providers";
+import { composeEmail } from "@/lib/email/compose";
+import { renderEmail } from "@/lib/email/render";
 import {
   applyCompliance,
-  emailHtml,
   EXAMPLE_VARIABLES,
   resolveTemplate,
 } from "@/lib/messaging/templates";
@@ -67,11 +68,8 @@ export async function POST(request: Request) {
     .maybeSingle();
 
   const variables = { ...EXAMPLE_VARIABLES };
-  const body = applyCompliance(
-    channel,
-    resolveTemplate(template.body, variables),
-    variables.unsubscribe_link
-  );
+  const resolved = resolveTemplate(template.body, variables);
+  const body = applyCompliance(channel, resolved, variables.unsubscribe_link);
   const subject = `[Test] ${resolveTemplate(template.subject ?? "", variables)}`;
 
   if (channel === "email") {
@@ -91,7 +89,16 @@ export async function POST(request: Request) {
         "onboarding@resend.dev",
       replyTo: settings?.reply_to_email,
       subject,
-      html: emailHtml(body, variables.unsubscribe_link),
+      html: renderEmail(
+        composeEmail({
+          subject: resolveTemplate(template.subject ?? "", variables),
+          body: resolved,
+          variables,
+          templateKey: template.template_key,
+          brandName: settings?.from_name ?? "Loopinglive",
+          unsubscribeLink: variables.unsubscribe_link,
+        })
+      ),
       text: body,
     });
 

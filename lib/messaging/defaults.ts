@@ -38,7 +38,7 @@ Date: {{webinar_date}}
 Time: {{webinar_time}}
 Join link: {{webinar_link}}
 
-Save this email — you will need the link above to join.
+Keep this email — it is how you get in on the day.
 We will send you reminders closer to the time.
 
 See you there,
