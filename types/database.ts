@@ -1,0 +1,491 @@
+// Hand-written to match supabase/migrations/0001_phase1_schema.sql.
+// Regenerate once the schema settles:
+//   npx supabase gen types typescript --project-id <id> > types/database.ts
+
+export type Json =
+  | string
+  | number
+  | boolean
+  | null
+  | { [key: string]: Json | undefined }
+  | Json[];
+
+/** Columns with a default or that are nullable are optional on insert. */
+type Table<Row, Optional extends keyof Row> = {
+  Row: Row;
+  Insert: Omit<Row, Optional> & Partial<Pick<Row, Optional>>;
+  Update: Partial<Row>;
+  Relationships: [];
+};
+
+export type WebinarStatus = "draft" | "published";
+
+export type WebinarRow = {
+  id: string;
+  owner_id: string | null;
+  title: string;
+  description: string | null;
+  /** Null until a video is uploaded — a draft exists before its video does. */
+  video_url: string | null;
+  video_public_id: string | null;
+  video_duration_seconds: number | null;
+  thumbnail_url: string | null;
+  is_active: boolean;
+  created_at: string;
+  updated_at: string;
+  // Phase 3
+  topic: string | null;
+  offer_description: string | null;
+  webinar_context: string | null;
+  key_talking_points: string | null;
+  objection_notes: string | null;
+  status: WebinarStatus;
+  total_views: number;
+  clone_of: string | null;
+};
+
+export type WebinarOfferRow = {
+  id: string;
+  webinar_id: string;
+  offer_title: string;
+  offer_description: string | null;
+  button_text: string;
+  button_colour: string;
+  button_animation: "pulse" | "glow" | "slide" | "bounce";
+  trigger_video_offset_seconds: number;
+  countdown_enabled: boolean;
+  countdown_minutes: number;
+  opens_in: "modal" | "new_tab";
+  offer_type: "external" | "internal";
+  external_url: string | null;
+  internal_page_content: Json | null;
+  is_active: boolean;
+  created_at: string;
+};
+
+export type PollOption = { id: string; label: string };
+
+export type TimedPollRow = {
+  id: string;
+  webinar_id: string;
+  question: string;
+  options: Json;
+  video_offset_seconds: number;
+  duration_seconds: number;
+  is_active: boolean;
+  created_at: string;
+};
+
+export type TimedHandoutRow = {
+  id: string;
+  webinar_id: string;
+  title: string;
+  file_url: string;
+  video_offset_seconds: number;
+  is_active: boolean;
+  created_at: string;
+};
+
+export type TimedCtaRow = {
+  id: string;
+  webinar_id: string;
+  button_text: string;
+  button_url: string;
+  button_colour: string;
+  video_offset_seconds: number;
+  duration_seconds: number;
+  is_active: boolean;
+  created_at: string;
+};
+
+export type TimedPinnedMessageRow = {
+  id: string;
+  webinar_id: string;
+  content: string;
+  video_offset_seconds: number;
+  duration_seconds: number;
+  is_active: boolean;
+  created_at: string;
+};
+
+export type WebinarScheduleRow = {
+  id: string;
+  webinar_id: string;
+  scheduled_at: string;
+  timezone: string;
+  is_recurring: boolean;
+  recurrence_pattern: string | null;
+  recurrence_time: string | null;
+  is_active: boolean;
+  created_at: string;
+};
+
+export type WebinarSessionRow = {
+  id: string;
+  webinar_id: string;
+  schedule_id: string | null;
+  starts_at: string;
+  ends_at: string | null;
+  status: "scheduled" | "live" | "ended";
+  created_at: string;
+};
+
+export type FakePersonaRow = {
+  id: string;
+  webinar_id: string;
+  name: string;
+  avatar_url: string | null;
+  location: string | null;
+  created_at: string;
+};
+
+export type TimedCommentRow = {
+  id: string;
+  webinar_id: string;
+  persona_id: string;
+  content: string;
+  video_offset_seconds: number;
+  created_at: string;
+};
+
+export type RegistrantRow = {
+  id: string;
+  webinar_id: string;
+  session_id: string | null;
+  full_name: string;
+  email: string;
+  phone: string;
+  country_code: string;
+  country_flag: string;
+  attended: boolean;
+  joined_at: string | null;
+  left_at: string | null;
+  watch_seconds: number;
+  watch_percentage: number;
+  clicked_offer: boolean;
+  bought: boolean;
+  created_at: string;
+  // Phase 4
+  watch_depth_segment: string;
+  total_sessions_attended: number;
+  last_attended_at: string | null;
+  offer_clicked_at: string | null;
+  bought_at: string | null;
+  manually_marked_bought: boolean;
+  returning_attendee: boolean;
+  history_cleared_at: string | null;
+  notes: string | null;
+  tags: Json;
+};
+
+export type CustomFieldType = "text" | "dropdown" | "checkbox" | "number";
+
+export type CustomField = {
+  id: string;
+  type: CustomFieldType;
+  label: string;
+  required: boolean;
+  options?: string[];
+};
+
+export type RegistrationPageConfigRow = {
+  id: string;
+  webinar_id: string;
+  logo_url: string | null;
+  hero_image_url: string | null;
+  background_type: "solid" | "gradient" | "image" | "dark";
+  background_value: string;
+  primary_colour: string;
+  secondary_colour: string;
+  headline: string;
+  subheadline: string | null;
+  host_name: string | null;
+  host_title: string | null;
+  host_avatar_url: string | null;
+  what_you_will_learn: Json;
+  social_proof_count: number;
+  social_proof_label: string;
+  show_attendee_count: boolean;
+  show_session_time: boolean;
+  cta_button_text: string;
+  thank_you_headline: string;
+  thank_you_subheadline: string | null;
+  thank_you_redirect_url: string | null;
+  show_add_to_calendar: boolean;
+  show_social_share: boolean;
+  custom_fields: Json;
+  facebook_pixel_id: string | null;
+  fb_track_pageview: boolean;
+  fb_track_lead: boolean;
+  google_analytics_id: string | null;
+  ga_track_conversion: boolean;
+  custom_domain: string | null;
+  custom_domain_status: "not_connected" | "pending" | "connected" | "failed";
+  custom_css: string | null;
+  is_active: boolean;
+  created_at: string;
+  updated_at: string;
+};
+
+export type AttendeeSourceRow = {
+  id: string;
+  registrant_id: string;
+  utm_source: string | null;
+  utm_medium: string | null;
+  utm_campaign: string | null;
+  utm_content: string | null;
+  utm_term: string | null;
+  referrer_url: string | null;
+  landing_page_url: string | null;
+  created_at: string;
+};
+
+export type AttendeeEventType =
+  | "registered"
+  | "joined_session"
+  | "left_session"
+  | "watch_milestone"
+  | "clicked_offer"
+  | "bought"
+  | "rejoined"
+  | "history_cleared";
+
+export type AttendeeEventRow = {
+  id: string;
+  registrant_id: string;
+  session_id: string | null;
+  event_type: AttendeeEventType;
+  event_data: Json;
+  created_at: string;
+};
+
+export type AttendeeSegmentRow = {
+  id: string;
+  webinar_id: string;
+  registrant_id: string;
+  segment: string;
+  assigned_at: string;
+  updated_at: string;
+};
+
+export type LiveChatMessageRow = {
+  id: string;
+  session_id: string;
+  sender_name: string;
+  sender_avatar: string | null;
+  sender_location: string | null;
+  is_fake: boolean;
+  is_real_user: boolean;
+  registrant_id: string | null;
+  persona_id: string | null;
+  timed_comment_id: string | null;
+  content: string;
+  sent_at: string;
+  // Phase 2
+  has_ai_reply: boolean;
+  ai_reply_pending: boolean;
+  ai_reply_claimed_at: string | null;
+  reply_to_message_id: string | null;
+};
+
+export type PollResponseRow = {
+  id: string;
+  poll_id: string;
+  session_id: string;
+  registrant_id: string;
+  option_id: string;
+  created_at: string;
+};
+
+export type AiPersonaRow = {
+  id: string;
+  webinar_id: string;
+  persona_name: string;
+  avatar_url: string | null;
+  personality_brief: string;
+  reply_to_real_users: boolean;
+  fake_comment_reply_percentage: number;
+  is_active: boolean;
+  created_at: string;
+};
+
+export type AiReplyRow = {
+  id: string;
+  session_id: string;
+  original_message_id: string;
+  ai_persona_id: string | null;
+  persona_name: string;
+  persona_avatar: string | null;
+  content: string;
+  is_human_override: boolean;
+  sent_at: string;
+};
+
+export type AdminSessionRow = {
+  id: string;
+  webinar_session_id: string;
+  admin_id: string | null;
+  joined_at: string;
+  left_at: string | null;
+};
+
+export type PersonaModeRow = {
+  id: string;
+  session_id: string;
+  ai_persona_id: string;
+  mode: "ai" | "human";
+  updated_at: string;
+};
+
+export type Database = {
+  public: {
+    Tables: {
+      webinars: Table<
+        WebinarRow,
+        | "id"
+        | "owner_id"
+        | "description"
+        | "video_url"
+        | "video_public_id"
+        | "video_duration_seconds"
+        | "thumbnail_url"
+        | "is_active"
+        | "created_at"
+        | "updated_at"
+        | "topic"
+        | "offer_description"
+        | "webinar_context"
+        | "key_talking_points"
+        | "objection_notes"
+        | "status"
+        | "total_views"
+        | "clone_of"
+      >;
+      webinar_schedules: Table<
+        WebinarScheduleRow,
+        | "id"
+        | "timezone"
+        | "is_recurring"
+        | "recurrence_pattern"
+        | "recurrence_time"
+        | "is_active"
+        | "created_at"
+      >;
+      webinar_sessions: Table<
+        WebinarSessionRow,
+        "id" | "schedule_id" | "ends_at" | "status" | "created_at"
+      >;
+      fake_personas: Table<
+        FakePersonaRow,
+        "id" | "avatar_url" | "location" | "created_at"
+      >;
+      timed_comments: Table<TimedCommentRow, "id" | "created_at">;
+      registrants: Table<
+        RegistrantRow,
+        | "id"
+        | "session_id"
+        | "attended"
+        | "joined_at"
+        | "left_at"
+        | "watch_seconds"
+        | "watch_percentage"
+        | "clicked_offer"
+        | "bought"
+        | "created_at"
+        | "watch_depth_segment"
+        | "total_sessions_attended"
+        | "last_attended_at"
+        | "offer_clicked_at"
+        | "bought_at"
+        | "manually_marked_bought"
+        | "returning_attendee"
+        | "history_cleared_at"
+        | "notes"
+        | "tags"
+      >;
+      registration_page_config: Table<
+        RegistrationPageConfigRow,
+        Exclude<keyof RegistrationPageConfigRow, "webinar_id">
+      >;
+      attendee_sources: Table<
+        AttendeeSourceRow,
+        Exclude<keyof AttendeeSourceRow, "registrant_id">
+      >;
+      attendee_events: Table<
+        AttendeeEventRow,
+        "id" | "session_id" | "event_data" | "created_at"
+      >;
+      attendee_segments: Table<
+        AttendeeSegmentRow,
+        "id" | "assigned_at" | "updated_at"
+      >;
+      live_chat_messages: Table<
+        LiveChatMessageRow,
+        | "id"
+        | "sender_avatar"
+        | "sender_location"
+        | "is_fake"
+        | "is_real_user"
+        | "registrant_id"
+        | "persona_id"
+        | "timed_comment_id"
+        | "sent_at"
+        | "has_ai_reply"
+        | "ai_reply_pending"
+        | "ai_reply_claimed_at"
+        | "reply_to_message_id"
+      >;
+      webinar_offers: Table<
+        WebinarOfferRow,
+        | "id"
+        | "offer_description"
+        | "button_text"
+        | "button_colour"
+        | "button_animation"
+        | "countdown_enabled"
+        | "countdown_minutes"
+        | "opens_in"
+        | "external_url"
+        | "internal_page_content"
+        | "is_active"
+        | "created_at"
+      >;
+      timed_polls: Table<
+        TimedPollRow,
+        "id" | "duration_seconds" | "is_active" | "created_at"
+      >;
+      timed_handouts: Table<TimedHandoutRow, "id" | "is_active" | "created_at">;
+      timed_ctas: Table<
+        TimedCtaRow,
+        "id" | "button_colour" | "duration_seconds" | "is_active" | "created_at"
+      >;
+      timed_pinned_messages: Table<
+        TimedPinnedMessageRow,
+        "id" | "duration_seconds" | "is_active" | "created_at"
+      >;
+      poll_responses: Table<PollResponseRow, "id" | "created_at">;
+      ai_personas: Table<
+        AiPersonaRow,
+        | "id"
+        | "avatar_url"
+        | "reply_to_real_users"
+        | "fake_comment_reply_percentage"
+        | "is_active"
+        | "created_at"
+      >;
+      ai_replies: Table<
+        AiReplyRow,
+        "id" | "ai_persona_id" | "persona_avatar" | "is_human_override" | "sent_at"
+      >;
+      admin_sessions: Table<
+        AdminSessionRow,
+        "id" | "admin_id" | "joined_at" | "left_at"
+      >;
+      persona_mode: Table<PersonaModeRow, "id" | "mode" | "updated_at">;
+    };
+    Views: Record<string, never>;
+    Functions: Record<string, never>;
+    Enums: Record<string, never>;
+    CompositeTypes: Record<string, never>;
+  };
+};
