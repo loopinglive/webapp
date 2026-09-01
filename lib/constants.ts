@@ -1,6 +1,6 @@
 export const SITE = {
   name: "Loopinglive",
-  tagline: "Go live. On repeat. Forever.",
+  tagline: "Go live. On Repeat. Sell Forever",
   description:
     "Automated fake-live webinars that convert like real live events — waiting rooms, a buzzing chat, AI personas, and timed offers.",
   /**

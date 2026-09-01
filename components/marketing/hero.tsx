@@ -20,7 +20,7 @@ export function Hero() {
           <h1 className="mt-7 text-balance text-5xl font-semibold leading-[1.03] tracking-[-0.03em] sm:text-6xl lg:text-7xl">
             Go live.
             <br />
-            <span className="text-gradient">On repeat. Forever.</span>
+            <span className="text-gradient">On Repeat. Sell Forever</span>
           </h1>
 
           <p className="mx-auto mt-6 max-w-xl text-pretty text-[17px] leading-relaxed text-ink-muted">
