@@ -10,13 +10,19 @@ export const dynamic = "force-dynamic";
 // The one segment an admin sets by hand — for offers sold on an external page,
 // where nothing tells us automatically.
 export async function POST(
-  _request: Request,
+  request: Request,
   { params }: { params: Promise<{ registrantId: string }> }
 ) {
   const { response: denied } = await requireAdmin();
   if (denied) return denied;
 
   const { registrantId } = await params;
+  // Optional: an admin marking an external sale can attach what it was worth.
+  // Without an amount the purchase is still recorded, just unpriced.
+  const { amountCents, currency } = (await request
+    .json()
+    .catch(() => ({}))) as { amountCents?: number; currency?: string };
+
   const supabase = createServiceClient();
   const now = new Date().toISOString();
 
@@ -45,6 +51,32 @@ export async function POST(
     .maybeSingle();
 
   if (row) {
+    // Revenue lives in the ledger, not on the boolean. Falls back to the
+    // offer's configured price when the admin did not name an amount.
+    const { data: offer } = await supabase
+      .from("webinar_offers")
+      .select("id, price_cents, currency")
+      .eq("webinar_id", row.webinar_id)
+      .eq("is_active", true)
+      .limit(1)
+      .maybeSingle();
+
+    await supabase.from("purchases").upsert(
+      {
+        webinar_id: row.webinar_id,
+        session_id: row.session_id,
+        registrant_id: registrantId,
+        offer_id: offer?.id ?? null,
+        amount_cents: Math.max(
+          0,
+          Math.round(amountCents ?? offer?.price_cents ?? 0)
+        ),
+        currency: currency ?? offer?.currency ?? "USD",
+        source: "manual",
+      },
+      { onConflict: "registrant_id,offer_id", ignoreDuplicates: false }
+    );
+
     await handlePurchase(supabase, {
       webinarId: row.webinar_id,
       registrantId,

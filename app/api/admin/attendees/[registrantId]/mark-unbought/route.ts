@@ -25,6 +25,9 @@ export async function POST(
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 
+  // The sale is being retracted, so the revenue goes with it.
+  await supabase.from("purchases").delete().eq("registrant_id", registrantId);
+
   // Falls back to whatever their behaviour actually earned.
   const segment = await syncSegment(supabase, registrantId);
 

@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Plus } from "lucide-react";
+import { BarChart3, Plus } from "lucide-react";
 
 import { SITE } from "@/lib/constants";
 
@@ -32,13 +32,23 @@ export function DashboardHeader({
           </div>
         </div>
 
-        <Link
-          href="/admin/webinar/new"
-          className="inline-flex h-11 items-center gap-2 rounded-full bg-[#6C47FF] px-5 text-[14px] font-semibold text-white shadow-[0_12px_36px_-10px_#6C47FF] transition-all duration-200 hover:bg-[#7C5AFF] active:scale-[0.99]"
-        >
-          <Plus className="h-4 w-4" />
-          Create New Webinar
-        </Link>
+        <div className="flex items-center gap-3">
+          <Link
+            href="/admin/analytics"
+            className="inline-flex h-11 items-center gap-2 rounded-full border border-[#2A2A3A] px-4 text-[14px] text-[#A0A0B0] transition-colors duration-200 hover:border-[#3A3A4A] hover:text-white"
+          >
+            <BarChart3 className="h-4 w-4" />
+            Analytics
+          </Link>
+
+          <Link
+            href="/admin/webinar/new"
+            className="inline-flex h-11 items-center gap-2 rounded-full bg-[#6C47FF] px-5 text-[14px] font-semibold text-white shadow-[0_12px_36px_-10px_#6C47FF] transition-all duration-200 hover:bg-[#7C5AFF] active:scale-[0.99]"
+          >
+            <Plus className="h-4 w-4" />
+            Create New Webinar
+          </Link>
+        </div>
       </div>
 
       <dl className="mt-7 grid grid-cols-2 gap-px overflow-hidden rounded-xl border border-[#1E1E2E] bg-[#1E1E2E] lg:grid-cols-4">

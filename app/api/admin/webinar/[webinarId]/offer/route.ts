@@ -81,6 +81,9 @@ export async function PUT(
       | "new_tab"
       | "modal",
     offer_type: offerType,
+    // Stored in cents so revenue never accumulates floating-point drift.
+    price_cents: Math.max(0, Math.round(Number(body.priceCents ?? 0))),
+    currency: String(body.currency ?? "USD").toUpperCase().slice(0, 3),
     external_url: offerType === "external" ? externalUrl : null,
     internal_page_content:
       offerType === "internal"

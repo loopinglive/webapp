@@ -59,8 +59,64 @@ export type WebinarOfferRow = {
   offer_type: "external" | "internal";
   external_url: string | null;
   internal_page_content: Json | null;
+  price_cents: number;
+  currency: string;
   is_active: boolean;
   created_at: string;
+};
+
+export type PurchaseRow = {
+  id: string;
+  webinar_id: string;
+  session_id: string | null;
+  registrant_id: string;
+  offer_id: string | null;
+  amount_cents: number;
+  currency: string;
+  source: "manual" | "internal" | "stripe";
+  external_reference: string | null;
+  created_at: string;
+};
+
+export type SessionSnapshotRow = {
+  id: string;
+  session_id: string;
+  captured_at: string;
+  video_offset_seconds: number;
+  viewers: number;
+  real_viewers: number;
+  chat_messages: number;
+};
+
+export type WebinarDailyStatsRow = {
+  id: string;
+  webinar_id: string;
+  day: string;
+  registrations: number;
+  attendees: number;
+  no_shows: number;
+  avg_watch_percentage: number;
+  avg_watch_seconds: number;
+  offer_clicks: number;
+  purchases: number;
+  revenue_cents: number;
+  computed_at: string;
+};
+
+export type PlatformDailyStatsRow = {
+  id: string;
+  day: string;
+  webinars_total: number;
+  webinars_published: number;
+  registrations: number;
+  attendees: number;
+  purchases: number;
+  revenue_cents: number;
+  emails_sent: number;
+  sms_sent: number;
+  whatsapp_sent: number;
+  new_hosts: number;
+  computed_at: string;
 };
 
 export type PollOption = { id: string; label: string };
@@ -166,6 +222,12 @@ export type RegistrantRow = {
   bought: boolean;
   created_at: string;
   // Phase 4
+  // Phase 6 — null on anyone who registered before capture was added.
+  device_type: "mobile" | "tablet" | "desktop" | null;
+  browser: string | null;
+  os: string | null;
+  /** Geo-IP. Not the same thing as country_code, which is a dialling code. */
+  ip_country: string | null;
   watch_depth_segment: string;
   total_sessions_attended: number;
   last_attended_at: string | null;
@@ -504,6 +566,33 @@ export type Database = {
         | "history_cleared_at"
         | "notes"
         | "tags"
+        | "device_type"
+        | "browser"
+        | "os"
+        | "ip_country"
+      >;
+      purchases: Table<
+        PurchaseRow,
+        | "id"
+        | "session_id"
+        | "offer_id"
+        | "amount_cents"
+        | "currency"
+        | "source"
+        | "external_reference"
+        | "created_at"
+      >;
+      session_snapshots: Table<
+        SessionSnapshotRow,
+        "id" | "captured_at" | "viewers" | "real_viewers" | "chat_messages"
+      >;
+      webinar_daily_stats: Table<
+        WebinarDailyStatsRow,
+        Exclude<keyof WebinarDailyStatsRow, "webinar_id" | "day">
+      >;
+      platform_daily_stats: Table<
+        PlatformDailyStatsRow,
+        Exclude<keyof PlatformDailyStatsRow, "day">
       >;
       registration_page_config: Table<
         RegistrationPageConfigRow,
@@ -549,6 +638,8 @@ export type Database = {
         | "opens_in"
         | "external_url"
         | "internal_page_content"
+        | "price_cents"
+        | "currency"
         | "is_active"
         | "created_at"
       >;

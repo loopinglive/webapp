@@ -5,6 +5,7 @@ import {
   logWatchMilestones,
   syncSegment,
 } from "@/lib/attendee-tracking";
+import { geoCountry, parseUserAgent } from "@/lib/device";
 import { cancelJoinReminders } from "@/lib/messaging/scheduler";
 import { createServiceClient } from "@/lib/supabase/server";
 import type { Database } from "@/types/database";
@@ -12,6 +13,19 @@ import type { Database } from "@/types/database";
 type RegistrantUpdate = Database["public"]["Tables"]["registrants"]["Update"];
 
 export const dynamic = "force-dynamic";
+
+/** Device and geo, read from the request rather than trusted from the client. */
+function devicePatch(request: Request) {
+  const device = parseUserAgent(request.headers.get("user-agent"));
+  const ipCountry = geoCountry(request.headers);
+
+  const patch: Record<string, string | null> = {};
+  if (device.deviceType) patch.device_type = device.deviceType;
+  if (device.browser) patch.browser = device.browser;
+  if (device.os) patch.os = device.os;
+  if (ipCountry) patch.ip_country = ipCountry;
+  return patch;
+}
 
 // Live viewer count: everyone currently in the room, padded by the personas that
 // are "in" the session too.
@@ -86,6 +100,10 @@ export async function POST(
           total_sessions_attended: before?.attended
             ? (before.total_sessions_attended ?? 0)
             : (before?.total_sessions_attended ?? 0) + 1,
+          // Overwrite on join: someone can register on a phone and watch on a
+          // laptop, and the device that matters for a viewing chart is the one
+          // they actually watched on.
+          ...devicePatch(request),
         }
       : action === "leave"
         ? { left_at: now }

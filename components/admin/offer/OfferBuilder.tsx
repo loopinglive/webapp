@@ -43,6 +43,9 @@ export function OfferBuilder({ webinarId }: { webinarId: string }) {
     offerType: "external" as "external" | "internal",
     externalUrl: "",
     internalPageContent: "",
+    // Entered in whole currency units, stored in cents.
+    price: "",
+    currency: "USD",
   });
 
   const load = useCallback(async () => {
@@ -70,6 +73,8 @@ export function OfferBuilder({ webinarId }: { webinarId: string }) {
               : offer.internal_page_content
                 ? JSON.stringify(offer.internal_page_content)
                 : "",
+          price: offer.price_cents ? (offer.price_cents / 100).toString() : "",
+          currency: offer.currency ?? "USD",
         });
       }
     }
@@ -91,7 +96,10 @@ export function OfferBuilder({ webinarId }: { webinarId: string }) {
     const response = await fetch(`/api/admin/webinar/${webinarId}/offer`, {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(form),
+      body: JSON.stringify({
+        ...form,
+        priceCents: Math.round((Number(form.price) || 0) * 100),
+      }),
     });
 
     setSaving(false);
@@ -157,6 +165,36 @@ export function OfferBuilder({ webinarId }: { webinarId: string }) {
               onChange={(event) => set("buttonText", event.target.value)}
             />
           </Field>
+
+          {/* Analytics can count purchases without this, but not revenue. */}
+          <div className="grid grid-cols-[1fr_120px] gap-3">
+            <Field
+              label="Price"
+              hint="Used to work out revenue in analytics. Leave blank if this offer is free or priced elsewhere."
+            >
+              <TextInput
+                inputMode="decimal"
+                value={form.price}
+                onChange={(event) =>
+                  set("price", event.target.value.replace(/[^0-9.]/g, ""))
+                }
+                placeholder="997"
+              />
+            </Field>
+
+            <Field label="Currency">
+              <TextInput
+                value={form.currency}
+                onChange={(event) =>
+                  set(
+                    "currency",
+                    event.target.value.replace(/[^a-zA-Z]/g, "").toUpperCase().slice(0, 3)
+                  )
+                }
+                placeholder="USD"
+              />
+            </Field>
+          </div>
 
           <div>
             <span className="text-[12px] font-medium text-[#A0A0B0]">

@@ -3,6 +3,7 @@ import { NextResponse } from "next/server";
 import { clearAttendeeHistory, logEvent, syncSegment } from "@/lib/attendee-tracking";
 import { createServiceClient } from "@/lib/supabase/server";
 import { countryByCode, flagFor } from "@/lib/countries";
+import { geoCountry, parseUserAgent } from "@/lib/device";
 import { broadcast, waitingRoomTopic } from "@/lib/realtime-broadcast";
 import { scheduleRegistrationMessages, seedTemplates } from "@/lib/messaging/scheduler";
 import type { PublicJoiner, StoredRegistrant } from "@/types";
@@ -87,6 +88,11 @@ export async function POST(
     ? phone
     : `${country.dial}${phone.replace(/^0+/, "")}`;
 
+  // Read server-side from the request. A client-supplied device or country is
+  // trivially forged and would quietly poison the breakdowns.
+  const device = parseUserAgent(request.headers.get("user-agent"));
+  const ipCountry = geoCountry(request.headers);
+
   /**
    * Someone who has registered for this webinar before.
    *
@@ -117,6 +123,10 @@ export async function POST(
         country_code: country.code,
         country_flag: countryFlag,
         returning_attendee: true,
+        device_type: device.deviceType,
+        browser: device.browser,
+        os: device.os,
+        ip_country: ipCountry,
       })
       .eq("id", existing.id);
 
@@ -142,6 +152,10 @@ export async function POST(
         phone: normalisedPhone,
         country_code: country.code,
         country_flag: countryFlag,
+        device_type: device.deviceType,
+        browser: device.browser,
+        os: device.os,
+        ip_country: ipCountry,
       })
       .select("id")
       .single();

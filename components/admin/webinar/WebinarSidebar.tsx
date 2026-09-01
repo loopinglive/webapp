@@ -6,6 +6,7 @@ import { useState } from "react";
 import {
   ArrowLeft,
   BadgeCheck,
+  BarChart3,
   CalendarClock,
   Check,
   Loader2,
@@ -59,6 +60,7 @@ export function WebinarSidebar({
     { href: `${base}/registration`, label: "Registration Page", icon: BadgeCheck },
     { href: `${base}/attendees`, label: "Attendees", icon: UserCheck },
     { href: `${base}/automation`, label: "Automation", icon: Send },
+    { href: `${base}/analytics`, label: "Analytics", icon: BarChart3 },
     { href: `${base}/settings`, label: "Settings", icon: Settings2 },
   ];
 
