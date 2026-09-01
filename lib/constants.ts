@@ -3,7 +3,20 @@ export const SITE = {
   tagline: "Go live. On repeat. Forever.",
   description:
     "Automated fake-live webinars that convert like real live events — waiting rooms, a buzzing chat, AI personas, and timed offers.",
-  url: process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000",
+  /**
+   * Absolute origin, used for metadataBase and share links.
+   *
+   * `||` rather than `??` on purpose: Next inlines an unset NEXT_PUBLIC_* var
+   * as an empty string at build time, and `??` would let "" through into
+   * `new URL("")`, which throws and fails the build. Falls back to the
+   * deployment's own URL before localhost so a preview build is self-referential.
+   */
+  url:
+    process.env.NEXT_PUBLIC_SITE_URL?.trim() ||
+    (process.env.NEXT_PUBLIC_VERCEL_URL
+      ? `https://${process.env.NEXT_PUBLIC_VERCEL_URL}`
+      : "") ||
+    "http://localhost:3000",
 } as const;
 
 export const PLANS = [
