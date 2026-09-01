@@ -5,6 +5,7 @@ import {
   logWatchMilestones,
   syncSegment,
 } from "@/lib/attendee-tracking";
+import { cancelJoinReminders } from "@/lib/messaging/scheduler";
 import { createServiceClient } from "@/lib/supabase/server";
 import type { Database } from "@/types/database";
 
@@ -115,6 +116,8 @@ export async function POST(
 
   if (action === "join" && !before?.attended) {
     await logEvent(supabase, { registrantId, sessionId, type: "joined_session" });
+    // They are here — stop telling them to come.
+    await cancelJoinReminders(supabase, { registrantId, sessionId });
   }
   if (action === "leave") {
     await logEvent(supabase, { registrantId, sessionId, type: "left_session" });

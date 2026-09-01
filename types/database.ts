@@ -297,6 +297,108 @@ export type PollResponseRow = {
   created_at: string;
 };
 
+export type MessageChannel = "email" | "sms" | "whatsapp";
+
+export type MessageStatus =
+  | "pending"
+  | "sent"
+  | "failed"
+  | "failed_permanently"
+  | "cancelled";
+
+export type MessageTemplateRow = {
+  id: string;
+  webinar_id: string;
+  template_key: string;
+  trigger_type: string;
+  segment: string | null;
+  channel: MessageChannel;
+  subject: string | null;
+  body: string;
+  delay_hours: number;
+  delay_unit: string;
+  is_active: boolean;
+  created_at: string;
+  updated_at: string;
+};
+
+export type ScheduledMessageRow = {
+  id: string;
+  webinar_id: string;
+  registrant_id: string;
+  session_id: string | null;
+  template_id: string | null;
+  template_key: string | null;
+  channel: MessageChannel;
+  recipient_email: string | null;
+  recipient_phone: string | null;
+  recipient_name: string | null;
+  subject: string | null;
+  body: string;
+  scheduled_for: string;
+  sent_at: string | null;
+  status: MessageStatus;
+  attempts: number;
+  error_message: string | null;
+  provider_message_id: string | null;
+  created_at: string;
+};
+
+export type MessageLogRow = {
+  id: string;
+  scheduled_message_id: string | null;
+  registrant_id: string | null;
+  channel: MessageChannel;
+  status: string;
+  provider_response: Json;
+  sent_at: string;
+};
+
+export type ReplayAccessRow = {
+  id: string;
+  webinar_id: string;
+  session_id: string;
+  registrant_id: string;
+  access_token: string;
+  expires_at: string;
+  first_accessed_at: string | null;
+  last_accessed_at: string | null;
+  watch_seconds: number;
+  watch_percentage: number;
+  is_active: boolean;
+  created_at: string;
+};
+
+export type AutomationSettingsRow = {
+  id: string;
+  webinar_id: string;
+  email_enabled: boolean;
+  sms_enabled: boolean;
+  whatsapp_enabled: boolean;
+  replay_enabled: boolean;
+  replay_duration_hours: number;
+  re_engagement_enabled: boolean;
+  re_engagement_delay_days: number;
+  re_engagement_frequency_days: number;
+  max_re_engagement_messages: number;
+  unsubscribe_enabled: boolean;
+  from_name: string;
+  from_email: string;
+  reply_to_email: string | null;
+  sms_sender_id: string | null;
+  whatsapp_sender_id: string | null;
+  created_at: string;
+  updated_at: string;
+};
+
+export type UnsubscribeRow = {
+  id: string;
+  registrant_id: string;
+  webinar_id: string;
+  channel: MessageChannel;
+  unsubscribed_at: string;
+};
+
 export type AiPersonaRow = {
   id: string;
   webinar_id: string;
@@ -464,6 +566,54 @@ export type Database = {
         "id" | "duration_seconds" | "is_active" | "created_at"
       >;
       poll_responses: Table<PollResponseRow, "id" | "created_at">;
+      message_templates: Table<
+        MessageTemplateRow,
+        | "id"
+        | "segment"
+        | "subject"
+        | "delay_hours"
+        | "delay_unit"
+        | "is_active"
+        | "created_at"
+        | "updated_at"
+      >;
+      scheduled_messages: Table<
+        ScheduledMessageRow,
+        | "id"
+        | "session_id"
+        | "template_id"
+        | "template_key"
+        | "recipient_email"
+        | "recipient_phone"
+        | "recipient_name"
+        | "subject"
+        | "sent_at"
+        | "status"
+        | "attempts"
+        | "error_message"
+        | "provider_message_id"
+        | "created_at"
+      >;
+      message_logs: Table<
+        MessageLogRow,
+        "id" | "scheduled_message_id" | "registrant_id" | "provider_response" | "sent_at"
+      >;
+      replay_access: Table<
+        ReplayAccessRow,
+        | "id"
+        | "access_token"
+        | "first_accessed_at"
+        | "last_accessed_at"
+        | "watch_seconds"
+        | "watch_percentage"
+        | "is_active"
+        | "created_at"
+      >;
+      automation_settings: Table<
+        AutomationSettingsRow,
+        Exclude<keyof AutomationSettingsRow, "webinar_id">
+      >;
+      unsubscribes: Table<UnsubscribeRow, "id" | "unsubscribed_at">;
       ai_personas: Table<
         AiPersonaRow,
         | "id"

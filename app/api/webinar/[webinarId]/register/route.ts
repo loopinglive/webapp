@@ -4,6 +4,7 @@ import { clearAttendeeHistory, logEvent, syncSegment } from "@/lib/attendee-trac
 import { createServiceClient } from "@/lib/supabase/server";
 import { countryByCode, flagFor } from "@/lib/countries";
 import { broadcast, waitingRoomTopic } from "@/lib/realtime-broadcast";
+import { scheduleRegistrationMessages, seedTemplates } from "@/lib/messaging/scheduler";
 import type { PublicJoiner, StoredRegistrant } from "@/types";
 
 type Source = {
@@ -176,6 +177,16 @@ export async function POST(
   }
 
   await syncSegment(supabase, registrantId);
+
+  // Confirmation now, reminders at their moments. A re-registration replaces
+  // whatever was queued: clearAttendeeHistory cancelled the old session's
+  // messages, and the unique key means the new ones cannot double up.
+  await seedTemplates(supabase, webinarId);
+  await scheduleRegistrationMessages(supabase, {
+    webinarId,
+    registrantId,
+    sessionId,
+  });
 
   // Live social proof for anyone already holding in the waiting room. First
   // name and flag only — the row this came from never leaves the server.

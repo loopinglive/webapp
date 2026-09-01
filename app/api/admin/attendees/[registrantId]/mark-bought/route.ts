@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 
 import { requireAdmin } from "@/lib/admin-auth";
 import { logEvent, syncSegment } from "@/lib/attendee-tracking";
+import { handlePurchase } from "@/lib/messaging/scheduler";
 import { createServiceClient } from "@/lib/supabase/server";
 
 export const dynamic = "force-dynamic";
@@ -35,6 +36,21 @@ export async function POST(
   });
 
   const segment = await syncSegment(supabase, registrantId);
+
+  // Buyers leave every sequence and get a receipt instead.
+  const { data: row } = await supabase
+    .from("registrants")
+    .select("webinar_id, session_id")
+    .eq("id", registrantId)
+    .maybeSingle();
+
+  if (row) {
+    await handlePurchase(supabase, {
+      webinarId: row.webinar_id,
+      registrantId,
+      sessionId: row.session_id,
+    });
+  }
 
   return NextResponse.json({ success: true, segment });
 }
