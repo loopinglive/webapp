@@ -1,0 +1,565 @@
+<title>Loopinglive Email Roadmap</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,800&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+
+<style>
+  :root{
+    --ground:#07070B;
+    --surface:#101018;
+    --surface2:#15151F;
+    --hairline:#23232F;
+    --accent:#6C47FF;
+    --accent2:#00D4FF;
+    --ink:#F5F5F9;
+    --body:#A9A9BA;
+    --muted:#6E6E80;
+    --p0:#FF5A5A;
+    --p1:#FFB020;
+    --p2:#3FB9C9;
+    --good:#00C851;
+    --display:'Bricolage Grotesque',system-ui,sans-serif;
+    --sans:'IBM Plex Sans',system-ui,sans-serif;
+    --mono:'IBM Plex Mono',ui-monospace,monospace;
+  }
+
+  *{box-sizing:border-box}
+
+  body{
+    background:var(--ground);
+    color:var(--body);
+    font-family:var(--sans);
+    font-size:15px;
+    line-height:1.65;
+    margin:0;
+    -webkit-font-smoothing:antialiased;
+  }
+
+  .wrap{max-width:940px;margin:0 auto;padding:56px 24px 100px}
+
+  .eyebrow{
+    font-family:var(--mono);
+    font-size:11px;
+    letter-spacing:.18em;
+    text-transform:uppercase;
+    color:var(--accent);
+    margin:0 0 18px;
+  }
+
+  h1{
+    font-family:var(--display);
+    font-weight:800;
+    font-size:clamp(34px,5.5vw,54px);
+    line-height:1.04;
+    letter-spacing:-.03em;
+    color:var(--ink);
+    margin:0 0 20px;
+    text-wrap:balance;
+  }
+
+  .standfirst{font-size:18px;line-height:1.6;max-width:64ch;margin:0 0 44px;color:var(--body)}
+  .standfirst strong{color:var(--ink);font-weight:600}
+
+  /* ---- the headline count ---- */
+  .split{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(210px,1fr));
+    gap:2px;
+    background:var(--hairline);
+    border:1px solid var(--hairline);
+    border-radius:16px;
+    overflow:hidden;
+    margin:0 0 20px;
+  }
+  .split > div{background:var(--surface);padding:26px 24px}
+  .split .n{
+    font-family:var(--display);
+    font-size:46px;
+    font-weight:800;
+    letter-spacing:-.03em;
+    line-height:1;
+    color:var(--ink);
+    font-variant-numeric:tabular-nums;
+  }
+  .split .n.zero{color:var(--p0)}
+  .split .n.plus{color:var(--accent2)}
+  .split .lab{
+    font-family:var(--mono);font-size:10.5px;letter-spacing:.14em;
+    text-transform:uppercase;color:var(--muted);margin-top:10px
+  }
+  .split .sub{font-size:13px;margin-top:8px;color:var(--body)}
+
+  .callout{
+    border-left:3px solid var(--accent);
+    background:linear-gradient(90deg,rgba(108,71,255,.12),transparent 70%);
+    padding:20px 24px;
+    border-radius:0 12px 12px 0;
+    margin:0 0 56px;
+    font-size:16px;
+    color:var(--ink);
+  }
+
+  h2{
+    font-family:var(--display);
+    font-weight:600;
+    font-size:27px;
+    letter-spacing:-.02em;
+    color:var(--ink);
+    margin:64px 0 6px;
+  }
+  .sectionnote{font-size:14.5px;color:var(--muted);margin:0 0 24px;max-width:62ch}
+
+  /* ---- group cards ---- */
+  .group{
+    border:1px solid var(--hairline);
+    border-radius:14px;
+    background:var(--surface);
+    margin:0 0 14px;
+    overflow:hidden;
+  }
+  .ghead{
+    display:flex;align-items:center;gap:12px;flex-wrap:wrap;
+    padding:16px 20px;
+    background:var(--surface2);
+    border-bottom:1px solid var(--hairline);
+  }
+  .gtitle{font-weight:600;color:var(--ink);font-size:15.5px;flex:1;min-width:180px}
+  .count{
+    font-family:var(--mono);font-size:11px;color:var(--muted);
+    font-variant-numeric:tabular-nums;white-space:nowrap
+  }
+  .pill{
+    font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;
+    padding:4px 9px;border-radius:100px;font-weight:500;white-space:nowrap;
+    border:1px solid currentColor;
+  }
+  .pill.p0{color:var(--p0)}
+  .pill.p1{color:var(--p1)}
+  .pill.p2{color:var(--p2)}
+
+  ul.items{list-style:none;margin:0;padding:8px 0}
+  ul.items li{
+    display:grid;
+    grid-template-columns:auto 1fr;
+    gap:12px;
+    padding:9px 20px;
+    align-items:baseline;
+  }
+  ul.items li + li{border-top:1px solid rgba(35,35,47,.6)}
+  .dot{width:5px;height:5px;border-radius:50%;background:var(--accent);margin-top:8px}
+  .nm{color:var(--ink);font-weight:500}
+  .why{color:var(--muted);font-size:13.5px;display:block;margin-top:2px}
+
+  /* ---- build order ---- */
+  ol.order{list-style:none;counter-reset:step;margin:0;padding:0}
+  ol.order li{
+    counter-increment:step;
+    display:grid;grid-template-columns:44px 1fr;gap:18px;
+    padding:20px 0;border-bottom:1px solid var(--hairline);
+  }
+  ol.order li::before{
+    content:counter(step);
+    font-family:var(--mono);font-size:13px;color:var(--accent);
+    border:1px solid var(--hairline);border-radius:9px;
+    width:38px;height:38px;display:grid;place-items:center;
+    font-variant-numeric:tabular-nums;
+  }
+  .ot{font-family:var(--display);font-size:19px;font-weight:600;color:var(--ink);letter-spacing:-.01em}
+  .ow{margin:6px 0 0;font-size:14.5px}
+
+  /* ---- architecture ---- */
+  .arch{
+    border:1px solid var(--hairline);border-left:3px solid var(--accent2);
+    border-radius:0 14px 14px 0;background:var(--surface);
+    padding:22px 24px;margin:0 0 14px;
+  }
+  .arch h3{font-family:var(--display);font-size:18px;font-weight:600;color:var(--ink);margin:0 0 8px;letter-spacing:-.01em}
+  .arch p{margin:0;font-size:14.5px}
+  .arch .risk{
+    display:inline-block;margin-top:12px;font-family:var(--mono);font-size:11px;
+    color:var(--p1);letter-spacing:.06em;
+  }
+
+  code{
+    font-family:var(--mono);font-size:.88em;
+    background:var(--surface2);border:1px solid var(--hairline);
+    padding:1px 6px;border-radius:5px;color:var(--accent2);
+  }
+
+  footer{
+    margin-top:72px;padding-top:24px;border-top:1px solid var(--hairline);
+    font-size:13px;color:var(--muted);
+  }
+  @media(max-width:620px){
+    .wrap{padding:38px 18px 70px}
+    ol.order li{grid-template-columns:1fr;gap:10px}
+  }
+</style>
+
+<div class="wrap">
+
+  <p class="eyebrow">Loopinglive · Product</p>
+  <h1>The emails we don't send yet</h1>
+
+  <p class="standfirst">
+    Loopinglive sends <strong>17 transactional emails</strong>. Every one of them is addressed to
+    the host's audience. <strong>None are addressed to the host</strong> — the person who
+    actually pays for the product. That single asymmetry is where most of the missing
+    value sits.
+  </p>
+
+  <div class="split">
+    <div>
+      <div class="n">17</div>
+      <div class="lab">Built today</div>
+      <div class="sub">All attendee-facing, all automation-driven.</div>
+    </div>
+    <div>
+      <div class="n zero">0</div>
+      <div class="lab">To paying hosts</div>
+      <div class="sub"><code>sendEmail</code> is called from two places: the attendee dispatcher and an admin test route.</div>
+    </div>
+    <div>
+      <div class="n plus">48</div>
+      <div class="lab">Identified as missing</div>
+      <div class="sub">Across nine categories, three of which are correctness bugs rather than features.</div>
+    </div>
+  </div>
+
+  <div class="callout">
+    A webinar platform's whole value is <strong>show-up rate</strong>, and we ship no calendar
+    invite. Verified: no <code>.ics</code> generation exists anywhere in the codebase. It is the
+    single highest-leverage thing missing, and it is a few days of work.
+  </div>
+
+  <!-- ============ A ============ -->
+  <h2>Correctness, not features</h2>
+  <p class="sectionnote">
+    These are cases where the product silently does the wrong thing. They damage the host's
+    reputation with their own audience, which is the worst failure mode for a B2B tool.
+    I'd treat them as bugs and fix them before building anything new.
+  </p>
+
+  <div class="group">
+    <div class="ghead">
+      <span class="gtitle">Trust &amp; integrity</span>
+      <span class="pill p0">Blocking</span>
+      <span class="count">3 emails</span>
+    </div>
+    <ul class="items">
+      <li><span class="dot"></span><span>
+        <span class="nm">Session rescheduled</span>
+        <span class="why">A host can change a session time in the schedule editor and registrants are never told. They arrive to nothing, or miss it entirely.</span>
+      </span></li>
+      <li><span class="dot"></span><span>
+        <span class="nm">Session cancelled</span>
+        <span class="why">Same gap, worse outcome. Currently the only signal is silence.</span>
+      </span></li>
+      <li><span class="dot"></span><span>
+        <span class="nm">Video processing failed</span>
+        <span class="why">Uploads are async through Cloudinary. If transcoding fails, the webinar is broken and nobody learns until showtime.</span>
+      </span></li>
+    </ul>
+  </div>
+
+  <!-- ============ B ============ -->
+  <h2>Attendance lift</h2>
+  <p class="sectionnote">
+    The metric the entire product lives on. A percentage point here is worth more than
+    most features, because it compounds across every host and every session.
+  </p>
+
+  <div class="group">
+    <div class="ghead">
+      <span class="gtitle">Getting people into the room</span>
+      <span class="pill p0">Highest ROI</span>
+      <span class="count">4 emails</span>
+    </div>
+    <ul class="items">
+      <li><span class="dot"></span><span>
+        <span class="nm">Calendar invite (.ics) on registration</span>
+        <span class="why">Attaching an .ics plus a Google Calendar link is the standard lever for show-up rate. Every serious competitor does this; its absence is conspicuous.</span>
+      </span></li>
+      <li><span class="dot"></span><span>
+        <span class="nm">Add-to-calendar in every reminder</span>
+        <span class="why">Not just the confirmation — people decide to attend at the 24h and 1h marks.</span>
+      </span></li>
+      <li><span class="dot"></span><span>
+        <span class="nm">Timezone-confirmed restatement</span>
+        <span class="why">A time shown in the wrong timezone is a total loss, not a partial one. Worth an explicit confirmation of the reader's zone.</span>
+      </span></li>
+      <li><span class="dot"></span><span>
+        <span class="nm">Waitlist / session full</span>
+        <span class="why">Only if capacity becomes a concept — but it also manufactures scarcity, which suits this product.</span>
+      </span></li>
+    </ul>
+  </div>
+
+  <!-- ============ C ============ -->
+  <h2>Host activation</h2>
+  <p class="sectionnote">
+    The activation event is <em>first published webinar that gets registrants</em>. Everything
+    here exists to shorten the path to that moment, then prove it worked.
+  </p>
+
+  <div class="group">
+    <div class="ghead">
+      <span class="gtitle">Signup → active customer</span>
+      <span class="pill p1">High</span>
+      <span class="count">6 emails</span>
+    </div>
+    <ul class="items">
+      <li><span class="dot"></span><span>
+        <span class="nm">Welcome &amp; first run</span>
+        <span class="why">Currently nothing is sent at signup at all.</span>
+      </span></li>
+      <li><span class="dot"></span><span>
+        <span class="nm">Abandoned setup nudge</span>
+        <span class="why">We already store the setup checklist, so this can be specific rather than generic: "3 steps left — personas, offer, AI moderators."</span>
+      </span></li>
+      <li><span class="dot"></span><span>
+        <span class="nm">First webinar published</span>
+        <span class="why">Hand them the share link and a nudge to promote it.</span>
+      </span></li>
+      <li><span class="dot"></span><span>
+        <span class="nm">First registrant</span>
+        <span class="why">"Sarah just registered." Proof the thing works, delivered the moment it does.</span>
+      </span></li>
+      <li><span class="dot"></span><span>
+        <span class="nm">First sale</span>
+        <span class="why">The strongest retention moment the product has. It should be impossible to miss.</span>
+      </span></li>
+      <li><span class="dot"></span><span>
+        <span class="nm">Registrant milestones</span>
+        <span class="why">10th, 100th, 1000th. Cheap to build, disproportionately motivating.</span>
+      </span></li>
+    </ul>
+  </div>
+
+  <!-- ============ D ============ -->
+  <h2>Host retention through value</h2>
+  <p class="sectionnote">
+    Phase 6 already computes all of this. These emails are mostly plumbing, and they
+    deliver the product's insight without requiring anyone to log in — which is exactly
+    how analytics earns its keep.
+  </p>
+
+  <div class="group">
+    <div class="ghead">
+      <span class="gtitle">Bringing the numbers to them</span>
+      <span class="pill p1">High · cheap</span>
+      <span class="count">4 emails</span>
+    </div>
+    <ul class="items">
+      <li><span class="dot"></span><span>
+        <span class="nm">Session recap</span>
+        <span class="why">Fires when a session ends: attended, watch depth, offer clicks, revenue, and the biggest drop-off moment. The retention workhorse for this product.</span>
+      </span></li>
+      <li><span class="dot"></span><span>
+        <span class="nm">Weekly digest</span>
+        <span class="why">Across every webinar, with week-on-week deltas — the rollup tables already hold this.</span>
+      </span></li>
+      <li><span class="dot"></span><span>
+        <span class="nm">Pre-session heads-up</span>
+        <span class="why">"Starts in an hour, 42 registered." Gives the host a reason to show up to their own event.</span>
+      </span></li>
+      <li><span class="dot"></span><span>
+        <span class="nm">Low-registration warning</span>
+        <span class="why">"Tomorrow's session has 0 registrants" — with something actionable attached, while there is still time.</span>
+      </span></li>
+    </ul>
+  </div>
+
+  <!-- ============ E ============ -->
+  <h2>Revenue</h2>
+  <p class="sectionnote">
+    Lands with Phase 7 billing. Worth stating plainly: failed cards are typically a large
+    share of all churn, and it is churn nobody chose. A dunning sequence is the highest
+    direct-revenue email work in the product.
+  </p>
+
+  <div class="group">
+    <div class="ghead">
+      <span class="gtitle">Billing &amp; subscription</span>
+      <span class="pill p1">With Phase 7</span>
+      <span class="count">12 emails</span>
+    </div>
+    <ul class="items">
+      <li><span class="dot"></span><span><span class="nm">Trial started · ending in 3 days · ending tomorrow · ended</span>
+        <span class="why">The conversion sequence. Four emails.</span></span></li>
+      <li><span class="dot"></span><span><span class="nm">Payment receipt</span>
+        <span class="why">Expected by finance teams; its absence reads as amateur.</span></span></li>
+      <li><span class="dot"></span><span><span class="nm">Dunning: first failure, retry, final notice</span>
+        <span class="why">Three emails, and the highest-value ones on this page in pure revenue terms.</span></span></li>
+      <li><span class="dot"></span><span><span class="nm">Card expiring soon</span>
+        <span class="why">Prevents the dunning sequence from ever being needed.</span></span></li>
+      <li><span class="dot"></span><span><span class="nm">Plan changed · cancelled with winback</span>
+        <span class="why">Cancellation is a conversation, not an event.</span></span></li>
+      <li><span class="dot"></span><span><span class="nm">Usage limit approaching · reached</span>
+        <span class="why">The natural upgrade prompt, if plans are metered by attendees.</span></span></li>
+    </ul>
+  </div>
+
+  <!-- ============ F ============ -->
+  <h2>Account &amp; security</h2>
+  <p class="sectionnote">
+    These exist today, but Supabase sends them — from its own domain, in its default
+    styling. For a brand positioned as premium it is the most visible seam in the product,
+    and those defaults are also the most likely to be spam-filtered.
+  </p>
+
+  <div class="group">
+    <div class="ghead">
+      <span class="gtitle">Replacing the Supabase defaults</span>
+      <span class="pill p1">Brand-visible</span>
+      <span class="count">6 emails</span>
+    </div>
+    <ul class="items">
+      <li><span class="dot"></span><span><span class="nm">Verify email address</span></span></li>
+      <li><span class="dot"></span><span><span class="nm">Password reset</span></span></li>
+      <li><span class="dot"></span><span><span class="nm">Password changed</span>
+        <span class="why">A security notice, not a courtesy — it is how account takeover gets noticed.</span></span></li>
+      <li><span class="dot"></span><span><span class="nm">Email address changed</span>
+        <span class="why">Must go to both the old and new address, or it is not a safeguard.</span></span></li>
+      <li><span class="dot"></span><span><span class="nm">Sign-in from a new device</span></span></li>
+      <li><span class="dot"></span><span><span class="nm">Account deletion confirmed</span></span></li>
+    </ul>
+  </div>
+
+  <!-- ============ G ============ -->
+  <h2>Attendee, after the event</h2>
+
+  <div class="group">
+    <div class="ghead">
+      <span class="gtitle">Post-purchase &amp; feedback</span>
+      <span class="pill p2">Medium</span>
+      <span class="count">5 emails</span>
+    </div>
+    <ul class="items">
+      <li><span class="dot"></span><span><span class="nm">Purchase receipt &amp; access delivery</span>
+        <span class="why">Buyer confirmation exists, but delivering what they bought is a separate job.</span></span></li>
+      <li><span class="dot"></span><span><span class="nm">Refund confirmed</span></span></li>
+      <li><span class="dot"></span><span><span class="nm">Replay expiring in 24 hours</span>
+        <span class="why">We already store <code>replay_expires_at</code> and never use it for urgency.</span></span></li>
+      <li><span class="dot"></span><span><span class="nm">Offer closing soon</span>
+        <span class="why">The in-webinar countdown has no email equivalent once they leave the room.</span></span></li>
+      <li><span class="dot"></span><span><span class="nm">Feedback / NPS</span>
+        <span class="why">Also the cheapest source of testimonial copy the host will ever get.</span></span></li>
+    </ul>
+  </div>
+
+  <!-- ============ H ============ -->
+  <h2>Compliance</h2>
+
+  <div class="group">
+    <div class="ghead">
+      <span class="gtitle">Obligations, not options</span>
+      <span class="pill p2">Before EU volume</span>
+      <span class="count">4 emails</span>
+    </div>
+    <ul class="items">
+      <li><span class="dot"></span><span><span class="nm">Double opt-in confirmation</span>
+        <span class="why">Effectively required for EU lists, and it improves deliverability regardless.</span></span></li>
+      <li><span class="dot"></span><span><span class="nm">Unsubscribe confirmation</span>
+        <span class="why">Currently a page with no email trail.</span></span></li>
+      <li><span class="dot"></span><span><span class="nm">Data export ready · deletion confirmed</span>
+        <span class="why">Two emails. Needed the first time anyone files a subject access request.</span></span></li>
+    </ul>
+  </div>
+
+  <!-- ============ I ============ -->
+  <h2>Team</h2>
+
+  <div class="group">
+    <div class="ghead">
+      <span class="gtitle">When multi-user lands</span>
+      <span class="pill p2">Deferred</span>
+      <span class="count">4 emails</span>
+    </div>
+    <ul class="items">
+      <li><span class="dot"></span><span><span class="nm">Invitation sent · accepted · role changed · access removed</span>
+        <span class="why">Listed for completeness. No value until workspaces exist.</span></span></li>
+    </ul>
+  </div>
+
+  <!-- ============ ORDER ============ -->
+  <h2>What I'd build, in order</h2>
+  <p class="sectionnote">
+    Sequenced by value per day of work, not by category. The first three are all small.
+  </p>
+
+  <ol class="order">
+    <li><div>
+      <div class="ot">Calendar invite</div>
+      <p class="ow">The highest return in the product. It lifts the one metric every host is judged on, applies to all 17 existing emails' worth of traffic, and needs no new infrastructure — an <code>.ics</code> attachment and a Google Calendar link.</p>
+    </div></li>
+    <li><div>
+      <div class="ot">Schedule change notifications</div>
+      <p class="ow">Closes a trust bug rather than adding a feature. A host changing a time today produces silence, and their audience pays for it.</p>
+    </div></li>
+    <li><div>
+      <div class="ot">Session recap to the host</div>
+      <p class="ow">Phase 6 already computes every number. This is mostly plumbing, and it is the email most likely to make a host feel the product is working for them.</p>
+    </div></li>
+    <li><div>
+      <div class="ot">Branded auth emails</div>
+      <p class="ow">Replaces the cheapest-looking surface in the product, and moves those messages onto a domain we control and can monitor.</p>
+    </div></li>
+    <li><div>
+      <div class="ot">Host activation series</div>
+      <p class="ow">Abandoned setup, first registrant, first sale. The setup checklist already gives the abandoned-setup email something specific to say.</p>
+    </div></li>
+    <li><div>
+      <div class="ot">Billing &amp; dunning</div>
+      <p class="ow">Ships with Phase 7. Involuntary churn is the cheapest churn to prevent, and it needs the sequence to exist on day one, not later.</p>
+    </div></li>
+  </ol>
+
+  <!-- ============ ARCH ============ -->
+  <h2>Three decisions to make before the count grows</h2>
+  <p class="sectionnote">
+    These are architectural, and each gets materially more expensive the longer the
+    email surface expands without them.
+  </p>
+
+  <div class="arch">
+    <h3>Every host currently rides our sending reputation</h3>
+    <p>
+      All mail leaves as <code>noreply@loopinglive.com</code>. One host with a poor list
+      degrades deliverability for every other host on the platform — and we saw a
+      preview of this when a single bad address hard-bounced and was silently suppressed.
+      Per-host sending domains isolate that risk and are a premium feature in their own right.
+    </p>
+    <span class="risk">Cost of delay: rises with every new host</span>
+  </div>
+
+  <div class="arch">
+    <h3>Unsubscribe is all-or-nothing</h3>
+    <p>
+      One link opts a person out of everything. At roughly 65 emails, that is untenable
+      both practically and legally — transactional and marketing mail have to be separable,
+      and a reminder about a session someone registered for is not marketing. A preference
+      centre is the fix, and retrofitting one across 65 templates is far harder than
+      designing it now.
+    </p>
+    <span class="risk">Cost of delay: retrofit across every template</span>
+  </div>
+
+  <div class="arch">
+    <h3>Bounces are invisible to the host</h3>
+    <p>
+      Resend suppresses a hard-bounced address automatically and permanently. Later sends
+      return a normal message id and are never delivered. A host reading their dashboard
+      believes they are reaching people they are not — and nothing in the product tells
+      them otherwise. Bounce state needs to surface on the attendee list.
+    </p>
+    <span class="risk">Cost of delay: silent data quality rot</span>
+  </div>
+
+  <footer>
+    Counts verified against <code>lib/messaging/defaults.ts</code> — 17 templates, all with an
+    email channel, 15 with SMS and 15 with WhatsApp. Gap claims verified by search:
+    no <code>.ics</code> generation exists, and <code>sendEmail</code> has exactly two callers.
+  </footer>
+
+</div>
