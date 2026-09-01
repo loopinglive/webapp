@@ -111,14 +111,30 @@ referenced only by the webinar's own labels.
 
 ## Recurring sessions
 
-A schedule is a rule; a session is the instance the room points at. Sessions are
-rolled forward two ways, so recurrence works with or without a scheduler:
+A schedule is a rule; a session is the instance the room points at. Rolling one
+into the other happens **inside Postgres**, on `pg_cron`, every five minutes —
+see `0007_session_scheduler.sql`. It flips statuses to `live`/`ended`, retires
+spent one-time schedules, and creates the next session for every published
+webinar.
 
-- **Lazily** — whenever the room asks for a session and none is on the books.
-  This is all you need locally.
-- **On a cron** — `/api/cron/sessions` every five minutes, declared in
-  `vercel.json`. It also flips statuses to `live`/`ended` and retires spent
-  one-time schedules. Set `CRON_SECRET` or the route refuses to run.
+This lives in the database rather than on a web cron for three reasons: it needs
+no shared secret, it keeps running if the web host is down, and Vercel's Hobby
+plan caps cron jobs at once per day.
+
+`public.next_occurrence()` is the authoritative recurrence rule. The app calls
+`ensure_upcoming_session()` rather than reimplementing it, and the room also
+calls it lazily whenever it asks for a session and none is pending — so a fresh
+clone works before the job has ever fired.
+
+Check or change the job:
+
+```sql
+select jobname, schedule, active from cron.job;
+select public.roll_sessions_forward();   -- run it by hand
+```
+
+`/api/cron/sessions` is a manual trigger for the same sweep, open to a signed-in
+admin or a bearer `CRON_SECRET`.
 
 ## Testing Phase 2
 

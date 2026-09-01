@@ -484,7 +484,18 @@ export type Database = {
       persona_mode: Table<PersonaModeRow, "id" | "mode" | "updated_at">;
     };
     Views: Record<string, never>;
-    Functions: Record<string, never>;
+    Functions: {
+      /** Creates the next session for a webinar if none is pending. */
+      ensure_upcoming_session: {
+        Args: { p_webinar_id: string };
+        Returns: string | null;
+      };
+      /** The scheduled job: statuses, retired schedules, next sessions. */
+      roll_sessions_forward: {
+        Args: Record<string, never>;
+        Returns: Json;
+      };
+    };
     Enums: Record<string, never>;
     CompositeTypes: Record<string, never>;
   };

@@ -25,8 +25,11 @@ function daysFor(pattern: string | null): number[] {
  * The next time this schedule should run, as an ISO string, or null when it is
  * a one-off that has already passed.
  *
- * Recurring schedules keep `scheduled_at` as the anchor for the time of day and
- * walk forward from now to the next matching weekday.
+ * DISPLAY ONLY. The authoritative version is public.next_occurrence() in
+ * 0007_session_scheduler.sql — that is what actually creates sessions. This
+ * mirror exists because the schedule builder previews a rule the host has not
+ * saved yet, so there is no row for the database to reason about. The two are
+ * kept in step deliberately; change one, change the other.
  */
 export function nextOccurrence(
   schedule: Pick<

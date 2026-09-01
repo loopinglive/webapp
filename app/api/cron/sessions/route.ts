@@ -1,46 +1,37 @@
 import { NextResponse } from "next/server";
 
-import { ensureUpcomingSession, reconcileSessions } from "@/lib/sessions";
+import { getAdminUser } from "@/lib/admin-auth";
+import { rollSessionsForward } from "@/lib/sessions";
 import { createServiceClient } from "@/lib/supabase/server";
 
 export const dynamic = "force-dynamic";
 export const maxDuration = 60;
 
 /**
- * Rolls every published webinar forward.
+ * Manual trigger for the session sweep.
  *
- * Vercel sends `Authorization: Bearer $CRON_SECRET` on scheduled invocations.
- * Without a secret configured the route refuses to run rather than sitting
- * open — it writes to every webinar on the platform.
+ * The sweep itself runs on pg_cron inside Postgres every five minutes — see
+ * 0007_session_scheduler.sql. This route exists so an admin can force a run
+ * without waiting, and so the behaviour is reachable from a test.
+ *
+ * Accepts either the signed-in admin, or a bearer CRON_SECRET for anyone
+ * pointing an external scheduler at it.
  */
 export async function GET(request: Request) {
   const secret = process.env.CRON_SECRET;
+  const authorised =
+    (secret && request.headers.get("authorization") === `Bearer ${secret}`) ||
+    Boolean(await getAdminUser());
 
-  if (!secret) {
-    return NextResponse.json(
-      { error: "CRON_SECRET is not configured." },
-      { status: 503 }
-    );
-  }
-
-  if (request.headers.get("authorization") !== `Bearer ${secret}`) {
+  if (!authorised) {
     return NextResponse.json({ error: "Not authorised" }, { status: 401 });
   }
 
-  const supabase = createServiceClient();
-  const counts = await reconcileSessions(supabase);
+  const result = await rollSessionsForward(createServiceClient());
 
-  const { data: webinars } = await supabase
-    .from("webinars")
-    .select("id")
-    .eq("status", "published")
-    .eq("is_active", true);
-
-  let created = 0;
-  for (const webinar of webinars ?? []) {
-    const sessionId = await ensureUpcomingSession(supabase, webinar.id);
-    if (sessionId) created += 1;
+  if ("error" in result) {
+    return NextResponse.json(result, { status: 500 });
   }
 
-  return NextResponse.json({ ...counts, webinars: webinars?.length ?? 0, created });
+  return NextResponse.json(result);
 }
