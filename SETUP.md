@@ -136,6 +136,38 @@ select public.roll_sessions_forward();   -- run it by hand
 `/api/cron/sessions` is a manual trigger for the same sweep, open to a signed-in
 admin or a bearer `CRON_SECRET`.
 
+## Follow-up automation
+
+Three jobs run inside Postgres, for the same reason — the outbox needs draining
+every minute and Hobby crons cannot do that:
+
+| Job | Every | Does |
+| --- | --- | --- |
+| `loopinglive-automation` | 1 min | Calls `/api/automation/cron` to send what is due |
+| `loopinglive-session-endings` | 2 min | Calls `/api/automation/trigger` for sessions that just ended |
+| `loopinglive-roll-sessions` | 5 min | Statuses, retired schedules, next sessions |
+
+`pg_net` makes the HTTP call; the Next route owns the Resend and Twilio SDKs.
+The endpoints and secret live in the `app_config` table (not database GUCs — the
+pooler role cannot set those):
+
+```sql
+insert into app_config (key, value) values
+  ('automation_url', 'https://your-app/api/automation/cron'),
+  ('trigger_url',    'https://your-app/api/automation/trigger'),
+  ('cron_secret',    '<your CRON_SECRET>')
+on conflict (key) do update set value = excluded.value;
+
+select jobname, schedule, active from cron.job;   -- check
+select public.tick_automation();                  -- run by hand
+```
+
+**Sending needs a verified domain.** With `RESEND_FROM_EMAIL` unset it falls back
+to `onboarding@resend.dev`, which Resend only allows to your own address. Verify
+a domain in Resend and set `RESEND_FROM_EMAIL` before real attendees are in the
+system. Twilio is optional — SMS and WhatsApp stay off and cancel cleanly until
+`TWILIO_ACCOUNT_SID`, `TWILIO_AUTH_TOKEN` and the sender numbers are set.
+
 ## Testing Phase 2
 
 The seed prints the admin panel URL. With the room open in one window and
