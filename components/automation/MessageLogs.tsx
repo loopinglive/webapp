@@ -1,8 +1,10 @@
 "use client";
 
 import Link from "next/link";
+import { useState } from "react";
 import {
   ArrowLeft,
+  Download,
   Loader2,
   Mail,
   MessageCircle,
@@ -34,6 +36,36 @@ const CHANNEL_ICON: Record<MessageChannel, typeof Mail> = {
 
 export function MessageLogs({ webinarId }: { webinarId: string }) {
   const logs = useMessageLogs(webinarId);
+  const [exporting, setExporting] = useState(false);
+
+  /** Fetched rather than linked: the route needs the admin's session cookie. */
+  async function exportCsv() {
+    setExporting(true);
+    try {
+      const params = new URLSearchParams({
+        webinarId,
+        channel: logs.channel,
+        status: logs.status,
+      });
+      const response = await fetch(`/api/admin/automation/export?${params}`);
+      if (!response.ok) return;
+
+      const blob = await response.blob();
+      const name =
+        (response.headers.get("Content-Disposition") ?? "").match(
+          /filename="(.+?)"/
+        )?.[1] ?? "messages.csv";
+
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = name;
+      link.click();
+      URL.revokeObjectURL(url);
+    } finally {
+      setExporting(false);
+    }
+  }
 
   return (
     <>
@@ -116,6 +148,15 @@ export function MessageLogs({ webinarId }: { webinarId: string }) {
               { id: "cancelled", label: "Cancelled" },
             ]}
           />
+
+          <AdminButton variant="secondary" onClick={exportCsv} disabled={exporting}>
+            {exporting ? (
+              <Loader2 className="h-3.5 w-3.5 animate-spin" />
+            ) : (
+              <Download className="h-3.5 w-3.5" />
+            )}
+            Export CSV
+          </AdminButton>
         </div>
 
         {/* Table */}

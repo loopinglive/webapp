@@ -10,6 +10,7 @@ import {
   Check,
   Loader2,
   MessageSquare,
+  Send,
   Settings2,
   Sparkles,
   Tag,
@@ -57,6 +58,7 @@ export function WebinarSidebar({
     { href: `${base}/ai`, label: "AI Moderators", icon: Sparkles, key: "ai" },
     { href: `${base}/registration`, label: "Registration Page", icon: BadgeCheck },
     { href: `${base}/attendees`, label: "Attendees", icon: UserCheck },
+    { href: `${base}/automation`, label: "Automation", icon: Send },
     { href: `${base}/settings`, label: "Settings", icon: Settings2 },
   ];
 
