@@ -37,6 +37,21 @@ export function EngagementLayer({
   const dismiss = (id: string) =>
     setDismissed((current) => new Set(current).add(id));
 
+  /*
+   * Records that they took it. Fire-and-forget by design: the download or the
+   * link opens either way, and a tracking call that could delay it would be a
+   * worse product than no tracking at all.
+   */
+  const track = (kind: "handout" | "cta", itemId: string, title: string) => {
+    if (!registrantId) return;
+    void fetch(`/api/webinar/${webinarId}/engagement-click`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ registrantId, sessionId, kind, itemId, title }),
+      keepalive: true,
+    }).catch(() => {});
+  };
+
   const visibleHandouts = handouts.filter(
     (handout) => !dismissed.has(handout.id)
   );
@@ -55,12 +70,17 @@ export function EngagementLayer({
         <HandoutCard
           key={handout.id}
           handout={handout}
+          onTake={() => track("handout", handout.id, handout.title)}
           onDismiss={() => dismiss(handout.id)}
         />
       ))}
 
       {cta && !dismissed.has(cta.id) && (
-        <CtaCard cta={cta} onDismiss={() => dismiss(cta.id)} />
+        <CtaCard
+          cta={cta}
+          onTake={() => track("cta", cta.id, cta.button_text)}
+          onDismiss={() => dismiss(cta.id)}
+        />
       )}
 
       {poll && !dismissed.has(poll.id) && (
@@ -99,9 +119,11 @@ function Shell({
 
 function HandoutCard({
   handout,
+  onTake,
   onDismiss,
 }: {
   handout: TimedHandout;
+  onTake: () => void;
   onDismiss: () => void;
 }) {
   return (
@@ -111,6 +133,7 @@ function HandoutCard({
       </p>
       <a
         href={handout.file_url}
+        onClick={onTake}
         target="_blank"
         rel="noopener noreferrer"
         className="mt-2 flex items-center gap-2.5 rounded-lg bg-[#00D4FF]/10 px-3 py-2.5 transition-colors hover:bg-[#00D4FF]/20"
@@ -124,11 +147,20 @@ function HandoutCard({
   );
 }
 
-function CtaCard({ cta, onDismiss }: { cta: TimedCta; onDismiss: () => void }) {
+function CtaCard({
+  cta,
+  onTake,
+  onDismiss,
+}: {
+  cta: TimedCta;
+  onTake: () => void;
+  onDismiss: () => void;
+}) {
   return (
     <Shell onDismiss={onDismiss}>
       <a
         href={cta.button_url}
+        onClick={onTake}
         target="_blank"
         rel="noopener noreferrer"
         style={{ background: cta.button_colour }}

@@ -5,16 +5,17 @@ import { createServiceClient } from "@/lib/supabase/server";
 export const dynamic = "force-dynamic";
 
 /**
- * True numbers for the offer.
+ * How many people have bought, in this session and recently.
  *
- * "14 people bought in this session" is computable from the purchases ledger
- * and more persuasive than anything invented -- and unlike an invented number
- * it cannot be contradicted by the host's own dashboard.
+ * True, and computed from the purchases ledger. A host running this product
+ * has every incentive to invent a number here; giving them a real one that is
+ * usually more persuasive than the invented one is the better trade, and it is
+ * the one claim on the page that cannot get them into trouble.
  *
- * Returns nothing rather than a small number: "1 person bought" is worse than
- * silence, and a fabricated floor would defeat the point of using real data.
+ * Returns nothing below a floor. "1 person bought" is worse than silence, and
+ * a number that low also identifies the buyer to anyone else in a small room.
  */
-const MINIMUM_TO_SHOW = 3;
+const FLOOR = 3;
 
 export async function GET(
   request: Request,
@@ -24,8 +25,9 @@ export async function GET(
   const sessionId = new URL(request.url).searchParams.get("sessionId");
 
   const supabase = createServiceClient();
+  const dayAgo = new Date(Date.now() - 24 * 3600_000).toISOString();
 
-  const [{ count: sessionBuyers }, { count: totalBuyers }] = await Promise.all([
+  const [{ count: thisSession }, { count: today }] = await Promise.all([
     sessionId
       ? supabase
           .from("purchases")
@@ -36,23 +38,30 @@ export async function GET(
     supabase
       .from("purchases")
       .select("id", { count: "exact", head: true })
-      .eq("webinar_id", webinarId),
+      .eq("webinar_id", webinarId)
+      .gte("created_at", dayAgo),
   ]);
 
-  const inSession = sessionBuyers ?? 0;
-  const allTime = totalBuyers ?? 0;
+  const session = thisSession ?? 0;
+  const recent = today ?? 0;
 
-  return NextResponse.json({
-    // Prefer the live number: what is happening now is more persuasive than a
-    // cumulative total, and it is the one that keeps moving.
-    show: inSession >= MINIMUM_TO_SHOW || allTime >= MINIMUM_TO_SHOW,
-    inSession,
-    allTime,
-    label:
-      inSession >= MINIMUM_TO_SHOW
-        ? `${inSession} people bought during this session`
-        : allTime >= MINIMUM_TO_SHOW
-          ? `${allTime} people have taken this offer`
-          : null,
-  });
+  // The room's own number first — it is the one that reads as live. The
+  // day's number is the fallback for an early session that has none yet.
+  if (session >= FLOOR) {
+    return NextResponse.json({
+      count: session,
+      scope: "session",
+      message: `${session} people bought during this session`,
+    });
+  }
+
+  if (recent >= FLOOR) {
+    return NextResponse.json({
+      count: recent,
+      scope: "recent",
+      message: `${recent} people bought in the last 24 hours`,
+    });
+  }
+
+  return NextResponse.json({ count: 0, scope: "none", message: null });
 }

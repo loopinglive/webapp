@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { ArrowUpRight, X } from "lucide-react";
+import { ArrowUpRight, Users, X } from "lucide-react";
 
 import { cn, formatOffset } from "@/lib/utils";
 import type { WebinarOffer } from "@/types";
@@ -10,6 +10,7 @@ type Props = {
   offer: WebinarOffer;
   webinarId: string;
   registrantId: string | null;
+  sessionId?: string | null;
   /** Playhead in seconds. */
   currentTime: number;
   variant: "desktop" | "mobile";
@@ -33,11 +34,13 @@ export function OfferButton({
   offer,
   webinarId,
   registrantId,
+  sessionId = null,
   currentTime,
   variant,
 }: Props) {
   const [modalOpen, setModalOpen] = useState(false);
   const [buying, setBuying] = useState(false);
+  const [proof, setProof] = useState<string | null>(null);
   const [remaining, setRemaining] = useState(
     offer.countdown_enabled ? offer.countdown_minutes * 60 : null
   );
@@ -56,6 +59,41 @@ export function OfferButton({
 
     return () => clearInterval(id);
   }, [revealed, offer.countdown_enabled, offer.countdown_minutes]);
+
+  /*
+   * How many people have actually bought.
+   *
+   * True and computed from the ledger, and usually a better number than the
+   * one a host would invent. Refreshed while the offer is up, because the
+   * count moving is most of what makes it read as a live room; the server
+   * returns nothing below a floor, so an early session shows no claim at all
+   * rather than a weak one.
+   */
+  useEffect(() => {
+    if (!revealed) return;
+
+    let cancelled = false;
+    const read = () =>
+      fetch(
+        `/api/webinar/${webinarId}/social-proof${
+          sessionId ? `?sessionId=${sessionId}` : ""
+        }`,
+        { cache: "no-store" }
+      )
+        .then((response) => (response.ok ? response.json() : null))
+        .then((payload: { message: string | null } | null) => {
+          if (!cancelled) setProof(payload?.message ?? null);
+        })
+        .catch(() => undefined);
+
+    void read();
+    const id = setInterval(read, 45_000);
+
+    return () => {
+      cancelled = true;
+      clearInterval(id);
+    };
+  }, [revealed, webinarId, sessionId]);
 
   if (!revealed) return null;
 
@@ -142,8 +180,14 @@ export function OfferButton({
   return (
     <>
       {variant === "desktop" ? (
-        <div className="animate-rise px-1 pt-3" style={{ height: 64 }}>
+        <div className="animate-rise px-1 pt-3">
           {button}
+          {proof && (
+            <p className="mt-1.5 flex items-center justify-center gap-1.5 text-[11.5px] text-[#A0A0B0]">
+              <Users className="h-3 w-3 shrink-0 text-[#22C55E]" />
+              {proof}
+            </p>
+          )}
         </div>
       ) : (
         // Sits below the chat FAB, which lives at bottom-24.

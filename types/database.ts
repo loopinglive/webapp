@@ -322,7 +322,10 @@ export type AttendeeEventType =
   | "clicked_offer"
   | "bought"
   | "rejoined"
-  | "history_cleared";
+  | "history_cleared"
+  /** Took a scheduled handout. The strongest signal short of a purchase. */
+  | "handout_downloaded"
+  | "cta_clicked";
 
 export type AttendeeEventRow = {
   id: string;

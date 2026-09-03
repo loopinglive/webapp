@@ -306,6 +306,7 @@ export function WatchRoom({ webinarId }: { webinarId: string }) {
                 offer={offer}
                 webinarId={webinarId}
                 registrantId={registrantId}
+                sessionId={sessionId}
                 currentTime={currentTime}
                 variant="desktop"
               />
@@ -360,6 +361,7 @@ export function WatchRoom({ webinarId }: { webinarId: string }) {
           offer={offer}
           webinarId={webinarId}
           registrantId={registrantId}
+          sessionId={sessionId}
           currentTime={currentTime}
           variant="mobile"
         />
