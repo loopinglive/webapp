@@ -23,5 +23,7 @@ export async function GET() {
     planExpiresAt: account?.plan_expires_at ?? null,
     referralCode: account?.referral_code ?? null,
     isAdmin: Boolean(account?.is_admin),
+    fullName: account?.full_name ?? null,
+    email: account?.email ?? null,
   });
 }

@@ -3,6 +3,7 @@ import { cookies } from "next/headers";
 
 import { AnnouncementBanner } from "@/components/dashboard/AnnouncementBanner";
 import { ImpersonationBanner } from "@/components/dashboard/ImpersonationBanner";
+import { MobileBar } from "@/components/dashboard/MobileBar";
 import { Sidebar } from "@/components/dashboard/sidebar";
 import { ErrorBoundary } from "@/components/ui/ErrorBoundary";
 import { PlanProvider } from "@/hooks/usePlan";
@@ -50,6 +51,7 @@ export default async function DashboardLayout({
       <div className="flex min-h-screen bg-void">
         <Sidebar />
         <div className="min-w-0 flex-1">
+          <MobileBar />
           {impersonating && <ImpersonationBanner name={impersonating} />}
           <AnnouncementBanner />
           {/* Per-region containment: a page that throws costs the reader that

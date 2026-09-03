@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { BarChart3, Mail, Plus } from "lucide-react";
+import { BarChart3, LogOut, Mail, Plus } from "lucide-react";
 
 import { SITE } from "@/lib/constants";
 
@@ -56,6 +56,16 @@ export function DashboardHeader({
             <Plus className="h-4 w-4" />
             Create New Webinar
           </Link>
+
+          {/* The admin panel had no way out either. */}
+          <a
+            href="/api/auth/signout"
+            title="Sign out"
+            aria-label="Sign out"
+            className="grid h-11 w-11 place-items-center rounded-full border border-[#2A2A3A] text-[#A0A0B0] transition-colors duration-200 hover:border-[#FF5A5A]/50 hover:text-[#FF5A5A]"
+          >
+            <LogOut className="h-4 w-4" />
+          </a>
         </div>
       </div>
 

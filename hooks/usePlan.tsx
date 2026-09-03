@@ -24,6 +24,8 @@ export type PlanState = {
   planExpiresAt: string | null;
   referralCode: string | null;
   isAdmin: boolean;
+  fullName: string | null;
+  email: string | null;
   loading: boolean;
   refresh: () => void;
 };
@@ -41,6 +43,8 @@ const FALLBACK: Omit<PlanState, "refresh"> = {
   planExpiresAt: null,
   referralCode: null,
   isAdmin: false,
+  fullName: null,
+  email: null,
   loading: true,
 };
 

@@ -2,35 +2,12 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import {
-  BarChart3,
-  CreditCard,
-  Handshake,
-  KeyRound,
-  LayoutDashboard,
-  Plug,
-  Settings,
-  Users,
-  Video,
-  Workflow,
-} from "lucide-react";
 
+import { AccountMenu } from "@/components/dashboard/AccountMenu";
+import { DASHBOARD_NAV as NAV } from "@/components/dashboard/nav-items";
 import { OnboardingChecklist } from "@/components/onboarding/OnboardingChecklist";
 import { SITE } from "@/lib/constants";
 import { cn } from "@/lib/utils";
-
-const NAV = [
-  { href: "/dashboard", label: "Overview", icon: LayoutDashboard },
-  { href: "/webinars", label: "Webinars", icon: Video },
-  { href: "/attendees", label: "Attendees", icon: Users },
-  { href: "/analytics", label: "Analytics", icon: BarChart3 },
-  { href: "/automations", label: "Automations", icon: Workflow },
-  { href: "/settings/integrations", label: "Integrations", icon: Plug },
-  { href: "/settings/billing", label: "Billing", icon: CreditCard },
-  { href: "/settings/affiliate", label: "Affiliate", icon: Handshake },
-  { href: "/settings/api-keys", label: "API keys", icon: KeyRound },
-  { href: "/settings", label: "Settings", icon: Settings },
-];
 
 export function Sidebar() {
   const pathname = usePathname();
@@ -73,6 +50,10 @@ export function Sidebar() {
       </nav>
 
       <OnboardingChecklist />
+
+      <div className="border-t border-white/8 pt-2">
+        <AccountMenu />
+      </div>
     </aside>
   );
 }
