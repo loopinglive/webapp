@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 
+import { FlaggedHosts } from "@/components/superadmin/FlaggedHosts";
 import { ReportQueue } from "@/components/superadmin/ReportQueue";
 
 export const metadata: Metadata = { title: "Reports · Super admin" };
@@ -18,6 +19,16 @@ export default function Page() {
           you find out before someone outside tells you.
         </p>
       </header>
+      <div className="space-y-2 px-6 pt-6 lg:px-8">
+        <h2 className="text-[13px] font-semibold text-white">
+          Flagged on chargebacks
+        </h2>
+        <FlaggedHosts />
+      </div>
+
+      <div className="mt-2 border-t border-[#1E1E2E] px-6 pt-5 lg:px-8">
+        <h2 className="text-[13px] font-semibold text-white">Reported by attendees</h2>
+      </div>
       <ReportQueue />
     </>
   );

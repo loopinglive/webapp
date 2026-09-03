@@ -368,9 +368,99 @@ export async function POST(request: Request) {
         .eq("stripe_customer_id", customerId);
       break;
     }
+
+    /*
+     * A chargeback landed.
+     *
+     * There was no case for this event at all — a dispute against a host's
+     * offer sale used to vanish with no record anywhere and no consequence on
+     * the account, which is exactly the pattern trust and safety exists to
+     * catch. `updated` covers a dispute changing status after Stripe or the
+     * host contests it — `created` alone would freeze every dispute at "open"
+     * forever.
+     */
+    case "charge.dispute.created":
+    case "charge.dispute.updated": {
+      await recordDispute(supabase, event.data.object);
+      break;
+    }
   }
 
   return Response.json({ received: true });
+}
+
+/**
+ * Records a dispute against a purchase, and who it belongs to.
+ *
+ * Looked up by the underlying charge, which is what a dispute event carries —
+ * there is no checkout session id on a dispute the way there is on a
+ * completed checkout, so the purchase has to be found from the payment
+ * intent Stripe attaches to the charge.
+ */
+async function recordDispute(supabase: Client, dispute: Stripe.Dispute) {
+  const chargeId =
+    typeof dispute.charge === "string" ? dispute.charge : dispute.charge?.id;
+
+  let purchase: { id: string; webinar_id: string | null } | null = null;
+
+  if (chargeId) {
+    try {
+      const charge = await stripe().charges.retrieve(chargeId);
+      const paymentIntentId =
+        typeof charge.payment_intent === "string" ? charge.payment_intent : null;
+
+      if (paymentIntentId) {
+        // Checkout sessions are looked up by payment intent, since that is
+        // the only identifier a dispute's charge reliably carries back to one.
+        const sessions = await stripe().checkout.sessions.list({
+          payment_intent: paymentIntentId,
+          limit: 1,
+        });
+        const sessionId = sessions.data[0]?.id;
+
+        if (sessionId) {
+          const { data } = await supabase
+            .from("purchases")
+            .select("id, webinar_id")
+            .eq("external_reference", sessionId)
+            .maybeSingle();
+          purchase = data;
+        }
+      }
+    } catch {
+      // The dispute is still worth recording even unlinked — see below.
+    }
+  }
+
+  const { data: webinar } = purchase?.webinar_id
+    ? await supabase
+        .from("webinars")
+        .select("owner_id")
+        .eq("id", purchase.webinar_id)
+        .maybeSingle()
+    : { data: null };
+
+  await supabase.from("disputes").upsert(
+    {
+      purchase_id: purchase?.id ?? null,
+      stripe_dispute_id: dispute.id,
+      stripe_charge_id: chargeId ?? null,
+      amount_cents: dispute.amount,
+      currency: (dispute.currency ?? "usd").toUpperCase(),
+      reason: dispute.reason,
+      status: dispute.status,
+      webinar_id: purchase?.webinar_id ?? null,
+      owner_id: webinar?.owner_id ?? null,
+      resolved_at:
+        dispute.status !== "warning_needs_response" &&
+        dispute.status !== "warning_under_review" &&
+        dispute.status !== "needs_response" &&
+        dispute.status !== "under_review"
+          ? new Date().toISOString()
+          : null,
+    },
+    { onConflict: "stripe_dispute_id" }
+  );
 }
 
 /**

@@ -519,6 +519,22 @@ export type ContentReportRow = {
 };
 
 /** One CIDR block allowed to reach the super admin console. */
+/** A chargeback against a purchase. Stripe's dispute, mirrored locally. */
+export type DisputeRow = {
+  id: string;
+  purchase_id: string | null;
+  stripe_dispute_id: string;
+  stripe_charge_id: string | null;
+  amount_cents: number;
+  currency: string;
+  reason: string | null;
+  status: string;
+  webinar_id: string | null;
+  owner_id: string | null;
+  created_at: string;
+  resolved_at: string | null;
+};
+
 export type AdminIpAllowlistRow = {
   id: string;
   cidr: string;
@@ -1332,6 +1348,11 @@ export type Database = {
       unsubscribes: Table<UnsubscribeRow, "id" | "unsubscribed_at" | "email_hash">;
       app_config: Table<AppConfigRow, "updated_at">;
       admin_ip_allowlist: Table<AdminIpAllowlistRow, "id" | "created_by" | "created_at">;
+      disputes: Table<
+        DisputeRow,
+        "id" | "purchase_id" | "stripe_charge_id" | "reason" | "webinar_id"
+          | "owner_id" | "created_at" | "resolved_at"
+      >;
       content_reports: Table<
         ContentReportRow,
         | "id"
@@ -1366,6 +1387,22 @@ export type Database = {
     };
     Views: Record<string, never>;
     Functions: {
+      /** Per-host dispute rate and whether it crosses the warning line. */
+      host_fraud_signals: {
+        Args: { p_owner_id: string };
+        Returns: Json;
+      };
+      /** Every host whose numbers cross the line, for a screen to list. */
+      flagged_hosts: {
+        Args: Record<string, never>;
+        Returns: {
+          owner_id: string;
+          email: string;
+          full_name: string;
+          plan_slug: string;
+          signals: Json;
+        }[];
+      };
       /** Whether an IP may reach the console. Off, or an empty list, allows all. */
       admin_ip_allowed: {
         Args: { p_ip: string };
