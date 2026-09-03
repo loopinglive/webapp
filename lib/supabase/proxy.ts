@@ -89,6 +89,48 @@ export async function updateSession(request: NextRequest) {
   const path = request.nextUrl.pathname;
 
   /*
+   * Admin IP allowlist.
+   *
+   * Optional, and off until an owner turns it on — the default has to be
+   * "everyone can reach it", or turning this on for the first time from an
+   * office that has not yet been added would lock its own owner out with no
+   * way back except a database console.
+   *
+   * Only the console itself, not the whole product: a customer-facing outage
+   * from a misconfigured allowlist is a much worse failure than an admin
+   * screen being briefly unreachable.
+   */
+  if (path.startsWith("/superadmin") || path.startsWith("/api/superadmin")) {
+    const forwarded = request.headers.get("x-forwarded-for");
+    const ip = forwarded?.split(",")[0]?.trim() || request.headers.get("x-real-ip");
+
+    if (ip) {
+      let allowed = true;
+      try {
+        const { data } = await supabase.rpc("admin_ip_allowed", { p_ip: ip });
+        allowed = data !== false;
+      } catch {
+        // Unreachable config must not lock every admin out at once.
+        allowed = true;
+      }
+
+      if (!allowed) {
+        if (path.startsWith("/api/")) {
+          return NextResponse.json(
+            { error: "This address is not on the admin allowlist." },
+            { status: 403 }
+          );
+        }
+        // The console's existence is not something to advertise to a blocked
+        // visitor any more than to a non-admin — same redirect either way.
+        const url = request.nextUrl.clone();
+        url.pathname = "/dashboard";
+        return NextResponse.redirect(url);
+      }
+    }
+  }
+
+  /*
    * Maintenance mode.
    *
    * The environment variable wins and is checked first, because it is the

@@ -518,6 +518,15 @@ export type ContentReportRow = {
   created_at: string;
 };
 
+/** One CIDR block allowed to reach the super admin console. */
+export type AdminIpAllowlistRow = {
+  id: string;
+  cidr: string;
+  label: string;
+  created_by: string | null;
+  created_at: string;
+};
+
 export type AppConfigRow = {
   key: string;
   value: string;
@@ -1322,6 +1331,7 @@ export type Database = {
       >;
       unsubscribes: Table<UnsubscribeRow, "id" | "unsubscribed_at" | "email_hash">;
       app_config: Table<AppConfigRow, "updated_at">;
+      admin_ip_allowlist: Table<AdminIpAllowlistRow, "id" | "created_by" | "created_at">;
       content_reports: Table<
         ContentReportRow,
         | "id"
@@ -1356,6 +1366,11 @@ export type Database = {
     };
     Views: Record<string, never>;
     Functions: {
+      /** Whether an IP may reach the console. Off, or an empty list, allows all. */
+      admin_ip_allowed: {
+        Args: { p_ip: string };
+        Returns: boolean;
+      };
       /** Open reports, with the context needed to judge one. */
       report_queue: {
         Args: { p_status?: string };

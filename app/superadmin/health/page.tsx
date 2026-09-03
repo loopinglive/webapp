@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 
 import { MaintenanceToggle } from "@/components/superadmin/MaintenanceToggle";
+import { IpAllowlistPanel } from "@/components/superadmin/IpAllowlistPanel";
 import { TwoFactorPanel } from "@/components/superadmin/TwoFactorPanel";
 import { PlatformHealth } from "@/components/superadmin/PlatformHealth";
 
@@ -20,6 +21,7 @@ export default function Page() {
       </header>
       <div className="space-y-4 px-6 pt-6 lg:px-8">
         <TwoFactorPanel />
+        <IpAllowlistPanel />
         <MaintenanceToggle />
       </div>
       <PlatformHealth />
