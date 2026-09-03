@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 
 import { requireAdmin } from "@/lib/admin-auth";
-import { signUpload } from "@/lib/cloudinary";
+import { signUpload, uploadType } from "@/lib/cloudinary";
 
 export const dynamic = "force-dynamic";
 
@@ -48,11 +48,21 @@ export async function POST(request: Request) {
   }
 
   const folder = FOLDERS[kind];
-  const signed = signUpload({ folder });
+
+  /*
+   * Only video is stored privately, and only when that is switched on.
+   *
+   * Thumbnails and handouts are meant to be linkable — a handout behind an
+   * expiring URL would break the moment an attendee opened it the next day,
+   * which is exactly when a handout is useful.
+   */
+  const type = kind === "video" ? uploadType() : "upload";
+  const signed = signUpload({ folder, type });
 
   return NextResponse.json({
     ...signed,
     folder,
+    type,
     resourceType: kind === "video" ? "video" : kind === "pdf" ? "raw" : "image",
   });
 }

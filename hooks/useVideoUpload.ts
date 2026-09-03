@@ -66,6 +66,7 @@ export function useVideoUpload({ kind, webinarId, target, onComplete }: Options)
           apiKey: string;
           cloudName: string;
           folder: string;
+          type: string;
           resourceType: string;
           error?: string;
         };
@@ -80,6 +81,9 @@ export function useVideoUpload({ kind, webinarId, target, onComplete }: Options)
         form.append("timestamp", String(signed.timestamp));
         form.append("signature", signed.signature);
         form.append("folder", signed.folder);
+        // Part of what was signed, so it has to match exactly or Cloudinary
+        // rejects the upload.
+        if (signed.type) form.append("type", signed.type);
 
         const publicId = await new Promise<string>((resolve, reject) => {
           const xhr = new XMLHttpRequest();

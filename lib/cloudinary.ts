@@ -65,15 +65,59 @@ export function posterUrl(publicId: string, second = 1) {
 }
 
 /**
- * A signed URL that stops working.
+ * Whether uploads are private.
  *
- * The plain delivery URL is permanent and visible in the network tab, so
- * anyone who finds it keeps the whole webinar forever and can pass it on.
- * Used for replays, where the link is handed to one person by email.
+ * Off by default, and deliberately so. Signing only bites on assets stored as
+ * `authenticated`; a signed URL for an asset stored as `upload` is theatre,
+ * because the unsigned URL still works. Turning this on therefore changes how
+ * videos are *stored*, which means every video uploaded before the change
+ * keeps its public URL until it is re-uploaded or migrated through
+ * Cloudinary's `explicit` API.
+ *
+ * A deployment that flipped this silently would leave existing webinars
+ * playing from public URLs while believing they were protected, which is worse
+ * than knowing they are public.
  */
-export function signedVideoUrl(publicId: string, expiresInSeconds = 60 * 60 * 6) {
-  return cloudinary.utils.private_download_url(publicId, "mp4", {
+export function privateVideosEnabled() {
+  return process.env.CLOUDINARY_PRIVATE_VIDEOS === "true";
+}
+
+/** `authenticated` when private delivery is on, so signing actually applies. */
+export function uploadType() {
+  return privateVideosEnabled() ? "authenticated" : "upload";
+}
+
+/**
+ * A delivery URL that stops working.
+ *
+ * The plain URL is permanent and visible in the network tab, so anyone who
+ * finds it keeps the whole webinar forever and can pass it on. This one
+ * carries an expiry in its signature.
+ *
+ * Six hours by default: long enough that a session cannot outlive its own
+ * video URL, short enough that a link scraped from the network tab is not
+ * worth passing around.
+ */
+export function signedVideoUrl(
+  publicId: string,
+  {
+    format = "m3u8",
+    expiresInSeconds = 60 * 60 * 6,
+  }: { format?: "m3u8" | "mp4"; expiresInSeconds?: number } = {}
+) {
+  const isHls = format === "m3u8";
+
+  return cloudinary.url(publicId, {
     resource_type: "video",
+    type: uploadType(),
+    format,
+    // The same transformations the public builders apply, so switching between
+    // them does not change what plays.
+    transformation: isHls
+      ? [{ streaming_profile: "auto" }]
+      : [{ quality: "auto", fetch_format: "auto" }],
+    sign_url: true,
+    secure: true,
     expires_at: Math.round(Date.now() / 1000) + expiresInSeconds,
   });
 }

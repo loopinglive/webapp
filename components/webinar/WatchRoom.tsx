@@ -139,6 +139,37 @@ export function WatchRoom({ webinarId }: { webinarId: string }) {
 
   const [offer, setOffer] = useState<WebinarOffer | null>(null);
 
+  /*
+   * Where to play from.
+   *
+   * Asked for rather than built here, so the URL in the network tab can be one
+   * that expires. With private delivery off the answer is the same public URL
+   * the room used to construct, and the cost is one request.
+   */
+  const [sources, setSources] = useState<{
+    streamSrc: string | null;
+    src: string | null;
+  } | null>(null);
+
+  useEffect(() => {
+    if (!data?.webinar.id) return;
+
+    let cancelled = false;
+    void fetch(
+      `/api/webinar/${webinarId}/video-url${sessionId ? `?sessionId=${sessionId}` : ""}`,
+      { cache: "no-store" }
+    )
+      .then((response) => (response.ok ? response.json() : null))
+      .then((payload: { streamSrc: string | null; src: string | null } | null) => {
+        if (!cancelled && payload) setSources(payload);
+      })
+      .catch(() => undefined);
+
+    return () => {
+      cancelled = true;
+    };
+  }, [webinarId, sessionId, data?.webinar.id]);
+
   // Armed only once the offer is on the table: prompting someone who has not
   // seen what is for sale has nothing to say to them.
   const offerRevealed =
@@ -279,12 +310,12 @@ export function WatchRoom({ webinarId }: { webinarId: string }) {
         <div className="flex shrink-0 flex-col lg:min-w-0 lg:flex-1 lg:basis-[70%] lg:p-4">
           <VideoPlayer
             videoRef={videoRef}
-            src={data.webinar.video_url ?? ""}
+            src={sources?.src ?? data.webinar.video_url ?? ""}
             // Adaptive stream and captions are derived from the public id, so
             // a webinar uploaded before either existed still plays.
             streamSrc={
               data.webinar.video_public_id
-                ? streamUrl(data.webinar.video_public_id)
+                ? (sources?.streamSrc ?? streamUrl(data.webinar.video_public_id))
                 : null
             }
             captionsSrc={

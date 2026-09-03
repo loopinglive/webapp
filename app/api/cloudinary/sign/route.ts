@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 
-import { signUpload } from "@/lib/cloudinary";
+import { signUpload, uploadType } from "@/lib/cloudinary";
 import { createClient } from "@/lib/supabase/server";
 
 export async function POST(request: Request) {
@@ -15,5 +15,12 @@ export async function POST(request: Request) {
 
   const { folder = "loopinglive/webinars" } = await request.json();
 
-  return NextResponse.json(signUpload({ folder }));
+    /*
+   * The type is part of what is signed, so it has to travel with the
+   * signature — the browser cannot choose it. Public unless private delivery
+   * is turned on, which is what keeps existing deployments working unchanged.
+   */
+  const type = uploadType();
+
+  return NextResponse.json({ ...signUpload({ folder, type }), type });
 }
