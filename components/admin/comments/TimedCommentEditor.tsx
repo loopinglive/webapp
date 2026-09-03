@@ -4,6 +4,7 @@ import { useMemo, useState } from "react";
 import { List, Loader2, Trash2, Waypoints } from "lucide-react";
 
 import { CommentForm } from "@/components/admin/comments/CommentForm";
+import { GenerateFromTranscript } from "@/components/admin/comments/GenerateFromTranscript";
 import { CommentSidebar } from "@/components/admin/comments/CommentSidebar";
 import { VideoScrubber } from "@/components/admin/comments/VideoScrubber";
 import {
@@ -59,6 +60,12 @@ export function TimedCommentEditor({ webinarId }: { webinarId: string }) {
         title="Timed comments"
         description={`${comments.length} comment${comments.length === 1 ? "" : "s"} scheduled across your video`}
         action={
+          <div className="flex items-center gap-2">
+          <GenerateFromTranscript
+            webinarId={webinarId}
+            personas={personas}
+            onAccept={addComment}
+          />
           <div className="flex items-center gap-1 rounded-full border border-[#2A2A3A] bg-[#1A1A2A] p-1">
             {[
               { id: "timeline" as const, label: "Timeline", icon: Waypoints },
@@ -78,6 +85,7 @@ export function TimedCommentEditor({ webinarId }: { webinarId: string }) {
                 {option.label}
               </button>
             ))}
+          </div>
           </div>
         }
       />
