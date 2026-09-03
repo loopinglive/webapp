@@ -797,9 +797,37 @@ export type HandoutDownloadRow = {
   created_at: string;
 };
 
+export type OfferVariantRow = {
+  id: string;
+  webinar_id: string | null;
+  offer_id: string | null;
+  name: string;
+  /** Null means inherit from the base offer. */
+  offer_title: string | null;
+  button_text: string | null;
+  price_cents: number | null;
+  trigger_video_offset_seconds: number | null;
+  weight: number;
+  is_control: boolean;
+  is_active: boolean;
+  created_at: string;
+};
+
+export type OfferAssignmentRow = {
+  registrant_id: string;
+  webinar_id: string;
+  variant_id: string;
+  assigned_at: string;
+};
+
 export type Database = {
   public: {
     Tables: {
+      offer_variants: Table<
+        OfferVariantRow,
+        Exclude<keyof OfferVariantRow, "name">
+      >;
+      offer_assignments: Table<OfferAssignmentRow, "assigned_at">;
       handout_downloads: Table<
         HandoutDownloadRow,
         "id" | "session_id" | "video_offset_seconds" | "created_at"
@@ -1168,6 +1196,20 @@ export type Database = {
     };
     Views: Record<string, never>;
     Functions: {
+      /** Per-variant results for an offer experiment. */
+      offer_experiment_results: {
+        Args: { p_webinar_id: string };
+        Returns: {
+          variant_id: string;
+          name: string;
+          is_control: boolean;
+          assigned: number;
+          clicked: number;
+          bought: number;
+          revenue_cents: number;
+          conversion: number;
+        }[];
+      };
       /** Marks upcoming sessions whose video should be verified. */
       tick_preflight: {
         Args: Record<string, never>;

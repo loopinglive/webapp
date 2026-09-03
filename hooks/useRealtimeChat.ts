@@ -21,6 +21,9 @@ export function useRealtimeChat({ webinarId, sessionId, registrantId }: Options)
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [connected, setConnected] = useState(false);
   const index = useRef<Map<string, ChatMessage>>(new Map());
+  // Newest timestamp seen, so the polling fallback asks for a delta rather
+  // than re-fetching the whole room every few seconds.
+  const latest = useRef<string | null>(null);
 
   // Upsert, not append: rows also arrive as UPDATEs when a message gets its
   // reply flags set, and the admin panel's badges read those flags.
@@ -38,7 +41,10 @@ export function useRealtimeChat({ webinarId, sessionId, registrantId }: Options)
     }
 
     if (!changed) return;
-    setMessages([...index.current.values()].sort(bySentAt));
+
+    const merged = [...index.current.values()].sort(bySentAt);
+    latest.current = merged[merged.length - 1]?.sent_at ?? latest.current;
+    setMessages(merged);
   }, []);
 
   // History first, so someone joining twenty minutes in walks into a room that
@@ -89,6 +95,52 @@ export function useRealtimeChat({ webinarId, sessionId, registrantId }: Options)
       void supabase.removeChannel(channel);
     };
   }, [sessionId, merge]);
+
+  /**
+   * Polling fallback.
+   *
+   * Realtime has connection limits and, like any WebSocket, drops. A chat that
+   * silently stops updating during a "live" event is worse than a slow one —
+   * the room looks dead, which is the one thing the illusion cannot survive.
+   *
+   * Only runs while disconnected, and asks for a delta, so the cost of being
+   * wrong about the connection is one small request every five seconds.
+   */
+  useEffect(() => {
+    if (!sessionId || connected) return;
+
+    let cancelled = false;
+
+    const poll = async () => {
+      try {
+        const params = new URLSearchParams({ sessionId });
+        if (latest.current) params.set("since", latest.current);
+
+        const response = await fetch(
+          `/api/webinar/${webinarId}/chat?${params}`,
+          { cache: "no-store" }
+        );
+        if (!response.ok || cancelled) return;
+
+        const { messages: fresh } = (await response.json()) as {
+          messages: ChatMessage[];
+        };
+        merge(fresh);
+      } catch {
+        /* the next tick tries again */
+      }
+    };
+
+    // Immediately, then on an interval: a drop should not cost five seconds
+    // of visible silence on top of however long it took to notice.
+    void poll();
+    const id = setInterval(poll, 5000);
+
+    return () => {
+      cancelled = true;
+      clearInterval(id);
+    };
+  }, [webinarId, sessionId, connected, merge]);
 
   const sendMessage = useCallback(
     async (content: string) => {

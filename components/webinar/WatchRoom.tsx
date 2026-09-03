@@ -136,9 +136,12 @@ export function WatchRoom({ webinarId }: { webinarId: string }) {
   useEffect(() => {
     let cancelled = false;
     (async () => {
-      const response = await fetch(`/api/webinar/${webinarId}/offer`, {
-        cache: "no-store",
-      });
+      // registrantId decides which variant they are shown, and keeps them on
+      // it — without it everyone would silently see the control.
+      const response = await fetch(
+        `/api/webinar/${webinarId}/offer${registrantId ? `?registrantId=${registrantId}` : ""}`,
+        { cache: "no-store" }
+      );
       if (!response.ok || cancelled) return;
       const payload = (await response.json()) as { offer: WebinarOffer | null };
       setOffer(payload.offer);
@@ -146,7 +149,10 @@ export function WatchRoom({ webinarId }: { webinarId: string }) {
     return () => {
       cancelled = true;
     };
-  }, [webinarId]);
+    // registrantId is read from localStorage after hydration, so it starts
+    // null and arrives a tick later. Without it in the deps the offer would be
+    // fetched once, anonymously, and every viewer would get the control.
+  }, [webinarId, registrantId]);
 
   // When the video runs out, send them somewhere that tells them what happens
   // next rather than leaving them staring at a frozen frame.

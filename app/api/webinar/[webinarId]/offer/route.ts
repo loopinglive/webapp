@@ -4,16 +4,18 @@ import { syncContactInBackground } from "@/lib/integrations/sync";
 import { dispatchWebhookInBackground } from "@/lib/webhooks/dispatch";
 
 import { logEvent, syncSegment } from "@/lib/attendee-tracking";
+import { resolveOfferForRegistrant } from "@/lib/experiments";
 import { createServiceClient } from "@/lib/supabase/server";
 
 export const dynamic = "force-dynamic";
 
 // The offer the room should reveal, and when.
 export async function GET(
-  _request: Request,
+  request: Request,
   { params }: { params: Promise<{ webinarId: string }> }
 ) {
   const { webinarId } = await params;
+  const registrantId = new URL(request.url).searchParams.get("registrantId");
   const supabase = createServiceClient();
 
   const { data, error } = await supabase
@@ -29,7 +31,18 @@ export async function GET(
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 
-  return NextResponse.json({ offer: data ?? null });
+  if (!data) return NextResponse.json({ offer: null });
+
+  // An experiment, if one is running, applied per registrant and stuck to them
+  // so a replay shows the same price it showed the first time.
+  const { offer, variantId } = await resolveOfferForRegistrant(
+    supabase,
+    webinarId,
+    registrantId,
+    data
+  );
+
+  return NextResponse.json({ offer, variantId });
 }
 
 // Click tracking. Feeds the "Clicked Offer" segment and the admin's per-attendee

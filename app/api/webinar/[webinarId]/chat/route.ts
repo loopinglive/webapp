@@ -12,19 +12,31 @@ export async function GET(
   { params }: { params: Promise<{ webinarId: string }> }
 ) {
   await params;
-  const sessionId = new URL(request.url).searchParams.get("sessionId");
+  const url = new URL(request.url);
+  const sessionId = url.searchParams.get("sessionId");
+  // Cursor for the polling fallback: everything after this timestamp, rather
+  // than re-fetching three hundred rows every five seconds.
+  const since = url.searchParams.get("since");
 
   if (!sessionId) {
     return NextResponse.json({ error: "sessionId is required" }, { status: 400 });
   }
 
   const supabase = createServiceClient();
-  const { data, error } = await supabase
+
+  let query = supabase
     .from("live_chat_messages")
     .select("*")
     .eq("session_id", sessionId)
     .order("sent_at", { ascending: true })
     .limit(300);
+
+  // Greater-or-equal, not greater-than: two messages can share a timestamp,
+  // and the client de-duplicates by id anyway. Missing one is worse than
+  // sending one twice.
+  if (since) query = query.gte("sent_at", since);
+
+  const { data, error } = await query;
 
   if (error) {
     return NextResponse.json({ error: error.message }, { status: 500 });
