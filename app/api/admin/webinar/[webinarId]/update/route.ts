@@ -19,7 +19,14 @@ const EDITABLE: Record<string, keyof WebinarUpdate> = {
   keyTalkingPoints: "key_talking_points",
   objectionNotes: "objection_notes",
   thumbnailUrl: "thumbnail_url",
+  // How the session is labelled to attendees. Both columns have existed since
+  // Phase 10 with nothing reading or writing them.
+  broadcastLabel: "broadcast_label",
+  showRecordedNotice: "show_recorded_notice",
 };
+
+/** The labels a host may pick. Free text here would be a claim we cannot check. */
+const BROADCAST_LABELS = new Set(["live", "encore", "replay", "workshop"]);
 
 export async function PATCH(
   request: Request,
@@ -43,6 +50,21 @@ export async function PATCH(
 
   if (typeof patch.title === "string" && !patch.title) {
     return NextResponse.json({ error: "Title cannot be empty." }, { status: 400 });
+  }
+
+  if (
+    patch.broadcast_label !== undefined &&
+    !BROADCAST_LABELS.has(String(patch.broadcast_label))
+  ) {
+    return NextResponse.json(
+      { error: "That is not a broadcast label we support." },
+      { status: 422 }
+    );
+  }
+
+  // The boolean would otherwise be nulled by the empty-string rule above.
+  if ("showRecordedNotice" in body) {
+    patch.show_recorded_notice = Boolean(body.showRecordedNotice);
   }
 
   const supabase = createServiceClient();

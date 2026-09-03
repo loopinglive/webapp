@@ -117,6 +117,8 @@ export type SessionPayload = {
     | "video_public_id"
     | "video_duration_seconds"
     | "thumbnail_url"
+    | "broadcast_label"
+    | "show_recorded_notice"
   >;
   session: WebinarSession | null;
   /** Seconds until start; negative once it is under way. */

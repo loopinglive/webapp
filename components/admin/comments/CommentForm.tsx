@@ -1,12 +1,13 @@
 "use client";
 
 import { useState } from "react";
-import { Loader2, Trash2 } from "lucide-react";
+import { AlertTriangle, Loader2, Trash2 } from "lucide-react";
 
 import { AdminButton, Field, TextArea } from "@/components/admin/ui/Field";
 import { TimestampInput } from "@/components/admin/ui/TimestampInput";
 import { Avatar } from "@/components/ui/Avatar";
 import { colourForPersona } from "@/hooks/usePersonaComments";
+import { checkClaims } from "@/lib/claim-check";
 import { cn } from "@/lib/utils";
 import type { FakePersona, TimedComment } from "@/types";
 
@@ -44,6 +45,15 @@ export function CommentForm({
     comment?.video_offset_seconds ?? draftOffset
   );
   const [saving, setSaving] = useState(false);
+
+  /*
+   * Claims worth a second look before this goes in a real person's chat.
+   *
+   * Computed during render rather than debounced into state: it is a handful
+   * of regexes over one short line, and a warning that arrives half a second
+   * after the words does not feel like it belongs to them.
+   */
+  const flags = checkClaims(content);
 
   // Selecting a different pin re-seeds the form — the parent remounts this
   // component with a new key rather than syncing props into state here.
@@ -119,6 +129,33 @@ export function CommentForm({
           placeholder="What do they type into the chat?"
         />
       </Field>
+
+      {/*
+        A warning, never a block. A host writing "the last cohort averaged 3x"
+        may have the receipts, and refusing to let them say so would be
+        software being wrong about their business. What this can do is make
+        sure nobody schedules one of these without noticing what they wrote.
+      */}
+      {flags.length > 0 && (
+        <div className="rounded-xl border border-[#F5A623]/30 bg-[#F5A623]/[0.06] px-3.5 py-3">
+          <p className="flex items-center gap-2 text-[12px] font-medium text-[#F5A623]">
+            <AlertTriangle className="h-3.5 w-3.5 shrink-0" />
+            Worth a second look
+          </p>
+          <ul className="mt-1.5 space-y-1">
+            {flags.map((flag) => (
+              <li key={flag.kind} className="text-[11.5px] leading-relaxed text-[#C4C4D0]">
+                <span className="text-[#F5A623]">&ldquo;{flag.matched}&rdquo;</span>{" "}
+                — {flag.note}
+              </li>
+            ))}
+          </ul>
+          <p className="mt-2 text-[11px] leading-relaxed text-[#6E6E80]">
+            This persona is a character you wrote, so anything it says is
+            something you are saying. You can post it anyway.
+          </p>
+        </div>
+      )}
 
       {error && <p className="text-[12px] text-[#FF3B3B]">{error}</p>}
 

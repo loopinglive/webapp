@@ -4,6 +4,7 @@ import { useState } from "react";
 import { Loader2, Wand2 } from "lucide-react";
 
 import { AdminButton, Field, TextArea, TextInput } from "@/components/admin/ui/Field";
+import { DisclosureSettings } from "@/components/admin/webinar/DisclosureSettings";
 import { VideoPreview } from "@/components/admin/webinar/VideoPreview";
 import { VideoUploader } from "@/components/admin/webinar/VideoUploader";
 import {
@@ -92,6 +93,8 @@ export function WebinarSettings({ webinarId }: { webinarId: string }) {
               }
             />
           </Field>
+
+          <DisclosureSettings />
         </section>
 
         <section className="space-y-6">

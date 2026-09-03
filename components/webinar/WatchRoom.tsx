@@ -23,6 +23,14 @@ import { useExitIntent } from "@/hooks/useExitIntent";
 import { readRegistrant } from "@/lib/registrant-storage";
 import type { WebinarOffer } from "@/types";
 
+/** The badge text for each label a host can pick. */
+const LABEL_TEXT: Record<string, string> = {
+  live: "Live",
+  encore: "Encore",
+  replay: "Replay",
+  workshop: "Workshop",
+};
+
 export function WatchRoom({ webinarId }: { webinarId: string }) {
   const router = useRouter();
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -58,6 +66,10 @@ export function WatchRoom({ webinarId }: { webinarId: string }) {
   const sessionId = data?.session?.id ?? null;
   const registrantId = registrant?.id ?? null;
   const isLive = data?.state === "live";
+
+  // How the host chose to describe this session. Defaulted rather than
+  // required, so a webinar created before the setting existed is unchanged.
+  const label = data?.webinar.broadcast_label || "live";
 
   const reportAttendance = useCallback(
     (
@@ -276,13 +288,24 @@ export function WatchRoom({ webinarId }: { webinarId: string }) {
       {/* Top bar */}
       <header className="flex shrink-0 items-center justify-between gap-3 border-b border-[#1E1E2E] px-4 py-3 lg:px-6">
         <div className="flex min-w-0 items-center gap-3">
-          <span className="inline-flex shrink-0 items-center gap-1.5 rounded-full bg-[#FF3B3B]/15 px-2.5 py-1 text-[10.5px] font-bold uppercase tracking-[0.14em] text-[#FF3B3B]">
-            <span className="relative flex h-1.5 w-1.5">
-              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[#FF3B3B] opacity-70" />
-              <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-[#FF3B3B]" />
+          {/*
+            The badge the host chose. "Live" keeps the pulsing red dot; the
+            other labels do not get one, because a pulsing dot is itself a
+            claim that this is happening now.
+          */}
+          {label === "live" ? (
+            <span className="inline-flex shrink-0 items-center gap-1.5 rounded-full bg-[#FF3B3B]/15 px-2.5 py-1 text-[10.5px] font-bold uppercase tracking-[0.14em] text-[#FF3B3B]">
+              <span className="relative flex h-1.5 w-1.5">
+                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[#FF3B3B] opacity-70" />
+                <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-[#FF3B3B]" />
+              </span>
+              Live
             </span>
-            Live
-          </span>
+          ) : (
+            <span className="inline-flex shrink-0 items-center rounded-full bg-white/10 px-2.5 py-1 text-[10.5px] font-bold uppercase tracking-[0.14em] text-white/80">
+              {LABEL_TEXT[label] ?? label}
+            </span>
+          )}
           <h1 className="truncate text-[14px] font-semibold tracking-[-0.01em] text-white sm:text-[15px]">
             {data.webinar.title}
           </h1>
@@ -329,6 +352,20 @@ export function WatchRoom({ webinarId }: { webinarId: string }) {
             ended={ended}
             catchingUp={catchingUp}
           />
+
+          {/*
+            The recorded notice, when the host has asked for one.
+            
+            Under the video rather than over it: it is a disclosure, not a
+            warning, and covering the speaker with it would be a strange way to
+            treat something the host opted into.
+          */}
+          {data.webinar.show_recorded_notice && (
+            <p className="px-1 pt-2 text-[11.5px] text-[#6E6E80]">
+              This presentation was recorded in advance.
+            </p>
+          )}
+
           {/* Offer zone: reserved under the video, filled the moment the host
               reveals the offer on the timeline. */}
           {offer && (

@@ -12,6 +12,8 @@ type Editable = Partial<{
   webinarContext: string;
   keyTalkingPoints: string;
   objectionNotes: string;
+  broadcastLabel: string;
+  showRecordedNotice: boolean;
 }>;
 
 const AUTOSAVE_DELAY_MS = 2000;
@@ -133,5 +135,9 @@ function toRow(patch: Editable): Partial<Webinar> {
     row.key_talking_points = patch.keyTalkingPoints;
   }
   if (patch.objectionNotes !== undefined) row.objection_notes = patch.objectionNotes;
+  if (patch.broadcastLabel !== undefined) row.broadcast_label = patch.broadcastLabel;
+  if (patch.showRecordedNotice !== undefined) {
+    row.show_recorded_notice = patch.showRecordedNotice;
+  }
   return row;
 }
