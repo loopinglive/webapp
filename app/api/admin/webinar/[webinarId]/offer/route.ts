@@ -28,7 +28,15 @@ export async function GET(
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 
-  return NextResponse.json({ offer: data ?? null });
+  const { data: bump } = data
+    ? await supabase
+        .from("webinar_offer_bumps")
+        .select("*")
+        .eq("offer_id", data.id)
+        .maybeSingle()
+    : { data: null };
+
+  return NextResponse.json({ offer: data ?? null, bump: bump ?? null });
 }
 
 // One offer per webinar in this phase, so this upserts rather than appends.

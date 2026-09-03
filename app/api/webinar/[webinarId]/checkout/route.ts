@@ -12,6 +12,8 @@ export const maxDuration = 30;
 const schema = z.object({
   registrantId: z.string().uuid(),
   sessionId: z.string().uuid().optional(),
+  /** They ticked the order bump. Ignored if the offer has none. */
+  includeBump: z.boolean().optional(),
 });
 
 /**
@@ -68,6 +70,18 @@ export async function POST(
       .maybeSingle(),
   ]);
 
+  // The bump's price is read fresh here rather than trusted from the request —
+  // the client sends only whether the box was ticked, never an amount.
+  const { data: bump } =
+    parsed.data.includeBump && offer
+      ? await supabase
+          .from("webinar_offer_bumps")
+          .select("id, title, price_cents, currency")
+          .eq("offer_id", offer.id)
+          .eq("is_active", true)
+          .maybeSingle()
+      : { data: null };
+
   if (!offer) {
     return NextResponse.json({ error: "No offer is configured." }, { status: 404 });
   }
@@ -100,6 +114,20 @@ export async function POST(
           },
         },
       },
+      // A second line item for the bump, so it appears on the Stripe receipt
+      // as its own thing rather than folded into the main price.
+      ...(bump
+        ? [
+            {
+              quantity: 1,
+              price_data: {
+                currency: (bump.currency || offer.currency || "usd").toLowerCase(),
+                unit_amount: bump.price_cents,
+                product_data: { name: bump.title },
+              },
+            },
+          ]
+        : []),
     ],
     // Back into the room, not to a generic thank-you page: the webinar is
     // probably still playing and they should not lose their place.
@@ -112,6 +140,16 @@ export async function POST(
       offerId: offer.id,
       registrantId: registrant.id,
       sessionId: parsed.data.sessionId ?? "",
+      /*
+       * The offer's price at the moment of checkout, captured here rather
+       * than re-read from the amount Stripe settles on. Splitting
+       * amount_total back into "offer" and "bump" from the total alone would
+       * break the moment a coupon, tax, or a price change lands between
+       * checkout and the webhook firing.
+       */
+      offerAmountCents: String(offer.price_cents),
+      bumpId: bump?.id ?? "",
+      bumpAmountCents: bump ? String(bump.price_cents) : "",
     },
   });
 

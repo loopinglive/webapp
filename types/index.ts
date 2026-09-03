@@ -10,6 +10,7 @@ import type {
   WebinarScheduleRow,
   WebinarSessionRow,
   WebinarOfferRow,
+  WebinarOfferBumpRow,
   TimedPollRow,
   TimedHandoutRow,
   TimedCtaRow,
@@ -50,6 +51,7 @@ export type TimedComment = TimedCommentRow;
 export type Registrant = RegistrantRow;
 export type ChatMessage = LiveChatMessageRow;
 export type WebinarOffer = WebinarOfferRow;
+export type WebinarOfferBump = WebinarOfferBumpRow;
 export type TimedPoll = TimedPollRow;
 export type TimedHandout = TimedHandoutRow;
 export type TimedCta = TimedCtaRow;

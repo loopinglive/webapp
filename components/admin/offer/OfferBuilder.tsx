@@ -4,6 +4,7 @@ import { useCallback, useEffect, useState } from "react";
 import { Check, Loader2 } from "lucide-react";
 
 import { OfferButtonPreview } from "@/components/admin/offer/OfferButtonPreview";
+import { OrderBumpEditor } from "@/components/admin/offer/OrderBumpEditor";
 import { AdminButton, Field, TextArea, TextInput } from "@/components/admin/ui/Field";
 import { ColourPicker } from "@/components/admin/ui/ColourPicker";
 import { TimestampInput } from "@/components/admin/ui/TimestampInput";
@@ -358,6 +359,11 @@ export function OfferBuilder({ webinarId }: { webinarId: string }) {
           </div>
 
           {error && <p className="text-[12.5px] text-[#FF3B3B]">{error}</p>}
+
+          <OrderBumpEditor
+            webinarId={webinarId}
+            hasOffer={form.price.trim().length > 0}
+          />
         </div>
 
         <OfferButtonPreview

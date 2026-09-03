@@ -68,6 +68,23 @@ export type WebinarOfferRow = {
   created_at: string;
 };
 
+/**
+ * A companion offer at checkout, taken or not with one click.
+ *
+ * One per offer, not a list — a checkout with three add-ons stops reading as
+ * a decision already made and starts reading as one to reconsider.
+ */
+export type WebinarOfferBumpRow = {
+  id: string;
+  offer_id: string;
+  title: string;
+  description: string | null;
+  price_cents: number;
+  currency: string;
+  is_active: boolean;
+  created_at: string;
+};
+
 export type PurchaseRow = {
   id: string;
   webinar_id: string;
@@ -78,6 +95,10 @@ export type PurchaseRow = {
   currency: string;
   source: "manual" | "internal" | "stripe";
   external_reference: string | null;
+  /** Set when this purchase included the offer's bump. */
+  bump_id: string | null;
+  /** How much of amount_cents was the bump, so attach rate is computable. */
+  bump_amount_cents: number | null;
   created_at: string;
 };
 
@@ -1170,6 +1191,8 @@ export type Database = {
         | "source"
         | "external_reference"
         | "created_at"
+        | "bump_id"
+        | "bump_amount_cents"
       >;
       session_snapshots: Table<
         SessionSnapshotRow,
@@ -1214,6 +1237,10 @@ export type Database = {
         | "ai_reply_pending"
         | "ai_reply_claimed_at"
         | "reply_to_message_id"
+      >;
+      webinar_offer_bumps: Table<
+        WebinarOfferBumpRow,
+        "id" | "description" | "is_active" | "created_at"
       >;
       webinar_offers: Table<
         WebinarOfferRow,

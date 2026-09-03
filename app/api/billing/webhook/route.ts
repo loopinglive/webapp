@@ -388,8 +388,21 @@ async function recordOfferPurchase(
   const webinarId = session.metadata?.webinarId;
   const offerId = session.metadata?.offerId || null;
   const sessionId = session.metadata?.sessionId || null;
+  const bumpId = session.metadata?.bumpId || null;
 
   if (!registrantId || !webinarId) return;
+
+  /*
+   * How much of the total was the bump.
+   *
+   * Read from what checkout captured at the moment of purchase, not derived
+   * from amount_total. Deriving it would break the moment a coupon, tax, or a
+   * price edit landed between checkout being created and this webhook firing —
+   * the metadata is the one source that cannot drift.
+   */
+  const bumpAmountCents = session.metadata?.bumpAmountCents
+    ? Number(session.metadata.bumpAmountCents)
+    : null;
 
   const { data: existing } = await supabase
     .from("purchases")
@@ -410,6 +423,8 @@ async function recordOfferPurchase(
     currency: (session.currency ?? "usd").toUpperCase(),
     source: "stripe",
     external_reference: session.id,
+    bump_id: bumpId,
+    bump_amount_cents: bumpAmountCents,
   });
 
   await supabase

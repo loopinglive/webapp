@@ -41,6 +41,14 @@ export function OfferButton({
   const [modalOpen, setModalOpen] = useState(false);
   const [buying, setBuying] = useState(false);
   const [proof, setProof] = useState<string | null>(null);
+  const [bump, setBump] = useState<{
+    id: string;
+    title: string;
+    description: string | null;
+    price_cents: number;
+    currency: string;
+  } | null>(null);
+  const [bumpChecked, setBumpChecked] = useState(false);
   const [remaining, setRemaining] = useState(
     offer.countdown_enabled ? offer.countdown_minutes * 60 : null
   );
@@ -95,6 +103,30 @@ export function OfferButton({
     };
   }, [revealed, webinarId, sessionId]);
 
+  /*
+   * The order bump, read once the offer is priced and revealed.
+   *
+   * Off by default and never pre-ticked. A checked-by-default add-on is a
+   * dark pattern this product does not need to reach for, and the same
+   * standard applies here as to the social-proof number above — real numbers,
+   * honest defaults, nothing engineered to slip past someone.
+   */
+  useEffect(() => {
+    if (!revealed || offer.price_cents <= 0) return;
+
+    let cancelled = false;
+    void fetch(`/api/webinar/${webinarId}/offer-bump`, { cache: "no-store" })
+      .then((response) => (response.ok ? response.json() : null))
+      .then((payload: { bump: typeof bump } | null) => {
+        if (!cancelled) setBump(payload?.bump ?? null);
+      })
+      .catch(() => undefined);
+
+    return () => {
+      cancelled = true;
+    };
+  }, [revealed, webinarId, offer.price_cents]);
+
   if (!revealed) return null;
 
   const href =
@@ -120,7 +152,10 @@ export function OfferButton({
         const response = await fetch(`/api/webinar/${webinarId}/checkout`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ registrantId }),
+          body: JSON.stringify({
+            registrantId,
+            includeBump: bump ? bumpChecked : undefined,
+          }),
         });
 
         if (response.ok) {
@@ -149,6 +184,39 @@ export function OfferButton({
     }
     window.open(href, "_blank", "noopener,noreferrer");
   }
+
+  const money = (cents: number, currency: string) =>
+    new Intl.NumberFormat("en-US", {
+      style: "currency",
+      currency: currency || "USD",
+      minimumFractionDigits: cents % 100 === 0 ? 0 : 2,
+    }).format(cents / 100);
+
+  const bumpRow = bump && (
+    <label className="flex cursor-pointer items-start gap-2.5 rounded-xl border border-[#6C47FF]/30 bg-[#6C47FF]/[0.06] px-3.5 py-2.5 text-left">
+      <input
+        type="checkbox"
+        checked={bumpChecked}
+        onChange={(event) => setBumpChecked(event.target.checked)}
+        className="mt-0.5 h-4 w-4 shrink-0 accent-[#6C47FF]"
+      />
+      <span className="min-w-0 flex-1">
+        <span className="flex items-baseline justify-between gap-2">
+          <span className="text-[12.5px] font-medium text-white">
+            Add {bump.title}
+          </span>
+          <span className="shrink-0 text-[12.5px] font-semibold text-[#6C47FF]">
+            +{money(bump.price_cents, bump.currency)}
+          </span>
+        </span>
+        {bump.description && (
+          <span className="mt-0.5 block text-[11.5px] leading-relaxed text-[#A0A0B0]">
+            {bump.description}
+          </span>
+        )}
+      </span>
+    </label>
+  );
 
   const button = (
     <button
@@ -181,6 +249,7 @@ export function OfferButton({
     <>
       {variant === "desktop" ? (
         <div className="animate-rise px-1 pt-3">
+          {bumpRow && <div className="mb-2">{bumpRow}</div>}
           {button}
           {proof && (
             <p className="mt-1.5 flex items-center justify-center gap-1.5 text-[11.5px] text-[#A0A0B0]">
@@ -192,6 +261,11 @@ export function OfferButton({
       ) : (
         // Sits below the chat FAB, which lives at bottom-24.
         <div className="fixed inset-x-0 bottom-0 z-30 animate-rise lg:hidden">
+          {bumpRow && (
+            <div className="border-t border-[#1E1E2E] bg-[#0A0A0F] px-2 pb-1 pt-2">
+              {bumpRow}
+            </div>
+          )}
           {button}
         </div>
       )}
