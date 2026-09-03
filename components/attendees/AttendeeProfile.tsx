@@ -6,6 +6,7 @@ import { ArrowLeft, Check, Copy, Loader2, Plus, X } from "lucide-react";
 
 import { AttendeeMessages } from "@/components/attendees/AttendeeMessages";
 import { AttendeeTimeline } from "@/components/attendees/AttendeeTimeline";
+import { DataRequests } from "@/components/attendees/DataRequests";
 import { ManualBoughtToggle } from "@/components/attendees/ManualBoughtToggle";
 import { SegmentBadge } from "@/components/attendees/SegmentBadge";
 import { WatchDepthBar } from "@/components/attendees/WatchDepthBar";
@@ -283,6 +284,12 @@ export function AttendeeProfile({
             </h2>
             <AttendeeMessages messages={data.messages} />
           </section>
+
+          <DataRequests
+            webinarId={webinarId}
+            registrantId={registrantId}
+            email={attendee.email}
+          />
         </div>
       </div>
     </div>

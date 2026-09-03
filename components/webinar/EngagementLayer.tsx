@@ -41,13 +41,29 @@ export function EngagementLayer({
    * Records that they took it. Fire-and-forget by design: the download or the
    * link opens either way, and a tracking call that could delay it would be a
    * worse product than no tracking at all.
+   *
+   * Handouts go to their own endpoint, which has a table behind it that is
+   * unique on (handout, registrant) — a second click is the same intent, not a
+   * second signal. CTAs have no such table and land in the event log.
    */
   const track = (kind: "handout" | "cta", itemId: string, title: string) => {
     if (!registrantId) return;
-    void fetch(`/api/webinar/${webinarId}/engagement-click`, {
+
+    const [url, body] =
+      kind === "handout"
+        ? [
+            "/api/handouts/download",
+            { handoutId: itemId, registrantId, sessionId: sessionId ?? undefined },
+          ]
+        : [
+            `/api/webinar/${webinarId}/engagement-click`,
+            { registrantId, sessionId, kind, itemId, title },
+          ];
+
+    void fetch(url, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ registrantId, sessionId, kind, itemId, title }),
+      body: JSON.stringify(body),
       keepalive: true,
     }).catch(() => {});
   };

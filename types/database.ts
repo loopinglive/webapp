@@ -323,8 +323,7 @@ export type AttendeeEventType =
   | "bought"
   | "rejoined"
   | "history_cleared"
-  /** Took a scheduled handout. The strongest signal short of a purchase. */
-  | "handout_downloaded"
+  /** Clicked a timed CTA. Handouts live in handout_downloads, not here. */
   | "cta_clicked";
 
 export type AttendeeEventRow = {
@@ -470,10 +469,18 @@ export type AutomationSettingsRow = {
 
 export type UnsubscribeRow = {
   id: string;
-  registrant_id: string;
+  /** Null once the person has been erased; the hash below carries the record. */
+  registrant_id: string | null;
   webinar_id: string;
   channel: MessageChannel;
   unsubscribed_at: string;
+  /**
+   * sha256 of the lowercased address, written on erasure.
+   *
+   * A suppression has to outlive the person, or the next list import mails
+   * someone who asked not to be contacted.
+   */
+  email_hash: string | null;
 };
 
 export type AiPersonaRow = {
@@ -1243,7 +1250,7 @@ export type Database = {
         AutomationSettingsRow,
         Exclude<keyof AutomationSettingsRow, "webinar_id">
       >;
-      unsubscribes: Table<UnsubscribeRow, "id" | "unsubscribed_at">;
+      unsubscribes: Table<UnsubscribeRow, "id" | "unsubscribed_at" | "email_hash">;
       ai_personas: Table<
         AiPersonaRow,
         | "id"
@@ -1265,6 +1272,16 @@ export type Database = {
     };
     Views: Record<string, never>;
     Functions: {
+      /** Everything held about one registrant, as one JSON document. */
+      export_registrant_data: {
+        Args: { p_registrant_id: string };
+        Returns: Json;
+      };
+      /** Erases them. Keeps the sale, unlinked, and the suppression, hashed. */
+      erase_registrant: {
+        Args: { p_registrant_id: string };
+        Returns: Json;
+      };
       /** Where the attended flag and the event log disagree. */
       attendance_mismatches: {
         Args: { p_webinar_id: string };

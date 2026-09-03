@@ -6,15 +6,17 @@ import { createServiceClient } from "@/lib/supabase/server";
 export const dynamic = "force-dynamic";
 
 /**
- * Records that someone took a handout or clicked a CTA.
+ * Records that someone clicked a timed CTA.
  *
- * `timed_handouts` and `timed_ctas` existed with nothing recording who acted
- * on them, so the strongest buying signal short of a purchase — someone
- * downloading the workbook forty minutes in — was going nowhere.
+ * `timed_ctas` existed with nothing recording who acted on it. Handouts are
+ * deliberately *not* handled here: `handout_downloads` and
+ * `/api/handouts/download` already existed for that from migration 0018 — the
+ * UI simply never called them. Recording the same fact in two places is how
+ * two screens come to report different numbers, so the client sends handouts
+ * there and CTAs here.
  *
- * Deliberately fire-and-forget from the client: the download starts either
- * way. A tracking call that could block a download would be a worse product
- * than no tracking.
+ * Deliberately fire-and-forget from the client: the link opens either way. A
+ * tracking call that could block it would be a worse product than no tracking.
  */
 export async function POST(
   request: Request,
@@ -25,14 +27,14 @@ export async function POST(
     (await request.json()) as {
       registrantId?: string;
       sessionId?: string;
-      kind?: "handout" | "cta";
+      kind?: "cta";
       itemId?: string;
       title?: string;
     };
 
-  if (!registrantId || !itemId || (kind !== "handout" && kind !== "cta")) {
+  if (!registrantId || !itemId || kind !== "cta") {
     return NextResponse.json(
-      { error: "registrantId, itemId and a valid kind are required" },
+      { error: "registrantId, itemId and kind 'cta' are required" },
       { status: 400 }
     );
   }
@@ -55,7 +57,7 @@ export async function POST(
   await logEvent(supabase, {
     registrantId,
     sessionId: sessionId ?? null,
-    type: kind === "handout" ? "handout_downloaded" : "cta_clicked",
+    type: "cta_clicked",
     data: { itemId, title: title ?? null },
   });
 
