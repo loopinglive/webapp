@@ -1,3 +1,8 @@
+import {
+  zonedWallClockToInstant,
+  zonedDateString,
+  zonedWeekday,
+} from "@/lib/timezone";
 import type { WebinarSchedule } from "@/types";
 
 export const WEEKDAY_CODES = ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"];
@@ -34,7 +39,11 @@ function daysFor(pattern: string | null): number[] {
 export function nextOccurrence(
   schedule: Pick<
     WebinarSchedule,
-    "scheduled_at" | "is_recurring" | "recurrence_pattern" | "recurrence_time"
+    | "scheduled_at"
+    | "is_recurring"
+    | "recurrence_pattern"
+    | "recurrence_time"
+    | "timezone"
   >,
   from: Date = new Date()
 ): string | null {
@@ -47,20 +56,46 @@ export function nextOccurrence(
   const days = daysFor(schedule.recurrence_pattern);
   if (!days.length) return null;
 
+  const zone = schedule.timezone || "UTC";
+
   // recurrence_time ("20:00:00") wins over the anchor's time of day when set.
-  const [hours, minutes] = (
+  // The fallback is read in the schedule's zone, not the viewer's.
+  const time =
     schedule.recurrence_time ??
-    `${anchor.getUTCHours()}:${anchor.getUTCMinutes()}`
-  )
-    .split(":")
+    new Intl.DateTimeFormat("en-GB", {
+      timeZone: zone,
+      hour12: false,
+      hour: "2-digit",
+      minute: "2-digit",
+    }).format(anchor);
+
+  /*
+   * Walk forward a day at a time, on the calendar in the schedule's own zone.
+   *
+   * Stepping by 86,400,000ms would be wrong: on the day a clock changes, a
+   * fixed 24 hours from 23:00 lands at 00:00 the day *after* next, so the
+   * transition day is skipped entirely. This walks calendar dates instead,
+   * which is what "every day" means, and matches what the SQL does with
+   * `date_trunc('day', …) + make_interval(days => i)`.
+   *
+   * The weekday test has to happen in the zone too: 8pm Tuesday in New York is
+   * Wednesday 01:00 UTC, so testing the UTC weekday would run it a day late.
+   */
+  const [startYear, startMonth, startDay] = zonedDateString(from, zone)
+    .split("-")
     .map(Number);
 
   for (let offset = 0; offset <= 14; offset += 1) {
-    const candidate = new Date(from);
-    candidate.setUTCDate(candidate.getUTCDate() + offset);
-    candidate.setUTCHours(hours ?? 0, minutes ?? 0, 0, 0);
+    // Date arithmetic on the calendar date alone — no zone, so no transition
+    // to fall into. Month rollover is handled by Date itself.
+    const walked = new Date(
+      Date.UTC(startYear ?? 1970, (startMonth ?? 1) - 1, (startDay ?? 1) + offset)
+    );
+    const day = walked.toISOString().slice(0, 10);
 
-    if (!days.includes(candidate.getUTCDay())) continue;
+    const candidate = zonedWallClockToInstant(day, time, zone);
+
+    if (!days.includes(zonedWeekday(candidate, zone))) continue;
     if (candidate.getTime() <= from.getTime()) continue;
 
     return candidate.toISOString();

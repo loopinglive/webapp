@@ -10,6 +10,7 @@ import { TimezoneSelector } from "@/components/admin/schedule/TimezoneSelector";
 import { SectionHeader } from "@/components/admin/webinar/WebinarSetupShell";
 import { LocalTime } from "@/components/webinar/LocalTime";
 import { nextOccurrence, type RecurrenceId } from "@/lib/schedule";
+import { zonedWallClockToInstant } from "@/lib/timezone";
 import type { WebinarSchedule, WebinarSession } from "@/types";
 
 export function ScheduleBuilder({ webinarId }: { webinarId: string }) {
@@ -55,8 +56,16 @@ export function ScheduleBuilder({ webinarId }: { webinarId: string }) {
       : pattern
     : null;
 
-  // The picker gives us a wall-clock time; the server stores UTC.
-  const scheduledAt = date && time ? new Date(`${date}T${time}`).toISOString() : "";
+  /*
+   * The picker gives a wall-clock time; the server stores an instant.
+   *
+   * Converted through the zone the host picked, not the browser's. `new
+   * Date("2026-07-01T20:00")` reads as 20:00 wherever the laptop happens to
+   * be, so a host in London scheduling for New York was booking their own
+   * evening rather than their audience's.
+   */
+  const scheduledAt =
+    date && time ? zonedWallClockToInstant(date, time, timezone).toISOString() : "";
 
   const preview = scheduledAt
     ? nextOccurrence({
@@ -64,6 +73,7 @@ export function ScheduleBuilder({ webinarId }: { webinarId: string }) {
         is_recurring: recurring,
         recurrence_pattern: recurrencePattern,
         recurrence_time: recurring ? `${time}:00` : null,
+        timezone,
       })
     : null;
 
