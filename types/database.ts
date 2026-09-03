@@ -535,6 +535,8 @@ export type UserAccountRow = {
   trial_ends_at: string | null;
   is_admin: boolean;
   is_suspended: boolean;
+  suspended_reason: string | null;
+  suspended_at: string | null;
   admin_note: string | null;
   referral_code: string;
   referred_by: string | null;
@@ -710,9 +712,22 @@ export type ErrorLogRow = {
   created_at: string;
 };
 
+export type AdminActionRow = {
+  id: string;
+  admin_id: string | null;
+  target_user_id: string | null;
+  action: string;
+  detail: Json;
+  created_at: string;
+};
+
 export type Database = {
   public: {
     Tables: {
+      admin_actions: Table<
+        AdminActionRow,
+        "id" | "admin_id" | "target_user_id" | "detail" | "created_at"
+      >;
       integrations: Table<
         IntegrationRow,
         Exclude<keyof IntegrationRow, "provider">
@@ -1050,6 +1065,30 @@ export type Database = {
     };
     Views: Record<string, never>;
     Functions: {
+      /** Cron job health, reaching into the cron schema on the app's behalf. */
+      admin_cron_health: {
+        Args: Record<string, never>;
+        Returns: {
+          jobname: string;
+          schedule: string;
+          active: boolean;
+          last_run: string | null;
+          last_status: string | null;
+          last_duration_ms: number | null;
+          failures_24h: number;
+          runs_24h: number;
+        }[];
+      };
+      /** Paid retention by signup cohort. */
+      admin_cohort_retention: {
+        Args: { p_months?: number };
+        Returns: {
+          cohort: string;
+          cohort_size: number;
+          month_offset: number;
+          retained: number;
+        }[];
+      };
       /** Creates the next session for a webinar if none is pending. */
       ensure_upcoming_session: {
         Args: { p_webinar_id: string };
