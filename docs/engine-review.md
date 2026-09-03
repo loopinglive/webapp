@@ -17,6 +17,36 @@ I went looking for the obvious holes and mostly did not find them — the engine
 Kept honest: this section lists only what has been built *and* checked, with
 how it was checked. Everything else in the tables below is still outstanding.
 
+### The largest single win, found by accident
+
+Load testing was meant to measure concurrency. It found a region mismatch
+instead.
+
+`X-Vercel-Id` read `lhr1::iad1` — requests entered in London and the function
+executed in **Washington DC**, while Supabase runs in **eu-central-1**. Every
+database query on every page crossed the Atlantic twice. One line in
+`vercel.json` pins the functions to `fra1`, beside the database.
+
+Measured on production, before and after, with the same 40-viewer test:
+
+| | before | after |
+|---|---|---|
+| `/api/health` query | 156–344ms | 46–63ms |
+| chat p50 | 276ms | **103ms** |
+| chat p95 | 1191ms | **259ms** |
+| viewer count p95 | 1235ms | **192ms** |
+| session p95 | 1044ms | 603ms |
+
+Chat p95 at forty viewers had been close to the point where one viewer in
+twenty sees the room stall. It is now comfortable, and the gain applies to
+every query on every page rather than to one endpoint.
+
+`scripts/loadtest.mjs` is how this was measured. It polls what a real viewer's
+browser polls, at the intervals it uses, and writes nothing — run it against
+production and it costs reads, not rows.
+
+---
+
 ### Verified against the production database
 
 | Built | How it was verified |
