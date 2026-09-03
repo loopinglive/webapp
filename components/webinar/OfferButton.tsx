@@ -37,6 +37,7 @@ export function OfferButton({
   variant,
 }: Props) {
   const [modalOpen, setModalOpen] = useState(false);
+  const [buying, setBuying] = useState(false);
   const [remaining, setRemaining] = useState(
     offer.countdown_enabled ? offer.countdown_minutes * 60 : null
   );
@@ -63,7 +64,7 @@ export function OfferButton({
       ? offer.external_url
       : `/offer/${offer.webinar_id}`;
 
-  function open() {
+  async function open() {
     if (registrantId) {
       void fetch(`/api/webinar/${webinarId}/offer`, {
         method: "POST",
@@ -71,6 +72,35 @@ export function OfferButton({
         body: JSON.stringify({ registrantId }),
         keepalive: true,
       }).catch(() => {});
+    }
+
+    // A priced offer checks out in place. Sending someone to another site is
+    // where the decision they just made goes to die.
+    if (offer.price_cents > 0 && registrantId) {
+      setBuying(true);
+      try {
+        const response = await fetch(`/api/webinar/${webinarId}/checkout`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ registrantId }),
+        });
+
+        if (response.ok) {
+          const { url } = (await response.json()) as { url?: string };
+          if (url) {
+            // A new tab, not a redirect: the webinar keeps playing behind them
+            // and they come back to their place rather than to the start.
+            window.open(url, "_blank", "noopener,noreferrer");
+            setBuying(false);
+            return;
+          }
+        }
+        // Anything else -- no price, payments unconfigured -- falls through to
+        // the host's own link rather than dead-ending.
+      } catch {
+        /* fall through */
+      }
+      setBuying(false);
     }
 
     if (!href) return;
@@ -96,7 +126,9 @@ export function OfferButton({
           : "h-14 rounded-none px-5 text-[15px]"
       )}
     >
-      <span className="truncate">{offer.button_text}</span>
+      <span className="truncate">
+        {buying ? "Opening checkout…" : offer.button_text}
+      </span>
       {remaining !== null && (
         <span className="shrink-0 rounded-full bg-black/20 px-2 py-0.5 text-[12px] tabular-nums">
           {formatOffset(remaining).replace(/^00:/, "")}

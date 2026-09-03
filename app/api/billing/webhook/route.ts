@@ -138,6 +138,15 @@ export async function POST(request: Request) {
   switch (event.type) {
     case "checkout.session.completed": {
       const session = event.data.object;
+
+      // Two kinds of checkout land here: a host buying a plan, and an attendee
+      // buying a host's offer from inside the webinar. They are told apart by
+      // the metadata rather than by guessing from the amount.
+      if (session.metadata?.kind === "webinar_offer") {
+        await recordOfferPurchase(supabase, session);
+        break;
+      }
+
       const userId = session.metadata?.userId;
       const planSlug = session.metadata?.planSlug as PlanSlug | undefined;
       if (!userId || !planSlug) break;
@@ -362,4 +371,49 @@ export async function POST(request: Request) {
   }
 
   return Response.json({ received: true });
+}
+
+/**
+ * An attendee bought the host's offer from inside the room.
+ *
+ * Writes the purchase ledger row and flips the registrant, which is what the
+ * follow-up engine and the analytics both read. Idempotent on the Stripe
+ * session id: a webhook retry must not double-count revenue.
+ */
+async function recordOfferPurchase(
+  supabase: Client,
+  session: Stripe.Checkout.Session
+) {
+  const registrantId = session.metadata?.registrantId;
+  const webinarId = session.metadata?.webinarId;
+  const offerId = session.metadata?.offerId || null;
+  const sessionId = session.metadata?.sessionId || null;
+
+  if (!registrantId || !webinarId) return;
+
+  const { data: existing } = await supabase
+    .from("purchases")
+    .select("id")
+    .eq("external_reference", session.id)
+    .maybeSingle();
+
+  if (existing) return;
+
+  const now = new Date().toISOString();
+
+  await supabase.from("purchases").insert({
+    webinar_id: webinarId,
+    session_id: sessionId,
+    registrant_id: registrantId,
+    offer_id: offerId,
+    amount_cents: session.amount_total ?? 0,
+    currency: (session.currency ?? "usd").toUpperCase(),
+    source: "stripe",
+    external_reference: session.id,
+  });
+
+  await supabase
+    .from("registrants")
+    .update({ bought: true, bought_at: now, manually_marked_bought: false })
+    .eq("id", registrantId);
 }

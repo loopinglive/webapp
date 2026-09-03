@@ -88,7 +88,7 @@ The engine's job is to sell. This area has the most upside and the least built â
 | **Checkout inside the room** | The offer links out today, which loses people at the exact moment they decided. Stripe Checkout in a modal keeps them in the webinar and closes the loop the platform already tracks. |
 | **Split testing** | Two offer variants, two reveal times, two registration pages. There is no way to learn what works, and this product is bought by people who optimise for a living. |
 | **Order bumps and a one-click upsell** | The single highest-return addition in any checkout, and the audience for this product expects it. |
-| **Per-attendee countdown** | The countdown is global. Someone joining late sees a timer that does not match their experience, which reads as fake in a way the video does not. |
+| ~~Per-attendee countdown~~ | **Correction: already per-attendee.** `OfferButton` starts the countdown from the moment that viewer sees the reveal, not from session start. A second claim I made without opening the component. |
 | **Exit intent** | Catch the close, not the leave. One prompt with the replay or the offer recovers people who were otherwise gone. |
 | **Real social proof on the offer** | "14 people bought in this session" is true, computable from the purchases ledger, and more persuasive than anything invented. |
 | **Handout download tracking** | `timed_handouts` exists and nothing records who took one. A download is a strong buying signal going unused. |
