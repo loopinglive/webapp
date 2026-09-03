@@ -40,7 +40,11 @@ export function VideoPlayer({
 
   // Adaptive stream where possible, progressive MP4 where not. The `src`
   // attribute is deliberately absent below — this hook owns the source.
-  useHlsSource({ videoRef, streamSrc: streamSrc ?? null, fallbackSrc: src });
+  const { health } = useHlsSource({
+    videoRef,
+    streamSrc: streamSrc ?? null,
+    fallbackSrc: src,
+  });
 
   // Captions are off by default but remembered, because someone who needs
   // them needs them on every webinar. Deferred rather than read during render:
@@ -142,11 +146,39 @@ export function VideoPlayer({
         </div>
       )}
 
-      {buffering && !ended && !audioOnly && (
+      {(buffering || health === "recovering") && !ended && !audioOnly && (
         <div className="pointer-events-none absolute inset-0 grid place-items-center bg-black/40">
           <div className="text-center">
             <Loader2 className="mx-auto h-7 w-7 animate-spin text-white/80" />
             <p className="mt-2 text-[12px] text-white/70">Reconnecting…</p>
+          </div>
+        </div>
+      )}
+
+      {/*
+        Every rung of the ladder has failed.
+        
+        Worth saying out loud rather than leaving a spinner turning forever: a
+        spinner claims something is still being tried, and at this point
+        nothing is. Reloading genuinely can help — it re-resolves the source
+        and starts the retry budget over — so it is the one thing offered.
+      */}
+      {health === "failed" && !ended && (
+        <div className="absolute inset-0 z-20 grid place-items-center bg-black/75 px-6 text-center">
+          <div>
+            <p className="text-[14px] font-medium text-white">
+              The stream dropped out.
+            </p>
+            <p className="mx-auto mt-1 max-w-xs text-[12.5px] leading-relaxed text-white/70">
+              This is usually the connection rather than the broadcast. The
+              session is still running.
+            </p>
+            <button
+              onClick={() => window.location.reload()}
+              className="mt-3 rounded-full bg-white px-4 py-2 text-[12.5px] font-semibold text-black hover:bg-white/90"
+            >
+              Reconnect
+            </button>
           </div>
         </div>
       )}
