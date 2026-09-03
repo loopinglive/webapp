@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 
 import { MaintenanceToggle } from "@/components/superadmin/MaintenanceToggle";
+import { TwoFactorPanel } from "@/components/superadmin/TwoFactorPanel";
 import { PlatformHealth } from "@/components/superadmin/PlatformHealth";
 
 export const metadata: Metadata = { title: "Platform health · Super admin" };
@@ -17,7 +18,8 @@ export default function Page() {
           Scheduled jobs, queues, delivery failures and third-party credentials.
         </p>
       </header>
-      <div className="px-6 pt-6 lg:px-8">
+      <div className="space-y-4 px-6 pt-6 lg:px-8">
+        <TwoFactorPanel />
         <MaintenanceToggle />
       </div>
       <PlatformHealth />

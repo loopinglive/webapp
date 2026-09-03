@@ -594,6 +594,13 @@ export type UserAccountRow = {
   is_admin: boolean;
   /** owner | support | finance. Null on rows that predate roles. */
   admin_role: string | null;
+  /** TOTP. Only set on admin accounts; see migration 0030. */
+  totp_secret: string | null;
+  totp_enabled_at: string | null;
+  /** sha256 of each recovery code. Never the codes themselves. */
+  totp_recovery_hashes: string[] | null;
+  /** The last accepted 30-second step, so a code cannot be replayed. */
+  totp_last_step: number | null;
   is_suspended: boolean;
   suspended_reason: string | null;
   suspended_at: string | null;
