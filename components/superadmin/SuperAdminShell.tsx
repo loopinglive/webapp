@@ -6,6 +6,7 @@ import {
   Activity,
   BadgePercent,
   Bug,
+  Flag,
   Gauge,
   Handshake,
   Mail,
@@ -44,6 +45,7 @@ const GROUPS = [
     items: [
       { href: "/superadmin/email", label: "Email", icon: Mail },
       { href: "/superadmin/health", label: "Health", icon: Activity },
+      { href: "/superadmin/reports", label: "Reports", icon: Flag },
       { href: "/superadmin/errors", label: "Errors", icon: Bug },
       { href: "/superadmin/audit", label: "Audit log", icon: ScrollText },
     ],

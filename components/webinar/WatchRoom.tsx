@@ -395,6 +395,9 @@ export function WatchRoom({ webinarId }: { webinarId: string }) {
         </div>
 
         <ChatPanel
+          webinarId={webinarId}
+          sessionId={sessionId}
+          registrantId={registrantId}
           messages={messages}
           onSend={sendMessage}
           senderName={senderName}

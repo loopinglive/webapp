@@ -7,6 +7,7 @@ import { Pin } from "lucide-react";
 import { ChatInput } from "@/components/webinar/ChatInput";
 import { ChatMessage } from "@/components/webinar/ChatMessage";
 import { EmojiReactions } from "@/components/webinar/EmojiReactions";
+import { ReportButton } from "@/components/webinar/ReportButton";
 import { cn } from "@/lib/utils";
 import type { ChatMessage as Message } from "@/types";
 
@@ -17,6 +18,10 @@ type Props = {
   canChat: boolean;
   connected: boolean;
   className?: string;
+  /** Enables the report control. Absent in the admin preview of this panel. */
+  webinarId?: string;
+  sessionId?: string | null;
+  registrantId?: string | null;
   onClose?: () => void;
   /** Host's scheduled pin, showing for its window. */
   pinnedMessage?: string | null;
@@ -29,6 +34,9 @@ export function ChatPanel({
   canChat,
   connected,
   className,
+  webinarId,
+  sessionId,
+  registrantId,
   onClose,
   pinnedMessage,
 }: Props) {
@@ -81,14 +89,24 @@ export function ChatPanel({
           </span>
         </div>
 
-        {onClose && (
+        <div className="flex items-center gap-1">
+          {webinarId && (
+            <ReportButton
+              webinarId={webinarId}
+              sessionId={sessionId ?? null}
+              registrantId={registrantId ?? null}
+            />
+          )}
+
+          {onClose && (
           <button
             onClick={onClose}
             className="rounded-full px-3 py-1 text-[12px] text-[#A0A0B0] transition-colors hover:bg-white/5 hover:text-white"
           >
             Close
           </button>
-        )}
+          )}
+        </div>
       </header>
 
       {pinnedMessage && (

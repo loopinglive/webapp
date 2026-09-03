@@ -474,6 +474,29 @@ export type AutomationSettingsRow = {
  * reading with a weaker key goes through a security-definer function that
  * exposes just that value.
  */
+/**
+ * Someone in a room telling us something is wrong.
+ *
+ * The platform had no way to hear about a problem before this: anyone can
+ * upload a video and put it in front of an audience they bring themselves.
+ */
+export type ContentReportRow = {
+  id: string;
+  webinar_id: string;
+  session_id: string | null;
+  /** Null when reported by someone who never registered. */
+  registrant_id: string | null;
+  reason: string;
+  detail: string | null;
+  /** Truncated sha256 of the reporter's IP. Cleared after 30 days. */
+  reporter_fingerprint: string | null;
+  status: "open" | "actioned" | "dismissed";
+  resolution: string | null;
+  reviewed_by: string | null;
+  reviewed_at: string | null;
+  created_at: string;
+};
+
 export type AppConfigRow = {
   key: string;
   value: string;
@@ -1265,6 +1288,19 @@ export type Database = {
       >;
       unsubscribes: Table<UnsubscribeRow, "id" | "unsubscribed_at" | "email_hash">;
       app_config: Table<AppConfigRow, "updated_at">;
+      content_reports: Table<
+        ContentReportRow,
+        | "id"
+        | "session_id"
+        | "registrant_id"
+        | "detail"
+        | "reporter_fingerprint"
+        | "status"
+        | "resolution"
+        | "reviewed_by"
+        | "reviewed_at"
+        | "created_at"
+      >;
       ai_personas: Table<
         AiPersonaRow,
         | "id"
@@ -1286,6 +1322,24 @@ export type Database = {
     };
     Views: Record<string, never>;
     Functions: {
+      /** Open reports, with the context needed to judge one. */
+      report_queue: {
+        Args: { p_status?: string };
+        Returns: {
+          id: string;
+          webinar_id: string;
+          webinar_title: string | null;
+          owner_id: string | null;
+          owner_email: string | null;
+          owner_plan: string | null;
+          reason: string;
+          detail: string | null;
+          status: string;
+          created_at: string;
+          reports_for_webinar: number;
+          registrants_reached: number;
+        }[];
+      };
       /**
        * Whether the site is deliberately down, and what to say.
        *
