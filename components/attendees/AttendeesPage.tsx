@@ -1,6 +1,7 @@
 "use client";
 
 import { AttendeeFilters } from "@/components/attendees/AttendeeFilters";
+import { DuplicateNotice } from "@/components/attendees/DuplicateNotice";
 import { AttendeeList } from "@/components/attendees/AttendeeList";
 import { AttendeeSegmentTabs } from "@/components/attendees/AttendeeSegmentTabs";
 import { AttendeeStats } from "@/components/attendees/AttendeeStats";
@@ -30,6 +31,8 @@ export function AttendeesPage({ webinarId }: { webinarId: string }) {
       />
 
       <div className="space-y-5 px-6 py-6 lg:px-8">
+        <DuplicateNotice webinarId={webinarId} />
+
         <AttendeeStats
           segments={segments}
           active={list.segment}

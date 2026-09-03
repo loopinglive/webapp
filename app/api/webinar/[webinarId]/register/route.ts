@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 
 import { clientIp, LIMITS, rateLimit } from "@/lib/ratelimit";
+import { canonicalEmail, checkEmail } from "@/lib/email-hygiene";
 
 import { syncContactInBackground } from "@/lib/integrations/sync";
 import { dispatchWebhookInBackground } from "@/lib/webhooks/dispatch";
@@ -62,6 +63,22 @@ export async function POST(
   if (!EMAIL.test(email)) {
     return NextResponse.json({ error: "That email does not look right." }, { status: 400 });
   }
+
+  /*
+   * A throwaway address or a domain that only exists as a typo.
+   *
+   * Refused rather than accepted quietly: both produce a registrant who never
+   * receives the link, and a host whose show-up rate is measured against
+   * people who were never going to show up.
+   */
+  const verdict = checkEmail(email);
+  if (!verdict.ok) {
+    return NextResponse.json({ error: verdict.message }, { status: 400 });
+  }
+
+  // The form two addresses share when they reach the same inbox. Used for
+  // matching only — the confirmation goes to the address they typed.
+  const emailCanonical = canonicalEmail(email);
   if (!body.gdprConsent) {
     return NextResponse.json(
       { error: "Please accept the consent checkbox to continue." },
@@ -114,12 +131,35 @@ export async function POST(
    * follow-up engine treats them as new. A buyer is left exactly as they are —
    * their history is what stops them being sold the same thing twice.
    */
-  const { data: existing } = await supabase
-    .from("registrants")
-    .select("id, bought")
-    .eq("webinar_id", webinarId)
-    .eq("email", email)
-    .maybeSingle();
+  /*
+   * Matched on the canonical address, so `j.smith+webinar@gmail.com` finds the
+   * row created by `jsmith@gmail.com`.
+   *
+   * Ordered and limited rather than `maybeSingle()`: rows predating this
+   * column can already collide on the canonical form, and a duplicate that
+   * turns registration into a 500 would be a worse outcome than picking the
+   * earliest of them.
+   */
+  const findBy = (column: "email" | "email_canonical", value: string) =>
+    supabase
+      .from("registrants")
+      .select("id, bought")
+      .eq("webinar_id", webinarId)
+      .eq(column, value)
+      .order("created_at", { ascending: true })
+      .limit(1);
+
+  // Two typed queries rather than one `.or()` string: that filter is parsed by
+  // PostgREST, and an address is user input that would be interpolated into
+  // its comma-and-paren syntax.
+  const [{ data: byCanonical }, { data: byExact }] = await Promise.all([
+    findBy("email_canonical", emailCanonical),
+    // Rows that predate the canonical column have it backfilled, but only
+    // approximately — this is the exact match those rows still need.
+    findBy("email", email),
+  ]);
+
+  const existing = byCanonical?.[0] ?? byExact?.[0] ?? null;
 
   let registrantId: string;
 
@@ -132,6 +172,7 @@ export async function POST(
       .from("registrants")
       .update({
         session_id: sessionId,
+        email_canonical: emailCanonical,
         full_name: fullName,
         phone: normalisedPhone,
         country_code: country.code,
@@ -163,6 +204,7 @@ export async function POST(
         session_id: sessionId,
         full_name: fullName,
         email,
+        email_canonical: emailCanonical,
         phone: normalisedPhone,
         country_code: country.code,
         country_flag: countryFlag,

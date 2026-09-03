@@ -242,6 +242,11 @@ export type RegistrantRow = {
   returning_attendee: boolean;
   /** A registrant created by a host previewing their own webinar. */
   is_test: boolean;
+  /**
+   * The form this address shares with any other that reaches the same inbox.
+   * For matching only — `email` is what they typed and what we write to.
+   */
+  email_canonical: string | null;
   history_cleared_at: string | null;
   notes: string | null;
   tags: Json;
@@ -1093,6 +1098,7 @@ export type Database = {
         | "manually_marked_bought"
         | "returning_attendee"
         | "is_test"
+        | "email_canonical"
         | "history_cleared_at"
         | "notes"
         | "tags"
@@ -1256,6 +1262,11 @@ export type Database = {
     };
     Views: Record<string, never>;
     Functions: {
+      /** Registrants of one webinar that resolve to the same inbox. */
+      duplicate_registrants: {
+        Args: { p_webinar_id: string };
+        Returns: { email_canonical: string; copies: number; ids: string[] }[];
+      };
       /** Clears away test runs older than a day. Returns rows removed. */
       purge_test_sessions: {
         Args: Record<string, never>;
