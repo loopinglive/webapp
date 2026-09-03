@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { BarChart3, Plus } from "lucide-react";
+import { BarChart3, Mail, Plus } from "lucide-react";
 
 import { SITE } from "@/lib/constants";
 
@@ -33,6 +33,14 @@ export function DashboardHeader({
         </div>
 
         <div className="flex items-center gap-3">
+          <Link
+            href="/admin/emails"
+            className="inline-flex h-11 items-center gap-2 rounded-full border border-[#2A2A3A] px-4 text-[14px] text-[#A0A0B0] transition-colors duration-200 hover:border-[#3A3A4A] hover:text-white"
+          >
+            <Mail className="h-4 w-4" />
+            Email
+          </Link>
+
           <Link
             href="/admin/analytics"
             className="inline-flex h-11 items-center gap-2 rounded-full border border-[#2A2A3A] px-4 text-[14px] text-[#A0A0B0] transition-colors duration-200 hover:border-[#3A3A4A] hover:text-white"
