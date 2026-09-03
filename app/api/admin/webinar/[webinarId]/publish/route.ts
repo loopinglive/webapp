@@ -1,6 +1,8 @@
 import { NextResponse } from "next/server";
 
 import { requireAdmin } from "@/lib/admin-auth";
+import { getUserAccount } from "@/lib/billing/account";
+import { planPermissions } from "@/lib/billing/plans";
 import { getWebinarSetup, isPublishable, missingSteps } from "@/lib/admin-setup";
 import { createServiceClient } from "@/lib/supabase/server";
 
@@ -19,6 +21,23 @@ export async function POST(
   const setup = await getWebinarSetup(webinarId);
   if (!setup) {
     return NextResponse.json({ error: "Webinar not found" }, { status: 404 });
+  }
+
+  // Plan gate. The upgrade wall in the UI is a courtesy; this is what
+  // actually stops a free account going live. Unpublishing is always allowed —
+  // nobody should be trapped live because their plan lapsed.
+  if (publish) {
+    const permissions = planPermissions(await getUserAccount());
+    if (!permissions.canPublish) {
+      return NextResponse.json(
+        {
+          error: "Publishing requires a paid plan.",
+          upgradeRequired: true,
+          planSlug: permissions.planSlug,
+        },
+        { status: 402 }
+      );
+    }
   }
 
   // The disabled button is a courtesy; this is the actual gate.

@@ -1,14 +1,59 @@
-import { Sidebar } from "@/components/dashboard/sidebar";
+import { redirect } from "next/navigation";
+import { cookies } from "next/headers";
 
-export default function DashboardLayout({
+import { AnnouncementBanner } from "@/components/dashboard/AnnouncementBanner";
+import { ImpersonationBanner } from "@/components/dashboard/ImpersonationBanner";
+import { Sidebar } from "@/components/dashboard/sidebar";
+import { PlanProvider } from "@/hooks/usePlan";
+import { getUserAccount } from "@/lib/billing/account";
+import { createServiceClient } from "@/lib/supabase/server";
+
+export const dynamic = "force-dynamic";
+
+export default async function DashboardLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const account = await getUserAccount();
+  if (!account) redirect("/login");
+
+  // A suspended account is signed out of the product entirely rather than
+  // shown a broken dashboard.
+  if (account.is_suspended) redirect("/login?suspended=1");
+
+  // Impersonation is a cookie read by admins only; anyone else forging it gets
+  // nothing, because the name is only resolved when is_admin is true.
+  let impersonating: string | null = null;
+  if (account.is_admin) {
+    const raw = (await cookies()).get("loopinglive_impersonating")?.value;
+    if (raw) {
+      try {
+        const { userId } = JSON.parse(raw) as { userId?: string };
+        if (userId) {
+          const { data } = await createServiceClient()
+            .from("user_accounts")
+            .select("full_name, email")
+            .eq("id", userId)
+            .maybeSingle();
+          impersonating = data?.full_name || data?.email || "another user";
+        }
+      } catch {
+        /* a malformed cookie simply shows no banner */
+      }
+    }
+  }
+
   return (
-    <div className="flex min-h-screen bg-void">
-      <Sidebar />
-      <div className="min-w-0 flex-1">{children}</div>
-    </div>
+    <PlanProvider>
+      <div className="flex min-h-screen bg-void">
+        <Sidebar />
+        <div className="min-w-0 flex-1">
+          {impersonating && <ImpersonationBanner name={impersonating} />}
+          <AnnouncementBanner />
+          {children}
+        </div>
+      </div>
+    </PlanProvider>
   );
 }

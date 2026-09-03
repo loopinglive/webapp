@@ -18,6 +18,14 @@ export const metadata: Metadata = {
     template: `%s · ${SITE.name}`,
   },
   description: SITE.description,
+  keywords: [
+    "webinar platform",
+    "automated webinar",
+    "evergreen webinar",
+    "fake live webinar",
+    "webinar software",
+    "webinar funnel",
+  ],
   openGraph: {
     title: `${SITE.name} — ${SITE.tagline}`,
     description: SITE.description,

@@ -1,14 +1,14 @@
 import { Suspense } from "react";
 import type { Metadata } from "next";
 
-import { AuthForm } from "@/components/auth/auth-form";
+import { SignupForm } from "@/components/auth/SignupForm";
 
-export const metadata: Metadata = { title: "Create account" };
+export const metadata: Metadata = { title: "Create your account" };
 
 export default function SignupPage() {
   return (
     <Suspense>
-      <AuthForm mode="signup" />
+      <SignupForm />
     </Suspense>
   );
 }

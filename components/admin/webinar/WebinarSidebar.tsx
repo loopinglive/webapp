@@ -20,6 +20,7 @@ import {
   Zap,
 } from "lucide-react";
 
+import { UpgradeWall } from "@/components/billing/UpgradeWall";
 import { REQUIRED_STEPS } from "@/lib/setup-steps";
 import { cn } from "@/lib/utils";
 import type { SetupChecklist } from "@/types";
@@ -46,6 +47,7 @@ export function WebinarSidebar({
   const router = useRouter();
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [wallOpen, setWallOpen] = useState(false);
 
   const base = `/admin/webinar/${webinarId}`;
 
@@ -86,7 +88,16 @@ export function WebinarSidebar({
       const payload = (await response.json()) as {
         error?: string;
         missing?: string[];
+        upgradeRequired?: boolean;
       };
+
+      // A plan refusal is not an error to apologise for -- it is the moment to
+      // show what upgrading unlocks.
+      if (payload.upgradeRequired) {
+        setWallOpen(true);
+        return;
+      }
+
       setError(payload.missing?.join(", ") ?? payload.error ?? "Could not publish.");
       return;
     }
@@ -190,6 +201,8 @@ export function WebinarSidebar({
           </p>
         )}
       </div>
+
+      <UpgradeWall open={wallOpen} onClose={() => setWallOpen(false)} />
     </aside>
   );
 }

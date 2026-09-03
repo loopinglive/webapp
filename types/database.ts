@@ -501,9 +501,215 @@ export type PersonaModeRow = {
   updated_at: string;
 };
 
+// ─────────────────────────── Phase 7 ───────────────────────────
+
+export type PlanRow = {
+  id: string;
+  name: string;
+  slug: string;
+  price_monthly: number | null;
+  price_display: string;
+  billing_period: string;
+  stripe_price_id: string | null;
+  features: Json;
+  sort_order: number;
+  is_active: boolean;
+  created_at: string;
+};
+
+export type UserAccountRow = {
+  id: string;
+  full_name: string;
+  email: string;
+  phone: string | null;
+  country_code: string | null;
+  timezone: string | null;
+  plan_slug: string;
+  stripe_customer_id: string | null;
+  stripe_subscription_id: string | null;
+  stripe_price_id: string | null;
+  subscription_status: string | null;
+  plan_started_at: string | null;
+  /** Null for lifetime, which never expires. */
+  plan_expires_at: string | null;
+  trial_ends_at: string | null;
+  is_admin: boolean;
+  is_suspended: boolean;
+  admin_note: string | null;
+  referral_code: string;
+  referred_by: string | null;
+  last_login_at: string | null;
+  created_at: string;
+  updated_at: string;
+};
+
+export type InvoiceRow = {
+  id: string;
+  user_id: string | null;
+  stripe_invoice_id: string | null;
+  stripe_payment_intent_id: string | null;
+  amount: number;
+  currency: string;
+  status: string;
+  plan_slug: string;
+  billing_period: string;
+  invoice_url: string | null;
+  invoice_pdf_url: string | null;
+  paid_at: string | null;
+  created_at: string;
+};
+
+export type CouponRow = {
+  id: string;
+  code: string;
+  stripe_coupon_id: string | null;
+  discount_type: string;
+  discount_value: number;
+  applies_to: Json;
+  max_uses: number | null;
+  uses_count: number;
+  expires_at: string | null;
+  is_active: boolean;
+  created_by: string | null;
+  created_at: string;
+};
+
+export type AffiliateRow = {
+  id: string;
+  user_id: string;
+  referral_code: string;
+  commission_rate: number;
+  total_referrals: number;
+  total_earnings: number;
+  pending_earnings: number;
+  paid_earnings: number;
+  is_active: boolean;
+  payout_method: string | null;
+  payout_details: Json;
+  created_at: string;
+};
+
+export type AffiliateReferralRow = {
+  id: string;
+  affiliate_id: string;
+  referred_user_id: string | null;
+  invoice_id: string | null;
+  commission_amount: number | null;
+  status: string;
+  confirms_at: string | null;
+  paid_at: string | null;
+  created_at: string;
+};
+
+export type FeatureFlagRow = {
+  id: string;
+  user_id: string;
+  flag_name: string;
+  is_enabled: boolean;
+  created_at: string;
+};
+
+export type PlatformAnnouncementRow = {
+  id: string;
+  title: string;
+  body: string;
+  type: string;
+  is_active: boolean;
+  starts_at: string;
+  ends_at: string | null;
+  created_by: string | null;
+  created_at: string;
+};
+
+export type ImpersonationLogRow = {
+  id: string;
+  admin_id: string | null;
+  impersonated_user_id: string | null;
+  started_at: string;
+  ended_at: string | null;
+  reason: string | null;
+};
+
 export type Database = {
   public: {
     Tables: {
+      plans: Table<
+        PlanRow,
+        | "id"
+        | "price_monthly"
+        | "stripe_price_id"
+        | "features"
+        | "sort_order"
+        | "is_active"
+        | "created_at"
+      >;
+      user_accounts: Table<
+        UserAccountRow,
+        Exclude<keyof UserAccountRow, "id" | "email">
+      >;
+      invoices: Table<
+        InvoiceRow,
+        | "id"
+        | "user_id"
+        | "stripe_invoice_id"
+        | "stripe_payment_intent_id"
+        | "currency"
+        | "invoice_url"
+        | "invoice_pdf_url"
+        | "paid_at"
+        | "created_at"
+      >;
+      coupons: Table<
+        CouponRow,
+        | "id"
+        | "stripe_coupon_id"
+        | "applies_to"
+        | "max_uses"
+        | "uses_count"
+        | "expires_at"
+        | "is_active"
+        | "created_by"
+        | "created_at"
+      >;
+      affiliates: Table<
+        AffiliateRow,
+        | "id"
+        | "commission_rate"
+        | "total_referrals"
+        | "total_earnings"
+        | "pending_earnings"
+        | "paid_earnings"
+        | "is_active"
+        | "payout_method"
+        | "payout_details"
+        | "created_at"
+      >;
+      affiliate_referrals: Table<
+        AffiliateReferralRow,
+        | "id"
+        | "referred_user_id"
+        | "invoice_id"
+        | "commission_amount"
+        | "status"
+        | "confirms_at"
+        | "paid_at"
+        | "created_at"
+      >;
+      feature_flags: Table<FeatureFlagRow, "id" | "is_enabled" | "created_at">;
+      platform_announcements: Table<
+        PlatformAnnouncementRow,
+        | "id"
+        | "type"
+        | "is_active"
+        | "starts_at"
+        | "ends_at"
+        | "created_by"
+        | "created_at"
+      >;
+      impersonation_logs: Table<
+        ImpersonationLogRow,
+        "id" | "admin_id" | "impersonated_user_id" | "started_at" | "ended_at" | "reason"
+      >;
       webinars: Table<
         WebinarRow,
         | "id"
