@@ -1,5 +1,10 @@
 import { NextResponse } from "next/server";
 
+import { clientIp, LIMITS, rateLimit } from "@/lib/ratelimit";
+
+import { syncContactInBackground } from "@/lib/integrations/sync";
+import { dispatchWebhookInBackground } from "@/lib/webhooks/dispatch";
+
 import { clearAttendeeHistory, logEvent, syncSegment } from "@/lib/attendee-tracking";
 import { createServiceClient } from "@/lib/supabase/server";
 import { countryByCode, flagFor } from "@/lib/countries";
@@ -34,6 +39,15 @@ export async function POST(
   request: Request,
   { params }: { params: Promise<{ webinarId: string }> }
 ) {
+  // Registration is the most spammable endpoint on the platform.
+  const limit = rateLimit(`register:${clientIp(request)}`, LIMITS.register);
+  if (!limit.ok) {
+    return NextResponse.json(
+      { error: `Too many attempts. Try again in ${limit.retryAfter} seconds.` },
+      { status: 429, headers: { "Retry-After": String(limit.retryAfter) } }
+    );
+  }
+
   const { webinarId } = await params;
   const body = (await request.json()) as Payload;
 
@@ -59,7 +73,7 @@ export async function POST(
 
   const { data: webinar } = await supabase
     .from("webinars")
-    .select("id, video_duration_seconds")
+    .select("id, title, owner_id, video_duration_seconds")
     .eq("id", webinarId)
     .eq("is_active", true)
     .maybeSingle();
@@ -191,6 +205,29 @@ export async function POST(
   }
 
   await syncSegment(supabase, registrantId);
+
+  // Outbound webhooks and marketing sync, both in the background: a host's
+  // Zapier endpoint or an expired Mailchimp key must never make a registrant
+  // wait, or fail a registration that has already been written.
+  dispatchWebhookInBackground(webinar.owner_id, "registrant.created", {
+    registrantId,
+    name: fullName,
+    email,
+    phone: normalisedPhone,
+    country: country.code,
+    webinarId,
+    webinarTitle: webinar.title,
+    sessionId,
+    registeredAt: new Date().toISOString(),
+    source: body.source ?? {},
+  });
+
+  syncContactInBackground(
+    webinar.owner_id,
+    "registrant.created",
+    { email, full_name: fullName, phone: normalisedPhone },
+    webinar.title
+  );
 
   // Confirmation now, reminders at their moments. A re-registration replaces
   // whatever was queued: clearAttendeeHistory cancelled the old session's

@@ -630,9 +630,127 @@ export type ImpersonationLogRow = {
   reason: string | null;
 };
 
+// ─────────────────────────── Phase 8 ───────────────────────────
+
+export type IntegrationRow = {
+  id: string;
+  user_id: string | null;
+  provider: string;
+  status: string;
+  access_token: string | null;
+  refresh_token: string | null;
+  token_expires_at: string | null;
+  api_key: string | null;
+  account_name: string | null;
+  account_id: string | null;
+  settings: Json;
+  last_error: string | null;
+  connected_at: string;
+  last_synced_at: string | null;
+};
+
+export type WebhookEndpointRow = {
+  id: string;
+  user_id: string | null;
+  webinar_id: string | null;
+  url: string;
+  description: string | null;
+  secret: string;
+  events: Json;
+  is_active: boolean;
+  created_at: string;
+};
+
+export type WebhookLogRow = {
+  id: string;
+  webhook_endpoint_id: string;
+  event_type: string;
+  payload: Json;
+  response_status: number | null;
+  response_body: string | null;
+  error_message: string | null;
+  attempt_count: number;
+  status: string;
+  next_retry_at: string | null;
+  sent_at: string | null;
+  created_at: string;
+};
+
+export type ApiKeyRow = {
+  id: string;
+  user_id: string | null;
+  name: string;
+  key_hash: string;
+  key_prefix: string;
+  last_used_at: string | null;
+  expires_at: string | null;
+  is_active: boolean;
+  created_at: string;
+};
+
+export type OnboardingProgressRow = {
+  id: string;
+  user_id: string;
+  steps_completed: Json;
+  current_step: string;
+  completed_at: string | null;
+  dismissed_at: string | null;
+  created_at: string;
+};
+
+export type ErrorLogRow = {
+  id: string;
+  user_id: string | null;
+  error_type: string;
+  error_message: string;
+  stack_trace: string | null;
+  page_url: string | null;
+  user_agent: string | null;
+  metadata: Json;
+  created_at: string;
+};
+
 export type Database = {
   public: {
     Tables: {
+      integrations: Table<
+        IntegrationRow,
+        Exclude<keyof IntegrationRow, "provider">
+      >;
+      webhook_endpoints: Table<
+        WebhookEndpointRow,
+        Exclude<keyof WebhookEndpointRow, "url">
+      >;
+      webhook_logs: Table<
+        WebhookLogRow,
+        | "id"
+        | "response_status"
+        | "response_body"
+        | "error_message"
+        | "attempt_count"
+        | "status"
+        | "next_retry_at"
+        | "sent_at"
+        | "created_at"
+      >;
+      api_keys: Table<
+        ApiKeyRow,
+        "id" | "user_id" | "last_used_at" | "expires_at" | "is_active" | "created_at"
+      >;
+      onboarding_progress: Table<
+        OnboardingProgressRow,
+        Exclude<keyof OnboardingProgressRow, "user_id">
+      >;
+      error_logs: Table<
+        ErrorLogRow,
+        | "id"
+        | "user_id"
+        | "stack_trace"
+        | "page_url"
+        | "user_agent"
+        | "metadata"
+        | "created_at"
+      >;
       plans: Table<
         PlanRow,
         | "id"

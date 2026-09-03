@@ -4,6 +4,7 @@ import { cookies } from "next/headers";
 import { AnnouncementBanner } from "@/components/dashboard/AnnouncementBanner";
 import { ImpersonationBanner } from "@/components/dashboard/ImpersonationBanner";
 import { Sidebar } from "@/components/dashboard/sidebar";
+import { ErrorBoundary } from "@/components/ui/ErrorBoundary";
 import { PlanProvider } from "@/hooks/usePlan";
 import { getUserAccount } from "@/lib/billing/account";
 import { createServiceClient } from "@/lib/supabase/server";
@@ -51,7 +52,9 @@ export default async function DashboardLayout({
         <div className="min-w-0 flex-1">
           {impersonating && <ImpersonationBanner name={impersonating} />}
           <AnnouncementBanner />
-          {children}
+          {/* Per-region containment: a page that throws costs the reader that
+              page, not the sidebar and the banners with it. */}
+          <ErrorBoundary area="dashboard">{children}</ErrorBoundary>
         </div>
       </div>
     </PlanProvider>

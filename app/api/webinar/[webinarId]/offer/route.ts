@@ -1,5 +1,8 @@
 import { NextResponse } from "next/server";
 
+import { syncContactInBackground } from "@/lib/integrations/sync";
+import { dispatchWebhookInBackground } from "@/lib/webhooks/dispatch";
+
 import { logEvent, syncSegment } from "@/lib/attendee-tracking";
 import { createServiceClient } from "@/lib/supabase/server";
 
@@ -46,7 +49,7 @@ export async function POST(
 
   const { data: before } = await supabase
     .from("registrants")
-    .select("clicked_offer, session_id")
+    .select("clicked_offer, session_id, full_name, email, phone")
     .eq("id", registrantId)
     .eq("webinar_id", webinarId)
     .maybeSingle();
@@ -68,12 +71,46 @@ export async function POST(
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 
+  // Fires on the first click only, so a host's Zapier does not receive one
+  // event per time someone reopens the modal.
   if (!before?.clicked_offer) {
     await logEvent(supabase, {
       registrantId,
       sessionId: before?.session_id ?? null,
       type: "clicked_offer",
     });
+
+    const { data: webinar } = await supabase
+      .from("webinars")
+      .select("owner_id, title")
+      .eq("id", webinarId)
+      .maybeSingle();
+
+    const { data: offer } = await supabase
+      .from("webinar_offers")
+      .select("offer_title")
+      .eq("webinar_id", webinarId)
+      .eq("is_active", true)
+      .maybeSingle();
+
+    dispatchWebhookInBackground(webinar?.owner_id ?? null, "registrant.clicked_offer", {
+      registrantId,
+      name: before?.full_name ?? "",
+      email: before?.email ?? "",
+      offerTitle: offer?.offer_title ?? null,
+      clickedAt: new Date().toISOString(),
+    });
+
+    syncContactInBackground(
+      webinar?.owner_id ?? null,
+      "registrant.clicked_offer",
+      {
+        email: before?.email ?? "",
+        full_name: before?.full_name ?? null,
+        phone: before?.phone ?? null,
+      },
+      webinar?.title ?? ""
+    );
   }
 
   await syncSegment(supabase, registrantId);

@@ -25,7 +25,8 @@
     "server-only": "^0.0.1",
     "stripe": "^22.6.1",
     "tailwind-merge": "^3.6.0",
-    "twilio": "^6.1.0"
+    "twilio": "^6.1.0",
+    "zod": "^4.5.4"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",

@@ -1,5 +1,8 @@
 import { NextResponse } from "next/server";
 
+import { syncContactInBackground } from "@/lib/integrations/sync";
+import { dispatchWebhookInBackground } from "@/lib/webhooks/dispatch";
+
 import { requireAdmin } from "@/lib/admin-auth";
 import { logEvent, syncSegment } from "@/lib/attendee-tracking";
 import { handlePurchase } from "@/lib/messaging/scheduler";
@@ -46,11 +49,40 @@ export async function POST(
   // Buyers leave every sequence and get a receipt instead.
   const { data: row } = await supabase
     .from("registrants")
-    .select("webinar_id, session_id")
+    .select("webinar_id, session_id, full_name, email, phone")
     .eq("id", registrantId)
     .maybeSingle();
 
   if (row) {
+    const { data: webinar } = await supabase
+      .from("webinars")
+      .select("owner_id, title")
+      .eq("id", row.webinar_id)
+      .maybeSingle();
+
+    const { data: activeOffer } = await supabase
+      .from("webinar_offers")
+      .select("offer_title")
+      .eq("webinar_id", row.webinar_id)
+      .eq("is_active", true)
+      .maybeSingle();
+
+    dispatchWebhookInBackground(webinar?.owner_id ?? null, "registrant.bought", {
+      registrantId,
+      name: row.full_name,
+      email: row.email,
+      offerTitle: activeOffer?.offer_title ?? null,
+      boughtAt: now,
+      isManual: true,
+    });
+
+    syncContactInBackground(
+      webinar?.owner_id ?? null,
+      "registrant.bought",
+      { email: row.email, full_name: row.full_name, phone: row.phone },
+      webinar?.title ?? ""
+    );
+
     // Revenue lives in the ledger, not on the boolean. Falls back to the
     // offer's configured price when the admin did not name an amount.
     const { data: offer } = await supabase

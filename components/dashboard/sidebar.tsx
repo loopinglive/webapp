@@ -5,6 +5,8 @@ import { usePathname } from "next/navigation";
 import {
   BarChart3,
   CreditCard,
+  Handshake,
+  KeyRound,
   LayoutDashboard,
   Plug,
   Settings,
@@ -13,6 +15,7 @@ import {
   Workflow,
 } from "lucide-react";
 
+import { OnboardingChecklist } from "@/components/onboarding/OnboardingChecklist";
 import { SITE } from "@/lib/constants";
 import { cn } from "@/lib/utils";
 
@@ -22,8 +25,10 @@ const NAV = [
   { href: "/attendees", label: "Attendees", icon: Users },
   { href: "/analytics", label: "Analytics", icon: BarChart3 },
   { href: "/automations", label: "Automations", icon: Workflow },
-  { href: "/integrations", label: "Integrations", icon: Plug },
-  { href: "/billing", label: "Billing", icon: CreditCard },
+  { href: "/settings/integrations", label: "Integrations", icon: Plug },
+  { href: "/settings/billing", label: "Billing", icon: CreditCard },
+  { href: "/settings/affiliate", label: "Affiliate", icon: Handshake },
+  { href: "/settings/api-keys", label: "API keys", icon: KeyRound },
   { href: "/settings", label: "Settings", icon: Settings },
 ];
 
@@ -66,6 +71,8 @@ export function Sidebar() {
           );
         })}
       </nav>
+
+      <OnboardingChecklist />
     </aside>
   );
 }

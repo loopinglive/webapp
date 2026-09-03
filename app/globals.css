@@ -193,6 +193,29 @@ body {
   border-color: color-mix(in oklab, #ffffff 8%, transparent);
 }
 
+
+/* Skeleton shimmer: a band travelling across the placeholder. Distinct from
+   the background-position `shimmer` above, which animates a gradient in place. */
+@keyframes skeleton-sweep {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+@keyframes toast-in {
+  from {
+    opacity: 0;
+    transform: translateX(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,

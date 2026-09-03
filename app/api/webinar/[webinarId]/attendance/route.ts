@@ -1,5 +1,8 @@
 import { NextResponse } from "next/server";
 
+import { syncContactInBackground } from "@/lib/integrations/sync";
+import { dispatchWebhookInBackground } from "@/lib/webhooks/dispatch";
+
 import {
   logEvent,
   logWatchMilestones,
@@ -85,7 +88,7 @@ export async function POST(
 
   const { data: before } = await supabase
     .from("registrants")
-    .select("attended, watch_percentage, session_id, total_sessions_attended")
+    .select("attended, watch_percentage, session_id, total_sessions_attended, full_name, email, phone")
     .eq("id", registrantId)
     .maybeSingle();
 
@@ -132,10 +135,71 @@ export async function POST(
 
   const sessionId = before?.session_id ?? null;
 
+  // Resolved once and reused: both the join event and the 90% crossing need
+  // the owner, and neither should cost an extra query on every progress tick.
+  const needsOwner =
+    (action === "join" && !before?.attended) ||
+    (typeof watchPercentage === "number" &&
+      watchPercentage >= 90 &&
+      Number(before?.watch_percentage ?? 0) < 90);
+
+  const { data: webinar } = needsOwner
+    ? await supabase
+        .from("webinars")
+        .select("owner_id, title")
+        .eq("id", webinarId)
+        .maybeSingle()
+    : { data: null };
+
   if (action === "join" && !before?.attended) {
     await logEvent(supabase, { registrantId, sessionId, type: "joined_session" });
     // They are here — stop telling them to come.
     await cancelJoinReminders(supabase, { registrantId, sessionId });
+
+    dispatchWebhookInBackground(webinar?.owner_id ?? null, "registrant.attended", {
+      registrantId,
+      name: before?.full_name ?? "",
+      email: before?.email ?? "",
+      sessionId,
+      joinedAt: now,
+    });
+
+    syncContactInBackground(
+      webinar?.owner_id ?? null,
+      "registrant.attended",
+      {
+        email: before?.email ?? "",
+        full_name: before?.full_name ?? null,
+        phone: before?.phone ?? null,
+      },
+      webinar?.title ?? ""
+    );
+  }
+
+  // Fires once, on the crossing -- not on every tick above 90%.
+  if (
+    typeof watchPercentage === "number" &&
+    watchPercentage >= 90 &&
+    Number(before?.watch_percentage ?? 0) < 90
+  ) {
+    dispatchWebhookInBackground(webinar?.owner_id ?? null, "registrant.completed", {
+      registrantId,
+      name: before?.full_name ?? "",
+      email: before?.email ?? "",
+      watchPercentage,
+      sessionId,
+    });
+
+    syncContactInBackground(
+      webinar?.owner_id ?? null,
+      "registrant.completed",
+      {
+        email: before?.email ?? "",
+        full_name: before?.full_name ?? null,
+        phone: before?.phone ?? null,
+      },
+      webinar?.title ?? ""
+    );
   }
   if (action === "leave") {
     await logEvent(supabase, { registrantId, sessionId, type: "left_session" });

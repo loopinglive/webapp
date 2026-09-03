@@ -1,5 +1,7 @@
 import { NextResponse } from "next/server";
 
+import { clientIp, LIMITS, rateLimit } from "@/lib/ratelimit";
+
 import { billingConfigured, stripe } from "@/lib/billing/stripe";
 import { renderPlatformEmail } from "@/lib/email/platform-templates";
 import { sendEmail } from "@/lib/messaging/providers";
@@ -10,6 +12,14 @@ export const dynamic = "force-dynamic";
 export const maxDuration = 30;
 
 export async function POST(request: Request) {
+  const limit = rateLimit(`signup:${clientIp(request)}`, LIMITS.signup);
+  if (!limit.ok) {
+    return NextResponse.json(
+      { error: `Too many sign-up attempts. Try again in ${limit.retryAfter} seconds.` },
+      { status: 429, headers: { "Retry-After": String(limit.retryAfter) } }
+    );
+  }
+
   const body = (await request.json()) as {
     fullName?: string;
     email?: string;
