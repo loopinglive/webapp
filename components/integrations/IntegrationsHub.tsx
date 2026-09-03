@@ -4,7 +4,6 @@ import { useCallback, useEffect, useState } from "react";
 import Link from "next/link";
 import { CheckCircle2, Loader2, Plug, Zap } from "lucide-react";
 
-import { EmptyState } from "@/components/ui/EmptyState";
 import { HelpTooltip } from "@/components/ui/HelpTooltip";
 import { Skeleton } from "@/components/ui/Skeleton";
 import { useToast } from "@/components/ui/ToastProvider";
@@ -31,7 +30,18 @@ type Provider = {
   optionKey?: string;
 };
 
-const PROVIDERS: Provider[] = [
+/**
+ * Which contact-sync providers are offered.
+ *
+ * Empty on purpose: Zapier covers every one of these and thousands more
+ * through a single webhook, and each direct integration is a stored
+ * credential plus a third-party API that breaks on someone else's schedule.
+ * The implementations below stay in the codebase and are tested — add an id
+ * to this set to reveal a card the day someone actually asks for it.
+ */
+const ENABLED: ReadonlySet<string> = new Set<string>();
+
+const ALL_PROVIDERS: Provider[] = [
   {
     id: "mailchimp",
     name: "Mailchimp",
@@ -70,6 +80,8 @@ const PROVIDERS: Provider[] = [
     fields: [{ key: "apiKey", label: "API key", placeholder: "Your location API key" }],
   },
 ];
+
+const PROVIDERS = ALL_PROVIDERS.filter((provider) => ENABLED.has(provider.id));
 
 export function IntegrationsHub() {
   const toast = useToast();
@@ -225,12 +237,12 @@ export function IntegrationsHub() {
         </div>
       </div>
 
-      {integrations.length === 0 && (
-        <EmptyState
-          icon="🔌"
-          title="Nothing connected yet"
-          description="Connect your favourite tools and every registrant, attendee and buyer flows into them automatically."
-        />
+      {PROVIDERS.length === 0 && (
+        <p className="text-[12.5px] leading-relaxed text-[#6E6E80]">
+          More direct integrations are coming. In the meantime a single Zapier
+          webhook reaches Mailchimp, ConvertKit, ActiveCampaign, GoHighLevel and
+          several thousand other apps.
+        </p>
       )}
     </div>
   );
