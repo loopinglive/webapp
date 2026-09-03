@@ -175,8 +175,14 @@ export function useRealtimeChat({ webinarId, sessionId, registrantId }: Options)
 
       // Show it immediately rather than waiting for the round trip back through
       // Realtime; merge() drops the duplicate when it arrives.
-      const { message } = (await response.json()) as { message: ChatMessage };
-      merge([message]);
+      //
+      // The server returns a null message when it recognised this as the same
+      // message sent twice — the first one is already on screen, so there is
+      // nothing to add and nothing to report.
+      const { message } = (await response.json()) as {
+        message: ChatMessage | null;
+      };
+      if (message) merge([message]);
       return true;
     },
     [webinarId, sessionId, registrantId, merge]
