@@ -1,0 +1,535 @@
+<title>Loopinglive Admin Roadmap</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,800&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+
+<style>
+  :root{
+    --ground:#07070B; --surface:#101018; --surface2:#15151F; --hairline:#23232F;
+    --accent:#6C47FF; --accent2:#00D4FF;
+    --ink:#F5F5F9; --body:#A9A9BA; --muted:#6E6E80;
+    --p0:#FF5A5A; --p1:#FFB020; --p2:#3FB9C9; --good:#00C851;
+    --display:'Bricolage Grotesque',system-ui,sans-serif;
+    --sans:'IBM Plex Sans',system-ui,sans-serif;
+    --mono:'IBM Plex Mono',ui-monospace,monospace;
+  }
+  *{box-sizing:border-box}
+  body{background:var(--ground);color:var(--body);font-family:var(--sans);font-size:15px;line-height:1.65;margin:0;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:960px;margin:0 auto;padding:56px 24px 110px}
+
+  .eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--accent);margin:0 0 18px}
+  h1{font-family:var(--display);font-weight:800;font-size:clamp(34px,5.5vw,54px);line-height:1.04;letter-spacing:-.03em;color:var(--ink);margin:0 0 20px;text-wrap:balance}
+  .standfirst{font-size:18px;line-height:1.6;max-width:66ch;margin:0 0 40px}
+  .standfirst strong{color:var(--ink);font-weight:600}
+
+  .stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:2px;background:var(--hairline);border:1px solid var(--hairline);border-radius:16px;overflow:hidden;margin:0 0 20px}
+  .stats>div{background:var(--surface);padding:24px 22px}
+  .stats .n{font-family:var(--display);font-size:42px;font-weight:800;letter-spacing:-.03em;line-height:1;color:var(--ink);font-variant-numeric:tabular-nums}
+  .stats .n.bad{color:var(--p0)}
+  .stats .n.new{color:var(--accent2)}
+  .stats .lab{font-family:var(--mono);font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-top:10px}
+  .stats .sub{font-size:12.5px;margin-top:8px;color:var(--body)}
+
+  .callout{border-left:3px solid var(--p0);background:linear-gradient(90deg,rgba(255,90,90,.10),transparent 70%);padding:20px 24px;border-radius:0 12px 12px 0;margin:0 0 20px;font-size:15.5px;color:var(--ink)}
+  .callout code{font-family:var(--mono);font-size:.85em;color:var(--accent2)}
+
+  .have{border:1px solid var(--hairline);border-radius:14px;background:var(--surface);padding:20px 22px;margin:0 0 52px}
+  .have h3{font-family:var(--display);font-size:16px;font-weight:600;color:var(--ink);margin:0 0 10px}
+  .have ul{margin:0;padding-left:18px;font-size:14px}
+  .have li{margin:4px 0}
+
+  h2{font-family:var(--display);font-weight:600;font-size:27px;letter-spacing:-.02em;color:var(--ink);margin:60px 0 4px}
+  .sectionnote{font-size:14.5px;color:var(--muted);margin:0 0 22px;max-width:64ch}
+
+  .group{border:1px solid var(--hairline);border-radius:14px;background:var(--surface);margin:0 0 14px;overflow:hidden}
+  .ghead{display:flex;align-items:center;gap:12px;flex-wrap:wrap;padding:15px 20px;background:var(--surface2);border-bottom:1px solid var(--hairline)}
+  .gtitle{font-weight:600;color:var(--ink);font-size:15px;flex:1;min-width:170px}
+  .count{font-family:var(--mono);font-size:11px;color:var(--muted);white-space:nowrap;font-variant-numeric:tabular-nums}
+  .pill{font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;padding:4px 9px;border-radius:100px;font-weight:500;white-space:nowrap;border:1px solid currentColor}
+  .pill.p0{color:var(--p0)} .pill.p1{color:var(--p1)} .pill.p2{color:var(--p2)} .pill.free{color:var(--good)}
+
+  ul.items{list-style:none;margin:0;padding:6px 0}
+  ul.items li{display:grid;grid-template-columns:auto 1fr;gap:12px;padding:9px 20px;align-items:baseline}
+  ul.items li + li{border-top:1px solid rgba(35,35,47,.55)}
+  .dot{width:5px;height:5px;border-radius:50%;background:var(--accent);margin-top:8px}
+  .dot.ready{background:var(--good)}
+  .nm{color:var(--ink);font-weight:500}
+  .why{color:var(--muted);font-size:13.5px;display:block;margin-top:2px}
+  .tag{font-family:var(--mono);font-size:10px;color:var(--good);border:1px solid var(--good);border-radius:4px;padding:1px 5px;margin-left:7px;vertical-align:1px}
+
+  ol.order{list-style:none;counter-reset:step;margin:0;padding:0}
+  ol.order li{counter-increment:step;display:grid;grid-template-columns:44px 1fr;gap:18px;padding:20px 0;border-bottom:1px solid var(--hairline)}
+  ol.order li::before{content:counter(step);font-family:var(--mono);font-size:13px;color:var(--accent);border:1px solid var(--hairline);border-radius:9px;width:38px;height:38px;display:grid;place-items:center;font-variant-numeric:tabular-nums}
+  .ot{font-family:var(--display);font-size:19px;font-weight:600;color:var(--ink);letter-spacing:-.01em}
+  .ow{margin:6px 0 0;font-size:14.5px}
+
+  code{font-family:var(--mono);font-size:.88em;background:var(--surface2);border:1px solid var(--hairline);padding:1px 6px;border-radius:5px;color:var(--accent2)}
+  footer{margin-top:70px;padding-top:24px;border-top:1px solid var(--hairline);font-size:13px;color:var(--muted)}
+  @media(max-width:620px){.wrap{padding:38px 18px 70px}ol.order li{grid-template-columns:1fr;gap:10px}}
+</style>
+
+<div class="wrap">
+
+  <p class="eyebrow">Loopinglive · Super admin</p>
+  <h1>The panel you'd want at 1,000 customers</h1>
+
+  <p class="standfirst">
+    The super admin panel has five pages and answers roughly one question:
+    <em>how much money are we making?</em> It cannot yet answer the question an
+    admin actually asks most days — <strong>&ldquo;this specific customer says
+    something is broken, what happened?&rdquo;</strong> Below is everything I
+    would add, ranked by what it costs versus what it saves.
+  </p>
+
+  <div class="stats">
+    <div>
+      <div class="n">5</div>
+      <div class="lab">Pages today</div>
+      <div class="sub">Overview, users, revenue, coupons, announcements.</div>
+    </div>
+    <div>
+      <div class="n bad">5</div>
+      <div class="lab">Tables with no UI</div>
+      <div class="sub">Data model built, nothing renders it.</div>
+    </div>
+    <div>
+      <div class="n new">64</div>
+      <div class="lab">Additions identified</div>
+      <div class="sub">Across seven areas, 14 of them nearly free.</div>
+    </div>
+  </div>
+
+  <div class="callout">
+    <strong>Five tables ship with zero admin UI:</strong>
+    <code>error_logs</code>, <code>feature_flags</code>,
+    <code>affiliates</code>, <code>affiliate_referrals</code>, and the
+    <code>admin_note</code> column. The schema, the writes and the RLS all exist —
+    nothing reads them back. <strong>Nobody can currently pay an affiliate</strong>,
+    because the payout queue has no screen.
+  </div>
+
+  <div class="have">
+    <h3>What the panel does today</h3>
+    <ul>
+      <li>MRR, ARR, total revenue, ARPU, churn, free→paid conversion</li>
+      <li>Revenue and signups by month, plan distribution</li>
+      <li>User list with plan grants, suspension and impersonation</li>
+      <li>Coupon creation, synced to Stripe</li>
+      <li>Platform announcements</li>
+    </ul>
+  </div>
+
+  <!-- ============ SUPPORT ============ -->
+  <h2>Customer support</h2>
+  <p class="sectionnote">
+    The largest gap by a distance. When someone emails &ldquo;my reminders never
+    went out&rdquo;, there is currently no screen that answers it — you would go to
+    the database. Every hour spent doing that is an hour not spent building.
+  </p>
+
+  <div class="group">
+    <div class="ghead">
+      <span class="gtitle">Answering &ldquo;what happened to this customer?&rdquo;</span>
+      <span class="pill p0">Highest value</span>
+      <span class="count">12 additions</span>
+    </div>
+    <ul class="items">
+      <li><span class="dot"></span><span>
+        <span class="nm">Global search</span>
+        <span class="why">One box that resolves an email, name, webinar title, session id, invoice id or registrant address to the right record. The single highest-leverage control on the page.</span>
+      </span></li>
+      <li><span class="dot"></span><span>
+        <span class="nm">A real user detail page</span>
+        <span class="why">Today a user is a table row and a dropdown. It should be a page: profile, plan history, invoices, webinars, sessions, integrations, API keys, affiliate status.</span>
+      </span></li>
+      <li><span class="dot"></span><span>
+        <span class="nm">Per-user activity timeline</span>
+        <span class="why">Signed up, published, went live, first registrant, paid, payment failed. Most support questions are answered by reading this in order.</span>
+      </span></li>
+      <li><span class="dot ready"></span><span>
+        <span class="nm">Message delivery log per user<span class="tag">data exists</span></span>
+        <span class="why">Every email, SMS and WhatsApp with its status and the provider's own error string. This is the screen that answers the reminder question directly.</span>
+      </span></li>
+      <li><span class="dot"></span><span>
+        <span class="nm">Resend a message · retry a webhook</span>
+        <span class="why">Seeing the failure is half of it. Fixing it without a database session is the other half.</span>
+      </span></li>
+      <li><span class="dot"></span><span>
+        <span class="nm">Issue a refund</span>
+        <span class="why">The 30-day guarantee is a promise in the Terms with no button behind it. Currently it means opening Stripe.</span>
+      </span></li>
+      <li><span class="dot"></span><span>
+        <span class="nm">Extend a trial · apply account credit</span>
+        <span class="why">The two concessions support makes constantly, and the two that most reliably save a cancellation.</span>
+      </span></li>
+      <li><span class="dot"></span><span>
+        <span class="nm">Change a customer's email address</span>
+        <span class="why">People mistype it at signup and then cannot receive the confirmation. There is no recovery path today.</span>
+      </span></li>
+      <li><span class="dot"></span><span>
+        <span class="nm">Trigger a password reset</span>
+        <span class="why">Sends the branded reset rather than telling someone to find the form themselves.</span>
+      </span></li>
+      <li><span class="dot ready"></span><span>
+        <span class="nm">Admin notes on an account<span class="tag">column exists</span></span>
+        <span class="why"><code>admin_note</code> is in the schema and nothing writes or reads it. Context that survives between conversations.</span>
+      </span></li>
+      <li><span class="dot"></span><span>
+        <span class="nm">GDPR export and erasure</span>
+        <span class="why">Both are promised in the Privacy Policy and neither exists. The first subject access request will be handled by hand.</span>
+      </span></li>
+      <li><span class="dot ready"></span><span>
+        <span class="nm">Per-user feature flags<span class="tag">table exists</span></span>
+        <span class="why"><code>feature_flags</code> is built and unreachable. Turn a beta on for one customer without a deploy.</span>
+      </span></li>
+    </ul>
+  </div>
+
+  <!-- ============ OPERATIONS ============ -->
+  <h2>Platform health</h2>
+  <p class="sectionnote">
+    Nothing in the product currently tells you when it is broken. Two failures
+    this week — a cron reading a config key nobody had written, and a bounced
+    address silently suppressed — both looked exactly like health from the outside.
+  </p>
+
+  <div class="group">
+    <div class="ghead">
+      <span class="gtitle">Knowing it is working</span>
+      <span class="pill p0">Blind spot</span>
+      <span class="count">10 additions</span>
+    </div>
+    <ul class="items">
+      <li><span class="dot"></span><span>
+        <span class="nm">Cron monitor</span>
+        <span class="why">All seven pg_cron jobs with last run, duration and outcome. A job that silently stops today is invisible until a customer notices.</span>
+      </span></li>
+      <li><span class="dot ready"></span><span>
+        <span class="nm">Error log viewer<span class="tag">table exists</span></span>
+        <span class="why"><code>error_logs</code> receives every caught render failure and nothing displays it. Group by message, show first and last seen, count.</span>
+      </span></li>
+      <li><span class="dot"></span><span>
+        <span class="nm">Message queue depth</span>
+        <span class="why">Pending and overdue scheduled messages. A backlog is the earliest signal that dispatch has stalled.</span>
+      </span></li>
+      <li><span class="dot ready"></span><span>
+        <span class="nm">Webhook delivery health<span class="tag">data exists</span></span>
+        <span class="why">Failure rate, and which endpoints are failing repeatedly. Hosts rarely notice their own broken endpoint.</span>
+      </span></li>
+      <li><span class="dot"></span><span>
+        <span class="nm">Email deliverability</span>
+        <span class="why">Bounce rate, complaint rate, and the suppression list. Exactly what bit us: a suppressed address returns a normal message id and is never delivered.</span>
+      </span></li>
+      <li><span class="dot"></span><span>
+        <span class="nm">Provider status</span>
+        <span class="why">Are Resend, Twilio, Cloudinary, Stripe and Anthropic reachable, and are their keys still valid? A placeholder key should be visible here, not discovered in production.</span>
+      </span></li>
+      <li><span class="dot"></span><span>
+        <span class="nm">AI spend</span>
+        <span class="why">Anthropic tokens and cost per host and per webinar. This is real money that scales with usage and is currently unmeasured.</span>
+      </span></li>
+      <li><span class="dot"></span><span>
+        <span class="nm">Storage and bandwidth by host</span>
+        <span class="why">Cloudinary is the other cost that scales. One host uploading 4K video changes the unit economics.</span>
+      </span></li>
+      <li><span class="dot"></span><span>
+        <span class="nm">Rate limit hits</span>
+        <span class="why">Who is hitting 429s — a legitimate customer being throttled, or someone probing.</span>
+      </span></li>
+      <li><span class="dot"></span><span>
+        <span class="nm">Database growth</span>
+        <span class="why">Table sizes and growth rate, so the first capacity problem is a plan rather than an incident.</span>
+      </span></li>
+    </ul>
+  </div>
+
+  <!-- ============ BI ============ -->
+  <h2>Business intelligence</h2>
+  <p class="sectionnote">
+    What is there is accurate but shallow. MRR tells you the level; none of it
+    tells you the direction or the reason.
+  </p>
+
+  <div class="group">
+    <div class="ghead">
+      <span class="gtitle">Beyond a single MRR figure</span>
+      <span class="pill p1">High</span>
+      <span class="count">11 additions</span>
+    </div>
+    <ul class="items">
+      <li><span class="dot"></span><span>
+        <span class="nm">MRR waterfall</span>
+        <span class="why">New, expansion, contraction, churned, reactivated. &ldquo;MRR rose 8%&rdquo; means nothing without knowing which of those moved.</span>
+      </span></li>
+      <li><span class="dot"></span><span>
+        <span class="nm">Cohort retention</span>
+        <span class="why">Of everyone who joined in a given month, how many are still paying at month 3, 6, 12. The one chart that predicts whether the business works.</span>
+      </span></li>
+      <li><span class="dot"></span><span>
+        <span class="nm">Activation funnel</span>
+        <span class="why">Signed up → published → first registrant → first sale. Where the drop is tells you what to fix, and it is a leading indicator of everything downstream.</span>
+      </span></li>
+      <li><span class="dot"></span><span>
+        <span class="nm">Time to value</span>
+        <span class="why">Median days from signup to first published webinar, and to first sale. Shortening this moves retention more than any feature.</span>
+      </span></li>
+      <li><span class="dot"></span><span>
+        <span class="nm">Trial conversion</span>
+        <span class="why">Started, activated, converted — with the drop-off between them.</span>
+      </span></li>
+      <li><span class="dot"></span><span>
+        <span class="nm">Net revenue retention · quick ratio</span>
+        <span class="why">The two numbers an investor asks for first, and neither is currently derivable.</span>
+      </span></li>
+      <li><span class="dot"></span><span>
+        <span class="nm">LTV, and LTV against acquisition cost</span>
+        <span class="why">Decides whether paid acquisition is viable at all.</span>
+      </span></li>
+      <li><span class="dot"></span><span>
+        <span class="nm">Dunning recovery rate</span>
+        <span class="why">What share of failed payments the sequence actually rescues. Involuntary churn is the cheapest churn to prevent, and unmeasured today.</span>
+      </span></li>
+      <li><span class="dot"></span><span>
+        <span class="nm">Refund rate</span>
+        <span class="why">A 30-day guarantee is a liability worth watching, per plan and per cohort.</span>
+      </span></li>
+      <li><span class="dot"></span><span>
+        <span class="nm">Feature adoption</span>
+        <span class="why">Share of hosts using AI personas, SMS, WhatsApp, integrations. Tells you what to invest in and what to retire.</span>
+      </span></li>
+      <li><span class="dot"></span><span>
+        <span class="nm">Date range control and CSV export</span>
+        <span class="why">Revenue is hard-coded to twelve months and nothing exports. Every table here should export.</span>
+      </span></li>
+    </ul>
+  </div>
+
+  <!-- ============ TRUST ============ -->
+  <h2>Trust and safety</h2>
+  <p class="sectionnote">
+    Worth taking seriously precisely because of what this product does. It
+    presents recorded video as live and simulates a crowd — legitimate as a
+    format, and also attractive to people selling things they should not.
+    Your own Terms already prohibit this; nothing enforces it.
+  </p>
+
+  <div class="group">
+    <div class="ghead">
+      <span class="gtitle">Governing what runs on the platform</span>
+      <span class="pill p1">Before scale</span>
+      <span class="count">8 additions</span>
+    </div>
+    <ul class="items">
+      <li><span class="dot"></span><span>
+        <span class="nm">New-host review queue</span>
+        <span class="why">A look at the first webinar before it can publish. Cheap while volume is low, and it sets the tone for who joins.</span>
+      </span></li>
+      <li><span class="dot"></span><span>
+        <span class="nm">Risky-claim flagging</span>
+        <span class="why">Surface webinars whose copy mentions guaranteed income, medical outcomes or crypto returns. Flag for a human, do not auto-block.</span>
+      </span></li>
+      <li><span class="dot"></span><span>
+        <span class="nm">Attendee reporting</span>
+        <span class="why">There is currently no way for an attendee to tell you anything is wrong.</span>
+      </span></li>
+      <li><span class="dot"></span><span>
+        <span class="nm">Suspension reasons and audit trail</span>
+        <span class="why">Suspension is a boolean with no recorded reason. Fine with one admin; indefensible with three.</span>
+      </span></li>
+      <li><span class="dot"></span><span>
+        <span class="nm">Fraud signals</span>
+        <span class="why">Disposable email domains, high refund rate, chargebacks, many accounts from one address.</span>
+      </span></li>
+      <li><span class="dot"></span><span>
+        <span class="nm">Per-host sending limits</span>
+        <span class="why">Every host currently sends on your domain's reputation. One bad list degrades deliverability for everyone.</span>
+      </span></li>
+      <li><span class="dot"></span><span>
+        <span class="nm">Bounce visibility for hosts</span>
+        <span class="why">A host whose registrants are bouncing thinks their reminders are working. They are not, and only you can see it.</span>
+      </span></li>
+      <li><span class="dot"></span><span>
+        <span class="nm">Watchlist</span>
+        <span class="why">Accounts to keep an eye on without acting yet.</span>
+      </span></li>
+    </ul>
+  </div>
+
+  <!-- ============ GROWTH ============ -->
+  <h2>Growth and lifecycle</h2>
+
+  <div class="group">
+    <div class="ghead">
+      <span class="gtitle">Acting on what the data shows</span>
+      <span class="pill p2">Medium</span>
+      <span class="count">7 additions</span>
+    </div>
+    <ul class="items">
+      <li><span class="dot ready"></span><span>
+        <span class="nm">Affiliate management and payout queue<span class="tag">tables exist</span></span>
+        <span class="why">Approve affiliates, see confirmed balances above the $50 threshold, mark payouts paid. <strong>Nobody can be paid today</strong> — the tables are written to and never read.</span>
+      </span></li>
+      <li><span class="dot"></span><span>
+        <span class="nm">Saved segments</span>
+        <span class="why">&ldquo;Free accounts with a published webinar who have not upgraded&rdquo; is the best upsell list the business has, and there is no way to produce it.</span>
+      </span></li>
+      <li><span class="dot"></span><span>
+        <span class="nm">Broadcast to a segment</span>
+        <span class="why">Email a segment from the panel, using the platform templates that already exist.</span>
+      </span></li>
+      <li><span class="dot"></span><span>
+        <span class="nm">Targeted announcements</span>
+        <span class="why">Announcements are all-or-nothing. Most are relevant to one plan or one cohort.</span>
+      </span></li>
+      <li><span class="dot"></span><span>
+        <span class="nm">Onboarding funnel</span>
+        <span class="why">Which of the six setup steps people abandon. The checklist already computes completion per user; nothing aggregates it.</span>
+      </span></li>
+      <li><span class="dot"></span><span>
+        <span class="nm">Feedback and NPS viewer</span>
+        <span class="why">Needed the moment the feedback email starts sending.</span>
+      </span></li>
+      <li><span class="dot"></span><span>
+        <span class="nm">Churn reasons</span>
+        <span class="why">Ask at cancellation and aggregate the answers. Otherwise churn is a number with no story.</span>
+      </span></li>
+    </ul>
+  </div>
+
+  <!-- ============ GOVERNANCE ============ -->
+  <h2>Admin governance</h2>
+  <p class="sectionnote">
+    Fine with exactly one admin. Each of these becomes necessary the day there
+    are two.
+  </p>
+
+  <div class="group">
+    <div class="ghead">
+      <span class="gtitle">Controlling the controllers</span>
+      <span class="pill p2">At two admins</span>
+      <span class="count">7 additions</span>
+    </div>
+    <ul class="items">
+      <li><span class="dot"></span><span>
+        <span class="nm">A proper admin audit log</span>
+        <span class="why">Plan grants are currently recorded in <code>impersonation_logs</code> with a reason string. That was expedient, and it is the wrong table.</span>
+      </span></li>
+      <li><span class="dot ready"></span><span>
+        <span class="nm">Impersonation log viewer<span class="tag">table exists</span></span>
+        <span class="why">Every session is recorded with who, whom, why and for how long. Nothing displays it, which defeats most of the point of recording it.</span>
+      </span></li>
+      <li><span class="dot"></span><span>
+        <span class="nm">Admin roles</span>
+        <span class="why">Support, finance and engineering need different powers. Today <code>is_admin</code> grants all of them.</span>
+      </span></li>
+      <li><span class="dot"></span><span>
+        <span class="nm">Enforced two-factor for admins</span>
+        <span class="why">One compromised admin password currently reaches every customer record on the platform.</span>
+      </span></li>
+      <li><span class="dot"></span><span>
+        <span class="nm">Force sign-out a user</span>
+        <span class="why">Suspension stops the next sign-in. It does not end a session already open.</span>
+      </span></li>
+      <li><span class="dot"></span><span>
+        <span class="nm">Maintenance mode</span>
+        <span class="why">A banner and a pause on session starts, for the migration you cannot do live.</span>
+      </span></li>
+      <li><span class="dot"></span><span>
+        <span class="nm">IP allowlist on /superadmin</span>
+        <span class="why">Optional, and cheap insurance on the highest-value surface in the product.</span>
+      </span></li>
+    </ul>
+  </div>
+
+  <!-- ============ UX ============ -->
+  <h2>The panel itself</h2>
+
+  <div class="group">
+    <div class="ghead">
+      <span class="gtitle">Usability, including one real bug</span>
+      <span class="pill p1">Includes a bug</span>
+      <span class="count">9 additions</span>
+    </div>
+    <ul class="items">
+      <li><span class="dot"></span><span>
+        <span class="nm">Pagination on the user list</span>
+        <span class="why"><strong>A bug, not a feature.</strong> The query is capped at 200 rows with no paging — customer 201 is invisible, and nothing says so.</span>
+      </span></li>
+      <li><span class="dot"></span><span>
+        <span class="nm">Sortable columns</span>
+        <span class="why">Newest, most webinars, highest revenue, last active.</span>
+      </span></li>
+      <li><span class="dot"></span><span>
+        <span class="nm">Bulk actions</span>
+        <span class="why">Grant, suspend or message a selection rather than one row at a time.</span>
+      </span></li>
+      <li><span class="dot"></span><span>
+        <span class="nm">Command palette</span>
+        <span class="why">Jump to a customer or a page without navigating. The fastest way to make a support tool feel fast.</span>
+      </span></li>
+      <li><span class="dot"></span><span>
+        <span class="nm">Export any table</span>
+        <span class="why">The export machinery already exists from Phase 4 and 6, with the formula-injection guard.</span>
+      </span></li>
+      <li><span class="dot"></span><span>
+        <span class="nm">Saved filters</span>
+        <span class="why">The three or four views you use daily, one click away.</span>
+      </span></li>
+      <li><span class="dot"></span><span>
+        <span class="nm">Skeletons and empty states</span>
+        <span class="why">Built in Phase 9 and not yet applied here. The panel still shows bare spinners.</span>
+      </span></li>
+      <li><span class="dot"></span><span>
+        <span class="nm">Mobile layout</span>
+        <span class="why">The tables scroll horizontally on a phone. You will read this panel on a phone.</span>
+      </span></li>
+      <li><span class="dot"></span><span>
+        <span class="nm">Deltas on every metric</span>
+        <span class="why">A number without a comparison is not information. The stat tile already supports a delta.</span>
+      </span></li>
+    </ul>
+  </div>
+
+  <!-- ============ ORDER ============ -->
+  <h2>What I'd build first</h2>
+  <p class="sectionnote">
+    Ordered by value per day of work. The first two are mostly wiring — the data
+    is already being written.
+  </p>
+
+  <ol class="order">
+    <li><div>
+      <div class="ot">The five orphaned tables</div>
+      <p class="ow">Error viewer, feature flags, affiliate payouts, impersonation log, admin notes. The schema, writes and RLS are done — each needs a screen. <strong>Affiliate payouts is the urgent one:</strong> commission is accruing against people you have no way to pay.</p>
+    </div></li>
+    <li><div>
+      <div class="ot">Global search and a user detail page</div>
+      <p class="ow">Turns the panel from a dashboard into a support tool. Every support question starts by finding one customer, and right now that path ends at a table row.</p>
+    </div></li>
+    <li><div>
+      <div class="ot">Pagination, sorting and CSV export</div>
+      <p class="ow">Fixes the 200-row bug before it hides a real customer, and reuses export code that already exists.</p>
+    </div></li>
+    <li><div>
+      <div class="ot">Platform health</div>
+      <p class="ow">Cron monitor, queue depth, webhook failures, deliverability. Two silent failures this week each looked exactly like health; this is the screen that would have shown both.</p>
+    </div></li>
+    <li><div>
+      <div class="ot">Activation funnel and cohort retention</div>
+      <p class="ow">The two charts that tell you whether the business works, rather than only what it billed. Both are derivable from data already stored.</p>
+    </div></li>
+    <li><div>
+      <div class="ot">Refunds, trial extensions and credits</div>
+      <p class="ow">With Phase 7 billing live, these are the concessions support makes constantly. Ships alongside the first real Stripe keys.</p>
+    </div></li>
+  </ol>
+
+  <footer>
+    Counts verified against the codebase: five pages under <code>app/superadmin</code>;
+    <code>error_logs</code>, <code>feature_flags</code>, <code>affiliates</code>,
+    <code>affiliate_referrals</code> and <code>admin_note</code> have no references
+    in any superadmin page, component or API route; the user query is capped at
+    <code>.limit(200)</code> with no pagination.
+  </footer>
+
+</div>
