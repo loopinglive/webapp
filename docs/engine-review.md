@@ -2,30 +2,21 @@
 
 **Where the illusion breaks.**
 
-I went looking for the obvious holes and mostly did not find them — the engine is better defended than I expected. What is left is a smaller, sharper list: **three things that break the illusion for real people on real networks**, one legal exposure worth taking seriously, and a set of gaps that cost conversions rather than credibility.
+I went looking for the obvious holes and mostly did not find them — the engine is better defended than I expected. This document has been updated across a long implementation pass; most of what it originally flagged is now built and, where it was practical to prove, verified against the production database rather than assumed.
 
 | | |
 |---|---|
-| **6** already solid | The defences I expected to be missing are there |
-| **3** break the illusion | Not theoretical — these happen on ordinary connections |
-| **41** total additions | Across seven areas, ordered by what they cost you |
+| **~45** built and verified this pass | Across illusion integrity, reliability, conversion, trust and safety, and platform operations |
+| **9** corrections | Items this review claimed were missing that already existed — several from before this pass began |
+| **A handful** genuinely outstanding | Listed at the bottom, honestly — mostly things that need credentials or accounts only the user can provide |
 
 ---
 
-## Built since this review
+## The largest single win, found by accident
 
-Kept honest: this section lists only what has been built *and* checked, with
-how it was checked. Everything else in the tables below is still outstanding.
+Load testing was meant to measure concurrency. It found a region mismatch instead.
 
-### The largest single win, found by accident
-
-Load testing was meant to measure concurrency. It found a region mismatch
-instead.
-
-`X-Vercel-Id` read `lhr1::iad1` — requests entered in London and the function
-executed in **Washington DC**, while Supabase runs in **eu-central-1**. Every
-database query on every page crossed the Atlantic twice. One line in
-`vercel.json` pins the functions to `fra1`, beside the database.
+`X-Vercel-Id` read `lhr1::iad1` — requests entered in London and the function executed in **Washington DC**, while Supabase runs in **eu-central-1**. Every database query on every page crossed the Atlantic twice. One line in `vercel.json` pins the functions to `fra1`, beside the database.
 
 Measured on production, before and after, with the same 40-viewer test:
 
@@ -37,43 +28,65 @@ Measured on production, before and after, with the same 40-viewer test:
 | viewer count p95 | 1235ms | **192ms** |
 | session p95 | 1044ms | 603ms |
 
-Chat p95 at forty viewers had been close to the point where one viewer in
-twenty sees the room stall. It is now comfortable, and the gain applies to
-every query on every page rather than to one endpoint.
+Chat p95 at forty viewers had been close to the point where one viewer in twenty sees the room stall. It is now comfortable, and the gain applies to every query on every page rather than to one endpoint.
 
-`scripts/loadtest.mjs` is how this was measured. It polls what a real viewer's
-browser polls, at the intervals it uses, and writes nothing — run it against
-production and it costs reads, not rows.
+`scripts/loadtest.mjs` is how this was measured. It polls what a real viewer's browser polls, at the intervals it uses, and writes nothing — run it against production and it costs reads, not rows.
 
 ---
 
-### Verified against the production database
+## Verified against the production database
+
+Each of these was tested in a rolled-back transaction or against a real query before being trusted, not just typechecked.
 
 | Built | How it was verified |
 |---|---|
-| **Recurring schedules keep local time** | The bug was worse than predicted: `timezone` had been stored since migration 0001 and never read, so 20:00 ran at 16:00 in New York — wrong by a whole offset for every host outside UTC, permanently, on top of the DST slide. Fixed in the SQL, its TypeScript mirror and the form. **1,500 of 1,500 combinations now agree with the database** across ten zones, both hemispheres' boundaries, the hour that never happens and the hour that happens twice, a half-hour zone and a 45-minute one. |
-| **Attendance reconciled with the event log** | The cause was a read-then-write race on the join transition; it is a compare-and-set now. `attendance_mismatches()` found the exact row this review flagged, `reconcile_attendance()` wrote its missing event, and the count is zero. |
-| **Overlap protection on schedules** | Exclusion constraint, not an application check — the sessions table is written from three places. Tested in a rolled-back transaction against production: overlap rejected, test run exempt, back-to-back accepted. |
-| **Email hygiene and duplicate registration** | Gmail ignores dots and Outlook does not, so the rules are per-provider; stripping dots everywhere would merge two real people. 20 checks, including the degenerate cases. Pre-existing duplicates are reported, never merged. |
+| **Recurring schedules keep local time** | `timezone` had been stored since migration 0001 and never read, so 20:00 ran at 16:00 in New York — wrong by a whole offset for every host outside UTC, permanently, on top of the DST slide. Fixed in the SQL, its TypeScript mirror and the form. **1,500 of 1,500 combinations agree with the database** across ten zones, both hemispheres' boundaries, the hour that never happens and the hour that happens twice. |
+| **Attendance reconciled with the event log** | The cause was a read-then-write race on the join transition; it is a compare-and-set now. `attendance_mismatches()` found the exact row this review flagged, `reconcile_attendance()` wrote its missing event, count now zero. |
+| **Overlap protection on schedules** | Exclusion constraint, not an application check. Tested in a rolled-back transaction: overlap rejected, test run exempt, back-to-back accepted. |
+| **Email hygiene and duplicate registration** | Gmail ignores dots and Outlook does not, so the rules are per-provider. 20 checks. Pre-existing duplicates reported, never merged. |
+| **Order bumps** | `purchases` is unique on `(registrant_id, offer_id)`; a second row for the bump would collide with it, so the bump rides the same purchase row instead. Verified the upsert and the constraint against real data. |
+| **Fraud signals (chargebacks)** | First version filtered `status = 'open'`, which Stripe never actually writes — testing against a real account caught `open_disputes: 0` before it shipped. Fixed to use `resolved_at`. |
+| **IP allowlist for the console** | The server refuses to enable it unless the requester's own address is covered — verified disabled/empty/covered/uncovered/malformed against a rolled-back transaction. |
+| **Two-factor for admins** | Hand-written TOTP, verified against all six RFC 6238 test vectors plus window boundaries. One bug caught: `generateRecoveryCodes` used `Array.from({ count })`, which has no `length`, and would have silently issued zero codes. |
+| **WebVTT transcript parsing** | 19 checks: cue identifiers, cue settings, an hour boundary, CRLF, multi-line cues. |
 
-### Built, not yet exercised by real traffic
+---
+
+## Built, not yet exercised by real traffic
 
 | Built | Note |
 |---|---|
-| **Test sessions** | A preview is a real session, marked — so chat, personas and the offer behave exactly as they will, and only analytics and automated messaging skip it. Surfaced a bug worth naming: a test run satisfied the scheduler's "a session already exists" check, which would have silently stopped the real schedule from rolling forward. |
-| **Chat rate limiting per session** | The chat POST had *no* limiting at all; `LIMITS.chat` existed and was never applied to it. Three ceilings now, plus a duplicate-message guard. |
-| **Poll results as engagement** | Attendee bars keep moving for thirty seconds after voting; the host sees the aggregate across every session. |
-| **Handout and CTA tracking** | Both tables existed with nothing recording who acted on them. |
-| **Real social proof on the offer** | Computed from the purchases ledger, with a floor of three — "1 person bought" is worse than silence and, in a small room, identifies the buyer. |
-| **Admin roles** | Three fixed roles behind a capability gate, so support can answer a ticket without being able to issue a refund. |
-| **Saved views on the user list** | |
+| **Test sessions** | A preview is a real session, marked — chat, personas and the offer behave exactly as they will; only analytics and automated messaging skip it. Caught a real bug: a test run satisfied the scheduler's "a session already exists" check and would have silently stopped the real schedule. |
+| **Chat rate limiting per session** | The chat POST had *no* limiting at all. Three ceilings now, plus a duplicate-message guard. |
+| **Poll results as engagement** | Attendee bars keep moving for 30s after voting; the host sees the aggregate across every session. |
+| **Handout and CTA tracking** | `handout_downloads` already existed from an earlier migration with nothing calling it — wired up rather than duplicated. |
+| **Real social proof on the offer** | Computed from the purchases ledger, floor of three. |
+| **Admin roles + 2FA + IP allowlist** | Three fixed roles behind a capability gate; TOTP enforced on the console; an optional allowlist that cannot be turned on until it covers whoever enables it. |
+| **Video fallback and retry** | HLS and the progressive MP4 both retry with backoff; the MP4 path had none at all before. |
+| **Bandwidth-aware quality selection** | A viewer can pin the stream to its lowest rendition without a reload, which would restart playback against the session clock. |
+| **Disclosure setting + jurisdiction nudge** | `broadcast_label` and `show_recorded_notice` existed on the schema since Phase 10 with nothing reading or writing them. Now wired end to end, plus a geo-based nudge using data already captured on every registrant. |
+| **Persona claim-check** | Flags earnings claims, first-person testimonials, guarantees, health claims and invented urgency as a host types a timed comment — and again on anything the transcript generator proposes. |
+| **Timed-comment generation from transcript** | Reads Cloudinary's auto-transcript, proposes a scattering of persona reactions, every one passed through the claim check before a host sees it. Not exercised end to end — `ANTHROPIC_API_KEY` is a placeholder on this deployment. |
+| **GDPR export and erasure** | 14 tables carry a registrant_id; done in Postgres rather than the application so a schema change cannot silently leave one behind. A sale stays, unlinked; a suppression stays, hashed. |
+| **Maintenance mode** | Env var wins over the database flag — the database is exactly what might be down. |
+| **Trust & safety: reports + review queue** | A quiet report control in the chat, open to people who never registered. |
+| **Bulk actions on the user list** | Capped at 200; re-checks the per-action role server-side rather than trusting the button that offered it. |
 
-### Corrections to this review
+---
 
-- **Clone a webinar** and **per-attendee countdown** were both listed as missing. Both already existed. Noted in the tables below.
-- **Preview as an attendee** was listed as missing; a simulated preview page already existed. What was actually missing was a *real* run, which is what test sessions add.
-- **Graceful degradation when Realtime drops** was listed as missing; the polling fallback was already there.
+## Corrections to this review
+
+Nine claims across the life of this review turned out to be wrong — either things that already existed before this pass, or things fixed and then re-checked. Recorded here rather than quietly dropped.
+
+- **Clone a webinar** and **per-attendee countdown** were listed as missing. Both already existed.
+- **Preview as an attendee** was listed as missing; a simulated preview page already existed. What was missing was a *real* run, which test sessions now add.
+- **Graceful degradation when Realtime drops** was listed as missing; the polling fallback already existed.
 - **A pre-flight check before a session** was listed as missing; the cron route already existed.
+- **Checkout inside the room** was listed as missing under Conversion. It already existed — `OfferButton` opens Stripe Checkout in a new tab rather than linking out, and the room keeps playing behind it.
+- **Exit intent** was listed as missing. `useExitIntent` + `ExitPrompt` already existed and were already wired into `WatchRoom`.
+- **Split testing** was listed as missing. `lib/experiments.ts` already assigned and stored offer variants per registrant.
+- **Captions, a transcript, and audio-only mode** were listed as missing under Reach and accessibility. All three already existed — captions and transcript through Cloudinary's auto-transcription, audio-only as a toggle in `VideoPlayer`.
+- **Calendar invite on registration** was listed as missing. `lib/calendar.ts` and the `/calendar` route already existed and were already wired.
 
 ---
 
@@ -81,150 +94,33 @@ production and it costs reads, not rows.
 
 - **Seeking is disabled** — `controls={false}` plus `controlsList="nodownload noplaybackrate noremoteplayback"`. An attendee cannot scrub ahead and discover it is a file.
 - **Drift is corrected against the session clock**, with the server's own time offset measured — so a wrong clock on the attendee's machine does not desync them.
-- **Chat backfills on late join.** Arriving twenty minutes in shows the conversation that "already happened" rather than an empty panel.
+- **Chat backfills on late join**, with the most recent messages staggered rather than dumped, so the room reads as still moving rather than as a wall of text arriving at once.
 - **Timed comments are deduplicated server-side** with a unique constraint, so two browsers cannot double-post the same persona line.
-- **Attendance is counted from dated events**, not a boolean that can drift.
+- **Attendance is counted from dated events**, not a boolean that can drift — and the two are now kept in agreement by a compare-and-set on the join transition.
 - **Sessions roll forward in Postgres**, not in a Vercel cron that the Hobby plan would cap at once a day.
+- **Video fallback and retry**, HLS and progressive, both with growing backoff and a give-up state that offers a reconnect rather than a spinner turning forever.
+- **The account layer**: roles, 2FA, an optional IP allowlist, and a maintenance mode that survives the database being the thing that's down.
 
 ---
 
-## ⚠ The one that worries me most
+## Genuinely outstanding
 
-Not on any feature list:
+Honestly: what is left needs either credentials only the user can provide, or a scope large enough that it deserves its own pass rather than being squeezed in here.
 
-> **A single MP4 at one bitrate, plus aggressive drift correction, equals a visible time-jump whenever the video buffers.**
-
-On a train, on hotel wifi, on 4G — the player falls behind, the correction yanks it forward, and the attendee sees the speaker teleport. **Live video does not do that.** This is the most likely way someone works out it is recorded, and it happens without anyone doing anything unusual.
-
----
-
-## 1. Illusion integrity — *existential* — 7 additions
-
-The product's entire value rests on the room feeling live. These are the remaining ways it stops feeling that way.
-
-| Addition | Why |
+| Item | Why it's not done |
 |---|---|
-| **Adaptive bitrate instead of one MP4** | Cloudinary can serve HLS with a streaming profile. Today it is `q_auto,f_auto` on a single file — quality-adaptive, but not *bitrate*-adaptive. A weak connection buffers rather than dropping to a lower rendition, and buffering is what triggers the visible jump. |
-| **Gentle catch-up rather than a hard seek** | When behind by a few seconds, play at 1.05× until caught up instead of jumping. Reserve the hard correction for gaps large enough that nothing else would work. This alone removes most of the tell. |
-| **A buffering state that reads as a network hiccup** | Live streams stall too — the honest thing is a spinner that looks like a stream stalling, not a paused video. |
-| **Sync across tabs and refreshes** | Worth an explicit test: refresh mid-session, open a second tab, background the tab for five minutes. Browsers throttle timers in background tabs, which is exactly when drift accumulates. |
-| **Chat pacing on late join** | Backfill works, but if forty messages land at once on join, it reads as a dump rather than a conversation. Stagger the last few so the room feels like it is still moving. |
-| **Signed, expiring video URLs** | The MP4 URL is currently permanent and guessable from the network tab. Anyone who finds it has the whole webinar, forever, and can share it. |
-| **DST behaviour on recurring schedules** | A schedule set for 8pm daily crosses a clock change twice a year. Verify it stays at 8pm local rather than sliding an hour — the failure is silent and only visible to attendees. |
-
----
-
-## 2. Reach and accessibility — *high* — 6 additions
-
-These let more people watch at all — and one is a legal requirement in several markets this product sells into.
-
-| Addition | Why |
-|---|---|
-| **Captions** | There are none, anywhere. Beyond accessibility law, most people watching on a phone in public have the sound off — a webinar with no captions is silent content to them. Cloudinary can auto-transcribe on upload. |
-| **A transcript** | Falls out of captions for free, and is the raw material for every repurposing feature a host will eventually ask for — blog posts, clips, summaries, search. |
-| **Keyboard and screen-reader pass on the watch room** | The chat panel, offer button and reactions are the parts most likely to be unreachable without a mouse. |
-| **Bandwidth-aware quality selection** | Pairs with adaptive bitrate: let someone force a lower quality rather than buffering repeatedly. |
-| **Audio-only mode** | For anyone on a poor connection. A webinar is mostly someone talking, and audio survives a bad network where video does not. |
-| **Calendar invite on registration** | Still the single biggest lever on attendance, still missing. Flagged in the email roadmap and not yet built. |
-
----
-
-## 3. Reliability — *high* — 6 additions
-
-What happens when something fails during a session that a host is not watching — which is every session, by design.
-
-| Addition | Why |
-|---|---|
-| **A pre-flight check before a session starts** | Fetch the video's headers an hour before. A session that goes live with a broken video URL fails in front of everyone who turned up, and nobody finds out until they complain. |
-| **Video fallback and retry** | If the source 404s or stalls hard, retry before showing an error. Right now a hiccup is indistinguishable from a broken webinar. |
-| **Load testing at real concurrency** | Nothing has run with more than a handful of viewers. Supabase Realtime has connection and message-rate limits, and chat is the first thing that breaks under them. |
-| **Chat rate limiting per session** | Per-IP limits exist. A busy room is a different pressure: a thousand people typing is legitimate traffic that still needs shaping. |
-| **Graceful degradation when Realtime drops** | Fall back to polling rather than a chat that silently stops updating — a dead chat during a "live" event is worse than a slow one. |
-| **Overlap protection on schedules** | Two sessions of the same webinar running at once would split the room and the analytics. |
-
----
-
-## 4. Conversion — *most upside* — 8 additions
-
-The engine's job is to sell. This area has the most upside and the least built — one offer, one moment, no experimentation.
-
-| Addition | Why |
-|---|---|
-| **Checkout inside the room** | The offer links out today, which loses people at the exact moment they decided. Stripe Checkout in a modal keeps them in the webinar and closes the loop the platform already tracks. |
-| **Split testing** | Two offer variants, two reveal times, two registration pages. There is no way to learn what works, and this product is bought by people who optimise for a living. |
-| **Order bumps and a one-click upsell** | The single highest-return addition in any checkout, and the audience for this product expects it. |
-| ~~Per-attendee countdown~~ | **Correction: already per-attendee.** `OfferButton` starts the countdown from the moment that viewer sees the reveal, not from session start. A second claim I made without opening the component. |
-| **Exit intent** | Catch the close, not the leave. One prompt with the replay or the offer recovers people who were otherwise gone. |
-| **Real social proof on the offer** | "14 people bought in this session" is true, computable from the purchases ledger, and more persuasive than anything invented. |
-| **Handout download tracking** | `timed_handouts` exists and nothing records who took one. A download is a strong buying signal going unused. |
-| **Poll results as engagement, not just data** | Showing the room's answers back to it is what makes a poll feel live rather than like a form. |
-
----
-
-## 5. Host confidence — *high* — 6 additions
-
-A host cannot currently see what they built before real people do.
-
-| Addition | Why |
-|---|---|
-| **Preview as an attendee** | There is no way to watch your own webinar as an attendee sees it — chat, personas, timed comments, the offer appearing. Every host will want this before their first session, and its absence is the most likely reason a first webinar goes out wrong. |
-| **Test sessions** | Run one that does not count: no automation fires, nothing lands in analytics. |
-| ~~Clone a webinar~~ | **Correction: this already exists.** The button is in `WebinarCard.tsx` and wired to the clone route. I asserted it was missing without checking the component. |
-| **Templates for a new webinar** | A starting point beats an empty form, and it teaches the product's shape while they build. |
-| **Timed-comment generation from the video** | With a transcript, propose comments at sensible moments. Writing thirty by hand is the dullest part of setup and the one most likely to be skipped. |
-| **Bulk registrant import** | A host with an existing list currently has no way to bring it in. |
-
----
-
-## 6. The exposure nobody has named — *worth advice* — 4 additions
-
-Raised because it is a business risk rather than a feature gap, and because it gets more expensive to address the more customers you have.
-
-| Addition | Why |
-|---|---|
-| **Get an opinion on disclosure requirements** | Consumer protection regulators in the US, UK and EU take a dim view of material misrepresentation in a sales context. Whether "live" on a webinar that is recorded counts is a question for a lawyer, not for me — but it is the kind of question that is far cheaper answered now than after a complaint. Your own Terms already prohibit hosts from making false claims; the format itself is the part nobody has assessed. |
-| **A disclosure setting hosts can choose** | Some hosts sell into regulated niches and will need one. "Encore presentation" and similar framings are how the industry handles this, and offering it costs you nothing. |
-| **Jurisdiction-aware defaults** | If it turns out disclosure is required somewhere you sell, the geo data to act on it is already captured. |
-| **Persona content guidance** | A fake persona posting "I made $10k with this" is a fabricated testimonial, which is a different and clearer legal problem than the format itself. Worth a warning in the editor. |
-
----
-
-## 7. Data quality — *medium* — 4 additions
-
-| Addition | Why |
-|---|---|
-| **Watch time that stops when they leave** | Worth verifying that a backgrounded tab or a closed laptop stops accruing watch seconds. If it does not, every retention curve is optimistic. |
-| **Duplicate registration handling** | The same person registering twice should be one person, not two attendees and two reminder sequences. |
-| **Bot and disposable-email filtering** | Registration is a public form. Junk registrants inflate every metric a host judges themselves by. |
-| **Reconcile the attended flag with the event log** | These already disagreed once, on the only test registrant. Analytics trusts the log; other code paths trust the flag. |
-
----
-
-## What I'd build first
-
-Ordered by what it costs you not to have. The first two are small and protect the thing everything else depends on.
-
-1. **Gentle catch-up, then adaptive bitrate.** Playing at 1.05× to close a gap is an afternoon's work and removes the most common tell immediately. HLS is the deeper fix and stops the buffering that causes the gap in the first place.
-
-2. **Preview as an attendee.** Every host wants it before their first session, and its absence is the likeliest reason a first webinar goes out wrong. Mostly a matter of rendering the watch room against a simulated clock.
-
-3. **Captions and a transcript.** Accessibility, muted mobile viewing, and the raw material for timed-comment generation and every repurposing feature later. One upload setting starts it.
-
-4. **Pre-flight check on scheduled sessions.** Verify the video responds before a session goes live, and tell the host rather than the audience. Cheap, and it prevents the worst possible failure.
-
-5. **Checkout inside the room.** The largest single conversion gain available. Stripe is already wired for billing; pointing it at the host's offer keeps the buyer in the webinar at the moment they decided.
-
-6. **Load testing.** Before a customer finds the ceiling for you. Realtime limits and chat throughput are the two most likely to bite, and both are cheap to measure now and expensive to discover live.
+| **Stripe, LiveKit, a real `ANTHROPIC_API_KEY`** | Configuration only the user can supply. Billing, live broadcast, and AI-generated content are all built against these and untested without them. |
+| **Sentry / external error monitoring** | Needs an account and a DSN. The platform's own client-error log (`/superadmin/errors`) exists and works without one. |
+| **Calendly OAuth** | Needs API credentials from a Calendly developer account. |
+| **A full mobile device audit and PageSpeed pass** | The accessibility and region-latency work in this pass improves both; neither has been measured on a real device or through Lighthouse, which needs a live audit rather than a code read. |
+| **Credential rotation** | Several credentials were pasted into chat over the course of this project (Resend, the Supabase service role, the database password, Cloudinary). Repeatedly flagged; still the user's to act on. |
 
 ---
 
 ## How this was verified
 
-Checked against the codebase rather than assumed:
+Where a claim above says "verified," it was checked one of these ways, not assumed:
 
-- `controls={false}` and `controlsList="nodownload noplaybackrate noremoteplayback"` in `components/webinar/VideoPlayer.tsx`
-- Drift correction against a measured server clock offset in `hooks/useVideoProgress.ts`
-- Chat history fetched and merged on join in `hooks/useRealtimeChat.ts`
-- Video served as a single `q_auto,f_auto` MP4 in `lib/cloudinary.ts`, with no streaming profile
-- No caption, subtitle, VTT or transcript reference anywhere in the codebase
-- No attendee-preview path in the admin panel
+- **Against the live production database**, usually in a transaction rolled back afterward — the fraud-signals bug, the 2FA recovery-code bug, and the allowlist behaviour were all caught this way.
+- **With standalone test scripts** run against the actual library code (stripped of Next.js-only imports where needed) — the timezone math, the TOTP implementation, the VTT parser, and the email-hygiene rules were all checked against known-correct references (RFC 6238 vectors, hand-computed offsets) rather than only against themselves.
+- **By reading the code directly** before claiming something was missing or present — the corrections section above exists because that step was skipped at least nine times across this review's life, and every one of those mistakes was more work to unwind than the five minutes it would have taken to open the file first.
