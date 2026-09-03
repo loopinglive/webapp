@@ -87,20 +87,40 @@ export async function POST(
     .maybeSingle();
 
   const startsAt = nextOccurrence(schedule);
+  let warning: string | null = null;
+
   if (startsAt) {
     const duration = webinar?.video_duration_seconds ?? 0;
-    await supabase.from("webinar_sessions").insert({
-      webinar_id: webinarId,
-      schedule_id: schedule.id,
-      starts_at: startsAt,
-      ends_at: new Date(
-        new Date(startsAt).getTime() + duration * 1000
-      ).toISOString(),
-      status: "scheduled",
-    });
+    const { error: sessionError } = await supabase
+      .from("webinar_sessions")
+      .insert({
+        webinar_id: webinarId,
+        schedule_id: schedule.id,
+        starts_at: startsAt,
+        ends_at: new Date(
+          new Date(startsAt).getTime() + duration * 1000
+        ).toISOString(),
+        status: "scheduled",
+      });
+
+    /*
+     * The database refuses two sessions of one webinar that run at the same
+     * time — overlap splits the room and the analytics between them.
+     *
+     * Reported as a warning rather than an error: the schedule itself saved,
+     * and it may well be the earlier one the host wants to remove. Telling
+     * them the rule and letting them decide beats rolling back a change they
+     * asked for.
+     */
+    if (sessionError) {
+      warning =
+        sessionError.code === "23P01"
+          ? "Saved, but no session was booked — another session of this webinar already runs at that time. Two overlapping sessions would split your attendees between them."
+          : `Saved, but the first session could not be booked: ${sessionError.message}`;
+    }
   }
 
-  return NextResponse.json({ schedule });
+  return NextResponse.json({ schedule, warning });
 }
 
 export async function PATCH(

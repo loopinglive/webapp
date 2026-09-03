@@ -94,11 +94,20 @@ export function ScheduleBuilder({ webinarId }: { webinarId: string }) {
 
     setSaving(false);
 
+    const payload = (await response.json()) as {
+      error?: string;
+      warning?: string | null;
+    };
+
     if (!response.ok) {
-      const payload = (await response.json()) as { error?: string };
       setError(payload.error ?? "Could not save that schedule.");
       return;
     }
+
+    // The schedule saved but its first session did not — usually because
+    // another session of this webinar already covers that slot. Shown in place
+    // rather than swallowed: the host needs to know no session was booked.
+    if (payload.warning) setError(payload.warning);
 
     setAdding(false);
     setDate("");
