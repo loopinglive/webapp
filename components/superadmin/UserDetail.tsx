@@ -5,6 +5,7 @@ import Link from "next/link";
 import {
   ArrowLeft,
   Ban,
+  CalendarPlus,
   Check,
   KeyRound,
   Loader2,
@@ -135,6 +136,27 @@ export function UserDetail({ userId }: { userId: string }) {
     [userId, load, toast]
   );
 
+  const billingAction = useCallback(
+    async (body: Record<string, unknown>, label: string) => {
+      setBusy(label);
+      const response = await fetch("/api/superadmin/billing-actions", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body),
+      });
+      const payload = (await response.json()) as { error?: string };
+      setBusy(null);
+
+      if (!response.ok) {
+        toast.error(payload.error ?? "That did not work.");
+        return;
+      }
+      toast.success("Done.");
+      await load();
+    },
+    [load, toast]
+  );
+
   if (notFound) {
     return (
       <div className="px-6 py-10 lg:px-8">
@@ -237,6 +259,28 @@ export function UserDetail({ userId }: { userId: string }) {
                 </option>
               ))}
             </select>
+
+            <button
+              onClick={() => {
+                const days = Number(
+                  window.prompt("Extend their plan by how many days?", "14")
+                );
+                if (!days || days < 1) return;
+                void billingAction(
+                  { action: "extend_plan", userId, days },
+                  "extend"
+                );
+              }}
+              disabled={busy !== null}
+              className="inline-flex h-9 items-center gap-2 rounded-lg border border-[#1E1E2E] px-3 text-[12.5px] text-[#A0A0B0] hover:text-white disabled:opacity-50"
+            >
+              {busy === "extend" ? (
+                <Loader2 className="h-3.5 w-3.5 animate-spin" />
+              ) : (
+                <CalendarPlus className="h-3.5 w-3.5" />
+              )}
+              Extend
+            </button>
 
             <button
               onClick={() => patch({ sendPasswordReset: true }, "reset")}
@@ -493,6 +537,24 @@ export function UserDetail({ userId }: { userId: string }) {
                   >
                     {invoice.status}
                   </span>
+                  {invoice.status === "paid" && (
+                    <button
+                      onClick={() => {
+                        const reason = window.prompt(
+                          `Refund ${money(Number(invoice.amount), invoice.currency)}? Their plan drops to free. Reason (recorded):`
+                        );
+                        if (reason === null) return;
+                        void billingAction(
+                          { action: "refund", invoiceId: invoice.id, reason },
+                          "refund"
+                        );
+                      }}
+                      disabled={busy !== null}
+                      className="text-[11.5px] text-[#A0A0B0] hover:text-[#FF6B6B] disabled:opacity-40"
+                    >
+                      Refund
+                    </button>
+                  )}
                 </li>
               ))}
             </ul>
