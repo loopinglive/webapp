@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import Link from "next/link";
-import { ArrowLeft, Eye, Loader2, RotateCcw } from "lucide-react";
+import { ArrowLeft, Eye, FlaskConical, Loader2, RotateCcw } from "lucide-react";
 
 import { OfferButton } from "@/components/webinar/OfferButton";
 import { VideoPlayer } from "@/components/webinar/VideoPlayer";
@@ -10,6 +10,8 @@ import { EmptyState } from "@/components/ui/EmptyState";
 import { useVideoProgress } from "@/hooks/useVideoProgress";
 import { captionsUrl, streamUrl } from "@/lib/cloudinary-urls";
 import { cn, formatOffset } from "@/lib/utils";
+import { saveRegistrant } from "@/lib/registrant-storage";
+import { useToast } from "@/components/ui/ToastProvider";
 import type { WebinarOffer } from "@/types";
 
 type Comment = {
@@ -52,6 +54,8 @@ export function WebinarPreview({ webinarId }: { webinarId: string }) {
   const [offset, setOffset] = useState(0);
   const [data, setData] = useState<Payload | null>(null);
   const [loading, setLoading] = useState(true);
+  const [starting, setStarting] = useState(false);
+  const toast = useToast();
 
   const load = useCallback(
     async (from: number) => {
@@ -70,6 +74,48 @@ export function WebinarPreview({ webinarId }: { webinarId: string }) {
     const timer = setTimeout(() => void load(offset), 0);
     return () => clearTimeout(timer);
   }, [load, offset]);
+
+  /*
+   * The dress rehearsal, as opposed to the inspection above.
+   *
+   * This page simulates the room so a host can scrub through it. What it
+   * cannot simulate is the room itself — real chat, personas answering, the
+   * poll filling in, the viewer count. A test run is the actual watch page
+   * against a session that is marked so it never counts.
+   */
+  const startTestRun = useCallback(async () => {
+    setStarting(true);
+    const response = await fetch(`/api/admin/webinar/${webinarId}/test-session`, {
+      method: "POST",
+    });
+    const payload = (await response.json()) as {
+      error?: string;
+      sessionId?: string;
+      registrant?: { id: string; fullName: string };
+      watchUrl?: string;
+    };
+
+    if (!response.ok || !payload.watchUrl || !payload.registrant) {
+      setStarting(false);
+      toast.error(payload.error ?? "Could not start a test run.");
+      return;
+    }
+
+    // Stored under the test session's own key, so a host who has also
+    // registered for their own webinar keeps that registration.
+    saveRegistrant(
+      {
+        id: payload.registrant.id,
+        webinarId,
+        sessionId: payload.sessionId ?? null,
+        fullName: payload.registrant.fullName,
+        countryFlag: "",
+      },
+      payload.sessionId
+    );
+
+    window.location.assign(payload.watchUrl);
+  }, [webinarId, toast]);
 
   const duration = data?.webinar.video_duration_seconds ?? 0;
 
@@ -126,6 +172,20 @@ export function WebinarPreview({ webinarId }: { webinarId: string }) {
           Preview — nothing here is recorded. No attendance, no analytics, no
           automation.
         </p>
+
+        <button
+          onClick={() => void startTestRun()}
+          disabled={starting}
+          title="Opens the real watch page against a session that never counts"
+          className="inline-flex h-8 items-center gap-1.5 rounded-full bg-[#6C47FF] px-3 text-[12px] font-medium text-white hover:bg-[#5B39E0] disabled:opacity-60"
+        >
+          {starting ? (
+            <Loader2 className="h-3 w-3 animate-spin" />
+          ) : (
+            <FlaskConical className="h-3 w-3" />
+          )}
+          Test run
+        </button>
 
         <div className="flex items-center gap-1">
           {SKIPS.filter((skip) => skip < duration).map((skip) => (

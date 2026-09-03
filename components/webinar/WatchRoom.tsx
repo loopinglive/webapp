@@ -1,8 +1,8 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { useRouter } from "next/navigation";
-import { Loader2 } from "lucide-react";
+import { useRouter, useSearchParams } from "next/navigation";
+import { FlaskConical, Loader2 } from "lucide-react";
 
 import { ChatPanel } from "@/components/webinar/ChatPanel";
 import { EngagementLayer } from "@/components/webinar/EngagementLayer";
@@ -26,19 +26,34 @@ import type { WebinarOffer } from "@/types";
 export function WatchRoom({ webinarId }: { webinarId: string }) {
   const router = useRouter();
   const videoRef = useRef<HTMLVideoElement>(null);
-  const { data, loading, error, clockOffsetMs } = useWebinarSession(webinarId);
+
+  /*
+   * A host previewing their own webinar arrives with a test session named in
+   * the URL. Everything below runs unchanged — the point of a preview is to
+   * exercise the real room, not a simplified one — and the only differences
+   * are the banner and the waiting-room redirect.
+   */
+  const testSessionId = useSearchParams().get("test");
+  const { data, loading, error, clockOffsetMs } = useWebinarSession(
+    webinarId,
+    testSessionId
+  );
 
   // Registration left their details in this browser; they never sign in.
   const hydrated = useIsHydrated();
   const registrant = useMemo(
-    () => (hydrated ? readRegistrant(webinarId) : null),
-    [hydrated, webinarId]
+    () => (hydrated ? readRegistrant(webinarId, testSessionId) : null),
+    [hydrated, webinarId, testSessionId]
   );
 
-  // Not started yet — hold them in the waiting room instead.
+  // Not started yet — hold them in the waiting room instead. A test run starts
+  // within seconds, so sending the host to a waiting room they did not ask for
+  // would just be a redirect they have to come back from.
   useEffect(() => {
-    if (data?.state === "waiting") router.replace(`/webinar/${webinarId}/waiting-room`);
-  }, [data?.state, router, webinarId]);
+    if (data?.state === "waiting" && !testSessionId) {
+      router.replace(`/webinar/${webinarId}/waiting-room`);
+    }
+  }, [data?.state, router, webinarId, testSessionId]);
 
   const sessionId = data?.session?.id ?? null;
   const registrantId = registrant?.id ?? null;
@@ -217,6 +232,16 @@ export function WatchRoom({ webinarId }: { webinarId: string }) {
 
   return (
     <main className="flex h-dvh flex-col overflow-hidden bg-[#0A0A0F]">
+      {testSessionId && (
+        <div className="flex shrink-0 flex-wrap items-center justify-center gap-x-2 gap-y-0.5 bg-[#6C47FF] px-4 py-1.5 text-center text-[11.5px] font-medium text-white">
+          <FlaskConical className="h-3 w-3 shrink-0" />
+          <span>This is a test run — exactly what an attendee sees.</span>
+          <span className="text-white/70">
+            Nothing here reaches your analytics, and no emails go out.
+          </span>
+        </div>
+      )}
+
       {/* Top bar */}
       <header className="flex shrink-0 items-center justify-between gap-3 border-b border-[#1E1E2E] px-4 py-3 lg:px-6">
         <div className="flex min-w-0 items-center gap-3">

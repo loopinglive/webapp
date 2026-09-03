@@ -35,6 +35,7 @@ export async function scheduleReEngagement(supabase: Client) {
       .from("registrants")
       .select("id, session_id, last_attended_at, bought")
       .eq("webinar_id", webinarId)
+      .eq("is_test", false)
       .eq("bought", false)
       .eq("attended", true)
       .not("last_attended_at", "is", null);
@@ -56,11 +57,13 @@ export async function scheduleReEngagement(supabase: Client) {
           .eq("webinar_id", webinarId)
           .in("registrant_id", ids)
           .like("template_key", "re_engagement%"),
-        // A session still to come means they have signed up again.
+        // A session still to come means they have signed up again. A test run
+        // the host started is not that.
         supabase
           .from("webinar_sessions")
           .select("id")
           .eq("webinar_id", webinarId)
+          .eq("is_test", false)
           .gt("starts_at", new Date().toISOString()),
       ]);
 

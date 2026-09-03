@@ -98,18 +98,24 @@ export async function getWebinarAnalytics(
         "id, created_at, attended, watch_percentage, watch_seconds, clicked_offer, bought, device_type, ip_country, country_code, session_id"
       )
       .eq("webinar_id", webinarId)
+      .eq("is_test", false)
       .gte("created_at", fromIso)
       .lte("created_at", toIso),
     supabase
       .from("registrants")
       .select("id, attended, bought")
       .eq("webinar_id", webinarId)
+      .eq("is_test", false)
       .gte("created_at", prevFrom)
       .lt("created_at", fromIso),
+    // Test runs are excluded everywhere a host reads their own numbers. A
+    // preview that moved the conversion rate would make the feature unusable
+    // for the one thing it exists for.
     supabase
       .from("webinar_sessions")
       .select("id, starts_at, status")
       .eq("webinar_id", webinarId)
+      .eq("is_test", false)
       .order("starts_at", { ascending: false })
       .limit(60),
     supabase

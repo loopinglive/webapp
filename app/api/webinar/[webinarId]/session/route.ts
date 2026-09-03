@@ -9,11 +9,22 @@ export const dynamic = "force-dynamic";
 // The room's clock. Returns the session that is running right now, or the next
 // one due, plus how far away it is.
 export async function GET(
-  _request: Request,
+  request: Request,
   { params }: { params: Promise<{ webinarId: string }> }
 ) {
   const { webinarId } = await params;
   const supabase = createServiceClient();
+
+  /*
+   * A host previewing their own webinar names the session explicitly. Without
+   * that id nothing here will ever return a test run, so a visitor who happens
+   * to load the page during a preview sees the real schedule.
+   *
+   * The id is enough of a credential: it is a uuid the host was handed, it
+   * only reaches a session marked as a test, and the worst outcome is that
+   * someone shown the link watches the video early.
+   */
+  const testSessionId = new URL(request.url).searchParams.get("test");
 
   const { data: webinar, error: webinarError } = await supabase
     .from("webinars")
@@ -35,13 +46,22 @@ export async function GET(
   // A session that started within the runtime is still live; otherwise take the
   // soonest one still to come.
   const upcoming = async () =>
-    supabase
-      .from("webinar_sessions")
-      .select("*")
-      .eq("webinar_id", webinarId)
-      .gte("starts_at", new Date(now - duration).toISOString())
-      .order("starts_at", { ascending: true })
-      .limit(1);
+    testSessionId
+      ? supabase
+          .from("webinar_sessions")
+          .select("*")
+          .eq("webinar_id", webinarId)
+          .eq("id", testSessionId)
+          .eq("is_test", true)
+          .limit(1)
+      : supabase
+          .from("webinar_sessions")
+          .select("*")
+          .eq("webinar_id", webinarId)
+          .eq("is_test", false)
+          .gte("starts_at", new Date(now - duration).toISOString())
+          .order("starts_at", { ascending: true })
+          .limit(1);
 
   const first = await upcoming();
   let sessions = first.data;
@@ -54,7 +74,7 @@ export async function GET(
   // Nothing on the books: roll the recurring schedule forward now rather than
   // waiting for the cron. This is what makes "every day at 8PM" actually
   // recur when no scheduler is wired up.
-  if (!sessions?.length) {
+  if (!sessions?.length && !testSessionId) {
     const created = await ensureUpcomingSession(supabase, webinarId);
     if (created) ({ data: sessions } = await upcoming());
   }

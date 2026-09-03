@@ -187,6 +187,8 @@ export type WebinarSessionRow = {
   ends_at: string | null;
   status: "scheduled" | "live" | "ended";
   created_at: string;
+  /** A run started by the host to look at their own work. Never counted. */
+  is_test: boolean;
 };
 
 export type FakePersonaRow = {
@@ -238,6 +240,8 @@ export type RegistrantRow = {
   bought_at: string | null;
   manually_marked_bought: boolean;
   returning_attendee: boolean;
+  /** A registrant created by a host previewing their own webinar. */
+  is_test: boolean;
   history_cleared_at: string | null;
   notes: string | null;
   tags: Json;
@@ -1062,7 +1066,7 @@ export type Database = {
       >;
       webinar_sessions: Table<
         WebinarSessionRow,
-        "id" | "schedule_id" | "ends_at" | "status" | "created_at"
+        "id" | "schedule_id" | "ends_at" | "status" | "created_at" | "is_test"
       >;
       fake_personas: Table<
         FakePersonaRow,
@@ -1088,6 +1092,7 @@ export type Database = {
         | "bought_at"
         | "manually_marked_bought"
         | "returning_attendee"
+        | "is_test"
         | "history_cleared_at"
         | "notes"
         | "tags"
@@ -1251,6 +1256,11 @@ export type Database = {
     };
     Views: Record<string, never>;
     Functions: {
+      /** Clears away test runs older than a day. Returns rows removed. */
+      purge_test_sessions: {
+        Args: Record<string, never>;
+        Returns: number;
+      };
       /** Aggregated poll answers, so a big room does not ship every row. */
       poll_results: {
         Args: { p_poll_id: string };

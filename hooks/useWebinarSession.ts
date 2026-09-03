@@ -13,7 +13,10 @@ type State = {
   refresh: () => Promise<void>;
 };
 
-export function useWebinarSession(webinarId: string): State {
+export function useWebinarSession(
+  webinarId: string,
+  testSessionId?: string | null
+): State {
   const [data, setData] = useState<SessionPayload | null>(null);
   const [clockOffsetMs, setClockOffsetMs] = useState(0);
   const [loading, setLoading] = useState(true);
@@ -21,9 +24,12 @@ export function useWebinarSession(webinarId: string): State {
 
   const load = useCallback(async () => {
     try {
-      const response = await fetch(`/api/webinar/${webinarId}/session`, {
-        cache: "no-store",
-      });
+      const response = await fetch(
+        `/api/webinar/${webinarId}/session${
+          testSessionId ? `?test=${testSessionId}` : ""
+        }`,
+        { cache: "no-store" }
+      );
       const payload = (await response.json()) as SessionPayload & { error?: string };
 
       if (!response.ok) {
@@ -40,7 +46,7 @@ export function useWebinarSession(webinarId: string): State {
     } finally {
       setLoading(false);
     }
-  }, [webinarId]);
+  }, [webinarId, testSessionId]);
 
   useEffect(() => {
     // The clock delta can only be measured in the browser — it is the gap

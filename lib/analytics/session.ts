@@ -77,7 +77,8 @@ export async function getSessionAnalytics(
     supabase
       .from("registrants")
       .select("id, attended, bought, clicked_offer")
-      .eq("session_id", sessionId),
+      .eq("session_id", sessionId)
+      .eq("is_test", false),
     supabase
       .from("webinar_offers")
       .select("trigger_video_offset_seconds")

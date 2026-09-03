@@ -144,7 +144,7 @@ export async function scheduleRegistrationMessages(
   const [{ data: session }, { data: webinar }] = await Promise.all([
     supabase
       .from("webinar_sessions")
-      .select("starts_at")
+      .select("starts_at, is_test")
       .eq("id", input.sessionId)
       .maybeSingle(),
     supabase
@@ -155,6 +155,11 @@ export async function scheduleRegistrationMessages(
   ]);
 
   if (!session) return scheduled;
+
+  // A test run must not send anything. The host is the only registrant, and a
+  // reminder for a session they invented to look at is noise at best — at
+  // worst it is a reminder that arrives after they have forgotten previewing.
+  if (session.is_test) return scheduled;
 
   const startsAt = new Date(session.starts_at).getTime();
   const duration = (webinar?.video_duration_seconds ?? 0) * 1000;
@@ -226,11 +231,12 @@ export async function schedulePostWebinarMessages(
 ) {
   const { data: session } = await supabase
     .from("webinar_sessions")
-    .select("id, webinar_id, ends_at, starts_at")
+    .select("id, webinar_id, ends_at, starts_at, is_test")
     .eq("id", sessionId)
     .maybeSingle();
 
   if (!session) return 0;
+  if (session.is_test) return 0;
 
   const webinarId = session.webinar_id;
   const settings = await getSettings(supabase, webinarId);
