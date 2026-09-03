@@ -52,6 +52,8 @@ export function ChatPanel({
 
   return (
     <section
+      // The skip link's target.
+      id="webinar-chat"
       className={cn(
         "flex min-h-0 flex-col border-[#1E1E2E] bg-[#12121A]/80 backdrop-blur-2xl",
         className
@@ -72,6 +74,11 @@ export function ChatPanel({
             />
           </span>
           <h2 className="text-[13.5px] font-semibold text-white">Live Chat</h2>
+          {/* The dot beside this is the only other indication, and colour on
+              its own is not an indication. */}
+          <span className="sr-only" role="status">
+            {connected ? "Chat connected" : "Chat reconnecting"}
+          </span>
         </div>
 
         {onClose && (
@@ -85,22 +92,41 @@ export function ChatPanel({
       </header>
 
       {pinnedMessage && (
-        <div className="flex animate-rise items-start gap-2 border-b border-[#1E1E2E] bg-[#6C47FF]/10 px-4 py-2.5">
-          <Pin className="mt-0.5 h-3.5 w-3.5 shrink-0 text-[#6C47FF]" />
+        <div
+          role="status"
+          aria-live="polite"
+          className="flex animate-rise items-start gap-2 border-b border-[#1E1E2E] bg-[#6C47FF]/10 px-4 py-2.5"
+        >
+          <Pin aria-hidden className="mt-0.5 h-3.5 w-3.5 shrink-0 text-[#6C47FF]" />
           <p className="text-[12.5px] leading-relaxed text-white">
+            <span className="sr-only">Pinned by the host: </span>
             {pinnedMessage}
           </p>
         </div>
       )}
 
+      {/*
+        The feed is a scrolling region, so it needs to be focusable — otherwise
+        a keyboard user can reach the input at the bottom and never read a word
+        of the conversation above it.
+
+        aria-live is deliberately off. `role="log"` would announce every arrival,
+        and this room is rate-limited to four messages a second; a screen reader
+        narrating that is not an accessible experience, it is an unusable one.
+        The pinned message above is the exception, because the host chose it.
+      */}
       <div
         ref={feedRef}
+        role="log"
+        aria-live="off"
+        aria-label="Chat messages"
+        tabIndex={0}
         onScroll={(event) => {
           const el = event.currentTarget;
           pinned.current =
             el.scrollHeight - el.scrollTop - el.clientHeight < 80;
         }}
-        className="flex-1 space-y-1 overflow-y-auto overscroll-contain px-2 py-3"
+        className="flex-1 space-y-1 overflow-y-auto overscroll-contain px-2 py-3 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-[#6C47FF]/70"
       >
         {messages.length === 0 ? (
           <p className="px-3 py-8 text-center text-[13px] text-[#A0A0B0]/70">

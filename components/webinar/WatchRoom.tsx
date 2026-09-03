@@ -285,6 +285,18 @@ export function WatchRoom({ webinarId }: { webinarId: string }) {
         </div>
       )}
 
+      {/*
+        Skip link. The chat panel comes after the video in the DOM, so without
+        this a keyboard user tabs through the player controls before reaching
+        the one part of the page they can interact with.
+      */}
+      <a
+        href="#webinar-chat"
+        className="sr-only focus:not-sr-only focus:absolute focus:left-3 focus:top-3 focus:z-50 focus:rounded-lg focus:bg-[#6C47FF] focus:px-3 focus:py-2 focus:text-[13px] focus:font-medium focus:text-white"
+      >
+        Skip to chat
+      </a>
+
       {/* Top bar */}
       <header className="flex shrink-0 items-center justify-between gap-3 border-b border-[#1E1E2E] px-4 py-3 lg:px-6">
         <div className="flex min-w-0 items-center gap-3">

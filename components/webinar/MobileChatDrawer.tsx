@@ -72,6 +72,16 @@ export function MobileChatDrawer({
         role="dialog"
         aria-label="Live chat"
         aria-hidden={!open}
+        /*
+         * inert as well as aria-hidden.
+         *
+         * The drawer stays mounted so it can animate, and pointer-events-none
+         * only stops the mouse. Without this its buttons remain in the tab
+         * order while aria-hidden tells a screen reader they do not exist —
+         * so a keyboard user tabs into content their screen reader will not
+         * read out, which is worse than either problem alone.
+         */
+        inert={!open}
       >
         <div className="flex h-full flex-col overflow-hidden rounded-t-2xl border-t border-[#1E1E2E] bg-[#12121A] shadow-[0_-24px_60px_-20px_rgba(0,0,0,0.9)]">
           {/* Grab handle — drag down to dismiss. */}
