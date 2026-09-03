@@ -1,6 +1,7 @@
 "use client";
 
-import { Info } from "lucide-react";
+import { useEffect, useState } from "react";
+import { Info, Users } from "lucide-react";
 
 import { useSetupContext } from "@/components/admin/webinar/WebinarSetupShell";
 
@@ -41,8 +42,34 @@ const LABELS = [
   },
 ] as const;
 
+type Jurisdictions = {
+  total: number;
+  regulatedCount: number;
+  regulatedShare: number | null;
+  top: { country: string; count: number; regulated: boolean }[];
+};
+
 export function DisclosureSettings() {
   const { webinar, updateWebinar } = useSetupContext();
+  const [geo, setGeo] = useState<Jurisdictions | null>(null);
+  const webinarId = webinar?.id ?? null;
+
+  useEffect(() => {
+    if (!webinarId) return;
+
+    let cancelled = false;
+    void fetch(`/api/admin/webinar/${webinarId}/jurisdictions`, { cache: "no-store" })
+      .then((response) => (response.ok ? response.json() : null))
+      .then((payload: Jurisdictions | null) => {
+        if (!cancelled && payload) setGeo(payload);
+      })
+      .catch(() => undefined);
+
+    return () => {
+      cancelled = true;
+    };
+  }, [webinarId]);
+
   if (!webinar) return null;
 
   const current = webinar.broadcast_label || "live";
@@ -106,6 +133,30 @@ export function DisclosureSettings() {
           </span>
         </span>
       </label>
+
+      {/*
+        Who this webinar is actually reaching, not a compliance verdict.
+        
+        Uses the geo data already captured on every registrant. The
+        disclaimer below still applies in full — this answers "am I selling
+        into a market where the question comes up at all", not "what does
+        that market require".
+      */}
+      {geo && geo.regulatedShare !== null && geo.regulatedShare > 0.2 && (
+        <p className="flex gap-2 rounded-xl bg-[#F5A623]/10 px-3.5 py-3 text-[11.5px] leading-relaxed text-[#C4C4D0]">
+          <Users className="mt-0.5 h-3.5 w-3.5 shrink-0 text-[#F5A623]" />
+          <span>
+            <strong className="font-medium text-white">
+              {Math.round(geo.regulatedShare * 100)}%
+            </strong>{" "}
+            of {geo.total.toLocaleString()} registrants are in markets — the US,
+            UK, Canada, Australia or the EU — where consumer-protection
+            regulators actively enforce claims like this. That does not tell
+            you what is required; it tells you the question is not
+            theoretical for this audience.
+          </span>
+        </p>
+      )}
 
       <p className="flex gap-2 rounded-xl bg-[#12121A] px-3.5 py-3 text-[11.5px] leading-relaxed text-[#6E6E80]">
         <Info className="mt-0.5 h-3.5 w-3.5 shrink-0 text-[#A0A0B0]" />
