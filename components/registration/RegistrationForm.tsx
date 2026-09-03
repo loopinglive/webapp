@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { ArrowRight, Loader2 } from "lucide-react";
 
@@ -59,6 +59,24 @@ export function RegistrationForm({
   const [error, setError] = useState<string | null>(null);
   const [pending, setPending] = useState(false);
 
+  /*
+   * When this form reached the screen.
+   *
+   * A bot fills and submits in well under a second; a person has to read the
+   * fields and tick a consent box. The server treats an implausibly fast
+   * submission as automated.
+   *
+   * Stamped in an effect rather than in the render body — reading the clock
+   * during render is impure, and the value would be unstable across renders,
+   * which is exactly what a ref is here to prevent. Null until mounted, and
+   * the server treats a missing elapsed time as unknown rather than as fast.
+   */
+  const renderedAt = useRef<number | null>(null);
+
+  useEffect(() => {
+    renderedAt.current = Date.now();
+  }, []);
+
   async function onSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setPending(true);
@@ -85,6 +103,11 @@ export function RegistrationForm({
         gdprConsent: data.get("gdprConsent") === "on",
         customFields: custom,
         source: readSource(),
+        // Anti-automation. Both are checked server-side; neither is visible
+        // to, or fillable by, a person using the form normally.
+        website: data.get("website") ?? "",
+        elapsedMs:
+          renderedAt.current === null ? null : Date.now() - renderedAt.current,
       }),
     });
 
@@ -103,6 +126,30 @@ export function RegistrationForm({
 
   return (
     <form onSubmit={onSubmit} className="space-y-3">
+      {/*
+        A field no person can see or reach. Bots fill every input they find, so
+        anything in here means the submission was automated.
+
+        Hidden with position and opacity rather than `display: none` or
+        `type="hidden"`, both of which the better scrapers know to skip.
+        aria-hidden and tabIndex keep it away from screen readers and the tab
+        order, so it costs nothing in accessibility.
+      */}
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute left-[-9999px] h-0 w-0 overflow-hidden opacity-0"
+      >
+        <label htmlFor="website">Leave this field empty</label>
+        <input
+          id="website"
+          name="website"
+          type="text"
+          tabIndex={-1}
+          autoComplete="off"
+          defaultValue=""
+        />
+      </div>
+
       <input name="fullName" required autoComplete="name" placeholder="Full name" className={field} />
       <input
         name="email"

@@ -27,6 +27,10 @@ type Source = {
 type Payload = {
   fullName?: string;
   email?: string;
+  /** Honeypot. Any value means a bot filled it. */
+  website?: string;
+  /** How long the form was on screen before it was submitted. */
+  elapsedMs?: number;
   phone?: string;
   countryCode?: string;
   gdprConsent?: boolean;
@@ -51,6 +55,40 @@ export async function POST(
 
   const { webinarId } = await params;
   const body = (await request.json()) as Payload;
+
+  /*
+   * Automation checks, before anything is written.
+   *
+   * Both are silent, and reported as success: a bot told "rejected" retries,
+   * and one that learns which submissions were refused learns how to get past
+   * the check.
+   *
+   * Silently discarding a submission is only defensible if a real person
+   * cannot trip it, so both thresholds are set from that side rather than from
+   * how much spam they catch:
+   *
+   *   • The honeypot sits outside the viewport and outside the tab order, so
+   *     reaching it needs neither a mouse nor a keyboard to be possible.
+   *
+   *   • The timing floor is 1.2 seconds from the form mounting. Autofill can
+   *     put four fields in instantly, but the consent box is `required` and no
+   *     password manager ticks it — so a genuine submission still needs a
+   *     deliberate click, and a human click that lands inside 1.2s of mount is
+   *     a click aimed before the form existed.
+   */
+  const honeypotFilled = Boolean(body.website?.trim());
+  const tooFast =
+    typeof body.elapsedMs === "number" && body.elapsedMs >= 0 && body.elapsedMs < 1200;
+
+  if (honeypotFilled || tooFast) {
+    return NextResponse.json({
+      id: crypto.randomUUID(),
+      webinarId,
+      sessionId: null,
+      fullName: body.fullName?.trim() ?? "",
+      countryFlag: "",
+    });
+  }
 
   const fullName = body.fullName?.trim();
   const email = body.email?.trim().toLowerCase();
