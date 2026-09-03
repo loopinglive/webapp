@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 
-import { requireAdmin } from "@/lib/admin-auth";
+import { requireAnyAdmin } from "@/lib/admin-auth";
 import { PLATFORM_EXAMPLE_VARIABLES } from "@/lib/email/example-variables";
 import {
   PLATFORM_TEMPLATES,
@@ -17,7 +17,7 @@ export const dynamic = "force-dynamic";
  * able to run script against the admin origin.
  */
 export async function GET(request: Request) {
-  const { response: denied } = await requireAdmin();
+  const { response: denied } = await requireAnyAdmin();
   if (denied) return denied;
 
   const key = new URL(request.url).searchParams.get("key");

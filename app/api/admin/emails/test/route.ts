@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 
-import { requireAdmin } from "@/lib/admin-auth";
+import { requireAnyAdmin } from "@/lib/admin-auth";
 import { PLATFORM_EXAMPLE_VARIABLES } from "@/lib/email/example-variables";
 import { renderPlatformEmail } from "@/lib/email/platform-templates";
 import { configuredChannels, sendEmail } from "@/lib/messaging/providers";
@@ -16,7 +16,7 @@ export const maxDuration = 30;
  * from a verified sending domain.
  */
 export async function POST(request: Request) {
-  const { user, response: denied } = await requireAdmin();
+  const { user, response: denied } = await requireAnyAdmin();
   if (denied) return denied;
 
   if (!user.email) {

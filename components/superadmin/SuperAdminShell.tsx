@@ -8,6 +8,7 @@ import {
   Bug,
   Gauge,
   Handshake,
+  Mail,
   Megaphone,
   ScrollText,
   TrendingUp,
@@ -39,6 +40,7 @@ const GROUPS = [
   {
     label: "Operations",
     items: [
+      { href: "/superadmin/email", label: "Email", icon: Mail },
       { href: "/superadmin/health", label: "Health", icon: Activity },
       { href: "/superadmin/errors", label: "Errors", icon: Bug },
       { href: "/superadmin/audit", label: "Audit log", icon: ScrollText },
