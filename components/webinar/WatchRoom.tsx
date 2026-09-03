@@ -18,6 +18,8 @@ import { useEngagement } from "@/hooks/useEngagement";
 import { useIsHydrated } from "@/hooks/useIsHydrated";
 import { useWebinarSession } from "@/hooks/useWebinarSession";
 import { captionsUrl, streamUrl } from "@/lib/cloudinary-urls";
+import { ExitPrompt } from "@/components/webinar/ExitPrompt";
+import { useExitIntent } from "@/hooks/useExitIntent";
 import { readRegistrant } from "@/lib/registrant-storage";
 import type { WebinarOffer } from "@/types";
 
@@ -122,6 +124,15 @@ export function WatchRoom({ webinarId }: { webinarId: string }) {
 
   const [offer, setOffer] = useState<WebinarOffer | null>(null);
 
+  // Armed only once the offer is on the table: prompting someone who has not
+  // seen what is for sale has nothing to say to them.
+  const offerRevealed =
+    offer !== null && currentTime >= offer.trigger_video_offset_seconds;
+
+  const { triggered: exiting, dismiss: dismissExit } = useExitIntent({
+    enabled: offerRevealed && !ended,
+  });
+
   useEffect(() => {
     let cancelled = false;
     (async () => {
@@ -217,6 +228,20 @@ export function WatchRoom({ webinarId }: { webinarId: string }) {
 
         <ViewerCount webinarId={webinarId} sessionId={sessionId} />
       </header>
+
+      <ExitPrompt
+        open={exiting}
+        offer={offer}
+        onClose={dismissExit}
+        onTakeOffer={() => {
+          dismissExit();
+          // Scrolls the offer into view rather than duplicating its click
+          // logic here -- one code path owns what "take the offer" means.
+          document
+            .querySelector("[data-offer-button]")
+            ?.scrollIntoView({ behavior: "smooth", block: "center" });
+        }}
+      />
 
       {/* Stage */}
       <div className="flex min-h-0 flex-1 flex-col lg:flex-row">

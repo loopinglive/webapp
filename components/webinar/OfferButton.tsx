@@ -115,6 +115,7 @@ export function OfferButton({
   const button = (
     <button
       onClick={open}
+      data-offer-button
       style={{ background: offer.button_colour }}
       className={cn(
         "group flex w-full items-center justify-center gap-2.5 font-semibold text-white",
