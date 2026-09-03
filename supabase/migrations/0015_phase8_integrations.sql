@@ -147,6 +147,13 @@ create policy "own onboarding" on onboarding_progress
  * automation dispatch into pg_cron in earlier phases. This marks the rows due
  * for retry; the API route does the actual sending.
  */
+-- site_url is read by the sweep below. Seeded here because a missing key
+-- makes the function return 0 silently -- it looks healthy and retries
+-- nothing. Set it to the deployment's own origin.
+insert into app_config (key, value)
+values ('site_url', 'https://webapp-loopinglivecom-5602.vercel.app')
+on conflict (key) do nothing;
+
 create or replace function public.tick_webhook_retries()
 returns integer
 language plpgsql
