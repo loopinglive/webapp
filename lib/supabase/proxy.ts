@@ -12,6 +12,38 @@ import type { Database } from "@/types/database";
  * Those decisions live in the layouts and API routes, where they can be
  * enforced rather than merely redirected.
  */
+/*
+ * Maintenance status, cached in the process.
+ *
+ * Read once every thirty seconds rather than on every request: the flag
+ * changes about once a quarter and a database round trip in front of every
+ * page load would be a real cost for a value that is almost always false.
+ *
+ * Thirty seconds is also the honest upper bound on how long it takes for
+ * turning maintenance on to take effect, which is worth knowing when the
+ * reason you are turning it on is urgent.
+ */
+let maintenanceCache: { at: number; enabled: boolean } | null = null;
+const MAINTENANCE_TTL_MS = 30_000;
+
+/** Paths that must answer even while the site is down. */
+function alwaysServed(path: string) {
+  return (
+    // Uptime checks. A monitor that goes red during planned maintenance
+    // teaches everyone to ignore it.
+    path === "/api/health" ||
+    path === "/maintenance" ||
+    // The way back in, for whoever is doing the maintenance.
+    path.startsWith("/login") ||
+    path.startsWith("/auth") ||
+    path.startsWith("/superadmin") ||
+    path.startsWith("/api/superadmin") ||
+    // Scheduled work must keep running; it is often the thing being waited on.
+    path.startsWith("/api/cron") ||
+    path.startsWith("/api/webhooks")
+  );
+}
+
 export async function updateSession(request: NextRequest) {
   let response = NextResponse.next({ request });
 
@@ -55,6 +87,55 @@ export async function updateSession(request: NextRequest) {
   } = await supabase.auth.getUser();
 
   const path = request.nextUrl.pathname;
+
+  /*
+   * Maintenance mode.
+   *
+   * The environment variable wins and is checked first, because it is the
+   * escape hatch: maintenance is most needed when something is badly wrong,
+   * and a flag that lives in the database is unreadable in the one failure
+   * that matters most — the database being the thing that is down.
+   */
+  if (!alwaysServed(path)) {
+    let down = process.env.MAINTENANCE_MODE === "true";
+
+    if (!down) {
+      const fresh =
+        maintenanceCache && Date.now() - maintenanceCache.at < MAINTENANCE_TTL_MS;
+
+      if (fresh) {
+        down = maintenanceCache!.enabled;
+      } else {
+        try {
+          const { data } = await supabase.rpc("maintenance_status");
+          const status = data as { enabled?: boolean } | null;
+          down = Boolean(status?.enabled);
+          maintenanceCache = { at: Date.now(), enabled: down };
+        } catch {
+          // Unreachable config is not a reason to take the site down. If the
+          // database is genuinely gone the pages will fail on their own, with
+          // better errors than a maintenance screen would give.
+          maintenanceCache = { at: Date.now(), enabled: false };
+        }
+      }
+    }
+
+    if (down) {
+      // An API caller wants a status code it can act on, not HTML.
+      if (path.startsWith("/api/")) {
+        return NextResponse.json(
+          { error: "Down for maintenance.", maintenance: true },
+          { status: 503, headers: { "Retry-After": "600" } }
+        );
+      }
+
+      const url = request.nextUrl.clone();
+      url.pathname = "/maintenance";
+      url.search = "";
+      return NextResponse.rewrite(url, { status: 503 });
+    }
+  }
+
   const isProtected =
     path.startsWith("/dashboard") ||
     path.startsWith("/webinars") ||

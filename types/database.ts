@@ -467,6 +467,19 @@ export type AutomationSettingsRow = {
   updated_at: string;
 };
 
+/**
+ * Platform settings that must be changeable without a deploy.
+ *
+ * Service-role only: it also holds the cron secret. Anything that needs
+ * reading with a weaker key goes through a security-definer function that
+ * exposes just that value.
+ */
+export type AppConfigRow = {
+  key: string;
+  value: string;
+  updated_at: string;
+};
+
 export type UnsubscribeRow = {
   id: string;
   /** Null once the person has been erased; the hash below carries the record. */
@@ -1251,6 +1264,7 @@ export type Database = {
         Exclude<keyof AutomationSettingsRow, "webinar_id">
       >;
       unsubscribes: Table<UnsubscribeRow, "id" | "unsubscribed_at" | "email_hash">;
+      app_config: Table<AppConfigRow, "updated_at">;
       ai_personas: Table<
         AiPersonaRow,
         | "id"
@@ -1272,6 +1286,16 @@ export type Database = {
     };
     Views: Record<string, never>;
     Functions: {
+      /**
+       * Whether the site is deliberately down, and what to say.
+       *
+       * Security definer so the proxy can read it with the anon key —
+       * app_config itself holds the cron secret and must stay service-role.
+       */
+      maintenance_status: {
+        Args: Record<string, never>;
+        Returns: Json;
+      };
       /** Everything held about one registrant, as one JSON document. */
       export_registrant_data: {
         Args: { p_registrant_id: string };
