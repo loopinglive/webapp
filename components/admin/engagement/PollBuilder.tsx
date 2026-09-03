@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Plus } from "lucide-react";
 
 import { EngagementRow } from "@/components/admin/engagement/EngagementPanel";
@@ -138,15 +138,94 @@ export function PollBuilder({
               onDelete={() => remove(poll.id)}
             >
               <p className="text-[13px] text-white">{poll.question}</p>
-              <p className="mt-1 text-[11.5px] text-[#A0A0B0]">
-                {(poll.options as PollOption[])
-                  .map((option) => option.label)
-                  .join(" · ")}
-              </p>
+              <PollStandings
+                webinarId={webinarId}
+                pollId={poll.id}
+                options={poll.options as PollOption[]}
+              />
             </EngagementRow>
           ))}
         </ul>
       )}
+    </div>
+  );
+}
+
+/**
+ * What the room actually answered, across every session.
+ *
+ * A poll you can write but never read the results of is a feature that only
+ * half exists. Falls back to listing the options when nobody has voted, which
+ * is what the row showed before there were any answers to show.
+ */
+function PollStandings({
+  webinarId,
+  pollId,
+  options,
+}: {
+  webinarId: string;
+  pollId: string;
+  options: PollOption[];
+}) {
+  const [results, setResults] = useState<
+    { option_id: string; votes: number; share: number }[] | null
+  >(null);
+  const [total, setTotal] = useState(0);
+
+  const load = useCallback(async () => {
+    const response = await fetch(
+      `/api/webinar/${webinarId}/poll-results?pollId=${pollId}`,
+      { cache: "no-store" }
+    );
+    if (!response.ok) return;
+    const payload = (await response.json()) as {
+      results: { option_id: string; votes: number; share: number }[];
+      total: number;
+    };
+    setResults(payload.results);
+    setTotal(payload.total);
+  }, [webinarId, pollId]);
+
+  useEffect(() => {
+    const timer = setTimeout(() => void load(), 0);
+    return () => clearTimeout(timer);
+  }, [load]);
+
+  const labels = new Map(options.map((option) => [option.id, option.label]));
+
+  if (!results || total === 0) {
+    return (
+      <p className="mt-1 text-[11.5px] text-[#A0A0B0]">
+        {options.map((option) => option.label).join(" · ")}
+        {results ? " · no answers yet" : ""}
+      </p>
+    );
+  }
+
+  const byShare = [...results].sort((a, b) => b.share - a.share);
+
+  return (
+    <div className="mt-2 space-y-1.5">
+      {byShare.map((row) => (
+        <div key={row.option_id} className="flex items-center gap-2">
+          <div className="relative h-5 flex-1 overflow-hidden rounded bg-[#12121A]">
+            <div
+              className="absolute inset-y-0 left-0 bg-[#6C47FF]/30"
+              style={{ width: `${row.share}%` }}
+            />
+            <span className="relative flex h-full items-center px-2 text-[11.5px] text-white">
+              {labels.get(row.option_id) ?? row.option_id}
+            </span>
+          </div>
+          <span className="w-20 shrink-0 text-right text-[11.5px] tabular-nums text-[#A0A0B0]">
+            {row.share}% · {row.votes}
+          </span>
+        </div>
+      ))}
+      <p className="text-[11px] text-[#6E6E80]">
+        {total.toLocaleString()} {total === 1 ? "answer" : "answers"} across all
+        sessions
+      </p>
     </div>
   );
 }

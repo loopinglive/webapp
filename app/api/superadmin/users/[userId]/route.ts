@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { z } from "zod";
 
 import { requireSuperAdmin } from "@/lib/billing/account";
+import { type AdminRole, roleCan } from "@/lib/billing/admin-roles";
 import { sendPasswordReset } from "@/lib/auth/auth-emails";
 import { createServiceClient } from "@/lib/supabase/server";
 
@@ -40,7 +41,7 @@ export async function GET(
   _request: Request,
   { params }: { params: Promise<{ userId: string }> }
 ) {
-  const { response: denied } = await requireSuperAdmin();
+  const { account: viewer, response: denied } = await requireSuperAdmin();
   if (denied) return denied;
 
   const { userId } = await params;
@@ -162,8 +163,22 @@ export async function GET(
   }
   timeline.sort((a, b) => new Date(b.at).getTime() - new Date(a.at).getTime());
 
+  // The viewer's own role travels with the payload so the screen can hide
+  // controls it would only refuse. The server still enforces every one of
+  // them — this is about not offering a button that cannot work.
+  const viewerRole = ((viewer.admin_role as AdminRole | null) ?? "owner") as AdminRole;
+
   return NextResponse.json({
     account,
+    viewerRole,
+    viewerCan: {
+      impersonate: roleCan(viewerRole, "impersonate"),
+      suspend: roleCan(viewerRole, "suspend"),
+      grantPlans: roleCan(viewerRole, "grant_plans"),
+      billingActions: roleCan(viewerRole, "billing_actions"),
+      editCustomers: roleCan(viewerRole, "edit_customers"),
+      manageAdmins: roleCan(viewerRole, "manage_admins"),
+    },
     webinars: webinars ?? [],
     invoices: invoices ?? [],
     messages: messages ?? [],

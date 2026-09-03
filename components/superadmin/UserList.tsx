@@ -10,12 +10,15 @@ import {
   Download,
   Loader2,
   Search,
+  Star,
   StickyNote,
+  X,
 } from "lucide-react";
 
 import { PLANS } from "@/lib/billing/plans";
 import { EmptyState } from "@/components/ui/EmptyState";
 import { SkeletonRows } from "@/components/ui/Skeleton";
+import { useToast } from "@/components/ui/ToastProvider";
 import { cn } from "@/lib/utils";
 
 type Row = {
@@ -64,6 +67,8 @@ const COLUMNS = [
  * plan should not sit one mis-click away in a dense table, and the actions
  * belong next to the context that justifies them.
  */
+type SavedFilter = { id: string; name: string; query: string; created_at: string };
+
 export function UserList() {
   const [data, setData] = useState<Payload | null>(null);
   const [loading, setLoading] = useState(true);
@@ -73,6 +78,8 @@ export function UserList() {
   const [page, setPage] = useState(1);
   const [sort, setSort] = useState("created_at");
   const [dir, setDir] = useState<"asc" | "desc">("desc");
+  const [saved, setSaved] = useState<SavedFilter[]>([]);
+  const toast = useToast();
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -97,6 +104,43 @@ export function UserList() {
     const timer = setTimeout(() => void load(), query ? 300 : 0);
     return () => clearTimeout(timer);
   }, [load, query]);
+
+  const loadSaved = useCallback(async () => {
+    const response = await fetch("/api/superadmin/saved-filters", {
+      cache: "no-store",
+    });
+    if (!response.ok) return;
+    const payload = (await response.json()) as { filters: SavedFilter[] };
+    setSaved(payload.filters);
+  }, []);
+
+  useEffect(() => {
+    const timer = setTimeout(() => void loadSaved(), 0);
+    return () => clearTimeout(timer);
+  }, [loadSaved]);
+
+  /** The current view, as the query string a saved filter restores. */
+  function currentQuery() {
+    const params = new URLSearchParams();
+    if (plan !== "all") params.set("plan", plan);
+    if (status !== "all") params.set("status", status);
+    if (query.trim()) params.set("q", query.trim());
+    params.set("sort", sort);
+    params.set("dir", dir);
+    return params.toString();
+  }
+
+  function applySaved(filter: SavedFilter) {
+    const params = new URLSearchParams(filter.query);
+    setPlan(params.get("plan") ?? "all");
+    setStatus(params.get("status") ?? "all");
+    setQuery(params.get("q") ?? "");
+    setSort(params.get("sort") ?? "created_at");
+    setDir(params.get("dir") === "asc" ? "asc" : "desc");
+    setPage(1);
+  }
+
+  const active = currentQuery();
 
   function toggleSort(key: string) {
     if (sort === key) {
@@ -157,6 +201,28 @@ export function UserList() {
           <option value="past_due">Past due</option>
         </select>
 
+        <button
+          onClick={async () => {
+            const name = window.prompt("Name this view:");
+            if (!name?.trim()) return;
+            const response = await fetch("/api/superadmin/saved-filters", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ name: name.trim(), query: active }),
+            });
+            const payload = (await response.json()) as { error?: string };
+            if (!response.ok) {
+              toast.error(payload.error ?? "Could not save that view.");
+              return;
+            }
+            await loadSaved();
+          }}
+          className="inline-flex h-9 items-center gap-2 rounded-full border border-[#1E1E2E] px-3.5 text-[12.5px] text-[#A0A0B0] hover:border-[#6C47FF]/50 hover:text-white"
+        >
+          <Star className="h-3 w-3" />
+          Save view
+        </button>
+
         {loading && <Loader2 className="h-4 w-4 animate-spin text-[#6C47FF]" />}
 
         <a
@@ -167,6 +233,40 @@ export function UserList() {
           Export CSV
         </a>
       </div>
+
+      {saved.length > 0 && (
+        <div className="mb-5 flex flex-wrap items-center gap-1.5">
+          {saved.map((filter) => {
+            const current = filter.query === active;
+            return (
+              <span
+                key={filter.id}
+                className={cn(
+                  "group inline-flex h-7 items-center gap-1 rounded-full border pl-3 pr-1.5 text-[12px] transition-colors",
+                  current
+                    ? "border-[#6C47FF] bg-[#6C47FF]/10 text-white"
+                    : "border-[#1E1E2E] text-[#A0A0B0] hover:text-white"
+                )}
+              >
+                <button onClick={() => applySaved(filter)}>{filter.name}</button>
+                <button
+                  onClick={async () => {
+                    await fetch(
+                      `/api/superadmin/saved-filters?id=${filter.id}`,
+                      { method: "DELETE" }
+                    );
+                    await loadSaved();
+                  }}
+                  aria-label={`Delete the ${filter.name} view`}
+                  className="rounded-full p-0.5 text-[#6E6E80] opacity-0 transition-opacity hover:text-[#FF5A5A] focus:opacity-100 group-hover:opacity-100"
+                >
+                  <X className="h-3 w-3" />
+                </button>
+              </span>
+            );
+          })}
+        </div>
+      )}
 
       {!data ? (
         <SkeletonRows rows={10} columns={6} />

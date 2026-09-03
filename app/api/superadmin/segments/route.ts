@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
 
-import { requireSuperAdmin } from "@/lib/billing/account";
+import { requireCapability } from "@/lib/billing/admin-roles";
 import { renderEmail } from "@/lib/email/render";
 import { sendEmail } from "@/lib/messaging/providers";
 import { SITE } from "@/lib/constants";
@@ -22,7 +22,7 @@ const filterSchema = z.object({
 });
 
 export async function GET(request: Request) {
-  const { response: denied } = await requireSuperAdmin();
+  const { response: denied } = await requireCapability("broadcast");
   if (denied) return denied;
 
   const supabase = createServiceClient();
@@ -73,7 +73,7 @@ const saveSchema = z.object({
 });
 
 export async function POST(request: Request) {
-  const { account: admin, response: denied } = await requireSuperAdmin();
+  const { account: admin, response: denied } = await requireCapability("broadcast");
   if (denied) return denied;
 
   const parsed = saveSchema.safeParse(await request.json().catch(() => ({})));
@@ -118,7 +118,7 @@ const broadcastSchema = z.object({
  * half the audience throttled is worse than a send that takes a minute longer.
  */
 export async function PUT(request: Request) {
-  const { account: admin, response: denied } = await requireSuperAdmin();
+  const { account: admin, response: denied } = await requireCapability("broadcast");
   if (denied) return denied;
 
   const parsed = broadcastSchema.safeParse(await request.json().catch(() => ({})));

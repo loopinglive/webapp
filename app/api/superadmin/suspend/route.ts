@@ -1,12 +1,12 @@
 import { NextResponse } from "next/server";
 
-import { requireSuperAdmin } from "@/lib/billing/account";
+import { requireCapability } from "@/lib/billing/admin-roles";
 import { createServiceClient } from "@/lib/supabase/server";
 
 export const dynamic = "force-dynamic";
 
 export async function POST(request: Request) {
-  const { account: admin, response: denied } = await requireSuperAdmin();
+  const { account: admin, response: denied } = await requireCapability("suspend");
   if (denied) return denied;
 
   const { userId, suspended } = (await request.json()) as {

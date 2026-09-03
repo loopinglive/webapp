@@ -537,6 +537,8 @@ export type UserAccountRow = {
   plan_expires_at: string | null;
   trial_ends_at: string | null;
   is_admin: boolean;
+  /** owner | support | finance. Null on rows that predate roles. */
+  admin_role: string | null;
   is_suspended: boolean;
   suspended_reason: string | null;
   suspended_at: string | null;
@@ -846,9 +848,18 @@ export type BroadcastRow = {
   created_at: string;
 };
 
+export type SavedFilterRow = {
+  id: string;
+  owner_id: string | null;
+  name: string;
+  query: string;
+  created_at: string;
+};
+
 export type Database = {
   public: {
     Tables: {
+      saved_filters: Table<SavedFilterRow, "id" | "owner_id" | "created_at">;
       saved_segments: Table<
         SavedSegmentRow,
         "id" | "description" | "filters" | "created_by" | "created_at"
@@ -1240,6 +1251,11 @@ export type Database = {
     };
     Views: Record<string, never>;
     Functions: {
+      /** Aggregated poll answers, so a big room does not ship every row. */
+      poll_results: {
+        Args: { p_poll_id: string };
+        Returns: { option_id: string; votes: number; share: number }[];
+      };
       /** Turns a segment's filters into the accounts they match. */
       resolve_segment: {
         Args: { p_filters: Json };

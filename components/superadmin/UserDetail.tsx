@@ -11,10 +11,17 @@ import {
   Loader2,
   Mail,
   Save,
+  ShieldCheck,
   UserCog,
 } from "lucide-react";
 
 import { PLANS, type PlanSlug } from "@/lib/billing/plans";
+import {
+  ROLES,
+  ROLE_DESCRIPTIONS,
+  ROLE_LABELS,
+  type AdminRole,
+} from "@/lib/billing/roles";
 import { EmptyState } from "@/components/ui/EmptyState";
 import { SkeletonRows, SkeletonTiles } from "@/components/ui/Skeleton";
 import { useToast } from "@/components/ui/ToastProvider";
@@ -27,6 +34,7 @@ type Detail = {
     plan_slug: string;
     subscription_status: string | null;
     is_admin: boolean;
+    admin_role: string | null;
     is_suspended: boolean;
     suspended_reason: string | null;
     admin_note: string | null;
@@ -34,6 +42,15 @@ type Detail = {
     created_at: string;
     last_login_at: string | null;
     stripe_customer_id: string | null;
+  };
+  viewerRole: AdminRole;
+  viewerCan: {
+    impersonate: boolean;
+    suspend: boolean;
+    grantPlans: boolean;
+    billingActions: boolean;
+    editCustomers: boolean;
+    manageAdmins: boolean;
   };
   webinars: { id: string; title: string; status: string; created_at: string; video_url: string | null }[];
   invoices: { id: string; amount: number; currency: string; status: string; plan_slug: string; paid_at: string | null; created_at: string }[];
@@ -136,6 +153,27 @@ export function UserDetail({ userId }: { userId: string }) {
     [userId, load, toast]
   );
 
+  const setRole = useCallback(
+    async (role: AdminRole | null) => {
+      setBusy(`role-${role ?? "none"}`);
+      const response = await fetch("/api/superadmin/admins", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ userId, role }),
+      });
+      const payload = (await response.json()) as { error?: string };
+      setBusy(null);
+
+      if (!response.ok) {
+        toast.error(payload.error ?? "Could not change that role.");
+        return;
+      }
+      toast.success(role ? `Now ${ROLE_LABELS[role]}.` : "Admin access removed.");
+      await load();
+    },
+    [userId, load, toast]
+  );
+
   const billingAction = useCallback(
     async (body: Record<string, unknown>, label: string) => {
       setBusy(label);
@@ -207,7 +245,8 @@ export function UserDetail({ userId }: { userId: string }) {
               {a.full_name || a.email}
               {a.is_admin && (
                 <span className="ml-2 rounded-full bg-[#FF5A5A]/15 px-2 py-0.5 text-[10px] align-middle text-[#FF5A5A]">
-                  admin
+                  {ROLE_LABELS[(a.admin_role as AdminRole) ?? "owner"]?.toLowerCase() ??
+                    "admin"}
                 </span>
               )}
               {a.is_suspended && (
@@ -229,6 +268,7 @@ export function UserDetail({ userId }: { userId: string }) {
           </div>
 
           <div className="flex flex-wrap items-center gap-2">
+            {data.viewerCan.grantPlans && (
             <select
               defaultValue=""
               disabled={busy !== null}
@@ -259,7 +299,9 @@ export function UserDetail({ userId }: { userId: string }) {
                 </option>
               ))}
             </select>
+            )}
 
+            {data.viewerCan.billingActions && (
             <button
               onClick={() => {
                 const days = Number(
@@ -281,7 +323,9 @@ export function UserDetail({ userId }: { userId: string }) {
               )}
               Extend
             </button>
+            )}
 
+            {data.viewerCan.editCustomers && (
             <button
               onClick={() => patch({ sendPasswordReset: true }, "reset")}
               disabled={busy !== null}
@@ -294,8 +338,9 @@ export function UserDetail({ userId }: { userId: string }) {
               )}
               Send reset
             </button>
+            )}
 
-            {!a.is_admin && (
+            {!a.is_admin && data.viewerCan.suspend && (
               <button
                 onClick={async () => {
                   if (a.is_suspended) {
@@ -321,7 +366,7 @@ export function UserDetail({ userId }: { userId: string }) {
               </button>
             )}
 
-            {!a.is_admin && (
+            {!a.is_admin && data.viewerCan.impersonate && (
               <button
                 onClick={async () => {
                   const reason = window.prompt("Reason for impersonating (recorded):");
@@ -355,6 +400,70 @@ export function UserDetail({ userId }: { userId: string }) {
         <Stat label="Registrants" value={data.registrantCount.toLocaleString()} />
         <Stat label="Paid us" value={money(revenue, data.invoices[0]?.currency ?? "usd")} />
       </div>
+
+      {/* Admin access. Only an owner sees this, and the server checks again. */}
+      {data.viewerCan.manageAdmins && (
+        <Panel
+          title="Admin access"
+          note="What this person can do inside the platform, not inside their own account."
+        >
+          <div className="flex flex-wrap items-center gap-2">
+            {ROLES.map((role) => {
+              const current = a.is_admin && ((a.admin_role as AdminRole) ?? "owner") === role;
+              return (
+                <button
+                  key={role}
+                  onClick={() => void setRole(role)}
+                  disabled={busy !== null || current}
+                  title={ROLE_DESCRIPTIONS[role]}
+                  className={`inline-flex h-9 items-center gap-2 rounded-lg border px-3 text-[12.5px] transition-colors disabled:opacity-60 ${
+                    current
+                      ? "border-[#6C47FF] bg-[#6C47FF]/10 text-white"
+                      : "border-[#1E1E2E] text-[#A0A0B0] hover:border-[#6C47FF]/50 hover:text-white"
+                  }`}
+                >
+                  {busy === `role-${role}` ? (
+                    <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                  ) : (
+                    <ShieldCheck className="h-3.5 w-3.5" />
+                  )}
+                  {ROLE_LABELS[role]}
+                </button>
+              );
+            })}
+
+            {a.is_admin && (
+              <button
+                onClick={() => {
+                  if (
+                    !window.confirm(
+                      `Remove admin access from ${a.email}? They keep their own account.`
+                    )
+                  ) {
+                    return;
+                  }
+                  void setRole(null);
+                }}
+                disabled={busy !== null}
+                className="inline-flex h-9 items-center gap-2 rounded-lg border border-[#1E1E2E] px-3 text-[12.5px] text-[#A0A0B0] hover:border-[#FF5A5A]/50 hover:text-[#FF5A5A] disabled:opacity-50"
+              >
+                {busy === "role-none" ? (
+                  <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                ) : (
+                  <Ban className="h-3.5 w-3.5" />
+                )}
+                Remove access
+              </button>
+            )}
+          </div>
+
+          <p className="mt-3 text-[11.5px] leading-relaxed text-[#6E6E80]">
+            {a.is_admin
+              ? ROLE_DESCRIPTIONS[(a.admin_role as AdminRole) ?? "owner"]
+              : "Not an admin. Choosing a role above grants access to this console."}
+          </p>
+        </Panel>
+      )}
 
       {/* Support note + email correction */}
       <div className="grid gap-4 xl:grid-cols-2">

@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
 
-import { requireSuperAdmin } from "@/lib/billing/account";
+import { requireCapability } from "@/lib/billing/admin-roles";
 import { billingConfigured, stripe } from "@/lib/billing/stripe";
 import { createServiceClient } from "@/lib/supabase/server";
 
@@ -35,7 +35,7 @@ const schema = z.discriminatedUnion("action", [
  * reliably save a cancellation, and both were manual.
  */
 export async function POST(request: Request) {
-  const { account: admin, response: denied } = await requireSuperAdmin();
+  const { account: admin, response: denied } = await requireCapability("billing_actions");
   if (denied) return denied;
 
   const parsed = schema.safeParse(await request.json().catch(() => ({})));

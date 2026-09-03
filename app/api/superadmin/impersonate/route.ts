@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 
-import { requireSuperAdmin } from "@/lib/billing/account";
+import { requireCapability } from "@/lib/billing/admin-roles";
 import { createServiceClient } from "@/lib/supabase/server";
 
 export const dynamic = "force-dynamic";
@@ -18,7 +18,7 @@ const ONE_HOUR = 60 * 60;
  * half-authenticated state.
  */
 export async function POST(request: Request) {
-  const { account: admin, response: denied } = await requireSuperAdmin();
+  const { account: admin, response: denied } = await requireCapability("impersonate");
   if (denied) return denied;
 
   const { userId, reason } = (await request.json()) as {
@@ -94,7 +94,7 @@ export async function POST(request: Request) {
 
 /** Ends impersonation and closes the log entry. */
 export async function DELETE(request: Request) {
-  const { response: denied } = await requireSuperAdmin();
+  const { response: denied } = await requireCapability("impersonate");
   if (denied) return denied;
 
   const raw = request.headers

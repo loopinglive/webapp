@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 
-import { requireSuperAdmin } from "@/lib/billing/account";
+import { requireCapability } from "@/lib/billing/admin-roles";
 import { PLAN_BY_SLUG, type PlanSlug } from "@/lib/billing/plans";
 import { createServiceClient } from "@/lib/supabase/server";
 
@@ -10,7 +10,7 @@ const VALID: PlanSlug[] = ["free", "monthly", "yearly", "lifetime"];
 
 /** Grants a plan without payment. Recorded as a zero-value invoice. */
 export async function POST(request: Request) {
-  const { account: admin, response: denied } = await requireSuperAdmin();
+  const { account: admin, response: denied } = await requireCapability("grant_plans");
   if (denied) return denied;
 
   const { userId, planSlug } = (await request.json()) as {

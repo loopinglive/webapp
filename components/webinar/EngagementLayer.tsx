@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ArrowUpRight, BarChart3, Check, Download, X } from "lucide-react";
 
 import { cn } from "@/lib/utils";
@@ -159,6 +159,45 @@ function PollCard({
   const [total, setTotal] = useState(0);
 
   const options = (poll.options as PollOption[]) ?? [];
+
+  /*
+   * The bars keep moving for a short while after you vote.
+   *
+   * A poll that freezes at the instant you answer reads as a form; watching
+   * two more people land behind you is what makes it read as a room. Bounded
+   * to half a minute rather than left open — the numbers have stopped being
+   * interesting well before then, and this runs in every attendee's browser.
+   */
+  useEffect(() => {
+    if (!answered || !sessionId) return;
+
+    let cancelled = false;
+    const started = Date.now();
+
+    const timer = setInterval(() => {
+      if (Date.now() - started > 30_000) {
+        clearInterval(timer);
+        return;
+      }
+
+      void fetch(
+        `/api/webinar/${webinarId}/poll-results?pollId=${poll.id}&sessionId=${sessionId}`,
+        { cache: "no-store" }
+      )
+        .then((response) => (response.ok ? response.json() : null))
+        .then((payload: { tally: Record<string, number>; total: number } | null) => {
+          if (cancelled || !payload) return;
+          setTally(payload.tally);
+          setTotal(payload.total);
+        })
+        .catch(() => undefined);
+    }, 5_000);
+
+    return () => {
+      cancelled = true;
+      clearInterval(timer);
+    };
+  }, [answered, sessionId, webinarId, poll.id]);
 
   async function answer(optionId: string) {
     setAnswered(optionId);

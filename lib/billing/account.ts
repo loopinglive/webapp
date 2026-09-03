@@ -14,6 +14,7 @@ export type UserAccount = {
   plan_started_at: string | null;
   plan_expires_at: string | null;
   is_admin: boolean;
+  admin_role: string | null;
   is_suspended: boolean;
   referral_code: string;
   referred_by: string | null;
