@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import {
   ArrowDown,
@@ -79,6 +79,8 @@ export function UserList() {
   const [sort, setSort] = useState("created_at");
   const [dir, setDir] = useState<"asc" | "desc">("desc");
   const [saved, setSaved] = useState<SavedFilter[]>([]);
+  const [selected, setSelected] = useState<Set<string>>(new Set());
+  const [bulkBusy, setBulkBusy] = useState(false);
   const toast = useToast();
 
   const load = useCallback(async () => {
@@ -141,6 +143,85 @@ export function UserList() {
   }
 
   const active = currentQuery();
+
+  /*
+   * Only ever the rows currently on screen.
+   *
+   * Derived rather than cleared when the filters change: a tick made on page
+   * one must not survive into a different filter, because a bulk suspend that
+   * reaches accounts the person running it can no longer see is the worst
+   * possible way to find that out. Intersecting with what is rendered makes
+   * that impossible rather than merely unlikely.
+   */
+  const visibleIds = useMemo(
+    () => new Set((data?.users ?? []).map((user) => user.id)),
+    [data]
+  );
+  const selectedIds = [...selected].filter((id) => visibleIds.has(id));
+
+  const bulk = useCallback(
+    async (action: string, planSlug?: string) => {
+      const ids = [...selected].filter((id) => visibleIds.has(id));
+      if (ids.length === 0) return;
+
+      let reason: string | undefined;
+      let note: string | undefined;
+
+      if (action === "suspend") {
+        const answer = window.prompt(
+          `Suspend ${ids.length} accounts. Reason (recorded against each):`
+        );
+        if (!answer?.trim()) return;
+        reason = answer.trim();
+      } else if (action === "add_note") {
+        const answer = window.prompt(`Note to add to ${ids.length} accounts:`);
+        if (!answer?.trim()) return;
+        note = answer.trim();
+      } else if (
+        !window.confirm(
+          `Apply this to ${ids.length} ${ids.length === 1 ? "account" : "accounts"}?`
+        )
+      ) {
+        return;
+      }
+
+      setBulkBusy(true);
+      const response = await fetch("/api/superadmin/bulk", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          userIds: ids,
+          action,
+          planSlug,
+          reason,
+          note,
+          confirm: true,
+        }),
+      });
+      const payload = (await response.json()) as {
+        changed?: number;
+        skipped?: number;
+        error?: string;
+      };
+      setBulkBusy(false);
+
+      if (!response.ok) {
+        toast.error(payload.error ?? "That did not work.");
+        return;
+      }
+
+      // Skipped rows are admins, which the server filters rather than refusing
+      // over. Saying so avoids a count that quietly does not add up.
+      toast.success(
+        payload.skipped
+          ? `${payload.changed} updated, ${payload.skipped} skipped (admins).`
+          : `${payload.changed} updated.`
+      );
+      setSelected(new Set());
+      await load();
+    },
+    [selected, visibleIds, load, toast]
+  );
 
   function toggleSort(key: string) {
     if (sort === key) {
@@ -234,6 +315,62 @@ export function UserList() {
         </a>
       </div>
 
+      {selectedIds.length > 0 && (
+        <div className="mb-4 flex flex-wrap items-center gap-2 rounded-xl border border-[#6C47FF]/40 bg-[#6C47FF]/10 px-4 py-2.5">
+          <span className="text-[12.5px] text-white">
+            {selectedIds.length} selected
+          </span>
+
+          <button
+            onClick={() => void bulk("suspend")}
+            disabled={bulkBusy}
+            className="h-8 rounded-lg border border-[#1E1E2E] px-3 text-[12px] text-[#A0A0B0] hover:border-[#FF5A5A]/50 hover:text-[#FF5A5A] disabled:opacity-60"
+          >
+            Suspend
+          </button>
+          <button
+            onClick={() => void bulk("unsuspend")}
+            disabled={bulkBusy}
+            className="h-8 rounded-lg border border-[#1E1E2E] px-3 text-[12px] text-[#A0A0B0] hover:text-white disabled:opacity-60"
+          >
+            Unsuspend
+          </button>
+          <button
+            onClick={() => void bulk("add_note")}
+            disabled={bulkBusy}
+            className="h-8 rounded-lg border border-[#1E1E2E] px-3 text-[12px] text-[#A0A0B0] hover:text-white disabled:opacity-60"
+          >
+            Add a note
+          </button>
+          <select
+            defaultValue=""
+            disabled={bulkBusy}
+            onChange={(event) => {
+              const plan = event.target.value;
+              event.target.value = "";
+              if (plan) void bulk("grant_plan", plan);
+            }}
+            className="h-8 rounded-lg border border-[#1E1E2E] bg-[#0D0D15] px-2 text-[12px] text-[#A0A0B0]"
+          >
+            <option value="">Grant plan…</option>
+            {PLANS.map((p) => (
+              <option key={p.slug} value={p.slug}>
+                {p.name}
+              </option>
+            ))}
+          </select>
+
+          {bulkBusy && <Loader2 className="h-4 w-4 animate-spin text-[#6C47FF]" />}
+
+          <button
+            onClick={() => setSelected(new Set())}
+            className="ml-auto text-[12px] text-[#A0A0B0] hover:text-white"
+          >
+            Clear
+          </button>
+        </div>
+      )}
+
       {saved.length > 0 && (
         <div className="mb-5 flex flex-wrap items-center gap-1.5">
           {saved.map((filter) => {
@@ -282,6 +419,23 @@ export function UserList() {
             <table className="w-full min-w-[840px]">
               <thead className="bg-[#12121A]">
                 <tr>
+                  <th className="w-9 px-3 py-2.5">
+                    <input
+                      type="checkbox"
+                      aria-label="Select every user on this page"
+                      checked={
+                        data.users.length > 0 && selected.size === data.users.length
+                      }
+                      onChange={(event) =>
+                        setSelected(
+                          event.target.checked
+                            ? new Set(data.users.map((user) => user.id))
+                            : new Set()
+                        )
+                      }
+                      className="h-3.5 w-3.5 accent-[#6C47FF]"
+                    />
+                  </th>
                   {COLUMNS.map((column) => (
                     <th
                       key={column.key}
@@ -319,6 +473,22 @@ export function UserList() {
                       user.is_suspended && "opacity-50"
                     )}
                   >
+                    <td className="px-3 py-3">
+                      <input
+                        type="checkbox"
+                        aria-label={`Select ${user.full_name || user.email}`}
+                        checked={selected.has(user.id)}
+                        onChange={(event) =>
+                          setSelected((current) => {
+                            const next = new Set(current);
+                            if (event.target.checked) next.add(user.id);
+                            else next.delete(user.id);
+                            return next;
+                          })
+                        }
+                        className="h-3.5 w-3.5 accent-[#6C47FF]"
+                      />
+                    </td>
                     <td className="px-4 py-3">
                       <Link
                         href={`/superadmin/users/${user.id}`}
