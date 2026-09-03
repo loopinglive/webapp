@@ -3,28 +3,58 @@
 import { useEffect, useRef, useState, type RefObject } from "react";
 import { Loader2, Volume2 } from "lucide-react";
 
+import { useHlsSource } from "@/hooks/useHlsSource";
 import { formatOffset } from "@/lib/utils";
 
 type Props = {
   videoRef: RefObject<HTMLVideoElement | null>;
   src: string;
+  /** Adaptive HLS. Falls back to `src` where it cannot be played. */
+  streamSrc?: string | null;
+  /** WebVTT captions, if the video was transcribed on upload. */
+  captionsSrc?: string | null;
   poster?: string | null;
   currentTime: number;
   duration: number;
   ended: boolean;
+  /** True while the playhead is being eased back into sync. */
+  catchingUp?: boolean;
 };
 
 export function VideoPlayer({
   videoRef,
   src,
+  streamSrc,
+  captionsSrc,
   poster,
   currentTime,
   duration,
   ended,
+  catchingUp,
 }: Props) {
   const [needsSound, setNeedsSound] = useState(false);
   const [buffering, setBuffering] = useState(true);
+  const [captionsOn, setCaptionsOn] = useState(false);
   const started = useRef(false);
+
+  // Adaptive stream where possible, progressive MP4 where not. The `src`
+  // attribute is deliberately absent below — this hook owns the source.
+  useHlsSource({ videoRef, streamSrc: streamSrc ?? null, fallbackSrc: src });
+
+  // Captions are off by default but remembered, because someone who needs
+  // them needs them on every webinar. Deferred rather than read during render:
+  // localStorage is unavailable on the server, and reading it in an initialiser
+  // would make the first client render disagree with the server's.
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      try {
+        setCaptionsOn(localStorage.getItem("loopinglive_captions") === "on");
+      } catch {
+        /* private mode, or storage blocked */
+      }
+    }, 0);
+    return () => clearTimeout(timer);
+  }, []);
 
   // Browsers only allow unprompted playback when muted. Try with sound, fall
   // back to muted, and put one tap between the viewer and audio.
@@ -69,8 +99,8 @@ export function VideoPlayer({
     <div className="relative aspect-video w-full overflow-hidden bg-black lg:rounded-xl">
       <video
         ref={videoRef}
-        src={src}
         poster={poster ?? undefined}
+        crossOrigin="anonymous"
         playsInline
         preload="auto"
         // Fake-live: no scrubbing, no speed, no download. The playhead is owned
@@ -83,11 +113,27 @@ export function VideoPlayer({
         onPlaying={() => setBuffering(false)}
         onCanPlay={() => setBuffering(false)}
         className="h-full w-full object-contain"
-      />
+      >
+        {captionsSrc && captionsOn && (
+          <track
+            // Keyed so toggling remounts the element with `default` set,
+            // instead of reaching into textTracks to change its mode.
+            key="captions-on"
+            kind="captions"
+            src={captionsSrc}
+            srcLang="en"
+            label="English"
+            default
+          />
+        )}
+      </video>
 
       {buffering && !ended && (
         <div className="pointer-events-none absolute inset-0 grid place-items-center bg-black/40">
-          <Loader2 className="h-7 w-7 animate-spin text-white/80" />
+          <div className="text-center">
+            <Loader2 className="mx-auto h-7 w-7 animate-spin text-white/80" />
+            <p className="mt-2 text-[12px] text-white/70">Reconnecting…</p>
+          </div>
         </div>
       )}
 
@@ -120,7 +166,37 @@ export function VideoPlayer({
       {/* Elapsed time. No scrub bar: there is nothing to scrub to. */}
       <div className="pointer-events-none absolute bottom-0 left-0 right-0 z-10 flex items-center justify-between bg-gradient-to-t from-black/70 to-transparent px-4 pb-3 pt-10 text-[11.5px] font-medium tabular-nums text-white/70">
         <span>{formatOffset(Math.min(currentTime, duration))}</span>
-        <span>{formatOffset(duration)}</span>
+
+        <span className="pointer-events-auto flex items-center gap-3">
+          {catchingUp && (
+            <span className="text-white/50" title="Catching up to the live position">
+              syncing
+            </span>
+          )}
+          {captionsSrc && (
+            <button
+              onClick={() => {
+                const next = !captionsOn;
+                setCaptionsOn(next);
+                try {
+                  localStorage.setItem("loopinglive_captions", next ? "on" : "off");
+                } catch {
+                  /* private mode */
+                }
+              }}
+              aria-pressed={captionsOn}
+              title={captionsOn ? "Hide captions" : "Show captions"}
+              className={
+                captionsOn
+                  ? "rounded border border-white/70 px-1.5 text-[10px] font-bold text-white"
+                  : "rounded border border-white/30 px-1.5 text-[10px] font-bold text-white/50 hover:text-white"
+              }
+            >
+              CC
+            </button>
+          )}
+          <span>{formatOffset(duration)}</span>
+        </span>
       </div>
     </div>
   );

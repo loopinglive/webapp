@@ -17,6 +17,7 @@ import { useAIReplyQueue } from "@/hooks/useAIReplyQueue";
 import { useEngagement } from "@/hooks/useEngagement";
 import { useIsHydrated } from "@/hooks/useIsHydrated";
 import { useWebinarSession } from "@/hooks/useWebinarSession";
+import { captionsUrl, streamUrl } from "@/lib/cloudinary-urls";
 import { readRegistrant } from "@/lib/registrant-storage";
 import type { WebinarOffer } from "@/types";
 
@@ -86,7 +87,7 @@ export function WatchRoom({ webinarId }: { webinarId: string }) {
     };
   }, [registrantId, isLive, reportAttendance]);
 
-  const { currentTime, duration, ended } = useVideoProgress({
+  const { currentTime, duration, ended, catchingUp } = useVideoProgress({
     videoRef,
     startsAt: isLive ? (data?.session?.starts_at ?? null) : null,
     durationSeconds: data?.webinar.video_duration_seconds ?? 0,
@@ -223,10 +224,23 @@ export function WatchRoom({ webinarId }: { webinarId: string }) {
           <VideoPlayer
             videoRef={videoRef}
             src={data.webinar.video_url ?? ""}
+            // Adaptive stream and captions are derived from the public id, so
+            // a webinar uploaded before either existed still plays.
+            streamSrc={
+              data.webinar.video_public_id
+                ? streamUrl(data.webinar.video_public_id)
+                : null
+            }
+            captionsSrc={
+              data.webinar.video_public_id
+                ? captionsUrl(data.webinar.video_public_id)
+                : null
+            }
             poster={data.webinar.thumbnail_url}
             currentTime={currentTime}
             duration={duration}
             ended={ended}
+            catchingUp={catchingUp}
           />
           {/* Offer zone: reserved under the video, filled the moment the host
               reveals the offer on the timeline. */}

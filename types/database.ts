@@ -42,6 +42,9 @@ export type WebinarRow = {
   status: WebinarStatus;
   total_views: number;
   clone_of: string | null;
+  // Phase 10 hardening — how the session is labelled to attendees.
+  broadcast_label: string;
+  show_recorded_notice: boolean;
 };
 
 export type WebinarOfferRow = {
@@ -785,9 +788,22 @@ export type LiveQuestionVoteRow = {
   created_at: string;
 };
 
+export type HandoutDownloadRow = {
+  id: string;
+  handout_id: string;
+  registrant_id: string;
+  session_id: string | null;
+  video_offset_seconds: number | null;
+  created_at: string;
+};
+
 export type Database = {
   public: {
     Tables: {
+      handout_downloads: Table<
+        HandoutDownloadRow,
+        "id" | "session_id" | "video_offset_seconds" | "created_at"
+      >;
       live_sessions: Table<
         LiveSessionRow,
         Exclude<keyof LiveSessionRow, "room_name">
@@ -948,6 +964,8 @@ export type Database = {
         | "status"
         | "total_views"
         | "clone_of"
+        | "broadcast_label"
+        | "show_recorded_notice"
       >;
       webinar_schedules: Table<
         WebinarScheduleRow,
@@ -1150,6 +1168,11 @@ export type Database = {
     };
     Views: Record<string, never>;
     Functions: {
+      /** Marks upcoming sessions whose video should be verified. */
+      tick_preflight: {
+        Args: Record<string, never>;
+        Returns: number;
+      };
       /** Cron job health, reaching into the cron schema on the app's behalf. */
       admin_cron_health: {
         Args: Record<string, never>;

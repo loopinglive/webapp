@@ -104,7 +104,7 @@ A host cannot currently see what they built before real people do.
 |---|---|
 | **Preview as an attendee** | There is no way to watch your own webinar as an attendee sees it — chat, personas, timed comments, the offer appearing. Every host will want this before their first session, and its absence is the most likely reason a first webinar goes out wrong. |
 | **Test sessions** | Run one that does not count: no automation fires, nothing lands in analytics. |
-| **Clone a webinar** | The API route and the `clone_of` column both exist. There is no button. |
+| ~~Clone a webinar~~ | **Correction: this already exists.** The button is in `WebinarCard.tsx` and wired to the clone route. I asserted it was missing without checking the component. |
 | **Templates for a new webinar** | A starting point beats an empty form, and it teaches the product's shape while they build. |
 | **Timed-comment generation from the video** | With a transcript, propose comments at sensible moments. Writing thirty by hand is the dullest part of setup and the one most likely to be skipped. |
 | **Bulk registrant import** | A host with an existing list currently has no way to bring it in. |
@@ -162,5 +162,4 @@ Checked against the codebase rather than assumed:
 - Chat history fetched and merged on join in `hooks/useRealtimeChat.ts`
 - Video served as a single `q_auto,f_auto` MP4 in `lib/cloudinary.ts`, with no streaming profile
 - No caption, subtitle, VTT or transcript reference anywhere in the codebase
-- A clone API route at `app/api/admin/webinar/[webinarId]/clone/route.ts` with no UI
 - No attendee-preview path in the admin panel

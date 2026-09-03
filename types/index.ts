@@ -110,7 +110,13 @@ export type TimedCommentWithPersona = TimedComment & {
 export type SessionPayload = {
   webinar: Pick<
     Webinar,
-    "id" | "title" | "description" | "video_url" | "video_duration_seconds" | "thumbnail_url"
+    | "id"
+    | "title"
+    | "description"
+    | "video_url"
+    | "video_public_id"
+    | "video_duration_seconds"
+    | "thumbnail_url"
   >;
   session: WebinarSession | null;
   /** Seconds until start; negative once it is under way. */
