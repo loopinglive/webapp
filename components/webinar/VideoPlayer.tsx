@@ -35,6 +35,7 @@ export function VideoPlayer({
   const [needsSound, setNeedsSound] = useState(false);
   const [buffering, setBuffering] = useState(true);
   const [captionsOn, setCaptionsOn] = useState(false);
+  const [audioOnly, setAudioOnly] = useState(false);
   const started = useRef(false);
 
   // Adaptive stream where possible, progressive MP4 where not. The `src`
@@ -128,7 +129,20 @@ export function VideoPlayer({
         )}
       </video>
 
-      {buffering && !ended && (
+      {audioOnly && !ended && (
+        <div className="absolute inset-0 grid place-items-center bg-[#0D0D15] px-6 text-center">
+          <div>
+            <Volume2 className="mx-auto h-6 w-6 text-[#6C47FF]" />
+            <p className="mt-3 text-[14px] font-medium text-white">Audio only</p>
+            <p className="mx-auto mt-1 max-w-[34ch] text-[12.5px] leading-relaxed text-[#A0A0B0]">
+              Video is hidden to save bandwidth. The audio is still playing and
+              you have not missed anything.
+            </p>
+          </div>
+        </div>
+      )}
+
+      {buffering && !ended && !audioOnly && (
         <div className="pointer-events-none absolute inset-0 grid place-items-center bg-black/40">
           <div className="text-center">
             <Loader2 className="mx-auto h-7 w-7 animate-spin text-white/80" />
@@ -173,6 +187,19 @@ export function VideoPlayer({
               syncing
             </span>
           )}
+          <button
+            onClick={() => setAudioOnly((value) => !value)}
+            aria-pressed={audioOnly}
+            title={audioOnly ? "Show video" : "Audio only — saves bandwidth"}
+            className={
+              audioOnly
+                ? "rounded border border-white/70 px-1.5 text-[10px] font-bold text-white"
+                : "rounded border border-white/30 px-1.5 text-[10px] font-bold text-white/50 hover:text-white"
+            }
+          >
+            AUDIO
+          </button>
+
           {captionsSrc && (
             <button
               onClick={() => {

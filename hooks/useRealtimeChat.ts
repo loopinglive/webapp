@@ -52,6 +52,7 @@ export function useRealtimeChat({ webinarId, sessionId, registrantId }: Options)
   useEffect(() => {
     if (!sessionId) return;
     let cancelled = false;
+    const timers: ReturnType<typeof setTimeout>[] = [];
 
     (async () => {
       const response = await fetch(
@@ -62,11 +63,28 @@ export function useRealtimeChat({ webinarId, sessionId, registrantId }: Options)
       const { messages: history } = (await response.json()) as {
         messages: ChatMessage[];
       };
-      merge(history);
+
+      // Everything older than the last handful lands at once — it is backdrop,
+      // and nobody reads it. The most recent few are staggered so the room
+      // looks like it is still talking rather than like a log that was pasted
+      // in the moment you arrived.
+      const PACED = 6;
+      const settled = history.slice(0, Math.max(0, history.length - PACED));
+      const recent = history.slice(-PACED);
+
+      merge(settled);
+
+      recent.forEach((message, index) => {
+        const timer = setTimeout(() => {
+          if (!cancelled) merge([message]);
+        }, index * 400);
+        timers.push(timer);
+      });
     })();
 
     return () => {
       cancelled = true;
+      timers.forEach(clearTimeout);
     };
   }, [webinarId, sessionId, merge]);
 
