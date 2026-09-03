@@ -8,6 +8,7 @@ import { AdminButton, Field, TextArea, TextInput } from "@/components/admin/ui/F
 import { VideoPreview } from "@/components/admin/webinar/VideoPreview";
 import { VideoUploader } from "@/components/admin/webinar/VideoUploader";
 import { cn } from "@/lib/utils";
+import { WEBINAR_TEMPLATES, templateById } from "@/lib/webinar-templates";
 
 const STEPS = ["Basic details", "Upload video", "Thumbnail"] as const;
 
@@ -31,8 +32,25 @@ export function WebinarForm() {
     offerDescription: "",
     webinarContext: "",
   });
+  const [picked, setPicked] = useState<string | null>(null);
+  const [dirty, setDirty] = useState(false);
   const [video, setVideo] = useState<{ durationSeconds?: number } | null>(null);
   const [thumbnailUrl, setThumbnailUrl] = useState<string | null>(null);
+
+  /*
+   * Any edit of their own retires the template picker.
+   *
+   * Leaving it up would mean one stray click silently replacing work they have
+   * already done, and an undo for that is more machinery than the picker is
+   * worth. Tracked as a flag rather than inferred from the fields being
+   * non-empty, because a template fills them too — so "not empty" would hide
+   * the picker the moment one was chosen, which is exactly when someone is
+   * most likely to want a different one.
+   */
+  const edit = (patch: Partial<typeof details>) => {
+    setDetails((current) => ({ ...current, ...patch }));
+    setDirty(true);
+  };
 
   async function createDraft() {
     if (!details.title.trim() || !details.description.trim()) {
@@ -116,11 +134,68 @@ export function WebinarForm() {
             </p>
           </div>
 
+          {/*
+            A starting point, not a shortcut.
+            
+            Two of the fields below are read by the AI moderators, so a host
+            who leaves them thin gets a room that answers questions badly and
+            never finds out why. A worked example in their own domain shows
+            what those fields are for, which is most of the value; the words
+            themselves they will replace.
+          */}
+          {!dirty && (
+            <div>
+              <span className="text-[12px] font-medium text-[#A0A0B0]">
+                Start from a template
+              </span>
+              <div className="mt-2 grid gap-2 sm:grid-cols-2">
+                {WEBINAR_TEMPLATES.map((template) => (
+                  <button
+                    key={template.id}
+                    type="button"
+                    onClick={() => {
+                      setDetails({
+                        title: template.title,
+                        description: template.description,
+                        topic: template.topic,
+                        offerDescription: template.offerDescription,
+                        webinarContext: template.webinarContext,
+                      });
+                      setPicked(template.id);
+                    }}
+                    className={cn(
+                      "rounded-xl border px-3.5 py-3 text-left transition-colors",
+                      picked === template.id
+                        ? "border-[#6C47FF] bg-[#6C47FF]/10"
+                        : "border-[#1E1E2E] hover:border-[#6C47FF]/40"
+                    )}
+                  >
+                    <span className="block text-[13px] font-medium text-white">
+                      {template.name}
+                    </span>
+                    <span className="mt-0.5 block text-[11.5px] leading-relaxed text-[#6E6E80]">
+                      {template.audience}
+                    </span>
+                  </button>
+                ))}
+              </div>
+              {picked && picked !== "blank" && (
+                <p className="mt-2 text-[11.5px] leading-relaxed text-[#6E6E80]">
+                  Everything below is a worked example — replace the bracketed
+                  parts with yours. Around {templateById(picked)?.minutes} minutes
+                  usually works for this shape, with the offer about{" "}
+                  {Math.round((templateById(picked)?.offerAt ?? 0.7) * 100)}% of
+                  the way through.
+                </p>
+              )}
+            </div>
+          )}
+
           <Field label="Webinar title" required>
             <TextInput
               value={details.title}
               onChange={(event) =>
-                setDetails({ ...details, title: event.target.value })
+                edit({ title: event.target.value })
               }
               placeholder="The 3-Offer Framework"
             />
@@ -131,7 +206,7 @@ export function WebinarForm() {
               rows={3}
               value={details.description}
               onChange={(event) =>
-                setDetails({ ...details, description: event.target.value })
+                edit({ description: event.target.value })
               }
               placeholder="What attendees will walk away with."
             />
@@ -145,7 +220,7 @@ export function WebinarForm() {
             <TextInput
               value={details.topic}
               onChange={(event) =>
-                setDetails({ ...details, topic: event.target.value })
+                edit({ topic: event.target.value })
               }
               placeholder="Building one high-converting offer"
             />
@@ -156,7 +231,7 @@ export function WebinarForm() {
               rows={2}
               value={details.offerDescription}
               onChange={(event) =>
-                setDetails({ ...details, offerDescription: event.target.value })
+                edit({ offerDescription: event.target.value })
               }
               placeholder="A $997 course covering the full system taught in the session."
             />
@@ -167,7 +242,7 @@ export function WebinarForm() {
               rows={3}
               value={details.webinarContext}
               onChange={(event) =>
-                setDetails({ ...details, webinarContext: event.target.value })
+                edit({ webinarContext: event.target.value })
               }
               placeholder="Refund policy, bonuses, who this is not for…"
             />
