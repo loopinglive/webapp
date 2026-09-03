@@ -12,6 +12,41 @@ I went looking for the obvious holes and mostly did not find them — the engine
 
 ---
 
+## Built since this review
+
+Kept honest: this section lists only what has been built *and* checked, with
+how it was checked. Everything else in the tables below is still outstanding.
+
+### Verified against the production database
+
+| Built | How it was verified |
+|---|---|
+| **Recurring schedules keep local time** | The bug was worse than predicted: `timezone` had been stored since migration 0001 and never read, so 20:00 ran at 16:00 in New York — wrong by a whole offset for every host outside UTC, permanently, on top of the DST slide. Fixed in the SQL, its TypeScript mirror and the form. **1,500 of 1,500 combinations now agree with the database** across ten zones, both hemispheres' boundaries, the hour that never happens and the hour that happens twice, a half-hour zone and a 45-minute one. |
+| **Attendance reconciled with the event log** | The cause was a read-then-write race on the join transition; it is a compare-and-set now. `attendance_mismatches()` found the exact row this review flagged, `reconcile_attendance()` wrote its missing event, and the count is zero. |
+| **Overlap protection on schedules** | Exclusion constraint, not an application check — the sessions table is written from three places. Tested in a rolled-back transaction against production: overlap rejected, test run exempt, back-to-back accepted. |
+| **Email hygiene and duplicate registration** | Gmail ignores dots and Outlook does not, so the rules are per-provider; stripping dots everywhere would merge two real people. 20 checks, including the degenerate cases. Pre-existing duplicates are reported, never merged. |
+
+### Built, not yet exercised by real traffic
+
+| Built | Note |
+|---|---|
+| **Test sessions** | A preview is a real session, marked — so chat, personas and the offer behave exactly as they will, and only analytics and automated messaging skip it. Surfaced a bug worth naming: a test run satisfied the scheduler's "a session already exists" check, which would have silently stopped the real schedule from rolling forward. |
+| **Chat rate limiting per session** | The chat POST had *no* limiting at all; `LIMITS.chat` existed and was never applied to it. Three ceilings now, plus a duplicate-message guard. |
+| **Poll results as engagement** | Attendee bars keep moving for thirty seconds after voting; the host sees the aggregate across every session. |
+| **Handout and CTA tracking** | Both tables existed with nothing recording who acted on them. |
+| **Real social proof on the offer** | Computed from the purchases ledger, with a floor of three — "1 person bought" is worse than silence and, in a small room, identifies the buyer. |
+| **Admin roles** | Three fixed roles behind a capability gate, so support can answer a ticket without being able to issue a refund. |
+| **Saved views on the user list** | |
+
+### Corrections to this review
+
+- **Clone a webinar** and **per-attendee countdown** were both listed as missing. Both already existed. Noted in the tables below.
+- **Preview as an attendee** was listed as missing; a simulated preview page already existed. What was actually missing was a *real* run, which is what test sessions add.
+- **Graceful degradation when Realtime drops** was listed as missing; the polling fallback was already there.
+- **A pre-flight check before a session** was listed as missing; the cron route already existed.
+
+---
+
 ## What already holds up
 
 - **Seeking is disabled** — `controls={false}` plus `controlsList="nodownload noplaybackrate noremoteplayback"`. An attendee cannot scrub ahead and discover it is a file.
