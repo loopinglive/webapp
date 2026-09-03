@@ -12,6 +12,7 @@ import { composeEmail } from "@/lib/email/compose";
 import { renderEmail } from "@/lib/email/render";
 import { applyCompliance, resolveTemplate } from "@/lib/messaging/templates";
 import { buildVariables } from "@/lib/messaging/variables";
+import { SITE } from "@/lib/constants";
 import { createServiceClient } from "@/lib/supabase/server";
 
 type Client = ReturnType<typeof createServiceClient>;
@@ -112,6 +113,23 @@ export async function dispatchMessage(
   const body = applyCompliance(channel, resolved, variables.unsubscribe_link);
   const subject = resolveTemplate(message.subject ?? "", variables);
 
+  // A calendar entry is the single biggest lever on whether someone turns up,
+  // so the confirmation and the day-before reminder both carry one.
+  const CALENDAR_TEMPLATES = new Set([
+    "registration_confirmation",
+    "reminder_24h",
+  ]);
+
+  const calendarLinks =
+    CALENDAR_TEMPLATES.has(message.template_key ?? "") && message.session_id
+      ? [
+          {
+            label: "Add to calendar",
+            url: `${SITE.url}/api/webinar/${message.webinar_id}/calendar?sessionId=${message.session_id}`,
+          },
+        ]
+      : [];
+
   // Email carries its unsubscribe in the footer, so the HTML is built from the
   // resolved copy rather than the compliance-appended one — otherwise the link
   // appears twice, once as a bare URL in the body.
@@ -135,7 +153,7 @@ export async function dispatchMessage(
             "onboarding@resend.dev",
           replyTo: settings?.reply_to_email,
           subject: subject || "A message about your webinar",
-          html: renderEmail(content),
+          html: renderEmail({ ...content, secondaryLinks: calendarLinks }),
           text: body,
         })
       : channel === "sms"

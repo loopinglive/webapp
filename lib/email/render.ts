@@ -21,6 +21,8 @@ export type EmailContent = {
   /** Plain text. Blank lines separate paragraphs; "- " starts a bullet. */
   body: string;
   cta?: { label: string; url: string } | null;
+  /** Quieter actions under the button — "add to calendar", and similar. */
+  secondaryLinks?: { label: string; url: string }[];
   /** Rendered as an inset panel — session date, time, and so on. */
   meta?: MetaRow[];
   unsubscribeLink?: string;
@@ -144,6 +146,18 @@ function metaPanel(rows: MetaRow[]) {
   </table>`;
 }
 
+/** Quiet links under the button. Text, not buttons: one call to action wins. */
+function secondaryRow(links: { label: string; url: string }[]) {
+  const cells = links
+    .map(
+      (link) =>
+        `<a href="${escape(link.url)}" style="color:${COLOUR.accent};font-family:${FONT};font-size:13px;text-decoration:underline;">${escape(link.label)}</a>`
+    )
+    .join(`<span style="color:${COLOUR.muted};"> &nbsp;·&nbsp; </span>`);
+
+  return `<p style="margin:-12px 0 26px 0;font-family:${FONT};font-size:13px;line-height:1.6;">${cells}</p>`;
+}
+
 export function renderEmail(content: EmailContent) {
   const brand = content.brandName ?? "Loopinglive";
   const preheader = content.preheader ?? "";
@@ -222,6 +236,7 @@ export function renderEmail(content: EmailContent) {
                     ${renderBody(content.body)}
                     ${content.meta?.length ? metaPanel(content.meta) : ""}
                     ${content.cta ? button(content.cta.label, content.cta.url) : ""}
+                    ${content.secondaryLinks?.length ? secondaryRow(content.secondaryLinks) : ""}
                   </td>
                 </tr>
               </table>
