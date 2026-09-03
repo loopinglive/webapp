@@ -29,6 +29,7 @@ export async function POST(request: Request) {
     type?: string;
     startsAt?: string;
     endsAt?: string | null;
+    targetPlans?: string[];
   };
 
   const title = (body.title ?? "").trim();
@@ -46,6 +47,10 @@ export async function POST(request: Request) {
       type: TYPES.includes(body.type ?? "") ? body.type! : "info",
       starts_at: body.startsAt || new Date().toISOString(),
       ends_at: body.endsAt || null,
+      // Empty means everyone, which is the sane default for an announcement.
+      target_plans: (body.targetPlans ?? []).filter((plan) =>
+        ["free", "monthly", "yearly", "lifetime"].includes(plan)
+      ) as never,
       created_by: admin.id,
     })
     .select("*")

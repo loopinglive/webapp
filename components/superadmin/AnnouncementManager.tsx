@@ -3,6 +3,8 @@
 import { useCallback, useEffect, useState } from "react";
 import { Loader2 } from "lucide-react";
 
+import { PLANS } from "@/lib/billing/plans";
+
 type Announcement = {
   id: string;
   title: string;
@@ -26,6 +28,7 @@ export function AnnouncementManager() {
   const [body, setBody] = useState("");
   const [type, setType] = useState("info");
   const [endsAt, setEndsAt] = useState("");
+  const [targetPlans, setTargetPlans] = useState<string[]>([]);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -52,7 +55,7 @@ export function AnnouncementManager() {
     const response = await fetch("/api/superadmin/announcements", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ title, body, type, endsAt: endsAt || null }),
+      body: JSON.stringify({ title, body, type, endsAt: endsAt || null, targetPlans }),
     });
 
     const payload = (await response.json()) as { error?: string };
@@ -66,6 +69,7 @@ export function AnnouncementManager() {
     setTitle("");
     setBody("");
     setEndsAt("");
+    setTargetPlans([]);
     await load();
   }
 
@@ -116,6 +120,36 @@ export function AnnouncementManager() {
                 {option.label}
               </button>
             ))}
+          </div>
+
+          <div>
+            <p className="mb-2 text-[12px] text-[#A0A0B0]">
+              Show to — leave all unticked for everyone
+            </p>
+            <div className="flex flex-wrap gap-2">
+              {PLANS.map((plan) => {
+                const on = targetPlans.includes(plan.slug);
+                return (
+                  <button
+                    key={plan.slug}
+                    onClick={() =>
+                      setTargetPlans((current) =>
+                        on
+                          ? current.filter((p) => p !== plan.slug)
+                          : [...current, plan.slug]
+                      )
+                    }
+                    className="rounded-full border px-3 py-1.5 text-[12.5px] transition-colors"
+                    style={{
+                      borderColor: on ? "#6C47FF" : "#1E1E2E",
+                      color: on ? "#FFFFFF" : "#A0A0B0",
+                    }}
+                  >
+                    {plan.name}
+                  </button>
+                );
+              })}
+            </div>
           </div>
 
           <div className="flex items-center gap-2">

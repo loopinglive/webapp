@@ -11,6 +11,7 @@ import {
   Mail,
   Megaphone,
   ScrollText,
+  Target,
   TrendingUp,
   Users,
 } from "lucide-react";
@@ -33,6 +34,7 @@ const GROUPS = [
     items: [
       { href: "/superadmin/users", label: "Users", icon: Users },
       { href: "/superadmin/affiliates", label: "Affiliates", icon: Handshake },
+      { href: "/superadmin/segments", label: "Segments", icon: Target },
       { href: "/superadmin/coupons", label: "Coupons", icon: BadgePercent },
       { href: "/superadmin/announcements", label: "Announcements", icon: Megaphone },
     ],

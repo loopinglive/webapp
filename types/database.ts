@@ -622,6 +622,8 @@ export type PlatformAnnouncementRow = {
   is_active: boolean;
   starts_at: string;
   ends_at: string | null;
+  /** Empty means everyone; otherwise the plan slugs that should see it. */
+  target_plans: Json;
   created_by: string | null;
   created_at: string;
 };
@@ -820,9 +822,50 @@ export type OfferAssignmentRow = {
   assigned_at: string;
 };
 
+export type SavedSegmentRow = {
+  id: string;
+  name: string;
+  description: string | null;
+  filters: Json;
+  created_by: string | null;
+  created_at: string;
+};
+
+export type BroadcastRow = {
+  id: string;
+  segment_id: string | null;
+  filters: Json;
+  subject: string;
+  body: string;
+  status: string;
+  recipient_count: number;
+  sent_count: number;
+  failed_count: number;
+  sent_at: string | null;
+  created_by: string | null;
+  created_at: string;
+};
+
 export type Database = {
   public: {
     Tables: {
+      saved_segments: Table<
+        SavedSegmentRow,
+        "id" | "description" | "filters" | "created_by" | "created_at"
+      >;
+      broadcasts: Table<
+        BroadcastRow,
+        | "id"
+        | "segment_id"
+        | "filters"
+        | "status"
+        | "recipient_count"
+        | "sent_count"
+        | "failed_count"
+        | "sent_at"
+        | "created_by"
+        | "created_at"
+      >;
       offer_variants: Table<
         OfferVariantRow,
         Exclude<keyof OfferVariantRow, "name">
@@ -965,6 +1008,7 @@ export type Database = {
         | "is_active"
         | "starts_at"
         | "ends_at"
+        | "target_plans"
         | "created_by"
         | "created_at"
       >;
@@ -1196,6 +1240,16 @@ export type Database = {
     };
     Views: Record<string, never>;
     Functions: {
+      /** Turns a segment's filters into the accounts they match. */
+      resolve_segment: {
+        Args: { p_filters: Json };
+        Returns: {
+          user_id: string;
+          email: string;
+          full_name: string;
+          plan_slug: string;
+        }[];
+      };
       /** Per-variant results for an offer experiment. */
       offer_experiment_results: {
         Args: { p_webinar_id: string };
