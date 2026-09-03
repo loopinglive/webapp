@@ -11,6 +11,7 @@ import {
   Check,
   Loader2,
   MessageSquare,
+  Radio,
   Send,
   Settings2,
   Sparkles,
@@ -62,6 +63,7 @@ export function WebinarSidebar({
     { href: `${base}/registration`, label: "Registration Page", icon: BadgeCheck },
     { href: `${base}/attendees`, label: "Attendees", icon: UserCheck },
     { href: `${base}/automation`, label: "Automation", icon: Send },
+    { href: `${base}/live`, label: "Go Live", icon: Radio },
     { href: `${base}/analytics`, label: "Analytics", icon: BarChart3 },
     { href: `${base}/settings`, label: "Settings", icon: Settings2 },
   ];

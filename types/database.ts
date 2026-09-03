@@ -721,9 +721,94 @@ export type AdminActionRow = {
   created_at: string;
 };
 
+// ─────────────────────────── Phase 10 ───────────────────────────
+
+export type LiveSessionStatus =
+  | "backstage"
+  | "live"
+  | "ended"
+  | "processing"
+  | "converted"
+  | "failed";
+
+export type LiveSessionRow = {
+  id: string;
+  webinar_id: string | null;
+  session_id: string | null;
+  host_id: string | null;
+  room_name: string;
+  status: LiveSessionStatus;
+  title: string | null;
+  started_at: string | null;
+  ended_at: string | null;
+  duration_seconds: number | null;
+  peak_viewers: number;
+  egress_id: string | null;
+  recording_url: string | null;
+  recording_public_id: string | null;
+  recording_error: string | null;
+  converted_webinar_id: string | null;
+  converted_at: string | null;
+  created_at: string;
+};
+
+export type LiveSegmentRow = {
+  id: string;
+  live_session_id: string;
+  /** camera | screen | recorded_clip */
+  kind: string;
+  source_url: string | null;
+  label: string | null;
+  started_at: string;
+  ended_at: string | null;
+  offset_seconds: number;
+};
+
+export type LiveQuestionRow = {
+  id: string;
+  live_session_id: string;
+  session_id: string | null;
+  registrant_id: string | null;
+  author_name: string;
+  question: string;
+  status: string;
+  is_featured: boolean;
+  upvotes: number;
+  answered_at: string | null;
+  video_offset_seconds: number | null;
+  created_at: string;
+};
+
+export type LiveQuestionVoteRow = {
+  question_id: string;
+  registrant_id: string;
+  created_at: string;
+};
+
 export type Database = {
   public: {
     Tables: {
+      live_sessions: Table<
+        LiveSessionRow,
+        Exclude<keyof LiveSessionRow, "room_name">
+      >;
+      live_segments: Table<
+        LiveSegmentRow,
+        "id" | "source_url" | "label" | "started_at" | "ended_at" | "offset_seconds"
+      >;
+      live_questions: Table<
+        LiveQuestionRow,
+        | "id"
+        | "session_id"
+        | "registrant_id"
+        | "status"
+        | "is_featured"
+        | "upvotes"
+        | "answered_at"
+        | "video_offset_seconds"
+        | "created_at"
+      >;
+      live_question_votes: Table<LiveQuestionVoteRow, "created_at">;
       admin_actions: Table<
         AdminActionRow,
         "id" | "admin_id" | "target_user_id" | "detail" | "created_at"
