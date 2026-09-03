@@ -1262,6 +1262,23 @@ export type Database = {
     };
     Views: Record<string, never>;
     Functions: {
+      /** Where the attended flag and the event log disagree. */
+      attendance_mismatches: {
+        Args: { p_webinar_id: string };
+        Returns: {
+          registrant_id: string;
+          full_name: string;
+          email: string;
+          attended: boolean;
+          join_events: number;
+          problem: string;
+        }[];
+      };
+      /** Makes them agree. Returns what it changed. */
+      reconcile_attendance: {
+        Args: { p_webinar_id: string };
+        Returns: Json;
+      };
       /** Registrants of one webinar that resolve to the same inbox. */
       duplicate_registrants: {
         Args: { p_webinar_id: string };

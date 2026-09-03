@@ -92,22 +92,50 @@ export async function POST(
     .eq("id", registrantId)
     .maybeSingle();
 
+  /*
+   * Did this call turn a non-attendee into an attendee?
+   *
+   * Read-then-write is not good enough here. Two tabs, or a reload during the
+   * first ten seconds, both read `attended = false` and both go on to log a
+   * join event and increment the session counter — which is how the flag and
+   * the event log come to disagree about the same person.
+   *
+   * So the transition is a compare-and-set: the update only matches while the
+   * row still says not-attended, and exactly one caller gets a row back. That
+   * caller owns the side effects.
+   */
+  let wonTheJoin = false;
+
+  if (action === "join") {
+    const { data: claimed } = await supabase
+      .from("registrants")
+      .update({
+        attended: true,
+        joined_at: now,
+        left_at: null,
+        last_attended_at: now,
+        total_sessions_attended: (before?.total_sessions_attended ?? 0) + 1,
+        // Overwrite on join: someone can register on a phone and watch on a
+        // laptop, and the device that matters for a viewing chart is the one
+        // they actually watched on.
+        ...devicePatch(request),
+      })
+      .eq("id", registrantId)
+      .eq("webinar_id", webinarId)
+      .eq("attended", false)
+      .select("id");
+
+    wonTheJoin = (claimed?.length ?? 0) > 0;
+  }
+
   const patch: RegistrantUpdate =
     action === "join"
-      ? {
-          attended: true,
-          joined_at: now,
-          left_at: null,
-          last_attended_at: now,
-          // Counted once per registrant, on the transition into attending.
-          total_sessions_attended: before?.attended
-            ? (before.total_sessions_attended ?? 0)
-            : (before?.total_sessions_attended ?? 0) + 1,
-          // Overwrite on join: someone can register on a phone and watch on a
-          // laptop, and the device that matters for a viewing chart is the one
-          // they actually watched on.
-          ...devicePatch(request),
-        }
+      ? // The transition above already wrote everything a first join needs.
+        // A repeat join still refreshes the device and the last-seen time,
+        // because they are here now whatever the flag said.
+        wonTheJoin
+        ? {}
+        : { left_at: null, last_attended_at: now, ...devicePatch(request) }
       : action === "leave"
         ? { left_at: now }
         : {};
@@ -119,18 +147,22 @@ export async function POST(
     patch.watch_percentage = Math.min(100, Math.max(0, watchPercentage));
   }
 
-  if (!Object.keys(patch).length) {
+  // Nothing left to write, and no transition to announce. A progress tick
+  // that carried no numbers lands here.
+  if (!Object.keys(patch).length && !wonTheJoin) {
     return NextResponse.json({ ok: true });
   }
 
-  const { error } = await supabase
-    .from("registrants")
-    .update(patch)
-    .eq("id", registrantId)
-    .eq("webinar_id", webinarId);
+  if (Object.keys(patch).length) {
+    const { error } = await supabase
+      .from("registrants")
+      .update(patch)
+      .eq("id", registrantId)
+      .eq("webinar_id", webinarId);
 
-  if (error) {
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    if (error) {
+      return NextResponse.json({ error: error.message }, { status: 500 });
+    }
   }
 
   const sessionId = before?.session_id ?? null;
@@ -138,7 +170,7 @@ export async function POST(
   // Resolved once and reused: both the join event and the 90% crossing need
   // the owner, and neither should cost an extra query on every progress tick.
   const needsOwner =
-    (action === "join" && !before?.attended) ||
+    wonTheJoin ||
     (typeof watchPercentage === "number" &&
       watchPercentage >= 90 &&
       Number(before?.watch_percentage ?? 0) < 90);
@@ -151,7 +183,7 @@ export async function POST(
         .maybeSingle()
     : { data: null };
 
-  if (action === "join" && !before?.attended) {
+  if (wonTheJoin) {
     await logEvent(supabase, { registrantId, sessionId, type: "joined_session" });
     // They are here — stop telling them to come.
     await cancelJoinReminders(supabase, { registrantId, sessionId });
