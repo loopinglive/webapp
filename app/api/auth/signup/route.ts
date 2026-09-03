@@ -1,12 +1,9 @@
 import { NextResponse } from "next/server";
 
-import { clientIp, LIMITS, rateLimit } from "@/lib/ratelimit";
-
+import { sendSignupConfirmation } from "@/lib/auth/auth-emails";
 import { billingConfigured, stripe } from "@/lib/billing/stripe";
-import { renderPlatformEmail } from "@/lib/email/platform-templates";
-import { sendEmail } from "@/lib/messaging/providers";
-import { SITE } from "@/lib/constants";
-import { createClient, createServiceClient } from "@/lib/supabase/server";
+import { clientIp, LIMITS, rateLimit } from "@/lib/ratelimit";
+import { createServiceClient } from "@/lib/supabase/server";
 
 export const dynamic = "force-dynamic";
 export const maxDuration = 30;
@@ -44,22 +41,21 @@ export async function POST(request: Request) {
     );
   }
 
-  const supabase = await createClient();
-  const { data: signUp, error: signUpError } = await supabase.auth.signUp({
-    email,
-    password,
-    options: { data: { full_name: fullName } },
-  });
+  // generateLink creates the account and returns a token WITHOUT Supabase
+  // sending anything, so the only confirmation email is ours, from our
+  // verified domain, in our own template.
+  const created = await sendSignupConfirmation({ email, password, fullName });
 
-  if (signUpError || !signUp.user) {
+  if (!created.ok || !created.userId) {
     return NextResponse.json(
-      { error: signUpError?.message ?? "Could not create the account." },
+      { error: created.error ?? "Could not create the account." },
       { status: 400 }
     );
   }
 
+  const userId = created.userId;
+
   const service = createServiceClient();
-  const userId = signUp.user.id;
 
   // A Stripe customer is created for free users too, so upgrading later is a
   // single checkout rather than a customer-creation dance mid-payment.
@@ -106,24 +102,10 @@ export async function POST(request: Request) {
     })
     .eq("id", userId);
 
-  // Welcome email. A failure here must not fail the signup.
-  try {
-    const { subject, html, text } = renderPlatformEmail(
-      "host_welcome",
-      { host_name: fullName.split(" ")[0], dashboard_url: `${SITE.url}/dashboard` },
-      { brandName: "Loopinglive" }
-    );
-    await sendEmail({
-      to: email,
-      fromName: "Loopinglive",
-      fromEmail: process.env.RESEND_FROM_EMAIL?.trim() || "noreply@loopinglive.com",
-      subject,
-      html,
-      text,
-    });
-  } catch {
-    /* non-fatal */
-  }
-
-  return NextResponse.json({ success: true, userId });
+  return NextResponse.json({
+    success: true,
+    userId,
+    requiresConfirmation: true,
+    emailSent: created.emailSent,
+  });
 }

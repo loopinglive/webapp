@@ -2,12 +2,11 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 
 import { Button } from "@/components/ui/button";
 import { GlassPanel } from "@/components/ui/glass-panel";
 import { Input } from "@/components/ui/input";
-import { createClient } from "@/lib/supabase/client";
 
 const REF_COOKIE = "loopinglive_ref";
 
@@ -22,7 +21,6 @@ function cookieValue(name: string) {
 }
 
 export function SignupForm() {
-  const router = useRouter();
   const params = useSearchParams();
 
   const [fullName, setFullName] = useState("");
@@ -33,6 +31,7 @@ export function SignupForm() {
   const [agreed, setAgreed] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [pending, setPending] = useState(false);
+  const [sent, setSent] = useState(false);
 
   // A referral can arrive on the URL or from the cookie set when someone
   // landed on the marketing site through an affiliate link days earlier.
@@ -71,24 +70,32 @@ export function SignupForm() {
       return;
     }
 
-    // The API creates the account; sign in here so the session cookie is set
-    // on this browser rather than relying on the API's own client.
-    const supabase = createClient();
-    const { error: signInError } = await supabase.auth.signInWithPassword({
-      email,
-      password,
-    });
-
     setPending(false);
+    setSent(true);
+  }
 
-    if (signInError) {
-      // Almost always "confirm your email" — a success, not a failure.
-      router.push("/login?created=1");
-      return;
-    }
-
-    router.push("/dashboard?welcome=1");
-    router.refresh();
+  if (sent) {
+    return (
+      <GlassPanel strong className="p-8 text-center">
+        <h1 className="text-[22px] font-semibold tracking-[-0.02em]">
+          Check your email
+        </h1>
+        <p className="mx-auto mt-2 max-w-[38ch] text-[13.5px] leading-relaxed text-ink-muted">
+          We have sent a confirmation link to <strong>{email}</strong>. Click it and
+          your account is live. The link expires in 24 hours.
+        </p>
+        <p className="mt-6 text-[12.5px] text-ink-faint">
+          Nothing arrived? Check your spam folder, or{" "}
+          <button
+            onClick={() => setSent(false)}
+            className="text-accent-soft hover:text-cyan"
+          >
+            try again
+          </button>
+          .
+        </p>
+      </GlassPanel>
+    );
   }
 
   return (
