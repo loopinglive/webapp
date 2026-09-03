@@ -40,7 +40,7 @@ export function VideoPlayer({
 
   // Adaptive stream where possible, progressive MP4 where not. The `src`
   // attribute is deliberately absent below — this hook owns the source.
-  const { health } = useHlsSource({
+  const { health, quality, canChooseQuality, chooseQuality } = useHlsSource({
     videoRef,
     streamSrc: streamSrc ?? null,
     fallbackSrc: src,
@@ -219,6 +219,34 @@ export function VideoPlayer({
               syncing
             </span>
           )}
+          {/*
+            Let someone pin the stream low.
+            
+            ABR is usually right and wrong in one case that matters: a
+            connection bad enough to stall but not bad enough to look bad, so
+            the algorithm keeps climbing back to a rendition it cannot sustain
+            and the viewer buffers every thirty seconds. Nothing but saying
+            "give me the small one" fixes that.
+          */}
+          {canChooseQuality && !audioOnly && (
+            <button
+              onClick={() => chooseQuality(quality === "low" ? "auto" : "low")}
+              aria-pressed={quality === "low"}
+              title={
+                quality === "low"
+                  ? "Lowest quality — tap for automatic"
+                  : "Struggling? Pin the lowest quality"
+              }
+              className={
+                quality === "low"
+                  ? "rounded border border-white/70 px-1.5 text-[10px] font-bold text-white"
+                  : "rounded border border-white/30 px-1.5 text-[10px] font-bold text-white/50 hover:text-white"
+              }
+            >
+              {quality === "low" ? "LOW" : "AUTO"}
+            </button>
+          )}
+
           <button
             onClick={() => setAudioOnly((value) => !value)}
             aria-pressed={audioOnly}

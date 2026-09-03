@@ -32,6 +32,9 @@ const RETRY_DELAYS_MS = [500, 2000, 5000];
 
 export type PlaybackHealth = "ok" | "recovering" | "failed";
 
+/** What a viewer can ask for. `auto` is ABR deciding, which is the default. */
+export type QualityChoice = "auto" | "low";
+
 export function useHlsSource({
   videoRef,
   streamSrc,
@@ -44,6 +47,16 @@ export function useHlsSource({
   enabled?: boolean;
 }) {
   const [health, setHealth] = useState<PlaybackHealth>("ok");
+  const [quality, setQuality] = useState<QualityChoice>("auto");
+  const [canChooseQuality, setCanChooseQuality] = useState(false);
+
+  // The player instance, so a quality change can reach it without tearing the
+  // stream down and restarting playback from the session clock.
+  const hlsRef = useRef<{
+    currentLevel: number;
+    autoLevelEnabled: boolean;
+    levels: unknown[];
+  } | null>(null);
 
   // Retry bookkeeping lives in refs: it must survive re-renders without
   // causing them, and a state update here would restart the very effect that
@@ -159,8 +172,19 @@ export function useHlsSource({
         });
 
         instance = hls;
+        hlsRef.current = hls as unknown as typeof hlsRef.current;
         hls.loadSource(streamSrc);
         hls.attachMedia(video);
+
+        /*
+         * A quality control only makes sense once we know there is a choice.
+         *
+         * A stream with one rendition would otherwise offer a button that
+         * changes nothing, which is worse than no button.
+         */
+        hls.on(Hls.Events.MANIFEST_PARSED, () => {
+          if (!cancelled) setCanChooseQuality(hls.levels.length > 1);
+        });
 
         // A clean fragment means the trouble has passed; without this, three
         // scattered blips over an hour would exhaust the budget as surely as
@@ -221,9 +245,37 @@ export function useHlsSource({
       video.removeEventListener("playing", onPlaying);
       timers.current.forEach(clearTimeout);
       timers.current = [];
+      hlsRef.current = null;
       instance?.destroy();
     };
   }, [videoRef, streamSrc, fallbackSrc, enabled, later]);
 
-  return { health };
+  /**
+   * Pin the stream to its lowest rendition, or hand it back to ABR.
+   *
+   * ABR is usually right, and it is wrong in one situation that matters: a
+   * connection that is bad enough to stall but not bad enough to look bad, so
+   * the algorithm keeps climbing back to a rendition it cannot sustain and the
+   * viewer buffers every thirty seconds. Being able to say "just give me the
+   * small one" fixes that, and nothing else will.
+   *
+   * Applied to the live instance rather than by reloading: a reload would
+   * restart playback, and this room's playhead is tied to the session clock,
+   * so restarting means a visible jump — the exact thing the whole engine
+   * exists to avoid.
+   */
+  const chooseQuality = useCallback((choice: QualityChoice) => {
+    setQuality(choice);
+    const hls = hlsRef.current;
+    if (!hls) return;
+
+    if (choice === "auto") {
+      hls.currentLevel = -1;
+    } else {
+      // Level 0 is the lowest bitrate in a manifest ordered by bandwidth.
+      hls.currentLevel = 0;
+    }
+  }, []);
+
+  return { health, quality, canChooseQuality, chooseQuality };
 }
