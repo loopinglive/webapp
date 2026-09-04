@@ -712,6 +712,22 @@ export type WebinarScriptRow = {
   updated_at: string;
 };
 
+/** A "Request a Demo" submission, before it is anything more than a conversation. */
+export type EnterpriseLeadRow = {
+  id: string;
+  company_name: string;
+  full_name: string;
+  work_email: string;
+  phone: string | null;
+  team_size: string | null;
+  monthly_sessions: string | null;
+  current_platform: string | null;
+  message: string | null;
+  status: string;
+  assigned_to: string | null;
+  created_at: string;
+};
+
 export type EnterpriseAccountRow = {
   id: string;
   team_id: string | null;
@@ -1691,6 +1707,11 @@ export type Database = {
       enterprise_accounts: Table<
         EnterpriseAccountRow,
         Exclude<keyof EnterpriseAccountRow, "team_id">
+      >;
+      enterprise_leads: Table<
+        EnterpriseLeadRow,
+        "id" | "phone" | "team_size" | "monthly_sessions" | "current_platform"
+          | "message" | "status" | "assigned_to" | "created_at"
       >;
       push_notification_subscriptions: Table<
         PushNotificationSubscriptionRow,
