@@ -45,6 +45,9 @@ export type WebinarRow = {
   // Phase 10 hardening — how the session is labelled to attendees.
   broadcast_label: string;
   show_recorded_notice: boolean;
+  // Phase 12 — team ownership and the script it was built from, if any.
+  team_id: string | null;
+  script_id: string | null;
 };
 
 export type WebinarOfferRow = {
@@ -495,6 +498,215 @@ export type AutomationSettingsRow = {
  * reading with a weaker key goes through a security-definer function that
  * exposes just that value.
  */
+/*
+ * Phase 12: teams, marketplace, academy, script writer, enterprise.
+ *
+ * blockchain_certificates is deliberately not here — it references a
+ * `certificates` table that does not exist in this database, despite being
+ * listed as already built. Nothing to point at yet.
+ */
+
+export type TeamRow = {
+  id: string;
+  owner_id: string | null;
+  name: string;
+  slug: string;
+  logo_url: string | null;
+  plan_slug: string;
+  max_members: number;
+  max_webinars: number;
+  stripe_customer_id: string | null;
+  stripe_subscription_id: string | null;
+  subscription_status: string | null;
+  created_at: string;
+  updated_at: string;
+};
+
+export type TeamMemberRow = {
+  id: string;
+  team_id: string;
+  user_id: string;
+  /** "owner" | "admin" | "editor" | "viewer" */
+  role: string;
+  invited_by: string | null;
+  invited_at: string;
+  accepted_at: string | null;
+  /** "pending" | "active" */
+  status: string;
+  permissions: Json;
+};
+
+export type TeamInvitationRow = {
+  id: string;
+  team_id: string;
+  invited_email: string;
+  role: string;
+  invited_by: string | null;
+  token: string;
+  expires_at: string;
+  accepted_at: string | null;
+  created_at: string;
+};
+
+export type MarketplaceSellerProfileRow = {
+  id: string;
+  user_id: string;
+  display_name: string;
+  bio: string | null;
+  avatar_url: string | null;
+  website_url: string | null;
+  total_sales: number;
+  total_earnings: number;
+  average_rating: number;
+  stripe_connect_account_id: string | null;
+  stripe_connect_onboarded: boolean;
+  payout_enabled: boolean;
+  created_at: string;
+};
+
+export type MarketplaceListingRow = {
+  id: string;
+  seller_id: string;
+  title: string;
+  description: string;
+  category: string;
+  listing_type: string;
+  price: number;
+  currency: string;
+  preview_url: string | null;
+  thumbnail_url: string | null;
+  demo_url: string | null;
+  tags: Json;
+  included_items: Json;
+  total_sales: number;
+  average_rating: number;
+  review_count: number;
+  is_featured: boolean;
+  is_approved: boolean;
+  is_active: boolean;
+  stripe_product_id: string | null;
+  stripe_price_id: string | null;
+  created_at: string;
+  updated_at: string;
+};
+
+export type MarketplacePurchaseRow = {
+  id: string;
+  listing_id: string;
+  buyer_id: string;
+  seller_id: string | null;
+  amount_paid: number;
+  stripe_payment_intent_id: string | null;
+  platform_fee: number;
+  seller_earnings: number;
+  status: string;
+  purchased_at: string;
+};
+
+export type MarketplaceReviewRow = {
+  id: string;
+  listing_id: string;
+  reviewer_id: string;
+  purchase_id: string | null;
+  rating: number;
+  title: string | null;
+  body: string | null;
+  is_verified_purchase: boolean;
+  created_at: string;
+};
+
+export type AcademyCourseRow = {
+  id: string;
+  title: string;
+  description: string;
+  thumbnail_url: string | null;
+  category: string;
+  difficulty: string;
+  estimated_minutes: number;
+  is_free: boolean;
+  is_published: boolean;
+  position: number;
+  created_at: string;
+};
+
+export type AcademyLessonRow = {
+  id: string;
+  course_id: string;
+  title: string;
+  description: string | null;
+  video_url: string | null;
+  duration_seconds: number | null;
+  position: number;
+  is_preview: boolean;
+  created_at: string;
+};
+
+export type AcademyProgressRow = {
+  id: string;
+  user_id: string;
+  course_id: string;
+  lesson_id: string | null;
+  completed_lesson_ids: Json;
+  completed_at: string | null;
+};
+
+export type WebinarScriptRow = {
+  id: string;
+  user_id: string;
+  webinar_id: string | null;
+  title: string;
+  topic: string;
+  target_audience: string | null;
+  offer_description: string | null;
+  webinar_length_minutes: number;
+  script_content: Json;
+  status: string;
+  created_at: string;
+  updated_at: string;
+};
+
+export type EnterpriseAccountRow = {
+  id: string;
+  team_id: string | null;
+  contract_start_date: string | null;
+  contract_end_date: string | null;
+  custom_price_monthly: number | null;
+  custom_max_members: number | null;
+  custom_max_webinars: number | null;
+  custom_max_attendees_per_session: number | null;
+  dedicated_support_email: string | null;
+  sla_response_hours: number;
+  custom_onboarding: boolean;
+  white_label_included: boolean;
+  api_rate_limit_per_minute: number;
+  notes: string | null;
+  account_manager_id: string | null;
+  created_at: string;
+};
+
+export type PushNotificationSubscriptionRow = {
+  id: string;
+  user_id: string | null;
+  registrant_id: string | null;
+  device_token: string;
+  platform: string;
+  app_version: string | null;
+  is_active: boolean;
+  created_at: string;
+  updated_at: string;
+};
+
+export type GraphqlQueryLogRow = {
+  id: string;
+  api_key_id: string | null;
+  operation_name: string | null;
+  query_hash: string | null;
+  variables: Json | null;
+  response_time_ms: number | null;
+  status: string | null;
+  created_at: string;
+};
+
 /**
  * Someone in a room telling us something is wrong.
  *
@@ -656,6 +868,14 @@ export type UserAccountRow = {
   last_login_at: string | null;
   created_at: string;
   updated_at: string;
+  // Phase 12.
+  team_id: string | null;
+  team_role: string | null;
+  enterprise_account_id: string | null;
+  mobile_app_registered: boolean;
+  last_mobile_app_login: string | null;
+  is_marketplace_seller: boolean;
+  marketplace_seller_id: string | null;
 };
 
 export type InvoiceRow = {
@@ -1157,6 +1377,8 @@ export type Database = {
         | "clone_of"
         | "broadcast_label"
         | "show_recorded_notice"
+        | "team_id"
+        | "script_id"
       >;
       webinar_schedules: Table<
         WebinarScheduleRow,
@@ -1365,6 +1587,72 @@ export type Database = {
         | "reviewed_by"
         | "reviewed_at"
         | "created_at"
+      >;
+      teams: Table<
+        TeamRow,
+        | "id" | "owner_id" | "logo_url" | "max_members" | "max_webinars"
+        | "stripe_customer_id" | "stripe_subscription_id" | "subscription_status"
+        | "created_at" | "updated_at"
+      >;
+      team_members: Table<
+        TeamMemberRow,
+        "id" | "invited_by" | "invited_at" | "accepted_at" | "status" | "permissions"
+      >;
+      team_invitations: Table<
+        TeamInvitationRow,
+        "id" | "invited_by" | "token" | "expires_at" | "accepted_at" | "created_at"
+      >;
+      marketplace_seller_profiles: Table<
+        MarketplaceSellerProfileRow,
+        | "id" | "bio" | "avatar_url" | "website_url" | "total_sales"
+        | "total_earnings" | "average_rating" | "stripe_connect_account_id"
+        | "stripe_connect_onboarded" | "payout_enabled" | "created_at"
+      >;
+      marketplace_listings: Table<
+        MarketplaceListingRow,
+        | "id" | "currency" | "preview_url" | "thumbnail_url" | "demo_url"
+        | "tags" | "included_items" | "total_sales" | "average_rating"
+        | "review_count" | "is_featured" | "is_approved" | "is_active"
+        | "stripe_product_id" | "stripe_price_id" | "created_at" | "updated_at"
+      >;
+      marketplace_purchases: Table<
+        MarketplacePurchaseRow,
+        | "id" | "seller_id" | "stripe_payment_intent_id" | "status" | "purchased_at"
+      >;
+      marketplace_reviews: Table<
+        MarketplaceReviewRow,
+        | "id" | "purchase_id" | "title" | "body" | "is_verified_purchase" | "created_at"
+      >;
+      academy_courses: Table<
+        AcademyCourseRow,
+        | "id" | "thumbnail_url" | "difficulty" | "is_free" | "is_published"
+        | "position" | "created_at"
+      >;
+      academy_lessons: Table<
+        AcademyLessonRow,
+        "id" | "description" | "video_url" | "duration_seconds" | "is_preview" | "created_at"
+      >;
+      academy_progress: Table<
+        AcademyProgressRow,
+        "id" | "lesson_id" | "completed_lesson_ids" | "completed_at"
+      >;
+      webinar_scripts: Table<
+        WebinarScriptRow,
+        | "id" | "webinar_id" | "target_audience" | "offer_description"
+        | "webinar_length_minutes" | "status" | "created_at" | "updated_at"
+      >;
+      enterprise_accounts: Table<
+        EnterpriseAccountRow,
+        Exclude<keyof EnterpriseAccountRow, "team_id">
+      >;
+      push_notification_subscriptions: Table<
+        PushNotificationSubscriptionRow,
+        | "id" | "user_id" | "registrant_id" | "app_version" | "is_active"
+        | "created_at" | "updated_at"
+      >;
+      graphql_query_logs: Table<
+        GraphqlQueryLogRow,
+        Exclude<keyof GraphqlQueryLogRow, "id">
       >;
       ai_personas: Table<
         AiPersonaRow,
