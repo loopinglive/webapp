@@ -103,13 +103,32 @@ Nine claims across the life of this review turned out to be wrong — either thi
 
 ---
 
+## Stripe: verified end to end in production
+
+The user supplied real Stripe **test-mode** keys mid-review. Wired into Vercel (`STRIPE_SECRET_KEY`, `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY`), and a webhook endpoint was registered against the Stripe API pointed at the live `/api/billing/webhook` route, giving a real `STRIPE_WEBHOOK_SECRET` — not fabricated, not guessed.
+
+With that in place, the offer + order-bump purchase path was run for real, in production, and then removed:
+
+1. A throwaway webinar, priced offer ($49) and bump ($15), and registrant were created (user approved the write, since it touches the live database).
+2. The app's own `/api/webinar/[id]/checkout` route was called with `includeBump: true` and returned a genuine Stripe test Checkout session — `cs_test_…`.
+3. That session was fetched back from Stripe directly: `amount_total` was **6400** (4900 + 1500 — the split computed correctly) and the metadata carried the full offer/bump breakdown.
+4. A `checkout.session.completed` event was built around that real session object and signed with the real webhook secret using Stripe's documented HMAC scheme, then POSTed to the live webhook endpoint.
+5. Result: the `purchases` row landed with `amount_cents: 6400`, `bump_amount_cents: 1500`, the correct `bump_id`, and `registrant.bought` flipped to `true`.
+6. The identical signed event was replayed — one purchase row, not two. Idempotency on `external_reference` holds.
+7. A forged signature (`v1=000…0`) was sent and correctly rejected with `400 Invalid signature`.
+8. All test rows were deleted (webinar cascade) and confirmed at zero across every table touched.
+
+This is the first Stripe-dependent code in the product that has actually run rather than only been typechecked. Billing (host subscriptions) uses the same webhook handler and the same signature verification path, so this also gives reasonable confidence in that side, though the subscription-specific branches were not separately exercised.
+
+---
+
 ## Genuinely outstanding
 
 Honestly: what is left needs either credentials only the user can provide, or a scope large enough that it deserves its own pass rather than being squeezed in here.
 
 | Item | Why it's not done |
 |---|---|
-| **Stripe, LiveKit, a real `ANTHROPIC_API_KEY`** | Configuration only the user can supply. Billing, live broadcast, and AI-generated content are all built against these and untested without them. |
+| **LiveKit, a real `ANTHROPIC_API_KEY`** | Configuration only the user can supply. Live broadcast and AI-generated content (including timed-comment generation from a transcript) are built against these and untested without them. Stripe is no longer in this row — see above. |
 | **Sentry / external error monitoring** | Needs an account and a DSN. The platform's own client-error log (`/superadmin/errors`) exists and works without one. |
 | **Calendly OAuth** | Needs API credentials from a Calendly developer account. |
 | **A full mobile device audit and PageSpeed pass** | The accessibility and region-latency work in this pass improves both; neither has been measured on a real device or through Lighthouse, which needs a live audit rather than a code read. |
