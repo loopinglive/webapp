@@ -152,6 +152,10 @@ export async function POST(request: Request) {
         await recordTeamSubscription(supabase, session);
         break;
       }
+      if (session.metadata?.kind === "marketplace_purchase") {
+        await recordMarketplacePurchase(supabase, session);
+        break;
+      }
 
       const userId = session.metadata?.userId;
       const planSlug = session.metadata?.planSlug as PlanSlug | undefined;
@@ -537,6 +541,83 @@ async function recordOfferPurchase(
     .from("registrants")
     .update({ bought: true, bought_at: now, manually_marked_bought: false })
     .eq("id", registrantId);
+}
+
+/**
+ * A marketplace purchase completed.
+ *
+ * Idempotent on the (listing_id, buyer_id) unique constraint already on
+ * marketplace_purchases — the same guard used everywhere else money is
+ * recorded in this codebase, so a retried webhook cannot double-charge or
+ * grant a second entitlement.
+ *
+ * The 80/20 split is recorded so seller earnings are correct from day one,
+ * even though nothing pays it out yet — see the comment on the checkout
+ * route for why.
+ */
+const PLATFORM_FEE_RATE = 0.2;
+
+async function recordMarketplacePurchase(
+  supabase: Client,
+  session: Stripe.Checkout.Session
+) {
+  const listingId = session.metadata?.listingId;
+  const buyerId = session.metadata?.buyerId;
+  const sellerId = session.metadata?.sellerId || null;
+  if (!listingId || !buyerId) return;
+
+  const { data: existing } = await supabase
+    .from("marketplace_purchases")
+    .select("id")
+    .eq("listing_id", listingId)
+    .eq("buyer_id", buyerId)
+    .maybeSingle();
+  if (existing) return;
+
+  const amountPaid = (session.amount_total ?? 0) / 100;
+  const platformFee = Math.round(amountPaid * PLATFORM_FEE_RATE * 100) / 100;
+  const sellerEarnings = Math.round((amountPaid - platformFee) * 100) / 100;
+
+  await supabase.from("marketplace_purchases").insert({
+    listing_id: listingId,
+    buyer_id: buyerId,
+    seller_id: sellerId,
+    amount_paid: amountPaid,
+    stripe_payment_intent_id:
+      typeof session.payment_intent === "string" ? session.payment_intent : null,
+    platform_fee: platformFee,
+    seller_earnings: sellerEarnings,
+    status: "completed",
+  });
+
+  const { data: listing } = await supabase
+    .from("marketplace_listings")
+    .select("total_sales")
+    .eq("id", listingId)
+    .maybeSingle();
+
+  await supabase
+    .from("marketplace_listings")
+    .update({ total_sales: (listing?.total_sales ?? 0) + 1 })
+    .eq("id", listingId);
+
+  if (sellerId) {
+    const { data: seller } = await supabase
+      .from("marketplace_seller_profiles")
+      .select("total_sales, total_earnings")
+      .eq("user_id", sellerId)
+      .maybeSingle();
+
+    if (seller) {
+      await supabase
+        .from("marketplace_seller_profiles")
+        .update({
+          total_sales: seller.total_sales + 1,
+          total_earnings: Number(seller.total_earnings) + sellerEarnings,
+        })
+        .eq("user_id", sellerId);
+    }
+  }
 }
 
 /**

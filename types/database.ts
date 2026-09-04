@@ -237,6 +237,18 @@ export type FakePersonaRow = {
   created_at: string;
 };
 
+export type AiGeneratedPersonasRow = {
+  id: string;
+  webinar_id: string;
+  generation_prompt: string | null;
+  generated_count: number;
+  niche: string | null;
+  locations: string[];
+  status: string;
+  completed_at: string | null;
+  created_at: string;
+};
+
 export type TimedCommentRow = {
   id: string;
   webinar_id: string;
@@ -244,6 +256,28 @@ export type TimedCommentRow = {
   content: string;
   video_offset_seconds: number;
   created_at: string;
+};
+
+export type CeleBioConnectionRow = {
+  id: string;
+  user_id: string;
+  cele_bio_user_id: string;
+  cele_bio_username: string;
+  access_token_encrypted: string;
+  refresh_token_encrypted: string | null;
+  auto_sync_enabled: boolean;
+  show_on_profile: boolean;
+  use_cele_bio_payments: boolean;
+  connected_at: string;
+  last_synced_at: string | null;
+};
+
+export type CeleBioSyncedWebinarRow = {
+  id: string;
+  connection_id: string;
+  webinar_id: string;
+  cele_bio_product_id: string | null;
+  synced_at: string;
 };
 
 export type RegistrantRow = {
@@ -1708,6 +1742,11 @@ export type Database = {
       admin_ip_allowed: {
         Args: { p_ip: string };
         Returns: boolean;
+      };
+      /** Recomputes a listing's average rating and count from real reviews. */
+      recalculate_listing_rating: {
+        Args: { p_listing_id: string };
+        Returns: undefined;
       };
       /** Open reports, with the context needed to judge one. */
       report_queue: {
