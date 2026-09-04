@@ -546,6 +546,37 @@ export type AutomationSettingsRow = {
  * exposes just that value.
  */
 /*
+ * Phase 13: attendee scoring, A/B testing, personalisation, growth
+ * intelligence. Only the tables with application code built against them are
+ * typed here so far — the rest exist in the database (migration 0036) and
+ * get their types added when their feature is built.
+ */
+
+export type AttendeeScoreRow = {
+  id: string;
+  registrant_id: string;
+  webinar_id: string;
+  engagement_score: number;
+  conversion_likelihood: number;
+  churn_risk: number;
+  lifetime_value_estimate: number;
+  score_factors: Json;
+  scored_at: string;
+  updated_at: string;
+};
+
+export type ConversionPredictionRow = {
+  id: string;
+  registrant_id: string;
+  webinar_id: string;
+  prediction_score: number;
+  prediction_factors: Json;
+  predicted_at: string;
+  outcome: string | null;
+  outcome_recorded_at: string | null;
+};
+
+/*
  * Phase 12: teams, marketplace, academy, script writer, enterprise.
  *
  * blockchain_certificates is deliberately not here — it references a
@@ -1650,6 +1681,15 @@ export type Database = {
         | "reviewed_by"
         | "reviewed_at"
         | "created_at"
+      >;
+      attendee_scores: Table<
+        AttendeeScoreRow,
+        | "id" | "engagement_score" | "conversion_likelihood" | "churn_risk"
+        | "lifetime_value_estimate" | "score_factors" | "scored_at" | "updated_at"
+      >;
+      conversion_predictions: Table<
+        ConversionPredictionRow,
+        "id" | "prediction_factors" | "predicted_at" | "outcome" | "outcome_recorded_at"
       >;
       teams: Table<
         TeamRow,

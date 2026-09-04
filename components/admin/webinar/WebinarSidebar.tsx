@@ -11,6 +11,7 @@ import {
   Check,
   Eye,
   FlaskConical,
+  Flame,
   Loader2,
   MessageSquare,
   Radio,
@@ -69,6 +70,7 @@ export function WebinarSidebar({
     { href: `${base}/preview`, label: "Preview", icon: Eye },
     { href: `${base}/live`, label: "Go Live", icon: Radio },
     { href: `${base}/analytics`, label: "Analytics", icon: BarChart3 },
+    { href: `${base}/scoring`, label: "Attendee Scoring", icon: Flame },
     { href: `${base}/settings`, label: "Settings", icon: Settings2 },
   ];
 
