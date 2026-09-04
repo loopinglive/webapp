@@ -21,6 +21,8 @@ export type UserAccount = {
   referral_code: string;
   referred_by: string | null;
   created_at: string;
+  team_id: string | null;
+  team_role: string | null;
 };
 
 /**

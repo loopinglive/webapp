@@ -997,6 +997,25 @@ You are registered — nothing further to do. Your reminders are already queued.
     ],
     cta: { label: "View your seat", url: "{{webinar_link}}" },
   },
+  {
+    key: "host_team_invitation",
+    label: "Team invitation",
+    audience: "host",
+    category: "team",
+    transactional: true,
+    subject: "{{inviter_name}} invited you to {{team_name}} on Loopinglive",
+    eyebrow: "Team invite",
+    body: `Hi,
+
+{{inviter_name}} has invited you to join {{team_name}} on Loopinglive as {{role}}.
+
+This invitation expires in 7 days. If you were not expecting this, you can ignore it — nothing happens until you accept.`,
+    meta: [
+      { label: "Team", value: "{{team_name}}" },
+      { label: "Role", value: "{{role}}" },
+    ],
+    cta: { label: "Accept invitation", url: "{{invite_link}}" },
+  },
 ];
 
 export const PLATFORM_TEMPLATE_BY_KEY = new Map(

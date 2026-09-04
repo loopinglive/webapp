@@ -48,6 +48,19 @@ export type WebinarRow = {
   // Phase 12 — team ownership and the script it was built from, if any.
   team_id: string | null;
   script_id: string | null;
+  // Phase 11 — advanced features, all optional/off by default.
+  series_id: string | null;
+  on_demand_enabled: boolean;
+  on_demand_expires_hours: number;
+  on_demand_allow_seek: boolean;
+  certificate_enabled: boolean;
+  certificate_min_watch_percentage: number;
+  certificate_template_id: string | null;
+  exit_survey_enabled: boolean;
+  private_messaging_enabled: boolean;
+  raise_hand_enabled: boolean;
+  primary_language: string;
+  supported_languages: string[];
 };
 
 export type WebinarOfferRow = {
@@ -1590,7 +1603,7 @@ export type Database = {
       >;
       teams: Table<
         TeamRow,
-        | "id" | "owner_id" | "logo_url" | "max_members" | "max_webinars"
+        | "id" | "owner_id" | "logo_url" | "plan_slug" | "max_members" | "max_webinars"
         | "stripe_customer_id" | "stripe_subscription_id" | "subscription_status"
         | "created_at" | "updated_at"
       >;

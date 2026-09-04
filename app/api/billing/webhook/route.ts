@@ -3,6 +3,7 @@ import type Stripe from "stripe";
 import { PLAN_BY_SLUG, type PlanSlug } from "@/lib/billing/plans";
 import { stripe, webhooksConfigured } from "@/lib/billing/stripe";
 import { renderPlatformEmail } from "@/lib/email/platform-templates";
+import { TEAM_PLAN_BY_ID } from "@/lib/teams/plans";
 import { sendEmail } from "@/lib/messaging/providers";
 import { SITE } from "@/lib/constants";
 import { createServiceClient } from "@/lib/supabase/server";
@@ -139,11 +140,16 @@ export async function POST(request: Request) {
     case "checkout.session.completed": {
       const session = event.data.object;
 
-      // Two kinds of checkout land here: a host buying a plan, and an attendee
-      // buying a host's offer from inside the webinar. They are told apart by
-      // the metadata rather than by guessing from the amount.
+      // Three kinds of checkout land here: a host buying an individual plan,
+      // an attendee buying a host's offer from inside the webinar, and a
+      // team buying its subscription. Told apart by the metadata rather than
+      // by guessing from the amount.
       if (session.metadata?.kind === "webinar_offer") {
         await recordOfferPurchase(supabase, session);
+        break;
+      }
+      if (session.metadata?.kind === "team_subscription") {
+        await recordTeamSubscription(supabase, session);
         break;
       }
 
@@ -322,7 +328,17 @@ export async function POST(request: Request) {
         .select("id, email, full_name, plan_slug")
         .eq("stripe_customer_id", customerId)
         .maybeSingle();
-      if (!account) break;
+
+      if (!account) {
+        // Not an individual account — a team's checkout creates its own
+        // Stripe customer (from customer_email, not an existing id), so this
+        // is the other place a cancellation can land.
+        await supabase
+          .from("teams")
+          .update({ subscription_status: "cancelled" })
+          .eq("stripe_customer_id", customerId);
+        break;
+      }
 
       // A lifetime purchase is not a subscription, so it can never be
       // cancelled by this event. Guard against a stray one anyway.
@@ -521,4 +537,39 @@ async function recordOfferPurchase(
     .from("registrants")
     .update({ bought: true, bought_at: now, manually_marked_bought: false })
     .eq("id", registrantId);
+}
+
+/**
+ * A team's subscription checkout completed.
+ *
+ * Sets the plan's limits directly onto the team row rather than joining
+ * against TEAM_PLANS on every read — the limits at the moment of purchase are
+ * what the team is entitled to, and they should not silently change if the
+ * plan's definition is edited later.
+ */
+async function recordTeamSubscription(
+  supabase: Client,
+  session: Stripe.Checkout.Session
+) {
+  const teamId = session.metadata?.teamId;
+  const planId = session.metadata?.planId;
+  if (!teamId || !planId) return;
+
+  const plan = TEAM_PLAN_BY_ID.get(planId as "team_starter" | "team_pro");
+  if (!plan) return;
+
+  await supabase
+    .from("teams")
+    .update({
+      plan_slug: plan.id,
+      max_members: plan.maxMembers,
+      max_webinars: plan.maxWebinars,
+      stripe_customer_id:
+        typeof session.customer === "string" ? session.customer : null,
+      stripe_subscription_id:
+        typeof session.subscription === "string" ? session.subscription : null,
+      subscription_status: "active",
+      updated_at: new Date().toISOString(),
+    })
+    .eq("id", teamId);
 }
