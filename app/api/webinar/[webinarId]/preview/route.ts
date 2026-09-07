@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 
-import { requireAdmin } from "@/lib/admin-auth";
 import { createServiceClient } from "@/lib/supabase/server";
+import { requireWebinarAccess } from "@/lib/webinar-access";
 
 export const dynamic = "force-dynamic";
 
@@ -17,10 +17,10 @@ export async function GET(
   request: Request,
   { params }: { params: Promise<{ webinarId: string }> }
 ) {
-  const { response: denied } = await requireAdmin();
-  if (denied) return denied;
-
   const { webinarId } = await params;
+  const access = await requireWebinarAccess(webinarId);
+  if (!access.ok) return access.response;
+
   const offset = Math.max(
     0,
     Number(new URL(request.url).searchParams.get("offset") ?? 0) || 0

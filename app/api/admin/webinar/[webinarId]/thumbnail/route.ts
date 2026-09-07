@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
+import { requireWebinarAccess } from "@/lib/webinar-access";
 
-import { requireAdmin } from "@/lib/admin-auth";
 import { posterUrl } from "@/lib/cloudinary";
 import { createServiceClient } from "@/lib/supabase/server";
 
@@ -16,10 +16,9 @@ export async function POST(
   request: Request,
   { params }: { params: Promise<{ webinarId: string }> }
 ) {
-  const { response: denied } = await requireAdmin();
-  if (denied) return denied;
-
   const { webinarId } = await params;
+  const access = await requireWebinarAccess(webinarId);
+  if (!access.ok) return access.response;
   const { atSecond } = (await request.json()) as { atSecond?: number };
 
   const supabase = createServiceClient();

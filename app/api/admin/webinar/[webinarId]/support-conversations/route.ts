@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
+import { requireWebinarAccess } from "@/lib/webinar-access";
 
-import { requireAdmin } from "@/lib/admin-auth";
 import { createServiceClient } from "@/lib/supabase/server";
 
 export const dynamic = "force-dynamic";
@@ -9,10 +9,9 @@ export async function GET(
   _request: Request,
   { params }: { params: Promise<{ webinarId: string }> }
 ) {
-  const { response: denied } = await requireAdmin();
-  if (denied) return denied;
-
   const { webinarId } = await params;
+  const access = await requireWebinarAccess(webinarId);
+  if (!access.ok) return access.response;
   const supabase = createServiceClient();
 
   // support_conversations has no webinar_id column -- registrants do, so the

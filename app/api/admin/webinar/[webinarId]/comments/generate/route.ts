@@ -1,12 +1,12 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
 
-import { requireAdmin } from "@/lib/admin-auth";
 import { generateTimedComments } from "@/lib/anthropic";
 import { checkClaims } from "@/lib/claim-check";
 import { captionsUrl } from "@/lib/cloudinary-urls";
 import { bucketCues, parseVtt } from "@/lib/vtt";
 import { createServiceClient } from "@/lib/supabase/server";
+import { requireWebinarAccess } from "@/lib/webinar-access";
 
 export const dynamic = "force-dynamic";
 export const maxDuration = 60;
@@ -29,8 +29,9 @@ export async function POST(
   request: Request,
   { params }: { params: Promise<{ webinarId: string }> }
 ) {
-  const { response: denied } = await requireAdmin();
-  if (denied) return denied;
+  const { webinarId } = await params;
+  const access = await requireWebinarAccess(webinarId);
+  if (!access.ok) return access.response;
 
   if (!process.env.ANTHROPIC_API_KEY) {
     return NextResponse.json(
@@ -39,7 +40,6 @@ export async function POST(
     );
   }
 
-  const { webinarId } = await params;
   const parsed = schema.safeParse(await request.json().catch(() => ({})));
   const count = parsed.success ? parsed.data.count : 15;
 

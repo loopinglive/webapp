@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
+import { requireWebinarAccess } from "@/lib/webinar-access";
 
-import { requireAdmin } from "@/lib/admin-auth";
 import { generateRecommendation } from "@/lib/intelligence/scheduling-engine";
 import { createServiceClient } from "@/lib/supabase/server";
 
@@ -10,10 +10,9 @@ export async function GET(
   _request: Request,
   { params }: { params: Promise<{ webinarId: string }> }
 ) {
-  const { response: denied } = await requireAdmin();
-  if (denied) return denied;
-
   const { webinarId } = await params;
+  const access = await requireWebinarAccess(webinarId);
+  if (!access.ok) return access.response;
   const supabase = createServiceClient();
 
   const { data: latest } = await supabase
@@ -32,10 +31,9 @@ export async function POST(
   _request: Request,
   { params }: { params: Promise<{ webinarId: string }> }
 ) {
-  const { response: denied } = await requireAdmin();
-  if (denied) return denied;
-
   const { webinarId } = await params;
+  const access = await requireWebinarAccess(webinarId);
+  if (!access.ok) return access.response;
   const supabase = createServiceClient();
 
   try {

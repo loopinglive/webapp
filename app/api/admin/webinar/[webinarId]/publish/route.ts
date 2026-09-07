@@ -1,6 +1,6 @@
+import { requireWebinarAccess } from "@/lib/webinar-access";
 import { NextResponse } from "next/server";
 
-import { requireAdmin } from "@/lib/admin-auth";
 import { getUserAccount } from "@/lib/billing/account";
 import { planPermissions } from "@/lib/billing/plans";
 import { getWebinarSetup, isPublishable, missingSteps } from "@/lib/admin-setup";
@@ -12,10 +12,9 @@ export async function POST(
   request: Request,
   { params }: { params: Promise<{ webinarId: string }> }
 ) {
-  const { response: denied } = await requireAdmin();
-  if (denied) return denied;
-
   const { webinarId } = await params;
+  const access = await requireWebinarAccess(webinarId);
+  if (!access.ok) return access.response;
   const { publish } = (await request.json()) as { publish?: boolean };
 
   const setup = await getWebinarSetup(webinarId);

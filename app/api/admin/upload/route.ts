@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 
-import { requireAdmin } from "@/lib/admin-auth";
 import { signUpload, uploadType } from "@/lib/cloudinary";
+import { requireAccountAccess } from "@/lib/webinar-access";
 
 export const dynamic = "force-dynamic";
 
@@ -28,8 +28,8 @@ type Kind = keyof typeof FOLDERS;
  * provider's own numbers rather than anything the client claims.
  */
 export async function POST(request: Request) {
-  const { response: denied } = await requireAdmin();
-  if (denied) return denied;
+  const access = await requireAccountAccess();
+  if (!access.ok) return access.response;
 
   const { kind } = (await request.json()) as { kind?: Kind };
 

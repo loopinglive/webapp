@@ -1,7 +1,6 @@
 import { NextResponse } from "next/server";
-
-import { requireAdmin } from "@/lib/admin-auth";
 import { createServiceClient } from "@/lib/supabase/server";
+import { requireWebinarAccess } from "@/lib/webinar-access";
 
 export const dynamic = "force-dynamic";
 
@@ -16,10 +15,9 @@ export async function GET(
   _request: Request,
   { params }: { params: Promise<{ webinarId: string; registrantId: string }> }
 ) {
-  const { response: denied } = await requireAdmin();
-  if (denied) return denied;
-
   const { webinarId, registrantId } = await params;
+  const access = await requireWebinarAccess(webinarId);
+  if (!access.ok) return access.response;
   const supabase = createServiceClient();
 
   // Scoped to this webinar, so a registrant id from elsewhere reads nothing.
@@ -68,10 +66,10 @@ export async function DELETE(
   request: Request,
   { params }: { params: Promise<{ webinarId: string; registrantId: string }> }
 ) {
-  const { user, response: denied } = await requireAdmin();
-  if (denied) return denied;
-
   const { webinarId, registrantId } = await params;
+  const access = await requireWebinarAccess(webinarId);
+  if (!access.ok) return access.response;
+
   const body = (await request.json().catch(() => ({}))) as { confirm?: boolean };
 
   if (body.confirm !== true) {
@@ -106,7 +104,7 @@ export async function DELETE(
    * just removed, in a table nobody would think to look in.
    */
   await supabase.from("admin_actions").insert({
-    admin_id: user.id,
+    admin_id: access.actorId,
     action: "registrant_erased",
     detail: { webinarId, result: data } as never,
   });

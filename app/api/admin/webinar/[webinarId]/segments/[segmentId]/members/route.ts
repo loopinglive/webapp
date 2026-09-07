@@ -1,8 +1,7 @@
 import { NextResponse } from "next/server";
-
-import { requireAdmin } from "@/lib/admin-auth";
 import { evaluateSegmentMembers } from "@/lib/intelligence/segments-engine";
 import { createServiceClient } from "@/lib/supabase/server";
+import { requireWebinarAccess } from "@/lib/webinar-access";
 import type { Condition } from "@/lib/intelligence/personalisation";
 
 export const dynamic = "force-dynamic";
@@ -12,10 +11,9 @@ export async function GET(
   _request: Request,
   { params }: { params: Promise<{ webinarId: string; segmentId: string }> }
 ) {
-  const { response: denied } = await requireAdmin();
-  if (denied) return denied;
-
   const { webinarId, segmentId } = await params;
+  const access = await requireWebinarAccess(webinarId);
+  if (!access.ok) return access.response;
   const supabase = createServiceClient();
 
   const { data: segment } = await supabase

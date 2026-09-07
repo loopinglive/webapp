@@ -2,7 +2,7 @@ import { redirect } from "next/navigation";
 import type { Metadata } from "next";
 
 import { AdminLivePanel } from "@/components/admin/AdminLivePanel";
-import { getAdminUser } from "@/lib/admin-auth";
+import { requireSessionAccess } from "@/lib/webinar-access";
 
 export const metadata: Metadata = { title: "Live session" };
 export const dynamic = "force-dynamic";
@@ -12,11 +12,12 @@ export default async function AdminLivePage({
 }: {
   params: Promise<{ sessionId: string }>;
 }) {
+  const { sessionId } = await params;
+
   // Checked on the server against the signed session, and again inside every
   // admin API route — the panel is not merely hidden, it is closed.
-  const admin = await getAdminUser();
-  if (!admin) redirect("/");
+  const access = await requireSessionAccess(sessionId);
+  if (!access.ok) redirect("/login?next=/admin/live/" + sessionId);
 
-  const { sessionId } = await params;
   return <AdminLivePanel sessionId={sessionId} />;
 }

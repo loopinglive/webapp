@@ -1,7 +1,7 @@
+import { requireWebinarAccess } from "@/lib/webinar-access";
 import { NextResponse } from "next/server";
 import { z } from "zod";
 
-import { requireAdmin } from "@/lib/admin-auth";
 import { generatePersonaProfiles, generateTimedComments } from "@/lib/anthropic";
 import { checkClaims } from "@/lib/claim-check";
 import { captionsUrl } from "@/lib/cloudinary-urls";
@@ -30,10 +30,9 @@ export async function POST(
   request: Request,
   { params }: { params: Promise<{ webinarId: string }> }
 ) {
-  const { response: denied } = await requireAdmin();
-  if (denied) return denied;
-
   const { webinarId } = await params;
+  const access = await requireWebinarAccess(webinarId);
+  if (!access.ok) return access.response;
   const parsed = bodySchema.safeParse(await request.json().catch(() => ({})));
   if (!parsed.success) {
     return NextResponse.json({ error: parsed.error.issues[0]?.message ?? "Invalid input" }, { status: 422 });

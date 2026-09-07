@@ -1,6 +1,5 @@
 import { NextResponse } from "next/server";
 
-import { requireAdmin } from "@/lib/admin-auth";
 import { getUserAccount } from "@/lib/billing/account";
 import { planPermissions } from "@/lib/billing/plans";
 import {
@@ -13,6 +12,7 @@ import {
   stopRecording,
 } from "@/lib/live/livekit";
 import { createServiceClient } from "@/lib/supabase/server";
+import { requireWebinarAccess } from "@/lib/webinar-access";
 
 export const dynamic = "force-dynamic";
 export const maxDuration = 60;
@@ -28,10 +28,10 @@ export async function GET(
   _request: Request,
   { params }: { params: Promise<{ webinarId: string }> }
 ) {
-  const { response: denied } = await requireAdmin();
-  if (denied) return denied;
-
   const { webinarId } = await params;
+  const access = await requireWebinarAccess(webinarId);
+  if (!access.ok) return access.response;
+
   const supabase = createServiceClient();
 
   const { data: live } = await supabase
@@ -83,8 +83,9 @@ export async function POST(
   request: Request,
   { params }: { params: Promise<{ webinarId: string }> }
 ) {
-  const { user, response: denied } = await requireAdmin();
-  if (denied) return denied;
+  const { webinarId } = await params;
+  const access = await requireWebinarAccess(webinarId);
+  if (!access.ok) return access.response;
 
   if (!liveConfigured()) {
     return NextResponse.json(
@@ -93,7 +94,6 @@ export async function POST(
     );
   }
 
-  const { webinarId } = await params;
   const body = (await request.json().catch(() => ({}))) as {
     action?: "backstage" | "go_live" | "end" | "segment";
     sessionId?: string | null;
@@ -168,7 +168,7 @@ export async function POST(
     const token = await createAccessToken({
       roomName: created.room_name,
       identity: "host",
-      name: user.email ?? "Host",
+      name: account?.email ?? "Host",
       canPublish: true,
     });
 

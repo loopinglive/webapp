@@ -1,18 +1,18 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
 
-import { requireAnyAdmin } from "@/lib/admin-auth";
 import { createServiceClient } from "@/lib/supabase/server";
+import { requireSessionAccess } from "@/lib/webinar-access";
 
 export const dynamic = "force-dynamic";
 
 /** Admin only: the live queue of hands still up, oldest first. */
 export async function GET(request: Request) {
-  const { response: denied } = await requireAnyAdmin();
-  if (denied) return denied;
-
   const sessionId = new URL(request.url).searchParams.get("sessionId");
   if (!sessionId) return NextResponse.json({ error: "sessionId is required" }, { status: 400 });
+
+  const access = await requireSessionAccess(sessionId);
+  if (!access.ok) return access.response;
 
   const { data, error } = await createServiceClient()
     .from("raised_hands")
@@ -75,13 +75,13 @@ export async function POST(request: Request) {
 
 /** Admin only: acknowledge a raised hand (keeps it visible but marked seen). */
 export async function PATCH(request: Request) {
-  const { response: denied } = await requireAnyAdmin();
-  if (denied) return denied;
-
   const parsed = z
     .object({ sessionId: z.string().uuid(), registrantId: z.string().uuid() })
     .safeParse(await request.json().catch(() => ({})));
   if (!parsed.success) return NextResponse.json({ error: "Invalid input" }, { status: 422 });
+
+  const access = await requireSessionAccess(parsed.data.sessionId);
+  if (!access.ok) return access.response;
 
   const { error } = await createServiceClient()
     .from("raised_hands")

@@ -1,8 +1,8 @@
 import { NextResponse } from "next/server";
 
-import { requireAdmin } from "@/lib/admin-auth";
 import { cloudinary } from "@/lib/cloudinary";
 import { createServiceClient } from "@/lib/supabase/server";
+import { requireAccountAccess, requireWebinarAccess } from "@/lib/webinar-access";
 
 export const dynamic = "force-dynamic";
 
@@ -23,10 +23,14 @@ type Body = {
  * against a wrong clock.
  */
 export async function POST(request: Request) {
-  const { response: denied } = await requireAdmin();
-  if (denied) return denied;
-
   const { publicId, kind, webinarId, target } = (await request.json()) as Body;
+
+  // Video and thumbnail writes touch a specific webinar's row, so ownership
+  // of that webinar is what's checked. An avatar or handout upload has no
+  // webinar to check yet at this point in the flow — any signed-in account
+  // may request one; the caller that attaches it enforces ownership itself.
+  const access = webinarId ? await requireWebinarAccess(webinarId) : await requireAccountAccess();
+  if (!access.ok) return access.response;
 
   if (!publicId || !kind) {
     return NextResponse.json(

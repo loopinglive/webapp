@@ -1,7 +1,6 @@
 import { NextResponse } from "next/server";
-
-import { requireAdmin } from "@/lib/admin-auth";
 import { createServiceClient } from "@/lib/supabase/server";
+import { requireWebinarAccess } from "@/lib/webinar-access";
 
 export const dynamic = "force-dynamic";
 
@@ -10,10 +9,9 @@ export async function GET(
   _request: Request,
   { params }: { params: Promise<{ webinarId: string }> }
 ) {
-  const { response: denied } = await requireAdmin();
-  if (denied) return denied;
-
   const { webinarId } = await params;
+  const access = await requireWebinarAccess(webinarId);
+  if (!access.ok) return access.response;
 
   const { data, error } = await createServiceClient().rpc("attendance_mismatches", {
     p_webinar_id: webinarId,
@@ -34,10 +32,10 @@ export async function POST(
   _request: Request,
   { params }: { params: Promise<{ webinarId: string }> }
 ) {
-  const { user, response: denied } = await requireAdmin();
-  if (denied) return denied;
-
   const { webinarId } = await params;
+  const access = await requireWebinarAccess(webinarId);
+  if (!access.ok) return access.response;
+
   const supabase = createServiceClient();
 
   const { data, error } = await supabase.rpc("reconcile_attendance", {
@@ -50,7 +48,7 @@ export async function POST(
 
   // Worth a record: this rewrites history, even if only to make it consistent.
   await supabase.from("admin_actions").insert({
-    admin_id: user.id,
+    admin_id: access.actorId,
     action: "attendance_reconciled",
     detail: { webinarId, ...result } as never,
   });

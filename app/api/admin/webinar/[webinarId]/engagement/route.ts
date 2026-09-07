@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
+import { requireWebinarAccess } from "@/lib/webinar-access";
 
-import { requireAdmin } from "@/lib/admin-auth";
 import { createServiceClient } from "@/lib/supabase/server";
 import type { EngagementKind } from "@/types";
 
@@ -24,10 +24,9 @@ export async function GET(
   _request: Request,
   { params }: { params: Promise<{ webinarId: string }> }
 ) {
-  const { response: denied } = await requireAdmin();
-  if (denied) return denied;
-
   const { webinarId } = await params;
+  const access = await requireWebinarAccess(webinarId);
+  if (!access.ok) return access.response;
   const supabase = createServiceClient();
 
   const [polls, handouts, ctas, pinned] = await Promise.all(
@@ -52,10 +51,9 @@ export async function POST(
   request: Request,
   { params }: { params: Promise<{ webinarId: string }> }
 ) {
-  const { response: denied } = await requireAdmin();
-  if (denied) return denied;
-
   const { webinarId } = await params;
+  const access = await requireWebinarAccess(webinarId);
+  if (!access.ok) return access.response;
   const { kind, values } = (await request.json()) as {
     kind?: EngagementKind;
     values?: Record<string, unknown>;
@@ -87,10 +85,9 @@ export async function PATCH(
   request: Request,
   { params }: { params: Promise<{ webinarId: string }> }
 ) {
-  const { response: denied } = await requireAdmin();
-  if (denied) return denied;
-
   const { webinarId } = await params;
+  const access = await requireWebinarAccess(webinarId);
+  if (!access.ok) return access.response;
   const { kind, id, values } = (await request.json()) as {
     kind?: EngagementKind;
     id?: string;
@@ -125,10 +122,9 @@ export async function DELETE(
   request: Request,
   { params }: { params: Promise<{ webinarId: string }> }
 ) {
-  const { response: denied } = await requireAdmin();
-  if (denied) return denied;
-
   const { webinarId } = await params;
+  const access = await requireWebinarAccess(webinarId);
+  if (!access.ok) return access.response;
   const url = new URL(request.url);
   const table = tableFor(url.searchParams.get("kind"));
   const id = url.searchParams.get("id");

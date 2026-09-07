@@ -1,13 +1,13 @@
 import { NextResponse } from "next/server";
 
-import { requireAdmin } from "@/lib/admin-auth";
+import { requireAccountAccess } from "@/lib/webinar-access";
 import { createServiceClient } from "@/lib/supabase/server";
 
 export const dynamic = "force-dynamic";
 
 export async function POST(request: Request) {
-  const { user, response: denied } = await requireAdmin();
-  if (denied) return denied;
+  const access = await requireAccountAccess();
+  if (!access.ok) return access.response;
 
   const body = (await request.json()) as {
     title?: string;
@@ -32,7 +32,7 @@ export async function POST(request: Request) {
   const { data, error } = await supabase
     .from("webinars")
     .insert({
-      owner_id: user.id,
+      owner_id: access.actorId,
       title,
       description,
       topic: body.topic?.trim() || null,

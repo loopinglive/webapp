@@ -1,9 +1,9 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
 
-import { requireAdmin } from "@/lib/admin-auth";
 import { clientIp, rateLimit } from "@/lib/ratelimit";
 import { createServiceClient } from "@/lib/supabase/server";
+import { requireWebinarAccess } from "@/lib/webinar-access";
 
 export const dynamic = "force-dynamic";
 
@@ -32,7 +32,7 @@ export async function GET(
   if (!live) return NextResponse.json({ questions: [] });
 
   // The host sees everything, including dismissed; attendees do not.
-  const { user } = await requireAdmin();
+  const access = await requireWebinarAccess(webinarId);
 
   let query = supabase
     .from("live_questions")
@@ -42,7 +42,7 @@ export async function GET(
     .order("upvotes", { ascending: false })
     .order("created_at", { ascending: true });
 
-  if (!user) query = query.neq("status", "dismissed");
+  if (!access.ok) query = query.neq("status", "dismissed");
 
   const { data } = await query;
   return NextResponse.json({ liveSessionId: live.id, questions: data ?? [] });
@@ -148,8 +148,8 @@ export async function PATCH(
     return NextResponse.json({ ok: true });
   }
 
-  const { response: denied } = await requireAdmin();
-  if (denied) return denied;
+  const access = await requireWebinarAccess(webinarId);
+  if (!access.ok) return access.response;
 
   const { data: live } = await supabase
     .from("live_sessions")

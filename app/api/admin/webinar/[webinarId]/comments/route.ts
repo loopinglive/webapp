@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
+import { requireWebinarAccess } from "@/lib/webinar-access";
 
-import { requireAdmin } from "@/lib/admin-auth";
 import { createServiceClient } from "@/lib/supabase/server";
 import type { Database } from "@/types/database";
 
@@ -21,10 +21,9 @@ export async function GET(
   _request: Request,
   { params }: { params: Promise<{ webinarId: string }> }
 ) {
-  const { response: denied } = await requireAdmin();
-  if (denied) return denied;
-
   const { webinarId } = await params;
+  const access = await requireWebinarAccess(webinarId);
+  if (!access.ok) return access.response;
   const supabase = createServiceClient();
 
   const { data, error } = await supabase
@@ -44,10 +43,9 @@ export async function POST(
   request: Request,
   { params }: { params: Promise<{ webinarId: string }> }
 ) {
-  const { response: denied } = await requireAdmin();
-  if (denied) return denied;
-
   const { webinarId } = await params;
+  const access = await requireWebinarAccess(webinarId);
+  if (!access.ok) return access.response;
   const { personaId, content, offsetSeconds } = (await request.json()) as {
     personaId?: string;
     content?: string;
@@ -85,10 +83,9 @@ export async function PATCH(
   request: Request,
   { params }: { params: Promise<{ webinarId: string }> }
 ) {
-  const { response: denied } = await requireAdmin();
-  if (denied) return denied;
-
   const { webinarId } = await params;
+  const access = await requireWebinarAccess(webinarId);
+  if (!access.ok) return access.response;
   const { commentId, content, offsetSeconds, personaId } =
     (await request.json()) as {
       commentId?: string;
@@ -133,10 +130,9 @@ export async function DELETE(
   request: Request,
   { params }: { params: Promise<{ webinarId: string }> }
 ) {
-  const { response: denied } = await requireAdmin();
-  if (denied) return denied;
-
   const { webinarId } = await params;
+  const access = await requireWebinarAccess(webinarId);
+  if (!access.ok) return access.response;
   const commentId = new URL(request.url).searchParams.get("commentId");
 
   if (!commentId) {

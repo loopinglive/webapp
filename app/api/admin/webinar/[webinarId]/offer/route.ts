@@ -1,6 +1,6 @@
+import { requireWebinarAccess } from "@/lib/webinar-access";
 import { NextResponse } from "next/server";
 
-import { requireAdmin } from "@/lib/admin-auth";
 import { createServiceClient } from "@/lib/supabase/server";
 import type { Json } from "@/types/database";
 
@@ -10,10 +10,9 @@ export async function GET(
   _request: Request,
   { params }: { params: Promise<{ webinarId: string }> }
 ) {
-  const { response: denied } = await requireAdmin();
-  if (denied) return denied;
-
   const { webinarId } = await params;
+  const access = await requireWebinarAccess(webinarId);
+  if (!access.ok) return access.response;
   const supabase = createServiceClient();
 
   const { data, error } = await supabase
@@ -44,10 +43,9 @@ export async function PUT(
   request: Request,
   { params }: { params: Promise<{ webinarId: string }> }
 ) {
-  const { response: denied } = await requireAdmin();
-  if (denied) return denied;
-
   const { webinarId } = await params;
+  const access = await requireWebinarAccess(webinarId);
+  if (!access.ok) return access.response;
   const body = (await request.json()) as Record<string, unknown>;
 
   const offerTitle = String(body.offerTitle ?? "").trim();

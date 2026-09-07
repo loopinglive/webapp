@@ -1,7 +1,6 @@
 import { NextResponse } from "next/server";
-
-import { requireAdmin } from "@/lib/admin-auth";
-import { createServiceClient } from "@/lib/supabase/server";
+import { createClient, createServiceClient } from "@/lib/supabase/server";
+import { requireWebinarAccess } from "@/lib/webinar-access";
 
 export const dynamic = "force-dynamic";
 
@@ -25,10 +24,15 @@ export async function POST(
   _request: Request,
   { params }: { params: Promise<{ webinarId: string }> }
 ) {
-  const { user, response: denied } = await requireAdmin();
-  if (denied) return denied;
-
   const { webinarId } = await params;
+  const access = await requireWebinarAccess(webinarId);
+  if (!access.ok) return access.response;
+
+  const authClient = await createClient();
+  const {
+    data: { user: sessionUser },
+  } = await authClient.auth.getUser();
+
   const supabase = createServiceClient();
 
   const { data: webinar } = await supabase
@@ -81,8 +85,8 @@ export async function POST(
     .insert({
       webinar_id: webinarId,
       session_id: session.id,
-      full_name: user.user_metadata?.full_name || "You (preview)",
-      email: user.email ?? "preview@loopinglive.com",
+      full_name: sessionUser?.user_metadata?.full_name || "You (preview)",
+      email: sessionUser?.email ?? "preview@loopinglive.com",
       phone: "",
       country_code: "",
       country_flag: "",
@@ -114,10 +118,9 @@ export async function DELETE(
   request: Request,
   { params }: { params: Promise<{ webinarId: string }> }
 ) {
-  const { response: denied } = await requireAdmin();
-  if (denied) return denied;
-
   const { webinarId } = await params;
+  const access = await requireWebinarAccess(webinarId);
+  if (!access.ok) return access.response;
   const sessionId = new URL(request.url).searchParams.get("sessionId");
 
   if (!sessionId) {

@@ -1,8 +1,8 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
 
-import { requireAnyAdmin } from "@/lib/admin-auth";
 import { createServiceClient } from "@/lib/supabase/server";
+import { requireWebinarAccess } from "@/lib/webinar-access";
 
 export const dynamic = "force-dynamic";
 
@@ -16,7 +16,7 @@ export async function GET(
   request: Request,
   { params }: { params: Promise<{ webinarId: string }> }
 ) {
-  await params;
+  const { webinarId } = await params;
   const url = new URL(request.url);
   const sessionId = url.searchParams.get("sessionId");
   const registrantId = url.searchParams.get("registrantId");
@@ -39,8 +39,8 @@ export async function GET(
     return NextResponse.json({ messages: data ?? [] });
   }
 
-  const { response: denied } = await requireAnyAdmin();
-  if (denied) return denied;
+  const access = await requireWebinarAccess(webinarId);
+  if (!access.ok) return access.response;
 
   const { data, error } = await supabase
     .from("private_messages")
@@ -85,17 +85,17 @@ export async function POST(
   request: Request,
   { params }: { params: Promise<{ webinarId: string }> }
 ) {
-  await params;
+  const { webinarId } = await params;
   const parsed = postSchema.safeParse(await request.json().catch(() => ({})));
   if (!parsed.success) {
     return NextResponse.json({ error: parsed.error.issues[0]?.message ?? "Invalid input" }, { status: 422 });
   }
 
-  // A host reply needs to be an admin; an attendee can only ever speak as
-  // themselves, so there is nothing further to check on that branch.
+  // A host reply needs to own this webinar; an attendee can only ever speak
+  // as themselves, so there is nothing further to check on that branch.
   if (parsed.data.senderType === "host") {
-    const { response: denied } = await requireAnyAdmin();
-    if (denied) return denied;
+    const access = await requireWebinarAccess(webinarId);
+    if (!access.ok) return access.response;
   }
 
   const { error } = await createServiceClient().from("private_messages").insert({
