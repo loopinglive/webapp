@@ -98,6 +98,8 @@ export function tooManyRequests(result: RateLimitResult) {
 export const LIMITS = {
   register: { limit: 5, windowSeconds: 60 },
   chat: { limit: 10, windowSeconds: 60 },
+  // Each hit spends a real model call, unlike the fake-persona chat above.
+  supportChat: { limit: 8, windowSeconds: 300 },
   signup: { limit: 3, windowSeconds: 3600 },
   login: { limit: 10, windowSeconds: 60 },
   publicApi: { limit: 100, windowSeconds: 60 },

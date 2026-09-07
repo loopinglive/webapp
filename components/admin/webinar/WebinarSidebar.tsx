@@ -12,6 +12,7 @@ import {
   Eye,
   FlaskConical,
   Flame,
+  Headphones,
   Loader2,
   Megaphone,
   MessageSquare,
@@ -77,6 +78,7 @@ export function WebinarSidebar({
     { href: `${base}/ab-tests`, label: "A/B Tests", icon: SplitSquareHorizontal },
     { href: `${base}/ad-creatives`, label: "Ad Creatives", icon: Megaphone },
     { href: `${base}/personalisation`, label: "Personalisation", icon: Wand2 },
+    { href: `${base}/support-chat`, label: "AI Support Chat", icon: Headphones },
     { href: `${base}/settings`, label: "Settings", icon: Settings2 },
   ];
 

@@ -598,3 +598,85 @@ Write ${count} ad variations now.`;
     }))
     .filter((creative) => creative.headline && creative.primaryText);
 }
+
+export type SupportChatMessage = { role: "attendee" | "assistant"; content: string };
+
+/**
+ * Answers one attendee support question, grounded only in this webinar's
+ * own material -- never general knowledge about the host, their company, or
+ * anything not supplied here. Escalates rather than guesses on anything
+ * that sounds like billing, a technical fault, or a refund, since those need
+ * a human with account access, not a plausible-sounding answer.
+ */
+export async function generateSupportReply({
+  webinarTitle,
+  topic,
+  offerDescription,
+  keyTalkingPoints,
+  objectionNotes,
+  history,
+  question,
+}: {
+  webinarTitle: string;
+  topic: string;
+  offerDescription: string;
+  keyTalkingPoints: string;
+  objectionNotes: string;
+  history: SupportChatMessage[];
+  question: string;
+}): Promise<{ reply: string; shouldEscalate: boolean }> {
+  const system = `You are the live support assistant for the webinar "${webinarTitle}".
+
+What you know about this webinar -- use only this, nothing else:
+Topic: ${topic}
+Offer: ${offerDescription}
+Key talking points: ${keyTalkingPoints || "Not provided"}
+Common objections and how the host addresses them: ${objectionNotes || "Not provided"}
+
+Rules:
+- Keep replies short: 1-3 sentences, plain language, no markdown.
+- Never invent a price, a policy, a guarantee, or a fact about the host that was not given to you above.
+- If the question is about billing, a refund, a technical problem with the platform, or anything you cannot answer from the material above, say you're flagging it for the host to follow up directly -- do not guess.
+- Never claim to be human.
+
+Output ONLY a JSON object, nothing before or after it: {"reply": "...", "shouldEscalate": true|false}`;
+
+  const messages: Anthropic.MessageParam[] = [
+    ...history.map((message) => ({
+      role: (message.role === "attendee" ? "user" : "assistant") as "user" | "assistant",
+      content: message.content,
+    })),
+    { role: "user" as const, content: question },
+  ];
+
+  const response = await getClient().messages.create({
+    model: MODEL,
+    max_tokens: 300,
+    system,
+    messages,
+  });
+
+  if (response.stop_reason === "refusal") {
+    return { reply: "I'm not able to help with that -- flagging it for the host.", shouldEscalate: true };
+  }
+
+  const text = response.content
+    .filter((block): block is Anthropic.TextBlock => block.type === "text")
+    .map((block) => block.text)
+    .join("");
+
+  const match = text.match(/\{[\s\S]*\}/);
+  if (!match) {
+    return { reply: "I'm not sure -- flagging this for the host to follow up.", shouldEscalate: true };
+  }
+
+  try {
+    const parsed = JSON.parse(match[0]) as { reply?: unknown; shouldEscalate?: unknown };
+    return {
+      reply: typeof parsed.reply === "string" && parsed.reply.trim() ? parsed.reply : "I'm not sure -- flagging this for the host to follow up.",
+      shouldEscalate: Boolean(parsed.shouldEscalate),
+    };
+  } catch {
+    return { reply: "I'm not sure -- flagging this for the host to follow up.", shouldEscalate: true };
+  }
+}

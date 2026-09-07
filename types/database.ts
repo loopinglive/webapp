@@ -653,6 +653,19 @@ export type PersonalisationEventRow = {
   created_at: string;
 };
 
+export type SupportConversationRow = {
+  id: string;
+  session_id: string | null;
+  registrant_id: string;
+  status: "open" | "resolved" | "escalated";
+  channel: string;
+  messages: Json;
+  resolved_at: string | null;
+  satisfaction_rating: number | null;
+  created_at: string;
+  updated_at: string;
+};
+
 /*
  * Phase 12: teams, marketplace, academy, script writer, enterprise.
  *
@@ -1794,6 +1807,11 @@ export type Database = {
       personalisation_events: Table<
         PersonalisationEventRow,
         "id" | "session_id" | "rule_id" | "data" | "created_at"
+      >;
+      support_conversations: Table<
+        SupportConversationRow,
+        "id" | "session_id" | "status" | "channel" | "messages" | "resolved_at"
+        | "satisfaction_rating" | "created_at" | "updated_at"
       >;
       teams: Table<
         TeamRow,
