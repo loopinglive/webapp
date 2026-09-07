@@ -20,7 +20,9 @@ export function PersonaBuilder({ webinarId }: { webinarId: string }) {
   const [aiOpen, setAiOpen] = useState(false);
   const [aiCount, setAiCount] = useState(6);
   const [aiBrief, setAiBrief] = useState("");
+  const [aiGenerateComments, setAiGenerateComments] = useState(false);
   const [aiError, setAiError] = useState<string | null>(null);
+  const [aiNotice, setAiNotice] = useState<string | null>(null);
   const [selected, setSelected] = useState<FakePersona | null>(null);
   const [editing, setEditing] = useState(false);
   const [importError, setImportError] = useState<string | null>(null);
@@ -104,11 +106,16 @@ export function PersonaBuilder({ webinarId }: { webinarId: string }) {
   async function generateWithAi() {
     setGenerating(true);
     setAiError(null);
+    setAiNotice(null);
 
     const response = await fetch(`/api/admin/webinar/${webinarId}/personas/generate`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ count: aiCount, brief: aiBrief || undefined }),
+      body: JSON.stringify({
+        count: aiCount,
+        brief: aiBrief || undefined,
+        generateComments: aiGenerateComments,
+      }),
     });
 
     setGenerating(false);
@@ -119,8 +126,19 @@ export function PersonaBuilder({ webinarId }: { webinarId: string }) {
       return;
     }
 
+    const payload = (await response.json()) as {
+      commentsGenerated?: number;
+      commentsSkippedError?: string | null;
+    };
+
     setAiOpen(false);
     setAiBrief("");
+    if (aiGenerateComments) {
+      setAiNotice(
+        payload.commentsSkippedError ??
+          `Personas saved with ${payload.commentsGenerated ?? 0} timed comments — review them in Timed Comments.`
+      );
+    }
     await load();
   }
 
@@ -166,6 +184,15 @@ export function PersonaBuilder({ webinarId }: { webinarId: string }) {
           </p>
         )}
 
+        {aiNotice && (
+          <button
+            onClick={() => setAiNotice(null)}
+            className="mb-4 w-full rounded-lg bg-[#6C47FF]/10 px-3.5 py-2.5 text-left text-[12.5px] text-[#B8A8FF] hover:bg-[#6C47FF]/15"
+          >
+            {aiNotice}
+          </button>
+        )}
+
         {aiOpen && (
           <div className="mb-6 max-w-md space-y-3.5 rounded-xl border border-[#6C47FF]/30 bg-[#12121A] p-5">
             <p className="text-[13px] font-medium text-white">Generate personas with AI</p>
@@ -185,6 +212,15 @@ export function PersonaBuilder({ webinarId }: { webinarId: string }) {
                 onChange={(event) => setAiBrief(event.target.value)}
               />
             </Field>
+            <label className="flex items-center gap-2 text-[12.5px] text-[#A0A0B0]">
+              <input
+                type="checkbox"
+                checked={aiGenerateComments}
+                onChange={(event) => setAiGenerateComments(event.target.checked)}
+                className="h-3.5 w-3.5 accent-[#6C47FF]"
+              />
+              Also write their timed comments from the video&apos;s transcript
+            </label>
             {aiError && <p className="text-[12px] text-[#FF3B3B]">{aiError}</p>}
             <div className="flex justify-end gap-2">
               <button
