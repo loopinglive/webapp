@@ -33,6 +33,32 @@ export default async function DashboardLayout({
     return <SecondFactorGate challengeUrl="/api/settings/2fa/challenge" />;
   }
 
+  // A team that requires SSO does not get there by bouncing a password
+  // login off the /login page — reaching the dashboard at all, by whatever
+  // route, requires a live sso_sessions row. No row (or an expired one, e.g.
+  // after a forced logout) sends them straight back through the IdP.
+  if (account.team_id && !account.is_admin) {
+    const service = createServiceClient();
+    const { data: ssoConfig } = await service
+      .from("sso_configurations")
+      .select("require_sso")
+      .eq("team_id", account.team_id)
+      .eq("is_active", true)
+      .maybeSingle();
+
+    if (ssoConfig?.require_sso) {
+      const { data: activeSession } = await service
+        .from("sso_sessions")
+        .select("id")
+        .eq("team_id", account.team_id)
+        .eq("user_id", account.id)
+        .gt("expires_at", new Date().toISOString())
+        .maybeSingle();
+
+      if (!activeSession) redirect(`/api/sso/initiate?teamId=${account.team_id}`);
+    }
+  }
+
   // Impersonation is a cookie read by admins only; anyone else forging it gets
   // nothing, because the name is only resolved when is_admin is true.
   let impersonating: string | null = null;

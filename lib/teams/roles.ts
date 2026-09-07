@@ -21,7 +21,8 @@ export type TeamCapability =
   | "access_live_panel"
   | "manage_integrations"
   | "view_analytics"
-  | "manage_personas";
+  | "manage_personas"
+  | "manage_sso";
 
 const CAPABILITIES: Record<TeamRole, TeamCapability[]> = {
   owner: [
@@ -38,6 +39,7 @@ const CAPABILITIES: Record<TeamRole, TeamCapability[]> = {
     "manage_integrations",
     "view_analytics",
     "manage_personas",
+    "manage_sso",
   ],
   admin: [
     "create_webinars",
