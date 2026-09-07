@@ -141,9 +141,9 @@ async function maybeAdvanceSeries(
 
 /**
  * Only if a live upsell sequence targets this webinar as its source. This
- * marks eligibility for the invite the cron will send in `delay_days` — it
- * is not a purchase. `upsell_bought_at` belongs to whatever records the
- * actual sale of the target webinar's offer, not this crossing.
+ * marks eligibility and stamps the moment the cron counts `delay_days` from
+ * -- it is not a purchase. `upsell_bought_at` belongs to whatever records
+ * the actual sale of the target webinar's offer, not this crossing.
  */
 async function markUpsellEligible(supabase: Service, registrantId: string, webinarId: string) {
   const { data: sequence } = await supabase
@@ -159,6 +159,7 @@ async function markUpsellEligible(supabase: Service, registrantId: string, webin
     .from("registrants")
     .update({
       upsell_eligible: true,
+      upsell_eligible_at: new Date().toISOString(),
       upsell_source_webinar_id: webinarId,
       upsell_webinar_id: sequence.target_webinar_id,
     })

@@ -325,9 +325,11 @@ export type RegistrantRow = {
   tags: Json;
   // Phase 11 — upsell automation and Cele.bio sync.
   upsell_eligible: boolean;
+  upsell_eligible_at: string | null;
   upsell_sent_at: string | null;
   upsell_webinar_id: string | null;
   upsell_source_webinar_id: string | null;
+  /** When the target webinar's offer was actually bought -- not set by anything yet, see lib/webinar-completion.ts. */
   upsell_bought_at: string | null;
   cele_bio_synced: boolean;
 };
@@ -1893,6 +1895,7 @@ export type Database = {
         | "os"
         | "ip_country"
         | "upsell_eligible"
+        | "upsell_eligible_at"
         | "upsell_sent_at"
         | "upsell_webinar_id"
         | "upsell_source_webinar_id"
