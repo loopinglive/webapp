@@ -46,6 +46,16 @@ export type WebinarAnalytics = {
   }[];
   timeSlots: { weekday: number; hour: number; sessions: number; attendanceRate: number }[];
   capture: { deviceFrom: string | null; countedRegistrants: number };
+  /** Phase 11 feature adoption, scoped to the same range. */
+  engagement: {
+    certificatesIssued: number;
+    onDemandViews: number;
+    exitSurveyResponses: number;
+    privateMessages: number;
+    handsRaised: number;
+    upsellSent: number;
+    upsellEligible: number;
+  };
 };
 
 /** Bucket a set of values into share-of-total rows, biggest first. */
@@ -140,6 +150,63 @@ export async function getWebinarAnalytics(
       .eq("webinar_id", webinarId)
       .limit(1)
       .maybeSingle(),
+  ]);
+
+  const sessionIds = (sessions ?? []).map((s) => s.id);
+
+  const [
+    { count: certificatesIssued },
+    { count: onDemandViews },
+    { count: exitSurveyResponses },
+    { count: privateMessages },
+    { count: handsRaised },
+    { data: upsellRows },
+  ] = await Promise.all([
+    supabase
+      .from("certificates")
+      .select("id", { count: "exact", head: true })
+      .eq("webinar_id", webinarId)
+      .gte("issued_at", fromIso)
+      .lte("issued_at", toIso),
+    supabase
+      .from("on_demand_access")
+      .select("id", { count: "exact", head: true })
+      .eq("webinar_id", webinarId)
+      .not("first_accessed_at", "is", null)
+      .gte("created_at", fromIso)
+      .lte("created_at", toIso),
+    supabase
+      .from("exit_survey_responses")
+      .select("id", { count: "exact", head: true })
+      .eq("webinar_id", webinarId)
+      .gte("submitted_at", fromIso)
+      .lte("submitted_at", toIso),
+    // private_messages/raised_hands have no webinar_id column — scoped via
+    // this webinar's recent session ids instead.
+    sessionIds.length
+      ? supabase
+          .from("private_messages")
+          .select("id", { count: "exact", head: true })
+          .in("session_id", sessionIds)
+          .gte("sent_at", fromIso)
+          .lte("sent_at", toIso)
+      : Promise.resolve({ count: 0 }),
+    sessionIds.length
+      ? supabase
+          .from("raised_hands")
+          .select("id", { count: "exact", head: true })
+          .in("session_id", sessionIds)
+          .gte("raised_at", fromIso)
+          .lte("raised_at", toIso)
+      : Promise.resolve({ count: 0 }),
+    // Eligibility has no timestamp of its own (a registrant either is or
+    // isn't), so this one isn't range-bounded like the others -- it is the
+    // current total, not "became eligible in this window".
+    supabase
+      .from("registrants")
+      .select("upsell_sent_at")
+      .eq("upsell_source_webinar_id", webinarId)
+      .eq("upsell_eligible", true),
   ]);
 
   const all = registrants ?? [];
@@ -376,6 +443,15 @@ export async function getWebinarAnalytics(
     sessions: sessionRows,
     timeSlots,
     capture: { deviceFrom, countedRegistrants: withDevice.length },
+    engagement: {
+      certificatesIssued: certificatesIssued ?? 0,
+      onDemandViews: onDemandViews ?? 0,
+      exitSurveyResponses: exitSurveyResponses ?? 0,
+      privateMessages: privateMessages ?? 0,
+      handsRaised: handsRaised ?? 0,
+      upsellSent: (upsellRows ?? []).filter((r) => r.upsell_sent_at).length,
+      upsellEligible: (upsellRows ?? []).length,
+    },
   };
 }
 

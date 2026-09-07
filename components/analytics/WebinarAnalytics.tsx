@@ -218,6 +218,18 @@ export function WebinarAnalytics({ webinarId }: { webinarId: string }) {
 
         <TimeSlotHeatmap data={data.timeSlots} />
 
+        <ChartFrame title="Feature engagement" note="Adoption of Phase 11 features in this range.">
+          <div className="grid grid-cols-2 gap-3 sm:grid-cols-4 xl:grid-cols-7">
+            <StatTile label="Certificates issued" value={data.engagement.certificatesIssued.toLocaleString()} />
+            <StatTile label="On-demand views" value={data.engagement.onDemandViews.toLocaleString()} />
+            <StatTile label="Exit survey responses" value={data.engagement.exitSurveyResponses.toLocaleString()} />
+            <StatTile label="Private messages" value={data.engagement.privateMessages.toLocaleString()} />
+            <StatTile label="Hands raised" value={data.engagement.handsRaised.toLocaleString()} />
+            <StatTile label="Upsell emails sent" value={data.engagement.upsellSent.toLocaleString()} />
+            <StatTile label="Upsell-eligible" value={data.engagement.upsellEligible.toLocaleString()} />
+          </div>
+        </ChartFrame>
+
         {/* Sessions */}
         <ChartFrame
           title="Session by session"
