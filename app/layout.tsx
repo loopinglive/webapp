@@ -5,6 +5,8 @@ import { SITE } from "@/lib/constants";
 
 import "./globals.css";
 import { ToastProvider } from "@/components/ui/ToastProvider";
+import { InstallPrompt } from "@/components/pwa/InstallPrompt";
+import { ServiceWorkerRegister } from "@/components/pwa/ServiceWorkerRegister";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -39,6 +41,11 @@ export const metadata: Metadata = {
     title: `${SITE.name} — ${SITE.tagline}`,
     description: SITE.description,
   },
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "black-translucent",
+    title: SITE.name,
+  },
 };
 
 export const viewport: Viewport = {
@@ -52,7 +59,11 @@ export default function RootLayout({
   return (
     <html lang="en" className={inter.variable}>
       <body className="bg-void text-ink antialiased">
-        <ToastProvider>{children}</ToastProvider>
+        <ToastProvider>
+          {children}
+          <InstallPrompt />
+        </ToastProvider>
+        {process.env.NODE_ENV === "production" && <ServiceWorkerRegister />}
       </body>
     </html>
   );
