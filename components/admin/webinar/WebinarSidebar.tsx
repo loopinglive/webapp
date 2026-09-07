@@ -8,6 +8,7 @@ import {
   BadgeCheck,
   BarChart3,
   CalendarClock,
+  CalendarSearch,
   Check,
   Eye,
   FlaskConical,
@@ -79,6 +80,7 @@ export function WebinarSidebar({
     { href: `${base}/ad-creatives`, label: "Ad Creatives", icon: Megaphone },
     { href: `${base}/personalisation`, label: "Personalisation", icon: Wand2 },
     { href: `${base}/support-chat`, label: "AI Support Chat", icon: Headphones },
+    { href: `${base}/scheduling`, label: "Smart Scheduling", icon: CalendarSearch },
     { href: `${base}/settings`, label: "Settings", icon: Settings2 },
   ];
 

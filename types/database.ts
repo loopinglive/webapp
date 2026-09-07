@@ -666,6 +666,17 @@ export type SupportConversationRow = {
   updated_at: string;
 };
 
+export type ScheduleOptimisationRow = {
+  id: string;
+  webinar_id: string;
+  recommended_times: Json;
+  analysis_data: Json;
+  based_on_sessions: number;
+  confidence_score: number | null;
+  applied: boolean;
+  created_at: string;
+};
+
 /*
  * Phase 12: teams, marketplace, academy, script writer, enterprise.
  *
@@ -1812,6 +1823,10 @@ export type Database = {
         SupportConversationRow,
         "id" | "session_id" | "status" | "channel" | "messages" | "resolved_at"
         | "satisfaction_rating" | "created_at" | "updated_at"
+      >;
+      schedule_optimisations: Table<
+        ScheduleOptimisationRow,
+        "id" | "confidence_score" | "applied" | "created_at"
       >;
       teams: Table<
         TeamRow,
