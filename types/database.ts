@@ -61,6 +61,8 @@ export type WebinarRow = {
   raise_hand_enabled: boolean;
   primary_language: string;
   supported_languages: string[];
+  mode: "scheduled" | "on_demand" | "both";
+  host_name: string | null;
 };
 
 export type WebinarOfferRow = {
@@ -321,6 +323,13 @@ export type RegistrantRow = {
   history_cleared_at: string | null;
   notes: string | null;
   tags: Json;
+  // Phase 11 — upsell automation and Cele.bio sync.
+  upsell_eligible: boolean;
+  upsell_sent_at: string | null;
+  upsell_webinar_id: string | null;
+  upsell_source_webinar_id: string | null;
+  upsell_bought_at: string | null;
+  cele_bio_synced: boolean;
 };
 
 export type CustomFieldType = "text" | "dropdown" | "checkbox" | "number";
@@ -741,6 +750,187 @@ export type PlatformHealthMetricRow = {
   status: "healthy" | "warning" | "critical";
   metadata: Json;
   recorded_at: string;
+};
+
+/*
+ * Phase 11: white label, series, on-demand, certificates, exit surveys,
+ * private messaging, raise hand, AI persona generation, multi-language,
+ * upsell automation, Cele.bio integration.
+ */
+
+export type WhiteLabelConfigRow = {
+  id: string;
+  user_id: string;
+  brand_name: string;
+  brand_logo_url: string | null;
+  brand_favicon_url: string | null;
+  primary_colour: string;
+  secondary_colour: string;
+  background_colour: string;
+  custom_domain: string | null;
+  custom_domain_verified: boolean;
+  hide_loopinglive_branding: boolean;
+  custom_login_page_headline: string | null;
+  custom_login_page_subheadline: string | null;
+  custom_support_email: string | null;
+  custom_terms_url: string | null;
+  custom_privacy_url: string | null;
+  email_from_name: string | null;
+  email_from_address: string | null;
+  smtp_host: string | null;
+  smtp_port: number | null;
+  smtp_username: string | null;
+  /** Encrypted at rest by the application before this column is ever written — never a plaintext credential. */
+  smtp_password_encrypted: string | null;
+  use_custom_smtp: boolean;
+  created_at: string;
+  updated_at: string;
+};
+
+export type WebinarSeriesRow = {
+  id: string;
+  owner_id: string | null;
+  title: string;
+  description: string | null;
+  thumbnail_url: string | null;
+  is_sequential: boolean;
+  is_active: boolean;
+  created_at: string;
+  updated_at: string;
+};
+
+export type WebinarSeriesItemRow = {
+  id: string;
+  series_id: string;
+  webinar_id: string;
+  position: number;
+  unlock_after_days: number;
+  unlock_after_completion: boolean;
+  /** Finer-grained than unlock_after_days -- what the series builder actually schedules against. */
+  unlock_delay_hours: number;
+  created_at: string;
+};
+
+export type SeriesProgressRow = {
+  id: string;
+  series_id: string;
+  registrant_email: string;
+  current_webinar_id: string | null;
+  completed_webinar_ids: Json;
+  started_at: string;
+  last_activity_at: string;
+};
+
+export type OnDemandAccessRow = {
+  id: string;
+  webinar_id: string;
+  registrant_id: string;
+  access_token: string;
+  expires_at: string | null;
+  first_accessed_at: string | null;
+  last_accessed_at: string | null;
+  watch_seconds: number;
+  watch_percentage: number;
+  is_active: boolean;
+  created_at: string;
+};
+
+export type CertificateTemplateRow = {
+  id: string;
+  user_id: string | null;
+  name: string;
+  design: Json;
+  is_default: boolean;
+  created_at: string;
+};
+
+export type CertificateRow = {
+  id: string;
+  webinar_id: string;
+  registrant_id: string;
+  certificate_number: string;
+  issued_at: string;
+  download_url: string | null;
+  template_id: string;
+};
+
+export type ExitSurveyRow = {
+  id: string;
+  webinar_id: string;
+  title: string;
+  questions: Json;
+  is_active: boolean;
+  created_at: string;
+};
+
+export type ExitSurveyResponseRow = {
+  id: string;
+  webinar_id: string;
+  registrant_id: string;
+  session_id: string | null;
+  responses: Json;
+  submitted_at: string;
+};
+
+export type PrivateMessageRow = {
+  id: string;
+  session_id: string;
+  registrant_id: string;
+  sender_type: "attendee" | "host";
+  content: string;
+  is_read: boolean;
+  read_at: string | null;
+  sent_at: string;
+};
+
+export type RaisedHandRow = {
+  id: string;
+  session_id: string;
+  registrant_id: string;
+  raised_at: string;
+  lowered_at: string | null;
+  acknowledged_at: string | null;
+};
+
+export type AiGeneratedPersonaRow = {
+  id: string;
+  webinar_id: string;
+  generation_prompt: string | null;
+  generated_count: number;
+  niche: string | null;
+  locations: Json;
+  status: "pending" | "generating" | "completed" | "failed";
+  completed_at: string | null;
+  created_at: string;
+};
+
+export type UpsellSequenceRow = {
+  id: string;
+  owner_id: string | null;
+  source_webinar_id: string;
+  target_webinar_id: string;
+  delay_days: number;
+  is_active: boolean;
+  email_subject: string | null;
+  email_body: string | null;
+  sms_body: string | null;
+  whatsapp_body: string | null;
+  created_at: string;
+};
+
+export type WebinarTranslationRow = {
+  id: string;
+  webinar_id: string;
+  language_code: string;
+  title: string | null;
+  description: string | null;
+  registration_headline: string | null;
+  registration_subheadline: string | null;
+  what_you_will_learn: Json;
+  cta_button_text: string | null;
+  auto_translated: boolean;
+  created_at: string;
+  updated_at: string;
 };
 
 /*
@@ -1640,6 +1830,20 @@ export type Database = {
         | "show_recorded_notice"
         | "team_id"
         | "script_id"
+        | "series_id"
+        | "on_demand_enabled"
+        | "on_demand_expires_hours"
+        | "on_demand_allow_seek"
+        | "certificate_enabled"
+        | "certificate_min_watch_percentage"
+        | "certificate_template_id"
+        | "exit_survey_enabled"
+        | "private_messaging_enabled"
+        | "raise_hand_enabled"
+        | "primary_language"
+        | "supported_languages"
+        | "mode"
+        | "host_name"
       >;
       webinar_schedules: Table<
         WebinarScheduleRow,
@@ -1688,6 +1892,12 @@ export type Database = {
         | "browser"
         | "os"
         | "ip_country"
+        | "upsell_eligible"
+        | "upsell_sent_at"
+        | "upsell_webinar_id"
+        | "upsell_source_webinar_id"
+        | "upsell_bought_at"
+        | "cele_bio_synced"
       >;
       purchases: Table<
         PurchaseRow,
@@ -1848,6 +2058,79 @@ export type Database = {
         | "reviewed_by"
         | "reviewed_at"
         | "created_at"
+      >;
+      white_label_configs: Table<
+        WhiteLabelConfigRow,
+        | "id" | "brand_logo_url" | "brand_favicon_url" | "primary_colour" | "secondary_colour"
+        | "background_colour" | "custom_domain" | "custom_domain_verified" | "hide_loopinglive_branding"
+        | "custom_login_page_headline" | "custom_login_page_subheadline" | "custom_support_email"
+        | "custom_terms_url" | "custom_privacy_url" | "email_from_name" | "email_from_address"
+        | "smtp_host" | "smtp_port" | "smtp_username" | "smtp_password_encrypted" | "use_custom_smtp"
+        | "created_at" | "updated_at"
+      >;
+      webinar_series: Table<
+        WebinarSeriesRow,
+        "id" | "description" | "thumbnail_url" | "is_sequential" | "is_active" | "created_at" | "updated_at"
+      >;
+      webinar_series_items: Table<
+        WebinarSeriesItemRow,
+        "id" | "unlock_after_days" | "unlock_after_completion" | "unlock_delay_hours" | "created_at"
+      >;
+      series_progress: Table<
+        SeriesProgressRow,
+        "id" | "current_webinar_id" | "completed_webinar_ids" | "started_at" | "last_activity_at"
+      >;
+      on_demand_access: Table<
+        OnDemandAccessRow,
+        | "id" | "access_token" | "expires_at" | "first_accessed_at" | "last_accessed_at"
+        | "watch_seconds" | "watch_percentage" | "is_active" | "created_at"
+      >;
+      certificate_templates: Table<
+        CertificateTemplateRow,
+        "id" | "user_id" | "is_default" | "created_at"
+      >;
+      certificates: Table<
+        CertificateRow,
+        "id" | "issued_at" | "download_url" | "template_id"
+      >;
+      exit_surveys: Table<
+        ExitSurveyRow,
+        "id" | "title" | "questions" | "is_active" | "created_at"
+      >;
+      exit_survey_responses: Table<
+        ExitSurveyResponseRow,
+        "id" | "session_id" | "submitted_at"
+      >;
+      private_messages: Table<
+        PrivateMessageRow,
+        "id" | "is_read" | "read_at" | "sent_at"
+      >;
+      raised_hands: Table<
+        RaisedHandRow,
+        "id" | "raised_at" | "lowered_at" | "acknowledged_at"
+      >;
+      ai_generated_personas: Table<
+        AiGeneratedPersonaRow,
+        "id" | "generation_prompt" | "niche" | "locations" | "status" | "completed_at" | "created_at"
+      >;
+      upsell_sequences: Table<
+        UpsellSequenceRow,
+        | "id" | "owner_id" | "delay_days" | "is_active" | "email_subject" | "email_body"
+        | "sms_body" | "whatsapp_body" | "created_at"
+      >;
+      cele_bio_connections: Table<
+        CeleBioConnectionRow,
+        | "id" | "refresh_token_encrypted" | "auto_sync_enabled" | "show_on_profile"
+        | "use_cele_bio_payments" | "connected_at" | "last_synced_at"
+      >;
+      cele_bio_synced_webinars: Table<
+        CeleBioSyncedWebinarRow,
+        "id" | "cele_bio_product_id" | "synced_at"
+      >;
+      webinar_translations: Table<
+        WebinarTranslationRow,
+        | "id" | "title" | "description" | "registration_headline" | "registration_subheadline"
+        | "what_you_will_learn" | "cta_button_text" | "auto_translated" | "created_at" | "updated_at"
       >;
       attendee_scores: Table<
         AttendeeScoreRow,

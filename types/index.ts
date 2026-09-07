@@ -121,6 +121,8 @@ export type SessionPayload = {
     | "thumbnail_url"
     | "broadcast_label"
     | "show_recorded_notice"
+    | "private_messaging_enabled"
+    | "raise_hand_enabled"
   >;
   session: WebinarSession | null;
   /** Seconds until start; negative once it is under way. */
