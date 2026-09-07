@@ -14,6 +14,7 @@ import {
   FlaskConical,
   Flame,
   Headphones,
+  Lightbulb,
   Loader2,
   Megaphone,
   MessageSquare,
@@ -81,6 +82,7 @@ export function WebinarSidebar({
     { href: `${base}/personalisation`, label: "Personalisation", icon: Wand2 },
     { href: `${base}/support-chat`, label: "AI Support Chat", icon: Headphones },
     { href: `${base}/scheduling`, label: "Smart Scheduling", icon: CalendarSearch },
+    { href: `${base}/insights`, label: "AI Insights", icon: Lightbulb },
     { href: `${base}/settings`, label: "Settings", icon: Settings2 },
   ];
 

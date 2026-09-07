@@ -695,6 +695,20 @@ export type RevenueForecastRow = {
   created_at: string;
 };
 
+export type AiInsightRow = {
+  id: string;
+  user_id: string | null;
+  webinar_id: string | null;
+  insight_type: string;
+  title: string;
+  body: string;
+  action_items: Json;
+  priority: "low" | "medium" | "high";
+  is_read: boolean;
+  is_dismissed: boolean;
+  created_at: string;
+};
+
 /*
  * Phase 12: teams, marketplace, academy, script writer, enterprise.
  *
@@ -1852,6 +1866,11 @@ export type Database = {
         | "predicted_conversions" | "predicted_revenue" | "confidence_interval_low"
         | "confidence_interval_high" | "actual_revenue" | "accuracy_percentage"
         | "model_version" | "created_at"
+      >;
+      ai_insights: Table<
+        AiInsightRow,
+        "id" | "user_id" | "webinar_id" | "action_items" | "priority" | "is_read"
+        | "is_dismissed" | "created_at"
       >;
       teams: Table<
         TeamRow,
