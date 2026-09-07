@@ -18,6 +18,7 @@ import {
   Send,
   Settings2,
   Sparkles,
+  SplitSquareHorizontal,
   Tag,
   UserCheck,
   Users,
@@ -71,6 +72,7 @@ export function WebinarSidebar({
     { href: `${base}/live`, label: "Go Live", icon: Radio },
     { href: `${base}/analytics`, label: "Analytics", icon: BarChart3 },
     { href: `${base}/scoring`, label: "Attendee Scoring", icon: Flame },
+    { href: `${base}/ab-tests`, label: "A/B Tests", icon: SplitSquareHorizontal },
     { href: `${base}/settings`, label: "Settings", icon: Settings2 },
   ];
 

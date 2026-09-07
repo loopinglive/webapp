@@ -7,6 +7,7 @@ import { syncContactInBackground } from "@/lib/integrations/sync";
 import { dispatchWebhookInBackground } from "@/lib/webhooks/dispatch";
 
 import { clearAttendeeHistory, logEvent, syncSegment } from "@/lib/attendee-tracking";
+import { assignRegistrantToRunningTests } from "@/lib/intelligence/ab-testing-engine";
 import { createServiceClient } from "@/lib/supabase/server";
 import { countryByCode, flagFor } from "@/lib/countries";
 import { geoCountry, parseUserAgent } from "@/lib/device";
@@ -285,6 +286,14 @@ export async function POST(
   }
 
   await syncSegment(supabase, registrantId);
+
+  // Best-effort: a bug in the experimentation framework must never be able
+  // to fail a registration that has already been written.
+  try {
+    await assignRegistrantToRunningTests(supabase, webinarId, registrantId);
+  } catch {
+    // Swallowed deliberately.
+  }
 
   // Outbound webhooks and marketing sync, both in the background: a host's
   // Zapier endpoint or an expired Mailchimp key must never make a registrant

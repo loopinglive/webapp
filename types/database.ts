@@ -576,6 +576,44 @@ export type ConversionPredictionRow = {
   outcome_recorded_at: string | null;
 };
 
+export type AbTestRow = {
+  id: string;
+  webinar_id: string;
+  name: string;
+  description: string | null;
+  test_type: string;
+  variant_a: Json;
+  variant_b: Json;
+  traffic_split: number;
+  status: "draft" | "running" | "paused" | "completed";
+  winner: string | null;
+  confidence_level: number | null;
+  started_at: string | null;
+  ended_at: string | null;
+  created_at: string;
+};
+
+export type AbTestAssignmentRow = {
+  id: string;
+  ab_test_id: string;
+  registrant_id: string;
+  variant: "a" | "b";
+  assigned_at: string;
+  converted: boolean;
+  converted_at: string | null;
+};
+
+export type AbTestResultRow = {
+  id: string;
+  ab_test_id: string;
+  variant: "a" | "b";
+  impressions: number;
+  conversions: number;
+  conversion_rate: number;
+  statistical_significance: number;
+  calculated_at: string;
+};
+
 /*
  * Phase 12: teams, marketplace, academy, script writer, enterprise.
  *
@@ -1690,6 +1728,20 @@ export type Database = {
       conversion_predictions: Table<
         ConversionPredictionRow,
         "id" | "prediction_factors" | "predicted_at" | "outcome" | "outcome_recorded_at"
+      >;
+      ab_tests: Table<
+        AbTestRow,
+        "id" | "description" | "traffic_split" | "status" | "winner" | "confidence_level"
+        | "started_at" | "ended_at" | "created_at"
+      >;
+      ab_test_assignments: Table<
+        AbTestAssignmentRow,
+        "id" | "assigned_at" | "converted" | "converted_at"
+      >;
+      ab_test_results: Table<
+        AbTestResultRow,
+        "id" | "impressions" | "conversions" | "conversion_rate"
+        | "statistical_significance" | "calculated_at"
       >;
       teams: Table<
         TeamRow,
