@@ -1,12 +1,12 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
-import { Loader2, Trash2, Upload, UserPlus, X } from "lucide-react";
+import { Loader2, Sparkles, Trash2, Upload, UserPlus, X } from "lucide-react";
 
 import { PersonaCard } from "@/components/admin/personas/PersonaCard";
 import { PersonaCommentHistory } from "@/components/admin/personas/PersonaCommentHistory";
 import { PersonaForm } from "@/components/admin/personas/PersonaForm";
-import { AdminButton } from "@/components/admin/ui/Field";
+import { AdminButton, Field, TextInput } from "@/components/admin/ui/Field";
 import { SectionHeader } from "@/components/admin/webinar/WebinarSetupShell";
 import { Avatar } from "@/components/ui/Avatar";
 import type { FakePersona } from "@/types";
@@ -16,6 +16,11 @@ export function PersonaBuilder({ webinarId }: { webinarId: string }) {
   const [commentCounts, setCommentCounts] = useState<Record<string, number>>({});
   const [loading, setLoading] = useState(true);
   const [creating, setCreating] = useState(false);
+  const [generating, setGenerating] = useState(false);
+  const [aiOpen, setAiOpen] = useState(false);
+  const [aiCount, setAiCount] = useState(6);
+  const [aiBrief, setAiBrief] = useState("");
+  const [aiError, setAiError] = useState<string | null>(null);
   const [selected, setSelected] = useState<FakePersona | null>(null);
   const [editing, setEditing] = useState(false);
   const [importError, setImportError] = useState<string | null>(null);
@@ -96,6 +101,29 @@ export function PersonaBuilder({ webinarId }: { webinarId: string }) {
     await load();
   }
 
+  async function generateWithAi() {
+    setGenerating(true);
+    setAiError(null);
+
+    const response = await fetch(`/api/admin/webinar/${webinarId}/personas/generate`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ count: aiCount, brief: aiBrief || undefined }),
+    });
+
+    setGenerating(false);
+
+    if (!response.ok) {
+      const payload = (await response.json()) as { error?: string };
+      setAiError(payload.error ?? "Could not generate personas.");
+      return;
+    }
+
+    setAiOpen(false);
+    setAiBrief("");
+    await load();
+  }
+
   return (
     <>
       <SectionHeader
@@ -103,6 +131,10 @@ export function PersonaBuilder({ webinarId }: { webinarId: string }) {
         description="The cast that fills your chat. Each one gets their own comment script."
         action={
           <div className="flex items-center gap-2">
+            <AdminButton variant="secondary" onClick={() => setAiOpen(true)}>
+              <Sparkles className="h-3.5 w-3.5" />
+              Generate with AI
+            </AdminButton>
             <AdminButton variant="secondary" onClick={() => fileRef.current?.click()}>
               <Upload className="h-3.5 w-3.5" />
               Import CSV
@@ -132,6 +164,40 @@ export function PersonaBuilder({ webinarId }: { webinarId: string }) {
           <p className="mb-4 rounded-lg bg-[#FF3B3B]/10 px-3.5 py-2.5 text-[12.5px] text-[#FF3B3B]">
             {importError}
           </p>
+        )}
+
+        {aiOpen && (
+          <div className="mb-6 max-w-md space-y-3.5 rounded-xl border border-[#6C47FF]/30 bg-[#12121A] p-5">
+            <p className="text-[13px] font-medium text-white">Generate personas with AI</p>
+            <Field label="How many" hint="Up to 20 at a time">
+              <TextInput
+                type="number"
+                min={1}
+                max={20}
+                value={aiCount}
+                onChange={(event) => setAiCount(Number(event.target.value) || 1)}
+              />
+            </Field>
+            <Field label="Anything specific?" hint="Optional">
+              <TextInput
+                placeholder="e.g. mostly small business owners, a bit skeptical"
+                value={aiBrief}
+                onChange={(event) => setAiBrief(event.target.value)}
+              />
+            </Field>
+            {aiError && <p className="text-[12px] text-[#FF3B3B]">{aiError}</p>}
+            <div className="flex justify-end gap-2">
+              <button
+                onClick={() => setAiOpen(false)}
+                className="text-[12.5px] text-[#A0A0B0] hover:text-white"
+              >
+                Cancel
+              </button>
+              <AdminButton onClick={generateWithAi} disabled={generating}>
+                {generating ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : "Generate"}
+              </AdminButton>
+            </div>
+          </div>
         )}
 
         {creating && (
