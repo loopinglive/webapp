@@ -632,6 +632,27 @@ export type AdCreativeRow = {
   created_at: string;
 };
 
+export type PersonalisationRuleRow = {
+  id: string;
+  webinar_id: string;
+  rule_name: string;
+  conditions: Json;
+  actions: Json;
+  priority: number;
+  is_active: boolean;
+  created_at: string;
+};
+
+export type PersonalisationEventRow = {
+  id: string;
+  registrant_id: string;
+  session_id: string | null;
+  rule_id: string | null;
+  event_type: string;
+  data: Json;
+  created_at: string;
+};
+
 /*
  * Phase 12: teams, marketplace, academy, script writer, enterprise.
  *
@@ -1765,6 +1786,14 @@ export type Database = {
         AdCreativeRow,
         "id" | "user_id" | "image_url" | "video_url" | "generated_by_ai"
         | "performance_score" | "status" | "created_at"
+      >;
+      personalisation_rules: Table<
+        PersonalisationRuleRow,
+        "id" | "priority" | "is_active" | "created_at"
+      >;
+      personalisation_events: Table<
+        PersonalisationEventRow,
+        "id" | "session_id" | "rule_id" | "data" | "created_at"
       >;
       teams: Table<
         TeamRow,

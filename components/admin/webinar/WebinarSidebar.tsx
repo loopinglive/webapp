@@ -23,6 +23,7 @@ import {
   Tag,
   UserCheck,
   Users,
+  Wand2,
   Zap,
 } from "lucide-react";
 
@@ -75,6 +76,7 @@ export function WebinarSidebar({
     { href: `${base}/scoring`, label: "Attendee Scoring", icon: Flame },
     { href: `${base}/ab-tests`, label: "A/B Tests", icon: SplitSquareHorizontal },
     { href: `${base}/ad-creatives`, label: "Ad Creatives", icon: Megaphone },
+    { href: `${base}/personalisation`, label: "Personalisation", icon: Wand2 },
     { href: `${base}/settings`, label: "Settings", icon: Settings2 },
   ];
 
