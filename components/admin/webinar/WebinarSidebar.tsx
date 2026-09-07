@@ -13,6 +13,7 @@ import {
   FlaskConical,
   Flame,
   Loader2,
+  Megaphone,
   MessageSquare,
   Radio,
   Send,
@@ -73,6 +74,7 @@ export function WebinarSidebar({
     { href: `${base}/analytics`, label: "Analytics", icon: BarChart3 },
     { href: `${base}/scoring`, label: "Attendee Scoring", icon: Flame },
     { href: `${base}/ab-tests`, label: "A/B Tests", icon: SplitSquareHorizontal },
+    { href: `${base}/ad-creatives`, label: "Ad Creatives", icon: Megaphone },
     { href: `${base}/settings`, label: "Settings", icon: Settings2 },
   ];
 

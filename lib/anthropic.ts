@@ -504,3 +504,97 @@ Write all thirteen sections now.`;
     content: byKey.get(section.key) ?? "",
   }));
 }
+
+const AD_PLATFORM_SPECS: Record<string, { format: string; headlineLimit: number; primaryTextLimit: number }> = {
+  facebook: { format: "feed", headlineLimit: 40, primaryTextLimit: 125 },
+  instagram: { format: "feed", headlineLimit: 40, primaryTextLimit: 125 },
+  google: { format: "search", headlineLimit: 30, primaryTextLimit: 90 },
+  linkedin: { format: "feed", headlineLimit: 70, primaryTextLimit: 150 },
+  tiktok: { format: "feed", headlineLimit: 40, primaryTextLimit: 100 },
+};
+
+export type GeneratedAdCreative = {
+  headline: string;
+  primaryText: string;
+  description: string;
+  callToAction: string;
+};
+
+/**
+ * Ad copy sized to each platform's real character limits — a headline that
+ * gets silently truncated by Meta's ad manager is worse than one written to
+ * fit it in the first place.
+ */
+export async function generateAdCreatives({
+  webinarTitle,
+  topic,
+  targetAudience,
+  offer,
+  platform,
+  count,
+}: {
+  webinarTitle: string;
+  topic: string;
+  targetAudience: string;
+  offer: string;
+  platform: keyof typeof AD_PLATFORM_SPECS;
+  count: number;
+}): Promise<GeneratedAdCreative[]> {
+  const spec = AD_PLATFORM_SPECS[platform] ?? AD_PLATFORM_SPECS.facebook;
+
+  const system = `You are a senior direct-response ad copywriter who has run high-performing paid campaigns for webinar launches on ${platform}.
+
+Write ${count} genuinely different ad variations promoting a free webinar registration. Each must take a distinct angle (e.g. pain point, curiosity, social proof, contrarian claim, transformation) -- never near-duplicates of each other.
+
+Hard limits for this platform:
+- Headline: ${spec.headlineLimit} characters or fewer
+- Primary text: ${spec.primaryTextLimit} characters or fewer
+- Call to action: a short, real ad-platform CTA label (e.g. "Sign Up", "Register Now", "Learn More", "Get Started")
+
+Output ONLY a JSON array, nothing before or after it, shape:
+[{"headline": "...", "primaryText": "...", "description": "...", "callToAction": "..."}]`;
+
+  const user = `Webinar: "${webinarTitle}"
+Topic: ${topic}
+Target audience: ${targetAudience}
+Offer: ${offer}
+
+Write ${count} ad variations now.`;
+
+  const response = await getClient().messages.create({
+    model: MODEL,
+    max_tokens: 2000,
+    system,
+    messages: [{ role: "user", content: user }],
+  });
+
+  if (response.stop_reason === "refusal") return [];
+
+  const text = response.content
+    .filter((block): block is Anthropic.TextBlock => block.type === "text")
+    .map((block) => block.text)
+    .join("");
+
+  const match = text.match(/\[[\s\S]*\]/);
+  if (!match) return [];
+
+  let parsed: unknown;
+  try {
+    parsed = JSON.parse(match[0]);
+  } catch {
+    return [];
+  }
+  if (!Array.isArray(parsed)) return [];
+
+  return parsed
+    .filter(
+      (item): item is Record<string, unknown> => typeof item === "object" && item !== null
+    )
+    .map((item) => ({
+      headline: String(item.headline ?? "").slice(0, spec.headlineLimit),
+      primaryText: String(item.primaryText ?? "").slice(0, spec.primaryTextLimit),
+      description: String(item.description ?? ""),
+      callToAction: String(item.callToAction ?? "Register Now"),
+    }))
+    .filter((creative) => creative.headline && creative.primaryText);
+}

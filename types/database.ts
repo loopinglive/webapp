@@ -614,6 +614,24 @@ export type AbTestResultRow = {
   calculated_at: string;
 };
 
+export type AdCreativeRow = {
+  id: string;
+  webinar_id: string;
+  user_id: string | null;
+  platform: string;
+  format: string;
+  headline: string;
+  primary_text: string;
+  description: string | null;
+  call_to_action: string;
+  image_url: string | null;
+  video_url: string | null;
+  generated_by_ai: boolean;
+  performance_score: number | null;
+  status: "draft" | "approved" | "archived";
+  created_at: string;
+};
+
 /*
  * Phase 12: teams, marketplace, academy, script writer, enterprise.
  *
@@ -1742,6 +1760,11 @@ export type Database = {
         AbTestResultRow,
         "id" | "impressions" | "conversions" | "conversion_rate"
         | "statistical_significance" | "calculated_at"
+      >;
+      ad_creatives: Table<
+        AdCreativeRow,
+        "id" | "user_id" | "image_url" | "video_url" | "generated_by_ai"
+        | "performance_score" | "status" | "created_at"
       >;
       teams: Table<
         TeamRow,
