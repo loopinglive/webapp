@@ -10,6 +10,7 @@ import {
   CalendarClock,
   CalendarSearch,
   Check,
+  ClipboardList,
   Eye,
   FlaskConical,
   Flame,
@@ -85,6 +86,7 @@ export function WebinarSidebar({
     { href: `${base}/scheduling`, label: "Smart Scheduling", icon: CalendarSearch },
     { href: `${base}/insights`, label: "AI Insights", icon: Lightbulb },
     { href: `${base}/segments`, label: "Smart Segments", icon: PieChart },
+    { href: `${base}/exit-survey`, label: "Exit Survey", icon: ClipboardList },
     { href: `${base}/settings`, label: "Settings", icon: Settings2 },
   ];
 

@@ -4,6 +4,7 @@ import { CheckCircle2, CalendarClock, Mail } from "lucide-react";
 
 import { Aurora } from "@/components/ui/aurora";
 import { LocalTime } from "@/components/webinar/LocalTime";
+import { ExitSurveyGate } from "@/components/exit-survey/ExitSurveyGate";
 import { createServiceClient } from "@/lib/supabase/server";
 
 export const metadata: Metadata = { title: "The webinar has ended" };
@@ -33,6 +34,7 @@ export default async function ThankYouPage({
   return (
     <main className="relative grid min-h-dvh place-items-center overflow-hidden bg-[#0A0A0F] px-5 py-16">
       <Aurora />
+      <ExitSurveyGate webinarId={webinarId} />
 
       <div className="relative w-full max-w-lg rounded-xl border border-white/8 bg-[#12121A]/80 px-8 py-12 text-center backdrop-blur-2xl">
         <CheckCircle2 className="mx-auto h-10 w-10 text-[#6C47FF]" />
