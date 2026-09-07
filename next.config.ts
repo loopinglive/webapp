@@ -15,16 +15,19 @@ import type { NextConfig } from "next";
  * - Supabase over both https and wss: realtime chat is a WebSocket.
  * - frame-ancestors 'self' rather than X-Frame-Options alone, because the
  *   admin email preview renders in a sandboxed iframe on our own origin.
+ * - checkout.razorpay.com in script-src/frame-src/connect-src: Razorpay is a
+ *   client-side modal widget (Checkout.js), not a redirect like Paystack and
+ *   Flutterwave, so it needs to load and call out from our own origin.
  */
 const CSP = [
   "default-src 'self'",
-  "script-src 'self' 'unsafe-eval' 'unsafe-inline' https://js.stripe.com https://www.googletagmanager.com https://connect.facebook.net",
+  "script-src 'self' 'unsafe-eval' 'unsafe-inline' https://js.stripe.com https://www.googletagmanager.com https://connect.facebook.net https://checkout.razorpay.com",
   "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
   "font-src 'self' data: https://fonts.gstatic.com",
   "img-src 'self' data: blob: https://res.cloudinary.com https://www.facebook.com https://www.google-analytics.com",
   "media-src 'self' blob: https://res.cloudinary.com",
-  "connect-src 'self' https://api.stripe.com https://api.cloudinary.com https://*.supabase.co wss://*.supabase.co https://www.google-analytics.com",
-  "frame-src 'self' https://js.stripe.com https://calendly.com",
+  "connect-src 'self' https://api.stripe.com https://api.cloudinary.com https://*.supabase.co wss://*.supabase.co https://www.google-analytics.com https://api.razorpay.com https://checkout.razorpay.com https://lumberjack.razorpay.com",
+  "frame-src 'self' https://js.stripe.com https://calendly.com https://api.razorpay.com https://checkout.razorpay.com",
   "frame-ancestors 'self'",
   "base-uri 'self'",
   "form-action 'self'",

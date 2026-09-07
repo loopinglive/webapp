@@ -5,6 +5,7 @@ import { useSearchParams } from "next/navigation";
 import { ShieldCheck } from "lucide-react";
 
 import { PricingCard } from "@/components/billing/PricingCard";
+import { LocalPaymentMethods } from "@/components/global-expansion/LocalPaymentMethods";
 import { useBilling } from "@/hooks/useBilling";
 import { PLANS, type PlanSlug } from "@/lib/billing/plans";
 
@@ -74,6 +75,8 @@ export function UpgradePage({ currentPlan }: { currentPlan: string }) {
           />
           {error && <p className="text-[12.5px] text-[#FF6B6B]">{error}</p>}
         </div>
+
+        <LocalPaymentMethods />
 
         <div className="mt-8 flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-[12.5px] text-[#6E6E80]">
           <span className="inline-flex items-center gap-1.5">

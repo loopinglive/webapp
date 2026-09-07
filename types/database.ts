@@ -1875,6 +1875,19 @@ export type DocumentationPageRow = {
   updated_at: string;
 };
 
+export type LocalPaymentIntentRow = {
+  id: string;
+  provider: string;
+  provider_reference: string;
+  user_id: string | null;
+  plan_slug: string;
+  amount: number;
+  currency: string;
+  status: string;
+  created_at: string;
+  completed_at: string | null;
+};
+
 export type Database = {
   public: {
     Tables: {
@@ -2614,6 +2627,10 @@ export type Database = {
       documentation_pages: Table<
         DocumentationPageRow,
         "id" | "subcategory" | "position" | "is_published" | "last_edited_by" | "created_at" | "updated_at"
+      >;
+      local_payment_intents: Table<
+        LocalPaymentIntentRow,
+        "id" | "user_id" | "status" | "created_at" | "completed_at"
       >;
     };
     Views: Record<string, never>;

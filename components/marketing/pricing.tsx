@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Check, X } from "lucide-react";
 
+import { LocalisedPricing } from "@/components/global-expansion/LocalisedPricing";
 import { PLANS } from "@/lib/billing/plans";
 import { cn } from "@/lib/utils";
 
@@ -28,7 +29,11 @@ export function Pricing() {
           </p>
         </div>
 
-        <div className="mt-14 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="mt-10">
+          <LocalisedPricing />
+        </div>
+
+        <div className="mt-4 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
           {PLANS.map((plan) => (
             <div
               key={plan.slug}
