@@ -75,7 +75,18 @@ export async function GET(
           padding: "60px",
         }}
       >
-        <div style={{ fontSize: 20, letterSpacing: 4, color: design.accent_colour, textTransform: "uppercase" }}>
+        {design.headline && (
+          <div style={{ fontSize: 28, fontWeight: 700, textAlign: "center" }}>{design.headline}</div>
+        )}
+        <div
+          style={{
+            fontSize: 20,
+            letterSpacing: 4,
+            color: design.accent_colour,
+            textTransform: "uppercase",
+            marginTop: design.headline ? 20 : 0,
+          }}
+        >
           {design.subheadline}
         </div>
         <div style={{ fontSize: 56, fontWeight: 700, marginTop: 24, textAlign: "center" }}>

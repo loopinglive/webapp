@@ -1,4 +1,5 @@
 import {
+  Award,
   BarChart3,
   Binoculars,
   CreditCard,
@@ -36,6 +37,7 @@ export const DASHBOARD_NAV = [
   { href: "/revenue-forecast", label: "Revenue Forecast", icon: LineChart },
   { href: "/settings/integrations", label: "Integrations", icon: Plug },
   { href: "/settings/white-label", label: "White label", icon: Palette },
+  { href: "/settings/certificate-template", label: "Certificate Design", icon: Award },
   { href: "/settings/billing", label: "Billing", icon: CreditCard },
   { href: "/settings/affiliate", label: "Affiliate", icon: Handshake },
   { href: "/settings/cele-bio", label: "Cele.bio", icon: Link2 },
