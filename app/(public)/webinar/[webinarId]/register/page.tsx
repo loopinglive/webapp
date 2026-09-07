@@ -53,6 +53,25 @@ async function load(webinarId: string) {
   };
 }
 
+async function loadTranslation(webinarId: string, lang: string | undefined) {
+  if (!lang) return null;
+  const supabase = createServiceClient();
+  const { data } = await supabase
+    .from("webinar_translations")
+    .select("title, registration_headline, registration_subheadline, what_you_will_learn, cta_button_text")
+    .eq("webinar_id", webinarId)
+    .eq("language_code", lang)
+    .maybeSingle();
+  if (!data) return null;
+
+  return {
+    ...data,
+    what_you_will_learn: Array.isArray(data.what_you_will_learn)
+      ? (data.what_you_will_learn as string[])
+      : [],
+  };
+}
+
 export async function generateMetadata({
   params,
 }: {
@@ -115,17 +134,32 @@ function fallbackConfig(
 
 export default async function RegisterPage({
   params,
+  searchParams,
 }: {
   params: Promise<{ webinarId: string }>;
+  searchParams: Promise<{ lang?: string }>;
 }) {
   const { webinarId } = await params;
+  const { lang } = await searchParams;
   const data = await load(webinarId);
 
   if (!data) notFound();
 
-  const config =
-    data.config ??
-    fallbackConfig(webinarId, data.webinar.title, data.webinar.description);
+  const translation = await loadTranslation(webinarId, lang);
+
+  const config = {
+    ...(data.config ?? fallbackConfig(webinarId, data.webinar.title, data.webinar.description)),
+    // A translation only ever overrides text the visitor reads — colours,
+    // images, tracking ids and everything structural stay exactly as built.
+    ...(translation && {
+      headline: translation.registration_headline || (data.config?.headline ?? data.webinar.title),
+      subheadline: translation.registration_subheadline || data.config?.subheadline || null,
+      what_you_will_learn: translation.what_you_will_learn?.length
+        ? translation.what_you_will_learn
+        : (data.config?.what_you_will_learn ?? []),
+      cta_button_text: translation.cta_button_text || (data.config?.cta_button_text ?? "Reserve My Spot →"),
+    }),
+  };
 
   // The host has taken the page offline.
   if (!config.is_active) {

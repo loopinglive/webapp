@@ -14,6 +14,7 @@ import {
   Eye,
   FlaskConical,
   Flame,
+  Globe,
   Headphones,
   Lightbulb,
   Loader2,
@@ -87,6 +88,7 @@ export function WebinarSidebar({
     { href: `${base}/insights`, label: "AI Insights", icon: Lightbulb },
     { href: `${base}/segments`, label: "Smart Segments", icon: PieChart },
     { href: `${base}/exit-survey`, label: "Exit Survey", icon: ClipboardList },
+    { href: `${base}/translations`, label: "Translations", icon: Globe },
     { href: `${base}/settings`, label: "Settings", icon: Settings2 },
   ];
 
