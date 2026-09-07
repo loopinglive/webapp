@@ -11,6 +11,7 @@ import {
 import { geoCountry, parseUserAgent } from "@/lib/device";
 import { cancelJoinReminders } from "@/lib/messaging/scheduler";
 import { createServiceClient } from "@/lib/supabase/server";
+import { handleWebinarCompletion } from "@/lib/webinar-completion";
 import type { Database } from "@/types/database";
 
 type RegistrantUpdate = Database["public"]["Tables"]["registrants"]["Update"];
@@ -232,6 +233,15 @@ export async function POST(
       },
       webinar?.title ?? ""
     );
+
+    // Certificate, series unlock, upsell eligibility — all keyed off this same
+    // crossing, so none of it depends on a poller noticing later.
+    void handleWebinarCompletion(supabase, {
+      webinarId,
+      registrantId,
+      sessionId,
+      watchPercentage,
+    });
   }
   if (action === "leave") {
     await logEvent(supabase, { registrantId, sessionId, type: "left_session" });
