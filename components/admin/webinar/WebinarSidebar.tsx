@@ -24,6 +24,7 @@ import {
   Radio,
   Send,
   Settings2,
+  Sliders,
   Sparkles,
   SplitSquareHorizontal,
   Tag,
@@ -89,6 +90,7 @@ export function WebinarSidebar({
     { href: `${base}/segments`, label: "Smart Segments", icon: PieChart },
     { href: `${base}/exit-survey`, label: "Exit Survey", icon: ClipboardList },
     { href: `${base}/translations`, label: "Translations", icon: Globe },
+    { href: `${base}/advanced`, label: "Advanced", icon: Sliders },
     { href: `${base}/settings`, label: "Settings", icon: Settings2 },
   ];
 
