@@ -677,6 +677,24 @@ export type ScheduleOptimisationRow = {
   created_at: string;
 };
 
+export type RevenueForecastRow = {
+  id: string;
+  user_id: string;
+  webinar_id: string | null;
+  forecast_period: string;
+  forecast_type: string;
+  predicted_registrants: number | null;
+  predicted_attendees: number | null;
+  predicted_conversions: number | null;
+  predicted_revenue: number | null;
+  confidence_interval_low: number | null;
+  confidence_interval_high: number | null;
+  actual_revenue: number | null;
+  accuracy_percentage: number | null;
+  model_version: string | null;
+  created_at: string;
+};
+
 /*
  * Phase 12: teams, marketplace, academy, script writer, enterprise.
  *
@@ -1827,6 +1845,13 @@ export type Database = {
       schedule_optimisations: Table<
         ScheduleOptimisationRow,
         "id" | "confidence_score" | "applied" | "created_at"
+      >;
+      revenue_forecasts: Table<
+        RevenueForecastRow,
+        | "id" | "webinar_id" | "predicted_registrants" | "predicted_attendees"
+        | "predicted_conversions" | "predicted_revenue" | "confidence_interval_low"
+        | "confidence_interval_high" | "actual_revenue" | "accuracy_percentage"
+        | "model_version" | "created_at"
       >;
       teams: Table<
         TeamRow,
