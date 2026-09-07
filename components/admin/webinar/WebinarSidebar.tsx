@@ -18,6 +18,7 @@ import {
   Loader2,
   Megaphone,
   MessageSquare,
+  PieChart,
   Radio,
   Send,
   Settings2,
@@ -83,6 +84,7 @@ export function WebinarSidebar({
     { href: `${base}/support-chat`, label: "AI Support Chat", icon: Headphones },
     { href: `${base}/scheduling`, label: "Smart Scheduling", icon: CalendarSearch },
     { href: `${base}/insights`, label: "AI Insights", icon: Lightbulb },
+    { href: `${base}/segments`, label: "Smart Segments", icon: PieChart },
     { href: `${base}/settings`, label: "Settings", icon: Settings2 },
   ];
 

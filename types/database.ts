@@ -709,6 +709,18 @@ export type AiInsightRow = {
   created_at: string;
 };
 
+export type SmartSegmentRow = {
+  id: string;
+  webinar_id: string;
+  name: string;
+  description: string | null;
+  conditions: Json;
+  registrant_count: number;
+  last_evaluated_at: string | null;
+  is_dynamic: boolean;
+  created_at: string;
+};
+
 /*
  * Phase 12: teams, marketplace, academy, script writer, enterprise.
  *
@@ -1871,6 +1883,10 @@ export type Database = {
         AiInsightRow,
         "id" | "user_id" | "webinar_id" | "action_items" | "priority" | "is_read"
         | "is_dismissed" | "created_at"
+      >;
+      smart_segments: Table<
+        SmartSegmentRow,
+        "id" | "description" | "registrant_count" | "last_evaluated_at" | "is_dynamic" | "created_at"
       >;
       teams: Table<
         TeamRow,
