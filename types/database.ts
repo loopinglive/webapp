@@ -721,6 +721,16 @@ export type SmartSegmentRow = {
   created_at: string;
 };
 
+export type CompetitorIntelligenceRow = {
+  id: string;
+  user_id: string;
+  competitor_name: string;
+  competitor_url: string | null;
+  data_points: Json;
+  last_analysed_at: string | null;
+  created_at: string;
+};
+
 /*
  * Phase 12: teams, marketplace, academy, script writer, enterprise.
  *
@@ -1887,6 +1897,10 @@ export type Database = {
       smart_segments: Table<
         SmartSegmentRow,
         "id" | "description" | "registrant_count" | "last_evaluated_at" | "is_dynamic" | "created_at"
+      >;
+      competitor_intelligence: Table<
+        CompetitorIntelligenceRow,
+        "id" | "competitor_url" | "data_points" | "last_analysed_at" | "created_at"
       >;
       teams: Table<
         TeamRow,

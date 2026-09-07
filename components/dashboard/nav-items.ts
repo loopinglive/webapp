@@ -1,5 +1,6 @@
 import {
   BarChart3,
+  Binoculars,
   CreditCard,
   Handshake,
   KeyRound,
@@ -25,6 +26,7 @@ export const DASHBOARD_NAV = [
   { href: "/webinars", label: "Webinars", icon: Video },
   { href: "/attendees", label: "Attendees", icon: Users },
   { href: "/analytics", label: "Analytics", icon: BarChart3 },
+  { href: "/competitor-intelligence", label: "Competitor Intel", icon: Binoculars },
   { href: "/automations", label: "Automations", icon: Workflow },
   { href: "/revenue-forecast", label: "Revenue Forecast", icon: LineChart },
   { href: "/settings/integrations", label: "Integrations", icon: Plug },
