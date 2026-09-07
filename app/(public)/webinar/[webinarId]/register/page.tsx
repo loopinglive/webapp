@@ -1,3 +1,4 @@
+import { headers } from "next/headers";
 import { notFound } from "next/navigation";
 import Script from "next/script";
 import type { Metadata } from "next";
@@ -19,7 +20,7 @@ async function load(webinarId: string) {
 
   const { data: webinar } = await supabase
     .from("webinars")
-    .select("id, title, description, video_duration_seconds")
+    .select("id, title, description, video_duration_seconds, primary_language, supported_languages")
     .eq("id", webinarId)
     .eq("is_active", true)
     .maybeSingle();
@@ -51,6 +52,31 @@ async function load(webinarId: string) {
     startsAt: sessions?.[0]?.starts_at ?? null,
     registrantCount: count ?? 0,
   };
+}
+
+/**
+ * The visitor's preferred language, if this webinar actually has a
+ * translation for it — never a language nobody asked to support, even if
+ * the browser prefers it.
+ */
+async function detectLanguage(supportedLanguages: string[]): Promise<string | undefined> {
+  if (supportedLanguages.length === 0) return undefined;
+  const header = (await headers()).get("accept-language");
+  if (!header) return undefined;
+
+  const preferred = header
+    .split(",")
+    .map((part) => part.split(";")[0].trim().split("-")[0].toLowerCase());
+
+  return preferred.find((code) => supportedLanguages.includes(code));
+}
+
+function languageLabel(code: string): string {
+  try {
+    return new Intl.DisplayNames(["en"], { type: "language" }).of(code) ?? code.toUpperCase();
+  } catch {
+    return code.toUpperCase();
+  }
 }
 
 async function loadTranslation(webinarId: string, lang: string | undefined) {
@@ -140,12 +166,24 @@ export default async function RegisterPage({
   searchParams: Promise<{ lang?: string }>;
 }) {
   const { webinarId } = await params;
-  const { lang } = await searchParams;
+  const { lang: requestedLang } = await searchParams;
   const data = await load(webinarId);
 
   if (!data) notFound();
 
+  const supportedLanguages = (data.webinar.supported_languages as string[] | null) ?? [];
+  const primaryLanguage = data.webinar.primary_language ?? "en";
+
+  // An explicit ?lang= always wins; absent that, the visitor's own browser
+  // preference picks a language this webinar actually has -- never a
+  // language nobody asked to support.
+  const lang = requestedLang ?? (await detectLanguage(supportedLanguages));
   const translation = await loadTranslation(webinarId, lang);
+
+  const otherLanguages = supportedLanguages.filter(
+    (code) => code !== primaryLanguage && code !== (lang ?? primaryLanguage)
+  );
+  const showPrimaryOption = Boolean(lang) && lang !== primaryLanguage;
 
   const config = {
     ...(data.config ?? fallbackConfig(webinarId, data.webinar.title, data.webinar.description)),
@@ -233,6 +271,21 @@ export default async function RegisterPage({
           />
         </div>
       </RegistrationPagePreview>
+
+      {(showPrimaryOption || otherLanguages.length > 0) && (
+        <div className="flex flex-wrap items-center justify-center gap-x-3 gap-y-1 pb-10 text-[12px] text-white/40">
+          {showPrimaryOption && (
+            <a href={`?`} className="hover:text-white/70">
+              {languageLabel(primaryLanguage)}
+            </a>
+          )}
+          {otherLanguages.map((code) => (
+            <a key={code} href={`?lang=${code}`} className="hover:text-white/70">
+              {languageLabel(code)}
+            </a>
+          ))}
+        </div>
+      )}
     </main>
   );
 }
