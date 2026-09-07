@@ -10,6 +10,8 @@ import { MobileChatDrawer } from "@/components/webinar/MobileChatDrawer";
 import { OfferButton } from "@/components/webinar/OfferButton";
 import { VideoPlayer } from "@/components/webinar/VideoPlayer";
 import { ViewerCount } from "@/components/webinar/ViewerCount";
+import { PrivateMessageWidget } from "@/components/live/PrivateMessageWidget";
+import { RaiseHandButton } from "@/components/live/RaiseHandButton";
 import { useRealtimeChat } from "@/hooks/useRealtimeChat";
 import { useTimedComments } from "@/hooks/useTimedComments";
 import { useVideoProgress } from "@/hooks/useVideoProgress";
@@ -378,6 +380,12 @@ export function WatchRoom({ webinarId }: { webinarId: string }) {
             </p>
           )}
 
+          {data.webinar.raise_hand_enabled && (
+            <div className="px-1 pt-2">
+              <RaiseHandButton sessionId={sessionId} registrantId={registrantId} />
+            </div>
+          )}
+
           {/* Offer zone: reserved under the video, filled the moment the host
               reveals the offer on the timeline. */}
           {offer && (
@@ -448,6 +456,10 @@ export function WatchRoom({ webinarId }: { webinarId: string }) {
           currentTime={currentTime}
           variant="mobile"
         />
+      )}
+
+      {data.webinar.private_messaging_enabled && (
+        <PrivateMessageWidget webinarId={webinarId} sessionId={sessionId} registrantId={registrantId} />
       )}
     </main>
   );
