@@ -1,6 +1,6 @@
-import { requireAdmin } from "@/lib/admin-auth";
 import { TEMPLATE_BY_KEY } from "@/lib/messaging/defaults";
 import { createServiceClient } from "@/lib/supabase/server";
+import { requireWebinarAccess } from "@/lib/webinar-access";
 import type { MessageChannel, MessageStatus } from "@/types/database";
 
 export const dynamic = "force-dynamic";
@@ -30,9 +30,6 @@ function cell(value: unknown) {
 }
 
 export async function GET(request: Request) {
-  const { response: denied } = await requireAdmin();
-  if (denied) return denied;
-
   const params = new URL(request.url).searchParams;
   const webinarId = params.get("webinarId");
   const channel = params.get("channel");
@@ -41,6 +38,9 @@ export async function GET(request: Request) {
   if (!webinarId) {
     return Response.json({ error: "webinarId is required" }, { status: 400 });
   }
+
+  const access = await requireWebinarAccess(webinarId);
+  if (!access.ok) return access.response;
 
   const supabase = createServiceClient();
 

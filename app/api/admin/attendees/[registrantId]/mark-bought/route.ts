@@ -3,10 +3,10 @@ import { NextResponse } from "next/server";
 import { syncContactInBackground } from "@/lib/integrations/sync";
 import { dispatchWebhookInBackground } from "@/lib/webhooks/dispatch";
 
-import { requireAdmin } from "@/lib/admin-auth";
 import { logEvent, syncSegment } from "@/lib/attendee-tracking";
 import { handlePurchase } from "@/lib/messaging/scheduler";
 import { createServiceClient } from "@/lib/supabase/server";
+import { requireRegistrantAccess } from "@/lib/webinar-access";
 
 export const dynamic = "force-dynamic";
 
@@ -16,10 +16,10 @@ export async function POST(
   request: Request,
   { params }: { params: Promise<{ registrantId: string }> }
 ) {
-  const { response: denied } = await requireAdmin();
-  if (denied) return denied;
-
   const { registrantId } = await params;
+  const access = await requireRegistrantAccess(registrantId);
+  if (!access.ok) return access.response;
+
   // Optional: an admin marking an external sale can attach what it was worth.
   // Without an amount the purchase is still recorded, just unpriced.
   const { amountCents, currency } = (await request

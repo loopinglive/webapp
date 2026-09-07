@@ -1,9 +1,9 @@
 import Anthropic from "@anthropic-ai/sdk";
 import { NextResponse } from "next/server";
 
-import { requireAdmin } from "@/lib/admin-auth";
 import { generatePersonaReply } from "@/lib/anthropic";
 import { createServiceClient } from "@/lib/supabase/server";
+import { requireWebinarAccess } from "@/lib/webinar-access";
 import type { AiPersona, ChatMessage } from "@/types";
 
 export const dynamic = "force-dynamic";
@@ -16,9 +16,6 @@ export const maxDuration = 30;
  * before an audience does.
  */
 export async function POST(request: Request) {
-  const { response: denied } = await requireAdmin();
-  if (denied) return denied;
-
   const { webinarId, persona, message, videoPosition } =
     (await request.json()) as {
       webinarId?: string;
@@ -41,6 +38,9 @@ export async function POST(request: Request) {
   if (!message?.trim()) {
     return NextResponse.json({ error: "Type a message to test." }, { status: 400 });
   }
+
+  const access = await requireWebinarAccess(webinarId);
+  if (!access.ok) return access.response;
 
   const supabase = createServiceClient();
   const { data: webinar } = await supabase

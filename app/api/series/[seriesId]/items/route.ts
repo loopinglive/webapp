@@ -1,8 +1,8 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
 
-import { requireAnyAdmin } from "@/lib/admin-auth";
 import { createServiceClient } from "@/lib/supabase/server";
+import { requireAccountAccess, requireWebinarAccess } from "@/lib/webinar-access";
 
 export const dynamic = "force-dynamic";
 
@@ -21,11 +21,11 @@ export async function POST(
   request: Request,
   { params }: { params: Promise<{ seriesId: string }> }
 ) {
-  const { user, response: denied } = await requireAnyAdmin();
-  if (denied) return denied;
+  const access = await requireAccountAccess();
+  if (!access.ok) return access.response;
 
   const { seriesId } = await params;
-  if (!(await owns(seriesId, user.id))) {
+  if (!access.isPlatformAdmin && !(await owns(seriesId, access.actorId))) {
     return NextResponse.json({ error: "Not found" }, { status: 404 });
   }
 
@@ -44,6 +44,9 @@ export async function POST(
     .eq("id", parsed.data.webinarId)
     .maybeSingle();
   if (!webinar) return NextResponse.json({ error: "Webinar not found" }, { status: 404 });
+
+  const webinarAccess = await requireWebinarAccess(parsed.data.webinarId);
+  if (!webinarAccess.ok) return webinarAccess.response;
 
   const { data: last } = await service
     .from("webinar_series_items")
@@ -79,11 +82,11 @@ export async function PATCH(
   request: Request,
   { params }: { params: Promise<{ seriesId: string }> }
 ) {
-  const { user, response: denied } = await requireAnyAdmin();
-  if (denied) return denied;
+  const access = await requireAccountAccess();
+  if (!access.ok) return access.response;
 
   const { seriesId } = await params;
-  if (!(await owns(seriesId, user.id))) {
+  if (!access.isPlatformAdmin && !(await owns(seriesId, access.actorId))) {
     return NextResponse.json({ error: "Not found" }, { status: 404 });
   }
 
@@ -112,11 +115,11 @@ export async function DELETE(
   request: Request,
   { params }: { params: Promise<{ seriesId: string }> }
 ) {
-  const { user, response: denied } = await requireAnyAdmin();
-  if (denied) return denied;
+  const access = await requireAccountAccess();
+  if (!access.ok) return access.response;
 
   const { seriesId } = await params;
-  if (!(await owns(seriesId, user.id))) {
+  if (!access.isPlatformAdmin && !(await owns(seriesId, access.actorId))) {
     return NextResponse.json({ error: "Not found" }, { status: 404 });
   }
 

@@ -1,9 +1,9 @@
 import { NextResponse } from "next/server";
 
-import { requireAdmin } from "@/lib/admin-auth";
 import { generateReplayAccess, generateSessionReplays } from "@/lib/replay";
 import { appUrl } from "@/lib/messaging/variables";
 import { createServiceClient } from "@/lib/supabase/server";
+import { requireSessionAccess } from "@/lib/webinar-access";
 
 export const dynamic = "force-dynamic";
 export const maxDuration = 60;
@@ -16,9 +16,6 @@ export const maxDuration = 60;
  * after the automatic pass has already run.
  */
 export async function POST(request: Request) {
-  const { response: denied } = await requireAdmin();
-  if (denied) return denied;
-
   const { sessionId, registrantId, durationHours } = (await request.json()) as {
     sessionId?: string;
     registrantId?: string;
@@ -28,6 +25,9 @@ export async function POST(request: Request) {
   if (!sessionId) {
     return NextResponse.json({ error: "sessionId is required" }, { status: 400 });
   }
+
+  const gate = await requireSessionAccess(sessionId);
+  if (!gate.ok) return gate.response;
 
   const supabase = createServiceClient();
 

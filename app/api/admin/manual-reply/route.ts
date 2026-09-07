@@ -1,14 +1,11 @@
 import { NextResponse } from "next/server";
 
-import { requireAdmin } from "@/lib/admin-auth";
 import { createServiceClient } from "@/lib/supabase/server";
+import { requireSessionAccess } from "@/lib/webinar-access";
 
 export const dynamic = "force-dynamic";
 
 export async function POST(request: Request) {
-  const { response: denied } = await requireAdmin();
-  if (denied) return denied;
-
   const { originalMessageId, sessionId, personaId, content } =
     (await request.json()) as {
       originalMessageId?: string;
@@ -22,6 +19,9 @@ export async function POST(request: Request) {
   if (!originalMessageId || !sessionId || !personaId || !body) {
     return NextResponse.json({ error: "Missing reply details" }, { status: 400 });
   }
+
+  const access = await requireSessionAccess(sessionId);
+  if (!access.ok) return access.response;
 
   const supabase = createServiceClient();
 

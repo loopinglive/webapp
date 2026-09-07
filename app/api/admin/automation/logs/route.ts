@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 
-import { requireAdmin } from "@/lib/admin-auth";
 import { createServiceClient } from "@/lib/supabase/server";
+import { requireWebinarAccess } from "@/lib/webinar-access";
 import type { MessageChannel, MessageStatus } from "@/types/database";
 
 export const dynamic = "force-dynamic";
@@ -9,9 +9,6 @@ export const dynamic = "force-dynamic";
 const PAGE_SIZE = 100;
 
 export async function GET(request: Request) {
-  const { response: denied } = await requireAdmin();
-  if (denied) return denied;
-
   const params = new URL(request.url).searchParams;
   const webinarId = params.get("webinarId");
   const channel = params.get("channel");
@@ -22,6 +19,9 @@ export async function GET(request: Request) {
   if (!webinarId) {
     return NextResponse.json({ error: "webinarId is required" }, { status: 400 });
   }
+
+  const access = await requireWebinarAccess(webinarId);
+  if (!access.ok) return access.response;
 
   const supabase = createServiceClient();
 
@@ -90,15 +90,22 @@ export async function GET(request: Request) {
 
 /** Retry a failed message now. */
 export async function POST(request: Request) {
-  const { response: denied } = await requireAdmin();
-  if (denied) return denied;
-
   const { messageId } = (await request.json()) as { messageId?: string };
   if (!messageId) {
     return NextResponse.json({ error: "messageId is required" }, { status: 400 });
   }
 
   const supabase = createServiceClient();
+
+  const { data: message } = await supabase
+    .from("scheduled_messages")
+    .select("webinar_id")
+    .eq("id", messageId)
+    .maybeSingle();
+  if (!message) return NextResponse.json({ error: "Message not found." }, { status: 404 });
+
+  const access = await requireWebinarAccess(message.webinar_id);
+  if (!access.ok) return access.response;
 
   // Reset the attempt counter so a manual retry gets a full run of chances.
   const { error } = await supabase

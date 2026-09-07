@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 
-import { requireAdmin } from "@/lib/admin-auth";
 import { createServiceClient } from "@/lib/supabase/server";
+import { requireRegistrantAccess, requireSessionAccess } from "@/lib/webinar-access";
 
 export const dynamic = "force-dynamic";
 
@@ -12,9 +12,6 @@ export const dynamic = "force-dynamic";
  * the analytics rather than vanishing when a host closes a replay window.
  */
 export async function POST(request: Request) {
-  const { response: denied } = await requireAdmin();
-  if (denied) return denied;
-
   const { sessionId, registrantId } = (await request.json()) as {
     sessionId?: string;
     registrantId?: string;
@@ -26,6 +23,11 @@ export async function POST(request: Request) {
       { status: 400 }
     );
   }
+
+  const gate = sessionId
+    ? await requireSessionAccess(sessionId)
+    : await requireRegistrantAccess(registrantId!);
+  if (!gate.ok) return gate.response;
 
   const supabase = createServiceClient();
 

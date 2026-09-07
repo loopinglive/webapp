@@ -1,20 +1,20 @@
 import { NextResponse } from "next/server";
 
-import { requireAdmin } from "@/lib/admin-auth";
 import { createServiceClient } from "@/lib/supabase/server";
+import { requireSessionAccess } from "@/lib/webinar-access";
 import type { AdminSessionPayload, AiPersona, PersonaModeMap } from "@/types";
 
 export const dynamic = "force-dynamic";
 
 // Everything the admin panel needs to boot: session, webinar, personas, modes.
 export async function GET(request: Request) {
-  const { response: denied } = await requireAdmin();
-  if (denied) return denied;
-
   const sessionId = new URL(request.url).searchParams.get("sessionId");
   if (!sessionId) {
     return NextResponse.json({ error: "sessionId is required" }, { status: 400 });
   }
+
+  const access = await requireSessionAccess(sessionId);
+  if (!access.ok) return access.response;
 
   const supabase = createServiceClient();
 
@@ -72,9 +72,6 @@ export async function GET(request: Request) {
 
 // Admin presence: join on mount, leave on unmount.
 export async function POST(request: Request) {
-  const { user, response: denied } = await requireAdmin();
-  if (denied) return denied;
-
   const { sessionId, action } = (await request.json()) as {
     sessionId?: string;
     action?: "join" | "leave";
@@ -87,12 +84,15 @@ export async function POST(request: Request) {
     );
   }
 
+  const access = await requireSessionAccess(sessionId);
+  if (!access.ok) return access.response;
+
   const supabase = createServiceClient();
 
   if (action === "join") {
     const { data, error } = await supabase
       .from("admin_sessions")
-      .insert({ webinar_session_id: sessionId, admin_id: user.id })
+      .insert({ webinar_session_id: sessionId, admin_id: access.actorId })
       .select("id")
       .single();
 
@@ -106,7 +106,7 @@ export async function POST(request: Request) {
     .from("admin_sessions")
     .update({ left_at: new Date().toISOString() })
     .eq("webinar_session_id", sessionId)
-    .eq("admin_id", user.id)
+    .eq("admin_id", access.actorId)
     .is("left_at", null);
 
   return NextResponse.json({ success: true });

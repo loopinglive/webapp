@@ -1,9 +1,9 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
 
-import { requireAdmin } from "@/lib/admin-auth";
 import { scoreRegistrant } from "@/lib/intelligence/scoring-engine";
 import { createServiceClient } from "@/lib/supabase/server";
+import { requireRegistrantAccess } from "@/lib/webinar-access";
 
 export const dynamic = "force-dynamic";
 
@@ -11,13 +11,13 @@ const schema = z.object({ registrantId: z.string().uuid() });
 
 /** Scores one attendee, on demand — the leaderboard's "refresh this one" action. */
 export async function POST(request: Request) {
-  const { response: denied } = await requireAdmin();
-  if (denied) return denied;
-
   const parsed = schema.safeParse(await request.json().catch(() => ({})));
   if (!parsed.success) {
     return NextResponse.json({ error: "registrantId is required" }, { status: 422 });
   }
+
+  const access = await requireRegistrantAccess(parsed.data.registrantId);
+  if (!access.ok) return access.response;
 
   const supabase = createServiceClient();
 

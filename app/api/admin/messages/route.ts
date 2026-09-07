@@ -1,15 +1,12 @@
 import { NextResponse } from "next/server";
 
-import { requireAdmin } from "@/lib/admin-auth";
 import { createServiceClient } from "@/lib/supabase/server";
+import { requireSessionAccess } from "@/lib/webinar-access";
 
 export const dynamic = "force-dynamic";
 
 // Initial load for the admin feed. Realtime carries everything after this.
 export async function GET(request: Request) {
-  const { response: denied } = await requireAdmin();
-  if (denied) return denied;
-
   const params = new URL(request.url).searchParams;
   const sessionId = params.get("sessionId");
   const filter = params.get("filter") ?? "all";
@@ -18,6 +15,9 @@ export async function GET(request: Request) {
   if (!sessionId) {
     return NextResponse.json({ error: "sessionId is required" }, { status: 400 });
   }
+
+  const access = await requireSessionAccess(sessionId);
+  if (!access.ok) return access.response;
 
   const supabase = createServiceClient();
 

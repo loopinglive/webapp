@@ -1,8 +1,8 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
 
-import { requireAnyAdmin } from "@/lib/admin-auth";
 import { createServiceClient } from "@/lib/supabase/server";
+import { requireAccountAccess } from "@/lib/webinar-access";
 
 export const dynamic = "force-dynamic";
 
@@ -27,6 +27,9 @@ export async function GET(
   request: Request,
   { params }: { params: Promise<{ seriesId: string }> }
 ) {
+  const access = await requireAccountAccess();
+  if (!access.ok) return access.response;
+
   const { seriesId } = await params;
   const service = createServiceClient();
 
@@ -37,6 +40,9 @@ export async function GET(
     .maybeSingle();
 
   if (!seriesRow) return NextResponse.json({ error: "Series not found" }, { status: 404 });
+  if (!access.isPlatformAdmin && seriesRow.owner_id !== access.actorId) {
+    return NextResponse.json({ error: "Series not found" }, { status: 404 });
+  }
 
   const { id, owner_id, title, description, is_sequential, is_active, created_at } = seriesRow;
   const series = { id, owner_id, title, description, sequential_unlock: is_sequential, is_active, created_at };
@@ -63,11 +69,11 @@ export async function PATCH(
   request: Request,
   { params }: { params: Promise<{ seriesId: string }> }
 ) {
-  const { user, response: denied } = await requireAnyAdmin();
-  if (denied) return denied;
+  const access = await requireAccountAccess();
+  if (!access.ok) return access.response;
 
   const { seriesId } = await params;
-  if (!(await owns(seriesId, user.id))) {
+  if (!access.isPlatformAdmin && !(await owns(seriesId, access.actorId))) {
     return NextResponse.json({ error: "Not found" }, { status: 404 });
   }
 
@@ -95,11 +101,11 @@ export async function DELETE(
   request: Request,
   { params }: { params: Promise<{ seriesId: string }> }
 ) {
-  const { user, response: denied } = await requireAnyAdmin();
-  if (denied) return denied;
+  const access = await requireAccountAccess();
+  if (!access.ok) return access.response;
 
   const { seriesId } = await params;
-  if (!(await owns(seriesId, user.id))) {
+  if (!access.isPlatformAdmin && !(await owns(seriesId, access.actorId))) {
     return NextResponse.json({ error: "Not found" }, { status: 404 });
   }
 

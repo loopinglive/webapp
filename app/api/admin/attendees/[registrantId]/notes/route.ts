@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 
-import { requireAdmin } from "@/lib/admin-auth";
 import { createServiceClient } from "@/lib/supabase/server";
+import { requireRegistrantAccess } from "@/lib/webinar-access";
 import type { Database, Json } from "@/types/database";
 
 type RegistrantUpdate = Database["public"]["Tables"]["registrants"]["Update"];
@@ -16,10 +16,10 @@ export async function POST(
   request: Request,
   { params }: { params: Promise<{ registrantId: string }> }
 ) {
-  const { response: denied } = await requireAdmin();
-  if (denied) return denied;
-
   const { registrantId } = await params;
+  const access = await requireRegistrantAccess(registrantId);
+  if (!access.ok) return access.response;
+
   const { notes, tags } = (await request.json()) as {
     notes?: string;
     tags?: string[];

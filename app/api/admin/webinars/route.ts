@@ -1,22 +1,42 @@
 import { NextResponse } from "next/server";
 
-import { requireAdmin } from "@/lib/admin-auth";
 import { createServiceClient } from "@/lib/supabase/server";
+import { requireAccountAccess } from "@/lib/webinar-access";
 import type { Webinar, WebinarSummary } from "@/types";
 
 export const dynamic = "force-dynamic";
 
-// Dashboard list: every webinar with the numbers its card shows.
+// Dashboard list: every webinar the caller can see, with the numbers its card shows.
+// Platform operator sees everything; a regular owner sees only their own (directly
+// owned, or owned via a team they are an owner/admin on).
 export async function GET() {
-  const { response: denied } = await requireAdmin();
-  if (denied) return denied;
+  const access = await requireAccountAccess();
+  if (!access.ok) return access.response;
 
   const supabase = createServiceClient();
 
-  const { data: webinars, error } = await supabase
+  let webinarsQuery = supabase
     .from("webinars")
     .select("*")
     .order("created_at", { ascending: false });
+
+  if (!access.isPlatformAdmin) {
+    const accountId = access.account!.id;
+    const { data: memberships } = await supabase
+      .from("team_members")
+      .select("team_id")
+      .eq("user_id", accountId)
+      .eq("status", "active")
+      .in("role", ["owner", "admin"]);
+
+    const teamIds = (memberships ?? []).map((row) => row.team_id);
+    const filter = teamIds.length
+      ? `owner_id.eq.${accountId},team_id.in.(${teamIds.join(",")})`
+      : `owner_id.eq.${accountId}`;
+    webinarsQuery = webinarsQuery.or(filter);
+  }
+
+  const { data: webinars, error } = await webinarsQuery;
 
   if (error) {
     return NextResponse.json({ error: error.message }, { status: 500 });

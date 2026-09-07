@@ -1,9 +1,9 @@
 import { NextResponse } from "next/server";
 
-import { requireAdmin } from "@/lib/admin-auth";
 import { getSettings } from "@/lib/messaging/scheduler";
 import { configuredChannels } from "@/lib/messaging/providers";
 import { createServiceClient } from "@/lib/supabase/server";
+import { requireWebinarAccess } from "@/lib/webinar-access";
 
 export const dynamic = "force-dynamic";
 
@@ -25,13 +25,13 @@ const FIELDS = [
 ] as const;
 
 export async function GET(request: Request) {
-  const { response: denied } = await requireAdmin();
-  if (denied) return denied;
-
   const webinarId = new URL(request.url).searchParams.get("webinarId");
   if (!webinarId) {
     return NextResponse.json({ error: "webinarId is required" }, { status: 400 });
   }
+
+  const access = await requireWebinarAccess(webinarId);
+  if (!access.ok) return access.response;
 
   const supabase = createServiceClient();
   const settings = await getSettings(supabase, webinarId);
@@ -67,9 +67,6 @@ export async function GET(request: Request) {
 }
 
 export async function POST(request: Request) {
-  const { response: denied } = await requireAdmin();
-  if (denied) return denied;
-
   const body = (await request.json()) as Record<string, unknown> & {
     webinarId?: string;
   };
@@ -77,6 +74,9 @@ export async function POST(request: Request) {
   if (!body.webinarId) {
     return NextResponse.json({ error: "webinarId is required" }, { status: 400 });
   }
+
+  const access = await requireWebinarAccess(body.webinarId);
+  if (!access.ok) return access.response;
 
   const patch: Record<string, unknown> = {
     webinar_id: body.webinarId,

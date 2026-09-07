@@ -1,19 +1,19 @@
 import { NextResponse } from "next/server";
 
-import { requireAdmin } from "@/lib/admin-auth";
 import { seedTemplates } from "@/lib/messaging/scheduler";
 import { createServiceClient } from "@/lib/supabase/server";
+import { requireWebinarAccess } from "@/lib/webinar-access";
 
 export const dynamic = "force-dynamic";
 
 export async function GET(request: Request) {
-  const { response: denied } = await requireAdmin();
-  if (denied) return denied;
-
   const webinarId = new URL(request.url).searchParams.get("webinarId");
   if (!webinarId) {
     return NextResponse.json({ error: "webinarId is required" }, { status: 400 });
   }
+
+  const access = await requireWebinarAccess(webinarId);
+  if (!access.ok) return access.response;
 
   const supabase = createServiceClient();
 
@@ -35,9 +35,6 @@ export async function GET(request: Request) {
 }
 
 export async function POST(request: Request) {
-  const { response: denied } = await requireAdmin();
-  if (denied) return denied;
-
   const { templateId, subject, body, isActive } = (await request.json()) as {
     templateId?: string;
     subject?: string | null;
@@ -48,6 +45,20 @@ export async function POST(request: Request) {
   if (!templateId) {
     return NextResponse.json({ error: "templateId is required" }, { status: 400 });
   }
+
+  const supabase = createServiceClient();
+
+  // Update-by-templateId-alone has no webinar in the request to check
+  // ownership against — resolve it from the template row itself first.
+  const { data: template } = await supabase
+    .from("message_templates")
+    .select("webinar_id")
+    .eq("id", templateId)
+    .maybeSingle();
+  if (!template) return NextResponse.json({ error: "Template not found." }, { status: 404 });
+
+  const access = await requireWebinarAccess(template.webinar_id);
+  if (!access.ok) return access.response;
 
   const patch: Record<string, unknown> = { updated_at: new Date().toISOString() };
   if (subject !== undefined) patch.subject = subject;
@@ -62,7 +73,6 @@ export async function POST(request: Request) {
   }
   if (typeof isActive === "boolean") patch.is_active = isActive;
 
-  const supabase = createServiceClient();
   const { data, error } = await supabase
     .from("message_templates")
     .update(patch as never)

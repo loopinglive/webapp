@@ -1,9 +1,9 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
 
-import { requireAdmin } from "@/lib/admin-auth";
 import { scoreRegistrant } from "@/lib/intelligence/scoring-engine";
 import { createServiceClient } from "@/lib/supabase/server";
+import { requireWebinarAccess } from "@/lib/webinar-access";
 
 export const dynamic = "force-dynamic";
 export const maxDuration = 60;
@@ -21,13 +21,13 @@ const schema = z.object({ webinarId: z.string().uuid() });
  * taking a few seconds longer.
  */
 export async function POST(request: Request) {
-  const { response: denied } = await requireAdmin();
-  if (denied) return denied;
-
   const parsed = schema.safeParse(await request.json().catch(() => ({})));
   if (!parsed.success) {
     return NextResponse.json({ error: "webinarId is required" }, { status: 422 });
   }
+
+  const access = await requireWebinarAccess(parsed.data.webinarId);
+  if (!access.ok) return access.response;
 
   const supabase = createServiceClient();
 

@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 
-import { requireAdmin } from "@/lib/admin-auth";
 import { createServiceClient } from "@/lib/supabase/server";
+import { requireWebinarAccess } from "@/lib/webinar-access";
 import type { AttendeeProfilePayload, ChatMessage } from "@/types";
 
 export const dynamic = "force-dynamic";
@@ -10,9 +10,6 @@ export async function GET(
   _request: Request,
   { params }: { params: Promise<{ registrantId: string }> }
 ) {
-  const { response: denied } = await requireAdmin();
-  if (denied) return denied;
-
   const { registrantId } = await params;
   const supabase = createServiceClient();
 
@@ -25,6 +22,9 @@ export async function GET(
   if (!attendee) {
     return NextResponse.json({ error: "Attendee not found" }, { status: 404 });
   }
+
+  const access = await requireWebinarAccess(attendee.webinar_id);
+  if (!access.ok) return access.response;
 
   const [
     { data: source },

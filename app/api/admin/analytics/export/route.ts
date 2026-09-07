@@ -1,7 +1,7 @@
-import { requireAdmin } from "@/lib/admin-auth";
 import { resolveRange } from "@/app/api/admin/analytics/webinar/route";
 import { getWebinarAnalytics } from "@/lib/analytics/queries";
 import { createServiceClient } from "@/lib/supabase/server";
+import { requireWebinarAccess } from "@/lib/webinar-access";
 
 export const dynamic = "force-dynamic";
 export const maxDuration = 60;
@@ -22,15 +22,15 @@ const row = (values: unknown[]) => values.map(cell).join(",");
  * filename so a downloaded file is still identifiable a week later.
  */
 export async function GET(request: Request) {
-  const { response: denied } = await requireAdmin();
-  if (denied) return denied;
-
   const params = new URL(request.url).searchParams;
   const webinarId = params.get("webinarId");
 
   if (!webinarId) {
     return Response.json({ error: "webinarId is required" }, { status: 400 });
   }
+
+  const access = await requireWebinarAccess(webinarId);
+  if (!access.ok) return access.response;
 
   const { from, to } = resolveRange(params);
   const supabase = createServiceClient();

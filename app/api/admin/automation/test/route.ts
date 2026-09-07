@@ -1,6 +1,5 @@
 import { NextResponse } from "next/server";
 
-import { requireAdmin } from "@/lib/admin-auth";
 import {
   configuredChannels,
   sendEmail,
@@ -15,7 +14,8 @@ import {
   EXAMPLE_VARIABLES,
   resolveTemplate,
 } from "@/lib/messaging/templates";
-import { createServiceClient } from "@/lib/supabase/server";
+import { createClient, createServiceClient } from "@/lib/supabase/server";
+import { requireWebinarAccess } from "@/lib/webinar-access";
 
 export const dynamic = "force-dynamic";
 export const maxDuration = 30;
@@ -28,9 +28,6 @@ export const maxDuration = 30;
  * they never asked for.
  */
 export async function POST(request: Request) {
-  const { user, response: denied } = await requireAdmin();
-  if (denied) return denied;
-
   const { templateId, recipientPhone } = (await request.json()) as {
     templateId?: string;
     recipientPhone?: string;
@@ -51,6 +48,13 @@ export async function POST(request: Request) {
   if (!template) {
     return NextResponse.json({ error: "Template not found" }, { status: 404 });
   }
+
+  const access = await requireWebinarAccess(template.webinar_id);
+  if (!access.ok) return access.response;
+
+  const {
+    data: { user: sessionUser },
+  } = await (await createClient()).auth.getUser();
 
   const channel = template.channel as Channel;
 
@@ -73,15 +77,15 @@ export async function POST(request: Request) {
   const subject = `[Test] ${resolveTemplate(template.subject ?? "", variables)}`;
 
   if (channel === "email") {
-    if (!user.email) {
+    if (!sessionUser?.email) {
       return NextResponse.json(
-        { error: "Your admin account has no email address." },
+        { error: "Your account has no email address." },
         { status: 400 }
       );
     }
 
     const result = await sendEmail({
-      to: user.email,
+      to: sessionUser.email,
       fromName: settings?.from_name ?? "Loopinglive",
       fromEmail:
         process.env.RESEND_FROM_EMAIL?.trim() ||
@@ -103,7 +107,7 @@ export async function POST(request: Request) {
     });
 
     return result.ok
-      ? NextResponse.json({ success: true, sentTo: user.email })
+      ? NextResponse.json({ success: true, sentTo: sessionUser.email })
       : NextResponse.json({ error: result.error }, { status: 502 });
   }
 

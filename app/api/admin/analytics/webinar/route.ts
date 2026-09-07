@@ -1,8 +1,8 @@
 import { NextResponse } from "next/server";
 
-import { requireAdmin } from "@/lib/admin-auth";
 import { getWebinarAnalytics } from "@/lib/analytics/queries";
 import { createServiceClient } from "@/lib/supabase/server";
+import { requireWebinarAccess } from "@/lib/webinar-access";
 
 export const dynamic = "force-dynamic";
 export const maxDuration = 60;
@@ -23,15 +23,15 @@ export function resolveRange(params: URLSearchParams) {
 }
 
 export async function GET(request: Request) {
-  const { response: denied } = await requireAdmin();
-  if (denied) return denied;
-
   const params = new URL(request.url).searchParams;
   const webinarId = params.get("webinarId");
 
   if (!webinarId) {
     return NextResponse.json({ error: "webinarId is required" }, { status: 400 });
   }
+
+  const access = await requireWebinarAccess(webinarId);
+  if (!access.ok) return access.response;
 
   const { from, to } = resolveRange(params);
   const supabase = createServiceClient();

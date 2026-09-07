@@ -1,8 +1,8 @@
 import { NextResponse } from "next/server";
 
-import { requireAdmin } from "@/lib/admin-auth";
 import { syncSegment } from "@/lib/attendee-tracking";
 import { createServiceClient } from "@/lib/supabase/server";
+import { requireRegistrantAccess } from "@/lib/webinar-access";
 
 export const dynamic = "force-dynamic";
 
@@ -10,10 +10,10 @@ export async function POST(
   _request: Request,
   { params }: { params: Promise<{ registrantId: string }> }
 ) {
-  const { response: denied } = await requireAdmin();
-  if (denied) return denied;
-
   const { registrantId } = await params;
+  const access = await requireRegistrantAccess(registrantId);
+  if (!access.ok) return access.response;
+
   const supabase = createServiceClient();
 
   const { error } = await supabase

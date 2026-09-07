@@ -1,5 +1,5 @@
-import { requireAdmin } from "@/lib/admin-auth";
 import { createServiceClient } from "@/lib/supabase/server";
+import { requireWebinarAccess } from "@/lib/webinar-access";
 
 export const dynamic = "force-dynamic";
 export const maxDuration = 60;
@@ -41,9 +41,6 @@ function cell(value: unknown) {
 }
 
 export async function GET(request: Request) {
-  const { response: denied } = await requireAdmin();
-  if (denied) return denied;
-
   const params = new URL(request.url).searchParams;
   const webinarId = params.get("webinarId");
   const segment = params.get("segment");
@@ -51,6 +48,9 @@ export async function GET(request: Request) {
   if (!webinarId) {
     return Response.json({ error: "webinarId is required" }, { status: 400 });
   }
+
+  const access = await requireWebinarAccess(webinarId);
+  if (!access.ok) return access.response;
 
   const supabase = createServiceClient();
 

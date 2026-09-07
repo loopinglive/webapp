@@ -1,8 +1,8 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
 
-import { requireAnyAdmin } from "@/lib/admin-auth";
 import { createServiceClient } from "@/lib/supabase/server";
+import { requireAccountAccess } from "@/lib/webinar-access";
 
 export const dynamic = "force-dynamic";
 
@@ -13,14 +13,14 @@ const createSchema = z.object({
 });
 
 export async function GET() {
-  const { user, response: denied } = await requireAnyAdmin();
-  if (denied) return denied;
+  const access = await requireAccountAccess();
+  if (!access.ok) return access.response;
 
   const service = createServiceClient();
   const { data: series } = await service
     .from("webinar_series")
     .select("id, title, description, is_sequential, is_active, created_at")
-    .eq("owner_id", user.id)
+    .eq("owner_id", access.actorId)
     .order("created_at", { ascending: false });
 
   const ids = (series ?? []).map((row) => row.id);
@@ -50,8 +50,8 @@ export async function GET() {
 }
 
 export async function POST(request: Request) {
-  const { user, response: denied } = await requireAnyAdmin();
-  if (denied) return denied;
+  const access = await requireAccountAccess();
+  if (!access.ok) return access.response;
 
   const parsed = createSchema.safeParse(await request.json().catch(() => ({})));
   if (!parsed.success) {
@@ -61,7 +61,7 @@ export async function POST(request: Request) {
   const { data, error } = await createServiceClient()
     .from("webinar_series")
     .insert({
-      owner_id: user.id,
+      owner_id: access.actorId,
       title: parsed.data.title,
       description: parsed.data.description,
       is_sequential: parsed.data.sequential_unlock,

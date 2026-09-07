@@ -1,8 +1,8 @@
 import { promises as dns } from "node:dns";
 import { NextResponse } from "next/server";
 
-import { requireAdmin } from "@/lib/admin-auth";
 import { createServiceClient } from "@/lib/supabase/server";
+import { requireWebinarAccess } from "@/lib/webinar-access";
 
 export const dynamic = "force-dynamic";
 
@@ -18,9 +18,6 @@ const DOMAIN = /^(?!-)[a-z0-9-]{1,63}(?<!-)(\.(?!-)[a-z0-9-]{1,63}(?<!-))+$/i;
  * resolves, otherwise the first attendee to use the link finds nothing.
  */
 export async function POST(request: Request) {
-  const { response: denied } = await requireAdmin();
-  if (denied) return denied;
-
   const { webinarId, domain } = (await request.json()) as {
     webinarId?: string;
     domain?: string;
@@ -29,6 +26,9 @@ export async function POST(request: Request) {
   if (!webinarId) {
     return NextResponse.json({ error: "webinarId is required" }, { status: 400 });
   }
+
+  const access = await requireWebinarAccess(webinarId);
+  if (!access.ok) return access.response;
 
   const supabase = createServiceClient();
   const hostname = domain?.trim().toLowerCase().replace(/^https?:\/\//, "").replace(/\/.*$/, "");

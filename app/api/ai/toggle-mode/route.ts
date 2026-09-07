@@ -1,14 +1,11 @@
 import { NextResponse } from "next/server";
 
-import { requireAdmin } from "@/lib/admin-auth";
 import { createServiceClient } from "@/lib/supabase/server";
+import { requireSessionAccess } from "@/lib/webinar-access";
 
 export const dynamic = "force-dynamic";
 
 export async function POST(request: Request) {
-  const { response: denied } = await requireAdmin();
-  if (denied) return denied;
-
   const { sessionId, personaId, newMode } = (await request.json()) as {
     sessionId?: string;
     personaId?: string;
@@ -21,6 +18,9 @@ export async function POST(request: Request) {
       { status: 400 }
     );
   }
+
+  const access = await requireSessionAccess(sessionId);
+  if (!access.ok) return access.response;
 
   const supabase = createServiceClient();
 
