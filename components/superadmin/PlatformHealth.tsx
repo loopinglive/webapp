@@ -132,7 +132,7 @@ export function PlatformHealth() {
       <section>
         <h2 className="text-[15px] font-semibold text-white">Scheduled jobs</h2>
         <p className="mt-0.5 text-[12.5px] text-[#6E6E80]">
-          All seven run in Postgres via pg_cron. &ldquo;Behind schedule&rdquo; means the
+          All run in Postgres via pg_cron. &ldquo;Behind schedule&rdquo; means the
           runs that happened succeeded, but fewer happened than the schedule implies.
         </p>
 

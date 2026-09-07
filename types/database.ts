@@ -731,6 +731,18 @@ export type CompetitorIntelligenceRow = {
   created_at: string;
 };
 
+export type PlatformHealthMetricRow = {
+  id: string;
+  metric_name: string;
+  metric_value: number;
+  metric_unit: string | null;
+  threshold_warning: number | null;
+  threshold_critical: number | null;
+  status: "healthy" | "warning" | "critical";
+  metadata: Json;
+  recorded_at: string;
+};
+
 /*
  * Phase 12: teams, marketplace, academy, script writer, enterprise.
  *
@@ -1901,6 +1913,11 @@ export type Database = {
       competitor_intelligence: Table<
         CompetitorIntelligenceRow,
         "id" | "competitor_url" | "data_points" | "last_analysed_at" | "created_at"
+      >;
+      platform_health_metrics: Table<
+        PlatformHealthMetricRow,
+        "id" | "metric_unit" | "threshold_warning" | "threshold_critical" | "status"
+        | "metadata" | "recorded_at"
       >;
       teams: Table<
         TeamRow,

@@ -4,6 +4,7 @@ import { MaintenanceToggle } from "@/components/superadmin/MaintenanceToggle";
 import { IpAllowlistPanel } from "@/components/superadmin/IpAllowlistPanel";
 import { TwoFactorPanel } from "@/components/superadmin/TwoFactorPanel";
 import { PlatformHealth } from "@/components/superadmin/PlatformHealth";
+import { PlatformHealthHistory } from "@/components/superadmin/PlatformHealthHistory";
 
 export const metadata: Metadata = { title: "Platform health · Super admin" };
 export const dynamic = "force-dynamic";
@@ -25,6 +26,7 @@ export default function Page() {
         <MaintenanceToggle />
       </div>
       <PlatformHealth />
+      <PlatformHealthHistory />
     </>
   );
 }
