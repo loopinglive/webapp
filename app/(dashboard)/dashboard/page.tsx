@@ -22,7 +22,7 @@ export default async function DashboardPage() {
         title="Overview"
         subtitle={user?.email ? `Signed in as ${user.email}` : undefined}
         action={
-          <Link href="/webinars">
+          <Link href="/admin/webinar/new">
             <Button size="sm">
               <Plus className="h-4 w-4" />
               New webinar
@@ -43,7 +43,7 @@ export default async function DashboardPage() {
           title="No webinars yet"
           body="Upload a recording, set a schedule, and Loopinglive will run it as a live room on repeat."
           action={
-            <Link href="/webinars">
+            <Link href="/admin/webinar/new">
               <Button>Create your first webinar</Button>
             </Link>
           }

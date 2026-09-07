@@ -27,7 +27,7 @@ import {
  */
 export const DASHBOARD_NAV = [
   { href: "/dashboard", label: "Overview", icon: LayoutDashboard },
-  { href: "/webinars", label: "Webinars", icon: Video },
+  { href: "/admin/dashboard", label: "Webinars", icon: Video },
   { href: "/webinars/series", label: "Series", icon: Layers },
   { href: "/attendees", label: "Attendees", icon: Users },
   { href: "/analytics", label: "Analytics", icon: BarChart3 },
