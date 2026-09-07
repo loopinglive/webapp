@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { logAudit } from "@/lib/audit";
 import { createServiceClient } from "@/lib/supabase/server";
 import { requireWebinarAccess } from "@/lib/webinar-access";
 
@@ -107,6 +108,15 @@ export async function DELETE(
     admin_id: access.actorId,
     action: "registrant_erased",
     detail: { webinarId, result: data } as never,
+  });
+
+  await logAudit({
+    action: "gdpr.deletion_completed",
+    resourceType: "registrant",
+    resourceId: registrantId,
+    userId: access.isPlatformAdmin ? null : access.actorId,
+    newValue: { webinarId },
+    request,
   });
 
   return NextResponse.json({ result: data });

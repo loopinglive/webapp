@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 
+import { logAudit } from "@/lib/audit";
 import { requireAccountAccess } from "@/lib/webinar-access";
 import { createServiceClient } from "@/lib/supabase/server";
 
@@ -46,6 +47,15 @@ export async function POST(request: Request) {
   if (error) {
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
+
+  await logAudit({
+    action: "webinar.created",
+    resourceType: "webinar",
+    resourceId: data.id,
+    userId: access.isPlatformAdmin ? null : access.actorId,
+    newValue: { title, topic: body.topic?.trim() || null },
+    request,
+  });
 
   return NextResponse.json({ webinarId: data.id });
 }

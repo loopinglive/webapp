@@ -56,7 +56,9 @@ export default async function DashboardLayout({
           <AnnouncementBanner />
           {/* Per-region containment: a page that throws costs the reader that
               page, not the sidebar and the banners with it. */}
-          <ErrorBoundary area="dashboard">{children}</ErrorBoundary>
+          <div id="main-content" tabIndex={-1}>
+            <ErrorBoundary area="dashboard">{children}</ErrorBoundary>
+          </div>
         </div>
       </div>
     </PlanProvider>

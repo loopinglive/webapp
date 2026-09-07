@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
 
+import { logAudit } from "@/lib/audit";
 import { getUserAccount } from "@/lib/billing/account";
 import { createServiceClient } from "@/lib/supabase/server";
 
@@ -133,6 +134,16 @@ export async function POST(request: Request) {
     .from("team_invitations")
     .update({ accepted_at: now })
     .eq("id", invitation.id);
+
+  await logAudit({
+    action: "team.member_added",
+    resourceType: "team_member",
+    resourceId: account.id,
+    userId: account.id,
+    teamId: invitation.team_id,
+    newValue: { role: invitation.role },
+    request,
+  });
 
   return NextResponse.json({ teamId: invitation.team_id, role: invitation.role });
 }

@@ -4,6 +4,8 @@ import { Inter } from "next/font/google";
 import { SITE } from "@/lib/constants";
 
 import "./globals.css";
+import { AccessibilityMenu } from "@/components/accessibility/AccessibilityMenu";
+import { SkipToContent } from "@/components/accessibility/SkipToContent";
 import { ToastProvider } from "@/components/ui/ToastProvider";
 import { InstallPrompt } from "@/components/pwa/InstallPrompt";
 import { ServiceWorkerRegister } from "@/components/pwa/ServiceWorkerRegister";
@@ -59,9 +61,11 @@ export default function RootLayout({
   return (
     <html lang="en" className={inter.variable}>
       <body className="bg-void text-ink antialiased">
+        <SkipToContent />
         <ToastProvider>
           {children}
           <InstallPrompt />
+          <AccessibilityMenu />
         </ToastProvider>
         {process.env.NODE_ENV === "production" && <ServiceWorkerRegister />}
       </body>

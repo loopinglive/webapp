@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
 
+import { logAudit } from "@/lib/audit";
 import { requireTeamCapability } from "@/lib/teams/auth";
 import type { TeamMemberRow } from "@/types/database";
 import { createServiceClient } from "@/lib/supabase/server";
@@ -110,6 +111,17 @@ export async function PATCH(
       .update({ team_id: null, team_role: null })
       .eq("id", target.user_id)
       .eq("team_id", teamId);
+
+    await logAudit({
+      action: "team.member_removed",
+      resourceType: "team_member",
+      resourceId: target.id,
+      userId: account.id,
+      teamId,
+      oldValue: { userId: target.user_id, role: target.role },
+      request,
+    });
+
     return NextResponse.json({ removed: true });
   }
 
@@ -133,6 +145,17 @@ export async function PATCH(
       .from("user_accounts")
       .update({ team_role: parsed.data.role })
       .eq("id", target.user_id);
+
+    await logAudit({
+      action: "team.member_role_changed",
+      resourceType: "team_member",
+      resourceId: target.id,
+      userId: account.id,
+      teamId,
+      oldValue: { role: target.role },
+      newValue: { role: parsed.data.role },
+      request,
+    });
   }
 
   return NextResponse.json({ success: true });

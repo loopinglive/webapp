@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
 
+import { logAudit } from "@/lib/audit";
 import { getUserAccount } from "@/lib/billing/account";
 import { WEBHOOK_EVENTS } from "@/lib/webhooks/dispatch";
 import { createServiceClient } from "@/lib/supabase/server";
@@ -63,6 +64,16 @@ export async function POST(request: Request) {
     .single();
 
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+
+  await logAudit({
+    action: "webhook.created",
+    resourceType: "webhook_endpoint",
+    resourceId: data.id,
+    userId: account.id,
+    newValue: { url: data.url, events: data.events },
+    request,
+  });
+
   return NextResponse.json({ endpoint: data });
 }
 
@@ -78,6 +89,14 @@ export async function DELETE(request: Request) {
     .delete()
     .eq("id", id)
     .eq("user_id", account.id);
+
+  await logAudit({
+    action: "webhook.deleted",
+    resourceType: "webhook_endpoint",
+    resourceId: id,
+    userId: account.id,
+    request,
+  });
 
   return NextResponse.json({ success: true });
 }

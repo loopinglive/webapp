@@ -1637,6 +1637,244 @@ export type SavedFilterRow = {
   created_at: string;
 };
 
+// ─── Phase 14: global expansion, accessibility, security, plugins, streaming,
+// creator economy, advanced video, documentation. Matches
+// supabase/migrations/0043_phase14_foundation.sql.
+
+export type LocalizedPricingRow = {
+  id: string;
+  country_code: string;
+  country_name: string;
+  currency_code: string;
+  currency_symbol: string;
+  monthly_price: number;
+  yearly_price: number;
+  lifetime_price: number;
+  purchasing_power_parity_factor: number;
+  stripe_price_id_monthly: string | null;
+  stripe_price_id_yearly: string | null;
+  stripe_price_id_lifetime: string | null;
+  payment_methods: Json;
+  is_active: boolean;
+  created_at: string;
+};
+
+export type LocalPaymentMethodRow = {
+  id: string;
+  method_name: string;
+  method_type: string;
+  supported_countries: Json;
+  provider: string;
+  provider_config: Json;
+  is_active: boolean;
+  created_at: string;
+};
+
+export type AccessibilityPreferencesRow = {
+  id: string;
+  user_id: string | null;
+  reduce_motion: boolean;
+  high_contrast: boolean;
+  large_text: boolean;
+  screen_reader_optimised: boolean;
+  captions_enabled: boolean;
+  caption_size: string;
+  caption_background: boolean;
+  keyboard_navigation_hints: boolean;
+  created_at: string;
+  updated_at: string;
+};
+
+export type SsoConfigurationRow = {
+  id: string;
+  team_id: string | null;
+  provider: string;
+  entity_id: string | null;
+  sso_url: string;
+  certificate: string;
+  attribute_mapping: Json;
+  is_active: boolean;
+  require_sso: boolean;
+  created_at: string;
+  updated_at: string;
+};
+
+export type SsoSessionRow = {
+  id: string;
+  team_id: string | null;
+  user_id: string | null;
+  session_token: string;
+  provider: string;
+  provider_session_id: string | null;
+  expires_at: string;
+  created_at: string;
+};
+
+export type AuditLogRow = {
+  id: string;
+  user_id: string | null;
+  team_id: string | null;
+  action: string;
+  resource_type: string;
+  resource_id: string | null;
+  old_value: Json | null;
+  new_value: Json | null;
+  ip_address: string | null;
+  user_agent: string | null;
+  session_id: string | null;
+  created_at: string;
+};
+
+export type Soc2EvidenceRow = {
+  id: string;
+  control_id: string;
+  control_name: string;
+  evidence_type: string;
+  evidence_data: Json;
+  collected_at: string;
+  review_period_start: string | null;
+  review_period_end: string | null;
+};
+
+export type DataExportRequestRow = {
+  id: string;
+  user_id: string | null;
+  request_type: string;
+  status: string;
+  export_url: string | null;
+  expires_at: string | null;
+  requested_at: string;
+  completed_at: string | null;
+};
+
+export type GdprRequestRow = {
+  id: string;
+  requester_email: string;
+  request_type: string;
+  webinar_id: string | null;
+  status: string;
+  processed_by: string | null;
+  processed_at: string | null;
+  notes: string | null;
+  created_at: string;
+};
+
+export type PluginRow = {
+  id: string;
+  developer_id: string | null;
+  name: string;
+  slug: string;
+  description: string;
+  version: string;
+  category: string;
+  manifest: Json;
+  bundle_url: string;
+  icon_url: string | null;
+  screenshots: Json;
+  pricing_type: string;
+  price: number;
+  install_count: number;
+  average_rating: number;
+  is_approved: boolean;
+  is_active: boolean;
+  created_at: string;
+  updated_at: string;
+};
+
+export type PluginInstallationRow = {
+  id: string;
+  plugin_id: string | null;
+  user_id: string | null;
+  webinar_id: string | null;
+  settings: Json;
+  is_active: boolean;
+  installed_at: string;
+};
+
+export type PluginEventRow = {
+  id: string;
+  plugin_id: string | null;
+  installation_id: string | null;
+  event_type: string;
+  payload: Json;
+  response: Json | null;
+  status: string;
+  created_at: string;
+};
+
+export type MultiStreamDestinationRow = {
+  id: string;
+  webinar_id: string | null;
+  user_id: string | null;
+  platform: string;
+  stream_key: string;
+  rtmp_url: string;
+  is_active: boolean;
+  last_streamed_at: string | null;
+  created_at: string;
+};
+
+export type CreatorEconomyProfileRow = {
+  id: string;
+  user_id: string | null;
+  creator_handle: string | null;
+  bio: string | null;
+  niche: string | null;
+  audience_size_estimate: number | null;
+  verified: boolean;
+  featured: boolean;
+  total_webinars_hosted: number;
+  total_attendees_served: number;
+  total_revenue_generated: number;
+  follower_count: number;
+  public_profile_enabled: boolean;
+  social_links: Json;
+  created_at: string;
+};
+
+export type CreatorFollowRow = {
+  id: string;
+  follower_id: string | null;
+  creator_id: string | null;
+  followed_at: string;
+};
+
+export type VideoChapterRow = {
+  id: string;
+  webinar_id: string | null;
+  title: string;
+  start_seconds: number;
+  end_seconds: number;
+  description: string | null;
+  thumbnail_url: string | null;
+  created_at: string;
+};
+
+export type InteractiveElementRow = {
+  id: string;
+  webinar_id: string | null;
+  element_type: string;
+  config: Json;
+  video_offset_seconds: number;
+  duration_seconds: number;
+  is_active: boolean;
+  created_at: string;
+};
+
+export type DocumentationPageRow = {
+  id: string;
+  slug: string;
+  title: string;
+  content: string;
+  category: string;
+  subcategory: string | null;
+  position: number;
+  is_published: boolean;
+  last_edited_by: string | null;
+  created_at: string;
+  updated_at: string;
+};
+
 export type Database = {
   public: {
     Tables: {
@@ -2294,6 +2532,89 @@ export type Database = {
         "id" | "admin_id" | "joined_at" | "left_at"
       >;
       persona_mode: Table<PersonaModeRow, "id" | "mode" | "updated_at">;
+
+      // ─── Phase 14 ───────────────────────────────────────────────────────
+      localized_pricing: Table<
+        LocalizedPricingRow,
+        | "id" | "purchasing_power_parity_factor" | "stripe_price_id_monthly"
+        | "stripe_price_id_yearly" | "stripe_price_id_lifetime" | "payment_methods"
+        | "is_active" | "created_at"
+      >;
+      local_payment_methods: Table<
+        LocalPaymentMethodRow,
+        "id" | "provider_config" | "is_active" | "created_at"
+      >;
+      accessibility_preferences: Table<
+        AccessibilityPreferencesRow,
+        Exclude<keyof AccessibilityPreferencesRow, "user_id">
+      >;
+      sso_configurations: Table<
+        SsoConfigurationRow,
+        | "id" | "team_id" | "entity_id" | "attribute_mapping" | "is_active"
+        | "require_sso" | "created_at" | "updated_at"
+      >;
+      sso_sessions: Table<
+        SsoSessionRow,
+        "id" | "team_id" | "user_id" | "provider_session_id" | "created_at"
+      >;
+      audit_logs: Table<
+        AuditLogRow,
+        | "id" | "user_id" | "team_id" | "resource_id" | "old_value" | "new_value"
+        | "ip_address" | "user_agent" | "session_id" | "created_at"
+      >;
+      soc2_evidence: Table<
+        Soc2EvidenceRow,
+        "id" | "collected_at" | "review_period_start" | "review_period_end"
+      >;
+      data_export_requests: Table<
+        DataExportRequestRow,
+        "id" | "user_id" | "status" | "export_url" | "expires_at" | "requested_at" | "completed_at"
+      >;
+      gdpr_requests: Table<
+        GdprRequestRow,
+        "id" | "webinar_id" | "status" | "processed_by" | "processed_at" | "notes" | "created_at"
+      >;
+      plugins: Table<
+        PluginRow,
+        | "id" | "developer_id" | "version" | "icon_url" | "screenshots" | "pricing_type"
+        | "price" | "install_count" | "average_rating" | "is_approved" | "is_active"
+        | "created_at" | "updated_at"
+      >;
+      plugin_installations: Table<
+        PluginInstallationRow,
+        "id" | "plugin_id" | "user_id" | "webinar_id" | "settings" | "is_active" | "installed_at"
+      >;
+      plugin_events: Table<
+        PluginEventRow,
+        "id" | "plugin_id" | "installation_id" | "payload" | "response" | "status" | "created_at"
+      >;
+      multi_stream_destinations: Table<
+        MultiStreamDestinationRow,
+        "id" | "webinar_id" | "user_id" | "is_active" | "last_streamed_at" | "created_at"
+      >;
+      creator_economy_profiles: Table<
+        CreatorEconomyProfileRow,
+        | "id" | "user_id" | "creator_handle" | "bio" | "niche" | "audience_size_estimate"
+        | "verified" | "featured" | "total_webinars_hosted" | "total_attendees_served"
+        | "total_revenue_generated" | "follower_count" | "public_profile_enabled"
+        | "social_links" | "created_at"
+      >;
+      creator_follows: Table<
+        CreatorFollowRow,
+        "id" | "follower_id" | "creator_id" | "followed_at"
+      >;
+      video_chapters: Table<
+        VideoChapterRow,
+        "id" | "webinar_id" | "description" | "thumbnail_url" | "created_at"
+      >;
+      interactive_elements: Table<
+        InteractiveElementRow,
+        "id" | "webinar_id" | "duration_seconds" | "is_active" | "created_at"
+      >;
+      documentation_pages: Table<
+        DocumentationPageRow,
+        "id" | "subcategory" | "position" | "is_published" | "last_edited_by" | "created_at" | "updated_at"
+      >;
     };
     Views: Record<string, never>;
     Functions: {
