@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 
 import { LiveStudio } from "@/components/live/LiveStudio";
+import { LiveEngagementPanels } from "@/components/admin/live/LiveEngagementPanels";
 import { SectionHeader } from "@/components/admin/webinar/WebinarSetupShell";
 import { createServiceClient } from "@/lib/supabase/server";
 
@@ -44,6 +45,9 @@ export default async function LivePage({
         description="Broadcast now, then turn the recording into a webinar that runs on a schedule."
       />
       <LiveStudio webinarId={webinarId} clips={clips} />
+      <div className="px-6 py-6 lg:px-8">
+        <LiveEngagementPanels webinarId={webinarId} />
+      </div>
     </>
   );
 }

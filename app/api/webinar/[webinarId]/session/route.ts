@@ -28,7 +28,7 @@ export async function GET(
 
   const { data: webinar, error: webinarError } = await supabase
     .from("webinars")
-    .select("id, title, description, video_url, video_public_id, video_duration_seconds, thumbnail_url, broadcast_label, show_recorded_notice")
+    .select("id, title, description, video_url, video_public_id, video_duration_seconds, thumbnail_url, broadcast_label, show_recorded_notice, private_messaging_enabled, raise_hand_enabled")
     .eq("id", webinarId)
     .eq("is_active", true)
     .maybeSingle();
