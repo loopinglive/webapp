@@ -5,8 +5,10 @@ import { AnnouncementBanner } from "@/components/dashboard/AnnouncementBanner";
 import { ImpersonationBanner } from "@/components/dashboard/ImpersonationBanner";
 import { MobileBar } from "@/components/dashboard/MobileBar";
 import { Sidebar } from "@/components/dashboard/sidebar";
+import { SecondFactorGate } from "@/components/superadmin/SecondFactorGate";
 import { ErrorBoundary } from "@/components/ui/ErrorBoundary";
 import { PlanProvider } from "@/hooks/usePlan";
+import { hasPassedSecondFactor } from "@/lib/auth/second-factor";
 import { getUserAccount } from "@/lib/billing/account";
 import { createServiceClient } from "@/lib/supabase/server";
 
@@ -23,6 +25,13 @@ export default async function DashboardLayout({
   // A suspended account is signed out of the product entirely rather than
   // shown a broken dashboard.
   if (account.is_suspended) redirect("/login?suspended=1");
+
+  // Same gate as /superadmin's — replaces the dashboard rather than covering
+  // it, and only for accounts that have actually turned 2FA on, so nobody
+  // is locked out of a dashboard they never enrolled a second factor for.
+  if (account.totp_enabled_at && !(await hasPassedSecondFactor(account.id))) {
+    return <SecondFactorGate challengeUrl="/api/settings/2fa/challenge" />;
+  }
 
   // Impersonation is a cookie read by admins only; anyone else forging it gets
   // nothing, because the name is only resolved when is_admin is true.

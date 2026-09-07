@@ -2635,6 +2635,19 @@ export type Database = {
     };
     Views: Record<string, never>;
     Functions: {
+      /** Which admins have 2FA on, for a screen that can chase the ones who do not. */
+      admin_2fa_status: {
+        Args: Record<string, never>;
+        Returns: {
+          id: string;
+          email: string;
+          full_name: string;
+          admin_role: string | null;
+          enabled: boolean;
+          enabled_at: string | null;
+          recovery_codes_left: number;
+        }[];
+      };
       /** Per-host dispute rate and whether it crosses the warning line. */
       host_fraud_signals: {
         Args: { p_owner_id: string };

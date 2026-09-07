@@ -19,7 +19,8 @@ export type Category =
   | "billing"
   | "compliance"
   | "team"
-  | "attendee";
+  | "attendee"
+  | "community";
 
 export type PlatformTemplate = {
   key: string;
@@ -1015,6 +1016,22 @@ This invitation expires in 7 days. If you were not expecting this, you can ignor
       { label: "Role", value: "{{role}}" },
     ],
     cta: { label: "Accept invitation", url: "{{invite_link}}" },
+  },
+  {
+    key: "creator_new_webinar",
+    label: "Creator you follow has a new webinar",
+    audience: "host",
+    category: "community",
+    transactional: true,
+    subject: "{{creator_name}} just published a new webinar",
+    eyebrow: "New from {{creator_name}}",
+    body: `Hi {{follower_name}},
+
+{{creator_name}}, who you follow on Loopinglive, just published a new webinar: "{{webinar_title}}".
+
+You can register below, or unfollow {{creator_name}} at any time from their profile if you'd rather not hear about new sessions.`,
+    meta: [{ label: "Webinar", value: "{{webinar_title}}" }],
+    cta: { label: "Register now", url: "{{registration_link}}" },
   },
 ];
 

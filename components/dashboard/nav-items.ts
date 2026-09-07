@@ -15,6 +15,7 @@ import {
   Settings,
   Shield,
   ShieldCheck,
+  Sparkle,
   TrendingUp,
   Users,
   Video,
@@ -47,6 +48,7 @@ export const DASHBOARD_NAV = [
   { href: "/settings/api-keys", label: "API keys", icon: KeyRound },
   { href: "/settings/security", label: "Security", icon: Shield },
   { href: "/data-privacy", label: "Data Privacy", icon: ShieldCheck },
+  { href: "/creator-profile", label: "Creator Profile", icon: Sparkle },
   { href: "/docs", label: "Docs", icon: BookOpen },
   { href: "/settings", label: "Settings", icon: Settings },
 ] as const;

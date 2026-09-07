@@ -4,6 +4,7 @@ import { NextResponse } from "next/server";
 import { getUserAccount } from "@/lib/billing/account";
 import { planPermissions } from "@/lib/billing/plans";
 import { getWebinarSetup, isPublishable, missingSteps } from "@/lib/admin-setup";
+import { notifyFollowersOfNewWebinar } from "@/lib/creators/notify";
 import { createServiceClient } from "@/lib/supabase/server";
 
 export const dynamic = "force-dynamic";
@@ -51,17 +52,23 @@ export async function POST(
   }
 
   const supabase = createServiceClient();
-  const { error } = await supabase
+  const { data: updated, error } = await supabase
     .from("webinars")
     .update({
       status: publish ? "published" : "draft",
       is_active: Boolean(publish),
       updated_at: new Date().toISOString(),
     })
-    .eq("id", webinarId);
+    .eq("id", webinarId)
+    .select("owner_id")
+    .single();
 
   if (error) {
     return NextResponse.json({ error: error.message }, { status: 500 });
+  }
+
+  if (publish && updated?.owner_id) {
+    void notifyFollowersOfNewWebinar(updated.owner_id, webinarId);
   }
 
   return NextResponse.json({ status: publish ? "published" : "draft" });

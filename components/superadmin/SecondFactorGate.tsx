@@ -11,7 +11,11 @@ import { Loader2, ShieldCheck } from "lucide-react";
  * loaded page means the page underneath already rendered, and everything on it
  * already ran its queries.
  */
-export function SecondFactorGate() {
+export function SecondFactorGate({
+  challengeUrl = "/api/superadmin/2fa/challenge",
+}: {
+  challengeUrl?: string;
+}) {
   const [code, setCode] = useState("");
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -21,7 +25,7 @@ export function SecondFactorGate() {
     setBusy(true);
     setError(null);
 
-    const response = await fetch("/api/superadmin/2fa/challenge", {
+    const response = await fetch(challengeUrl, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ code: code.trim() }),
