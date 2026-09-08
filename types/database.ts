@@ -2065,6 +2065,9 @@ export type PlatformFederationRow = {
   shared_analytics: boolean;
   cross_promotion_enabled: boolean;
   api_key_hash: string;
+  /** The key the PARTNER issued us, encrypted at rest — used for outbound calls. */
+  partner_api_key_encrypted: string | null;
+  last_verified_at: string | null;
   status: string;
   created_at: string;
 };
@@ -2914,6 +2917,7 @@ export type Database = {
         PlatformFederationRow,
         | "id" | "owner_user_id" | "shared_audience" | "shared_analytics"
         | "cross_promotion_enabled" | "status" | "created_at"
+        | "partner_api_key_encrypted" | "last_verified_at"
       >;
       federated_audiences: Table<
         FederatedAudienceRow,
