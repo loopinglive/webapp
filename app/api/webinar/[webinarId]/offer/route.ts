@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 
 import { syncContactInBackground } from "@/lib/integrations/sync";
+import { dispatchPluginEventInBackground } from "@/lib/plugins/dispatch";
 import { dispatchWebhookInBackground } from "@/lib/webhooks/dispatch";
 
 import { logEvent, syncSegment } from "@/lib/attendee-tracking";
@@ -112,6 +113,11 @@ export async function POST(
       email: before?.email ?? "",
       offerTitle: offer?.offer_title ?? null,
       clickedAt: new Date().toISOString(),
+    });
+
+    dispatchPluginEventInBackground(webinarId, "offer.clicked", {
+      registrantId,
+      offerTitle: offer?.offer_title ?? null,
     });
 
     syncContactInBackground(

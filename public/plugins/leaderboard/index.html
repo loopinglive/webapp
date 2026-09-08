@@ -1,0 +1,56 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8" />
+<title>Leaderboard</title>
+<style>html, body { margin: 0; background: transparent; }</style>
+</head>
+<body>
+<script>
+/**
+ * Leaderboard — a Loopinglive sample plugin.
+ *
+ * Demonstrates the chat:send action and a settings_schema field
+ * (announceEvery) — counts registrant.joined events and drops a chat
+ * message in the room every N joins.
+ */
+const NS = "loopinglive-plugin";
+
+function send(message) {
+  parent.postMessage(Object.assign({ ns: NS }, message), "*");
+}
+
+function log(message, level) {
+  send({ type: "log", level: level || "info", message: message });
+}
+
+let announceEvery = 5;
+let joinCount = 0;
+
+window.addEventListener("message", function (event) {
+  const message = event.data;
+  if (!message || message.ns !== NS) return;
+
+  if (message.type === "init") {
+    if (message.settings && typeof message.settings.announceEvery === "number") {
+      announceEvery = message.settings.announceEvery;
+    }
+    log("Ready — announcing every " + announceEvery + " joins.");
+  }
+
+  if (message.type === "event" && message.event === "registrant.joined") {
+    joinCount += 1;
+    if (joinCount % announceEvery === 0) {
+      send({
+        type: "action",
+        action: "chat:send",
+        payload: { message: "🔥 " + joinCount + " people have joined so far!" },
+      });
+    }
+  }
+});
+
+send({ type: "ready" });
+</script>
+</body>
+</html>

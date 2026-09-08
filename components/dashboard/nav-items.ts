@@ -12,6 +12,7 @@ import {
   LineChart,
   Palette,
   Plug,
+  Puzzle,
   Settings,
   Shield,
   ShieldCheck,
@@ -49,6 +50,7 @@ export const DASHBOARD_NAV = [
   { href: "/settings/security", label: "Security", icon: Shield },
   { href: "/data-privacy", label: "Data Privacy", icon: ShieldCheck },
   { href: "/creator-profile", label: "Creator Profile", icon: Sparkle },
+  { href: "/plugins", label: "Plugins", icon: Puzzle },
   { href: "/docs", label: "Docs", icon: BookOpen },
   { href: "/settings", label: "Settings", icon: Settings },
 ] as const;

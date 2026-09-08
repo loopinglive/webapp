@@ -1,0 +1,113 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8" />
+<title>Confetti Celebration</title>
+<style>
+  html, body { margin: 0; height: 100%; background: transparent; overflow: hidden; }
+  canvas { display: block; }
+</style>
+</head>
+<body>
+<canvas id="c"></canvas>
+<script>
+/**
+ * Confetti Celebration — a Loopinglive sample plugin.
+ *
+ * Speaks the PostMessage bridge documented in lib/plugins/bridge.ts:
+ *   host -> plugin: { ns, type: 'init', permissions, settings }
+ *                   { ns, type: 'event', event, payload }
+ *   plugin -> host: { ns, type: 'ready' }
+ *                   { ns, type: 'log', level, message }
+ *                   { ns, type: 'action', action, payload }
+ *
+ * This plugin never reads window.parent or window.top — everything it knows
+ * about the outside world arrives through postMessage, which is the whole
+ * point of running inside a sandboxed iframe.
+ */
+const NS = "loopinglive-plugin";
+
+function send(message) {
+  parent.postMessage(Object.assign({ ns: NS }, message), "*");
+}
+
+function log(message, level) {
+  send({ type: "log", level: level || "info", message: message });
+}
+
+let durationSeconds = 3;
+
+function fireConfetti() {
+  const canvas = document.getElementById("c");
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+  const ctx = canvas.getContext("2d");
+  const colours = ["#6C47FF", "#00D4FF", "#FFD93D", "#00C851", "#FF5A5A"];
+
+  const pieces = Array.from({ length: 120 }, function () {
+    return {
+      x: Math.random() * canvas.width,
+      y: -20 - Math.random() * canvas.height * 0.5,
+      size: 4 + Math.random() * 6,
+      speed: 2 + Math.random() * 3,
+      drift: (Math.random() - 0.5) * 2,
+      spin: Math.random() * 360,
+      spinSpeed: (Math.random() - 0.5) * 10,
+      colour: colours[Math.floor(Math.random() * colours.length)],
+    };
+  });
+
+  const endsAt = Date.now() + durationSeconds * 1000;
+
+  function frame() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    let anyVisible = false;
+
+    for (const piece of pieces) {
+      piece.y += piece.speed;
+      piece.x += piece.drift;
+      piece.spin += piece.spinSpeed;
+      if (piece.y < canvas.height + 20) anyVisible = true;
+
+      ctx.save();
+      ctx.translate(piece.x, piece.y);
+      ctx.rotate((piece.spin * Math.PI) / 180);
+      ctx.fillStyle = piece.colour;
+      ctx.fillRect(-piece.size / 2, -piece.size / 2, piece.size, piece.size * 0.6);
+      ctx.restore();
+    }
+
+    if (anyVisible && Date.now() < endsAt) {
+      requestAnimationFrame(frame);
+    } else {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+    }
+  }
+
+  requestAnimationFrame(frame);
+}
+
+// This overlay's own document is what fireConfetti() draws into directly —
+// it does not ask the host for a *second* overlay, because this plugin's own
+// iframe already occupies the video surface for the duration it is shown.
+window.addEventListener("message", function (event) {
+  const message = event.data;
+  if (!message || message.ns !== NS) return;
+
+  if (message.type === "init") {
+    if (message.settings && typeof message.settings.duration === "number") {
+      durationSeconds = message.settings.duration;
+    }
+    log("Initialised with permissions: " + message.permissions.join(", "));
+  }
+
+  if (message.type === "event" && message.event === "offer.clicked") {
+    log("offer.clicked received — firing confetti.");
+    fireConfetti();
+  }
+});
+
+send({ type: "ready" });
+</script>
+</body>
+</html>

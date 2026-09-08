@@ -1,0 +1,55 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8" />
+<title>Virtual Applause</title>
+<style>
+  html, body { margin: 0; height: 100%; background: transparent; }
+  #status { display: none; }
+</style>
+</head>
+<body>
+<div id="status"></div>
+<script>
+/**
+ * Virtual Applause — a Loopinglive sample plugin.
+ *
+ * Unlike Confetti Celebration (which draws directly into its own iframe),
+ * this one demonstrates the ui:overlay:show action: it hands the HOST a
+ * small HTML fragment to render in a *second*, separately sandboxed overlay
+ * surface, for a plugin that is not itself the video's full-size occupant.
+ */
+const NS = "loopinglive-plugin";
+
+function send(message) {
+  parent.postMessage(Object.assign({ ns: NS }, message), "*");
+}
+
+function log(message, level) {
+  send({ type: "log", level: level || "info", message: message });
+}
+
+const OVERLAY_HTML =
+  '<div style="position:absolute;bottom:24px;left:50%;transform:translateX(-50%);' +
+  'font-size:40px;animation:rise 2.5s ease-out forwards;">👏👏👏</div>' +
+  '<style>@keyframes rise{from{opacity:0;transform:translate(-50%,20px)}' +
+  '20%{opacity:1}to{opacity:0;transform:translate(-50%,-60px)}}</style>';
+
+window.addEventListener("message", function (event) {
+  const message = event.data;
+  if (!message || message.ns !== NS) return;
+
+  if (message.type === "init") {
+    log("Ready — listening for offer.purchased.");
+  }
+
+  if (message.type === "event" && message.event === "offer.purchased") {
+    log("offer.purchased received — showing applause overlay.");
+    send({ type: "action", action: "overlay:show", payload: { html: OVERLAY_HTML, durationMs: 2500 } });
+  }
+});
+
+send({ type: "ready" });
+</script>
+</body>
+</html>
