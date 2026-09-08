@@ -1888,6 +1888,225 @@ export type LocalPaymentIntentRow = {
   completed_at: string | null;
 };
 
+// ─── Phase 15: autonomous generation, voice cloning, real-time translation,
+// autonomous agents, CRM, co-hosting, predictive nurture, federation.
+// Matches supabase/migrations/0051_phase15_foundation.sql.
+
+export type AutonomousWebinarRow = {
+  id: string;
+  webinar_id: string | null;
+  user_id: string | null;
+  topic: string;
+  target_audience: string;
+  offer_description: string;
+  niche: string;
+  generation_status: string;
+  script_generated_at: string | null;
+  presentation_generated_at: string | null;
+  voice_cloned_at: string | null;
+  video_assembled_at: string | null;
+  personas_generated_at: string | null;
+  automation_configured_at: string | null;
+  published_at: string | null;
+  generation_log: Json;
+  estimated_completion_minutes: number | null;
+  config: Json;
+  error: string | null;
+  created_at: string;
+};
+
+export type VoiceCloneRow = {
+  id: string;
+  user_id: string | null;
+  clone_name: string;
+  provider: string;
+  provider_voice_id: string;
+  sample_audio_url: string | null;
+  status: string;
+  is_primary: boolean;
+  created_at: string;
+  updated_at: string;
+};
+
+export type AiPresentationRow = {
+  id: string;
+  webinar_id: string | null;
+  user_id: string | null;
+  topic: string;
+  slide_count: number;
+  slides: Json;
+  theme: string;
+  status: string;
+  video_url: string | null;
+  created_at: string;
+  updated_at: string;
+};
+
+export type RealTimeTranslationRow = {
+  id: string;
+  session_id: string | null;
+  source_language: string;
+  target_languages: Json;
+  transcription_provider: string;
+  translation_provider: string;
+  is_active: boolean;
+  latency_ms: number | null;
+  created_at: string;
+};
+
+export type TranslationSegmentRow = {
+  id: string;
+  session_id: string | null;
+  original_text: string;
+  translations: Json;
+  start_time_seconds: number;
+  end_time_seconds: number;
+  speaker: string;
+  confidence: number | null;
+  created_at: string;
+};
+
+export type AutonomousAgentRow = {
+  id: string;
+  user_id: string | null;
+  webinar_id: string | null;
+  agent_type: string;
+  agent_name: string;
+  personality: Json;
+  objectives: Json;
+  constraints: Json;
+  conversation_memory: Json;
+  is_active: boolean;
+  messages_sent: number;
+  deals_closed: number;
+  total_revenue_attributed: number;
+  created_at: string;
+};
+
+export type AgentConversationRow = {
+  id: string;
+  agent_id: string | null;
+  registrant_id: string | null;
+  channel: string;
+  status: string;
+  messages: Json;
+  lead_temperature: string;
+  next_action: string | null;
+  next_action_at: string | null;
+  converted: boolean;
+  converted_at: string | null;
+  revenue_attributed: number;
+  created_at: string;
+  updated_at: string;
+};
+
+export type DealPipelineRow = {
+  id: string;
+  user_id: string | null;
+  name: string;
+  stages: Json;
+  is_default: boolean;
+  created_at: string;
+};
+
+export type DealRow = {
+  id: string;
+  pipeline_id: string | null;
+  webinar_id: string | null;
+  registrant_id: string | null;
+  title: string;
+  value: number;
+  stage: string;
+  probability: number;
+  expected_close_date: string | null;
+  assigned_to: string | null;
+  notes: string | null;
+  activities: Json;
+  won: boolean;
+  lost: boolean;
+  lost_reason: string | null;
+  created_at: string;
+  updated_at: string;
+};
+
+export type CoHostRow = {
+  id: string;
+  webinar_id: string | null;
+  host_user_id: string | null;
+  co_host_user_id: string | null;
+  co_host_email: string | null;
+  permissions: Json;
+  status: string;
+  invite_token: string | null;
+  invite_expires_at: string | null;
+  invited_at: string;
+  accepted_at: string | null;
+};
+
+export type CoHostSessionRow = {
+  id: string;
+  session_id: string | null;
+  co_host_id: string | null;
+  joined_at: string | null;
+  left_at: string | null;
+  messages_sent: number;
+  is_active: boolean;
+};
+
+export type PlatformFederationRow = {
+  id: string;
+  owner_user_id: string | null;
+  host_platform_url: string;
+  partner_platform_url: string;
+  partnership_type: string;
+  shared_audience: boolean;
+  shared_analytics: boolean;
+  cross_promotion_enabled: boolean;
+  api_key_hash: string;
+  status: string;
+  created_at: string;
+};
+
+export type FederatedAudienceRow = {
+  id: string;
+  federation_id: string | null;
+  email_hash: string;
+  shared_at: string;
+  source_platform: string;
+  consent_given: boolean;
+};
+
+export type PredictiveNurtureSequenceRow = {
+  id: string;
+  webinar_id: string | null;
+  registrant_id: string | null;
+  sequence_type: string;
+  predicted_conversion_date: string | null;
+  optimal_contact_times: Json;
+  preferred_channel: string;
+  personalisation_data: Json;
+  touchpoints: Json;
+  status: string;
+  messages_sent: number;
+  last_message_sent_at: string | null;
+  converted: boolean;
+  created_at: string;
+};
+
+export type VoiceMessageRow = {
+  id: string;
+  agent_conversation_id: string | null;
+  registrant_id: string | null;
+  voice_clone_id: string | null;
+  script: string;
+  audio_url: string | null;
+  duration_seconds: number | null;
+  channel: string;
+  status: string;
+  delivered_at: string | null;
+  created_at: string;
+};
+
 export type Database = {
   public: {
     Tables: {
@@ -2631,6 +2850,83 @@ export type Database = {
       local_payment_intents: Table<
         LocalPaymentIntentRow,
         "id" | "user_id" | "status" | "created_at" | "completed_at"
+      >;
+
+      // ─── Phase 15 ───────────────────────────────────────────────────────
+      autonomous_webinars: Table<
+        AutonomousWebinarRow,
+        | "id" | "webinar_id" | "user_id" | "generation_status" | "script_generated_at"
+        | "presentation_generated_at" | "voice_cloned_at" | "video_assembled_at"
+        | "personas_generated_at" | "automation_configured_at" | "published_at"
+        | "generation_log" | "estimated_completion_minutes" | "config" | "error" | "created_at"
+      >;
+      voice_clones: Table<
+        VoiceCloneRow,
+        "id" | "user_id" | "sample_audio_url" | "status" | "is_primary" | "created_at" | "updated_at"
+      >;
+      ai_presentations: Table<
+        AiPresentationRow,
+        | "id" | "webinar_id" | "user_id" | "slide_count" | "slides" | "theme" | "status"
+        | "video_url" | "created_at" | "updated_at"
+      >;
+      real_time_translations: Table<
+        RealTimeTranslationRow,
+        | "id" | "session_id" | "source_language" | "transcription_provider"
+        | "translation_provider" | "is_active" | "latency_ms" | "created_at"
+      >;
+      translation_segments: Table<
+        TranslationSegmentRow,
+        "id" | "session_id" | "speaker" | "confidence" | "created_at"
+      >;
+      autonomous_agents: Table<
+        AutonomousAgentRow,
+        | "id" | "user_id" | "webinar_id" | "constraints" | "conversation_memory" | "is_active"
+        | "messages_sent" | "deals_closed" | "total_revenue_attributed" | "created_at"
+      >;
+      agent_conversations: Table<
+        AgentConversationRow,
+        | "id" | "agent_id" | "registrant_id" | "status" | "messages" | "lead_temperature"
+        | "next_action" | "next_action_at" | "converted" | "converted_at" | "revenue_attributed"
+        | "created_at" | "updated_at"
+      >;
+      deal_pipelines: Table<
+        DealPipelineRow,
+        "id" | "user_id" | "stages" | "is_default" | "created_at"
+      >;
+      deals: Table<
+        DealRow,
+        | "id" | "pipeline_id" | "webinar_id" | "registrant_id" | "value" | "probability"
+        | "expected_close_date" | "assigned_to" | "notes" | "activities" | "won" | "lost"
+        | "lost_reason" | "created_at" | "updated_at"
+      >;
+      co_hosts: Table<
+        CoHostRow,
+        | "id" | "webinar_id" | "host_user_id" | "co_host_user_id" | "co_host_email"
+        | "permissions" | "status" | "invite_token" | "invite_expires_at" | "invited_at" | "accepted_at"
+      >;
+      co_host_sessions: Table<
+        CoHostSessionRow,
+        "id" | "session_id" | "co_host_id" | "joined_at" | "left_at" | "messages_sent" | "is_active"
+      >;
+      platform_federation: Table<
+        PlatformFederationRow,
+        | "id" | "owner_user_id" | "shared_audience" | "shared_analytics"
+        | "cross_promotion_enabled" | "status" | "created_at"
+      >;
+      federated_audiences: Table<
+        FederatedAudienceRow,
+        "id" | "federation_id" | "shared_at" | "consent_given"
+      >;
+      predictive_nurture_sequences: Table<
+        PredictiveNurtureSequenceRow,
+        | "id" | "webinar_id" | "registrant_id" | "predicted_conversion_date"
+        | "optimal_contact_times" | "preferred_channel" | "personalisation_data" | "touchpoints"
+        | "status" | "messages_sent" | "last_message_sent_at" | "converted" | "created_at"
+      >;
+      voice_messages: Table<
+        VoiceMessageRow,
+        | "id" | "agent_conversation_id" | "registrant_id" | "voice_clone_id" | "audio_url"
+        | "duration_seconds" | "status" | "delivered_at" | "created_at"
       >;
     };
     Views: Record<string, never>;

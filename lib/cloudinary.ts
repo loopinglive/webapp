@@ -11,6 +11,36 @@ export { cloudinary };
 
 const CLOUD = () => process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME;
 
+/**
+ * Server-side upload of bytes this app generated itself (an AI-rendered slide
+ * image, a synthesised voice clip) — distinct from signUpload, which signs a
+ * browser's own direct upload of a file the user picked. Nothing here is
+ * user-supplied, so there is no signing handshake, just a direct call with
+ * the server's own credentials.
+ */
+export function uploadBuffer(
+  buffer: ArrayBuffer | Buffer,
+  options: { folder: string; publicId?: string; resourceType?: "image" | "video" }
+): Promise<{ publicId: string; url: string; duration?: number }> {
+  return new Promise((resolve, reject) => {
+    const stream = cloudinary.uploader.upload_stream(
+      {
+        folder: options.folder,
+        public_id: options.publicId,
+        resource_type: options.resourceType ?? "image",
+      },
+      (error, result) => {
+        if (error || !result) {
+          reject(error ?? new Error("Cloudinary upload returned no result."));
+          return;
+        }
+        resolve({ publicId: result.public_id, url: result.secure_url, duration: result.duration });
+      }
+    );
+    stream.end(Buffer.isBuffer(buffer) ? buffer : Buffer.from(buffer));
+  });
+}
+
 export function signUpload(params: Record<string, string | number>) {
   const timestamp = Math.round(Date.now() / 1000);
   const signature = cloudinary.utils.api_sign_request(

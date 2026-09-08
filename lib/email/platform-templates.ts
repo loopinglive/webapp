@@ -1033,6 +1033,22 @@ You can register below, or unfollow {{creator_name}} at any time from their prof
     meta: [{ label: "Webinar", value: "{{webinar_title}}" }],
     cta: { label: "Register now", url: "{{registration_link}}" },
   },
+  {
+    key: "autonomous_generation_complete",
+    label: "Autonomous webinar ready",
+    audience: "host",
+    category: "activation",
+    transactional: true,
+    subject: '"{{webinar_title}}" is ready to review',
+    eyebrow: "Generation complete",
+    body: `Hi {{host_name}},
+
+Your autonomous webinar is ready — script, slides, voice-over, video, {{persona_count}} personas, and follow-up automation, all generated from the topic you gave us.
+
+It's still a draft. Nothing goes live until you review it and publish.`,
+    meta: [{ label: "Webinar", value: "{{webinar_title}}" }],
+    cta: { label: "Review and publish", url: "{{review_link}}" },
+  },
 ];
 
 export const PLATFORM_TEMPLATE_BY_KEY = new Map(
