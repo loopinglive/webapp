@@ -6,6 +6,8 @@ import { Loader2, Volume2 } from "lucide-react";
 import { useHlsSource } from "@/hooks/useHlsSource";
 import { formatOffset } from "@/lib/utils";
 
+type TranslatedCaptionSegment = { start: number; end: number; text: string };
+
 type Props = {
   videoRef: RefObject<HTMLVideoElement | null>;
   src: string;
@@ -13,6 +15,9 @@ type Props = {
   streamSrc?: string | null;
   /** WebVTT captions, if the video was transcribed on upload. */
   captionsSrc?: string | null;
+  /** Languages a host has generated translated captions for — see /api/webinar/[webinarId]/captions. */
+  webinarId?: string;
+  translationLanguages?: string[];
   poster?: string | null;
   currentTime: number;
   duration: number;
@@ -21,11 +26,48 @@ type Props = {
   catchingUp?: boolean;
 };
 
+/** English's own VTT transcript, plus any language a host generated translated captions for, cycled by one button. */
+function useCaptionMode(translationLanguages: string[], hasEnglish: boolean) {
+  const modes = [...(hasEnglish ? ["en"] : []), ...translationLanguages];
+  const [mode, setMode] = useState<string | null>(null);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      try {
+        const saved = localStorage.getItem("loopinglive_captions");
+        if (saved === "on") setMode(hasEnglish ? "en" : (modes[0] ?? null));
+        else if (saved && modes.includes(saved)) setMode(saved);
+      } catch {
+        /* private mode, or storage blocked */
+      }
+    }, 0);
+    return () => clearTimeout(timer);
+    // Deliberately mount-only, like the toggle it replaces: modes/hasEnglish
+    // are derived from a prop that does not change after the player mounts.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  function cycle() {
+    const currentIndex = mode ? modes.indexOf(mode) : -1;
+    const next = currentIndex + 1 >= modes.length ? null : modes[currentIndex + 1];
+    setMode(next);
+    try {
+      localStorage.setItem("loopinglive_captions", next ?? "off");
+    } catch {
+      /* private mode */
+    }
+  }
+
+  return { mode, cycle, modes };
+}
+
 export function VideoPlayer({
   videoRef,
   src,
   streamSrc,
   captionsSrc,
+  webinarId,
+  translationLanguages = [],
   poster,
   currentTime,
   duration,
@@ -34,9 +76,11 @@ export function VideoPlayer({
 }: Props) {
   const [needsSound, setNeedsSound] = useState(false);
   const [buffering, setBuffering] = useState(true);
-  const [captionsOn, setCaptionsOn] = useState(false);
+  const { mode: captionMode, cycle: cycleCaptions, modes: captionModes } = useCaptionMode(translationLanguages, Boolean(captionsSrc));
+  const [translatedSegments, setTranslatedSegments] = useState<Record<string, TranslatedCaptionSegment[]>>({});
   const [audioOnly, setAudioOnly] = useState(false);
   const started = useRef(false);
+  const captionsOn = captionMode === "en";
 
   // Adaptive stream where possible, progressive MP4 where not. The `src`
   // attribute is deliberately absent below — this hook owns the source.
@@ -46,20 +90,25 @@ export function VideoPlayer({
     fallbackSrc: src,
   });
 
-  // Captions are off by default but remembered, because someone who needs
-  // them needs them on every webinar. Deferred rather than read during render:
-  // localStorage is unavailable on the server, and reading it in an initialiser
-  // would make the first client render disagree with the server's.
+  // A translated language's captions are a fetched list of timed segments,
+  // not a VTT track — pulled once per language and cached, since a webinar's
+  // caption set never changes mid-playback.
   useEffect(() => {
-    const timer = setTimeout(() => {
-      try {
-        setCaptionsOn(localStorage.getItem("loopinglive_captions") === "on");
-      } catch {
-        /* private mode, or storage blocked */
-      }
-    }, 0);
-    return () => clearTimeout(timer);
-  }, []);
+    if (!captionMode || captionMode === "en" || !webinarId || translatedSegments[captionMode]) return;
+    void fetch(`/api/webinar/${webinarId}/captions?lang=${captionMode}`)
+      .then((response) => (response.ok ? response.json() : null))
+      .then((payload: { segments?: TranslatedCaptionSegment[] } | null) => {
+        if (payload?.segments) {
+          setTranslatedSegments((current) => ({ ...current, [captionMode]: payload.segments! }));
+        }
+      })
+      .catch(() => {});
+  }, [captionMode, webinarId, translatedSegments]);
+
+  const activeTranslatedCaption =
+    captionMode && captionMode !== "en"
+      ? translatedSegments[captionMode]?.find((segment) => currentTime >= segment.start && currentTime < segment.end)
+      : null;
 
   // Browsers only allow unprompted playback when muted. Try with sound, fall
   // back to muted, and put one tap between the viewer and audio.
@@ -132,6 +181,14 @@ export function VideoPlayer({
           />
         )}
       </video>
+
+      {activeTranslatedCaption && (
+        <div className="pointer-events-none absolute inset-x-0 bottom-14 z-10 flex justify-center px-6">
+          <span className="max-w-[85%] rounded-md bg-black/75 px-3 py-1.5 text-center text-[14px] leading-snug text-white">
+            {activeTranslatedCaption.text}
+          </span>
+        </div>
+      )}
 
       {audioOnly && !ended && (
         <div className="absolute inset-0 grid place-items-center bg-[#0D0D15] px-6 text-center">
@@ -260,26 +317,22 @@ export function VideoPlayer({
             AUDIO
           </button>
 
-          {captionsSrc && (
+          {captionModes.length > 0 && (
             <button
-              onClick={() => {
-                const next = !captionsOn;
-                setCaptionsOn(next);
-                try {
-                  localStorage.setItem("loopinglive_captions", next ? "on" : "off");
-                } catch {
-                  /* private mode */
-                }
-              }}
-              aria-pressed={captionsOn}
-              title={captionsOn ? "Hide captions" : "Show captions"}
+              onClick={cycleCaptions}
+              aria-pressed={captionMode !== null}
+              title={
+                captionMode
+                  ? `Captions: ${captionMode === "en" ? "English" : captionMode} — tap to change`
+                  : "Show captions"
+              }
               className={
-                captionsOn
+                captionMode
                   ? "rounded border border-white/70 px-1.5 text-[10px] font-bold text-white"
                   : "rounded border border-white/30 px-1.5 text-[10px] font-bold text-white/50 hover:text-white"
               }
             >
-              CC
+              {captionMode && captionMode !== "en" ? captionMode : "CC"}
             </button>
           )}
           <span>{formatOffset(duration)}</span>

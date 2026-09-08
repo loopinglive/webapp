@@ -184,6 +184,19 @@ export function WatchRoom({ webinarId }: { webinarId: string }) {
     };
   }, [webinarId, sessionId, data?.webinar.id]);
 
+  // Which translated-caption languages (if any) a host generated for this
+  // webinar — cheap enough to always ask, so the CC control just works when
+  // it exists rather than needing a "does this webinar have captions" prop.
+  const [translationLanguages, setTranslationLanguages] = useState<string[]>([]);
+
+  useEffect(() => {
+    if (!data?.webinar.id) return;
+    void fetch(`/api/webinar/${webinarId}/captions`, { cache: "no-store" })
+      .then((response) => (response.ok ? response.json() : null))
+      .then((payload: { languages?: string[] } | null) => setTranslationLanguages(payload?.languages ?? []))
+      .catch(() => undefined);
+  }, [webinarId, data?.webinar.id]);
+
   // Armed only once the offer is on the table: prompting someone who has not
   // seen what is for sale has nothing to say to them.
   const offerRevealed =
@@ -360,6 +373,8 @@ export function WatchRoom({ webinarId }: { webinarId: string }) {
                 ? captionsUrl(data.webinar.video_public_id)
                 : null
             }
+            webinarId={webinarId}
+            translationLanguages={translationLanguages}
             poster={data.webinar.thumbnail_url}
             currentTime={currentTime}
             duration={duration}

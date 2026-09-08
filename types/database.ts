@@ -1945,6 +1945,7 @@ export type AiPresentationRow = {
 export type RealTimeTranslationRow = {
   id: string;
   session_id: string | null;
+  webinar_id: string | null;
   source_language: string;
   target_languages: Json;
   transcription_provider: string;
@@ -1957,6 +1958,7 @@ export type RealTimeTranslationRow = {
 export type TranslationSegmentRow = {
   id: string;
   session_id: string | null;
+  webinar_id: string | null;
   original_text: string;
   translations: Json;
   start_time_seconds: number;
@@ -2871,12 +2873,12 @@ export type Database = {
       >;
       real_time_translations: Table<
         RealTimeTranslationRow,
-        | "id" | "session_id" | "source_language" | "transcription_provider"
+        | "id" | "session_id" | "webinar_id" | "source_language" | "transcription_provider"
         | "translation_provider" | "is_active" | "latency_ms" | "created_at"
       >;
       translation_segments: Table<
         TranslationSegmentRow,
-        "id" | "session_id" | "speaker" | "confidence" | "created_at"
+        "id" | "session_id" | "webinar_id" | "speaker" | "confidence" | "created_at"
       >;
       autonomous_agents: Table<
         AutonomousAgentRow,
