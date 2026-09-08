@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import { LiveStudio } from "@/components/live/LiveStudio";
 import { LiveEngagementPanels } from "@/components/admin/live/LiveEngagementPanels";
 import { SectionHeader } from "@/components/admin/webinar/WebinarSetupShell";
+import { MultiStreamControls } from "@/components/streaming/MultiStreamControls";
 import { createServiceClient } from "@/lib/supabase/server";
 
 export const metadata: Metadata = { title: "Go live" };
@@ -45,7 +46,8 @@ export default async function LivePage({
         description="Broadcast now, then turn the recording into a webinar that runs on a schedule."
       />
       <LiveStudio webinarId={webinarId} clips={clips} />
-      <div className="px-6 py-6 lg:px-8">
+      <div className="space-y-6 px-6 py-6 lg:px-8">
+        <MultiStreamControls webinarId={webinarId} />
         <LiveEngagementPanels webinarId={webinarId} />
       </div>
     </>

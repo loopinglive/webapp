@@ -6,6 +6,8 @@ import {
   EncodedFileOutput,
   EncodedFileType,
   RoomServiceClient,
+  StreamOutput,
+  StreamProtocol,
 } from "livekit-server-sdk";
 
 /**
@@ -149,6 +151,50 @@ export async function recordingUrl(egressId: string) {
 
   const file = info.fileResults?.[0];
   return file?.location || file?.filename || null;
+}
+
+/**
+ * Fans the room's composite video out to every RTMP URL at once — this is
+ * the actual mechanism behind "multi-platform streaming". LiveKit Cloud runs
+ * the encode and the RTMP publish; there is no FFmpeg process for this app
+ * to own, which is exactly why this reuses the same egress service
+ * startRecording already calls rather than needing separate infrastructure.
+ */
+export async function startMultiStreamEgress(roomName: string, rtmpUrls: string[]) {
+  const output = new StreamOutput({ protocol: StreamProtocol.DEFAULT_PROTOCOL, urls: rtmpUrls });
+  const info = await egressService().startRoomCompositeEgress(roomName, { stream: output }, { layout: "speaker" });
+  return info.egressId;
+}
+
+/** Adds or removes destinations from a stream already in progress — no restart needed. */
+export async function updateMultiStreamUrls(egressId: string, addUrls: string[], removeUrls: string[]) {
+  return egressService().updateStream(egressId, addUrls, removeUrls);
+}
+
+export async function stopMultiStreamEgress(egressId: string) {
+  try {
+    return await egressService().stopEgress(egressId);
+  } catch {
+    return null;
+  }
+}
+
+/** The live status of every destination in one egress, including per-URL health. */
+export async function multiStreamStatus(roomName: string) {
+  const list = await egressService().listEgress({ roomName, active: true });
+  const streamEgress = list.find((info) => info.streamResults.length > 0);
+  if (!streamEgress) return null;
+
+  return {
+    egressId: streamEgress.egressId,
+    status: streamEgress.status,
+    destinations: streamEgress.streamResults.map((stream) => ({
+      url: stream.url,
+      status: stream.status,
+      error: stream.error || null,
+      startedAt: stream.startedAt ? Number(stream.startedAt) : null,
+    })),
+  };
 }
 
 export async function closeRoom(roomName: string) {
