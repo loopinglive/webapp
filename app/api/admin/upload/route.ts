@@ -9,6 +9,7 @@ const FOLDERS = {
   video: "loopinglive/videos",
   image: "loopinglive/assets",
   pdf: "loopinglive/assets",
+  audio: "loopinglive/voice-samples",
 } as const;
 
 type Kind = keyof typeof FOLDERS;
@@ -35,7 +36,7 @@ export async function POST(request: Request) {
 
   if (!kind || !(kind in FOLDERS)) {
     return NextResponse.json(
-      { error: "kind must be video, image or pdf" },
+      { error: "kind must be video, image, pdf or audio" },
       { status: 400 }
     );
   }
@@ -63,6 +64,8 @@ export async function POST(request: Request) {
     ...signed,
     folder,
     type,
-    resourceType: kind === "video" ? "video" : kind === "pdf" ? "raw" : "image",
+    // Cloudinary has no standalone "audio" resource type — an audio-only file
+    // is stored and read back as "video".
+    resourceType: kind === "video" || kind === "audio" ? "video" : kind === "pdf" ? "raw" : "image",
   });
 }

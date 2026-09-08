@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { Loader2, Sparkles, Wand2 } from "lucide-react";
 
 import { useVoiceOptions } from "@/hooks/useAutonomousBuilder";
+import { useVoiceClone } from "@/hooks/useVoiceClone";
 
 const NICHES = ["Business", "Health", "Relationships", "Finance", "Education", "Tech", "Spirituality", "Other"] as const;
 const TONES = [
@@ -30,6 +31,8 @@ const THEMES = [
 export function AutonomousBuilder() {
   const router = useRouter();
   const { voices, configured: voiceConfigured } = useVoiceOptions();
+  const { clones: voiceClones } = useVoiceClone();
+  const readyClones = voiceClones.filter((clone) => clone.status === "ready");
 
   const [topic, setTopic] = useState("");
   const [audience, setAudience] = useState("");
@@ -39,7 +42,8 @@ export function AutonomousBuilder() {
   const [tone, setTone] = useState<(typeof TONES)[number]["id"]>("conversational");
   const [lengthMinutes, setLengthMinutes] = useState<(typeof LENGTHS)[number]>(60);
   const [theme, setTheme] = useState<(typeof THEMES)[number]["id"]>("dark_professional");
-  const [voiceId, setVoiceId] = useState<string | null>(null);
+  // "" = default, "clone:<id>" = a cloned voice, anything else = a stock voice id.
+  const [voiceSelection, setVoiceSelection] = useState("");
 
   const [starting, setStarting] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -50,6 +54,9 @@ export function AutonomousBuilder() {
     if (!ready || starting) return;
     setStarting(true);
     setError(null);
+
+    const voiceCloneId = voiceSelection.startsWith("clone:") ? voiceSelection.slice(6) : null;
+    const voiceId = voiceCloneId || !voiceSelection ? null : voiceSelection;
 
     const response = await fetch("/api/autonomous/generate", {
       method: "POST",
@@ -64,7 +71,7 @@ export function AutonomousBuilder() {
         tone,
         theme,
         voiceId,
-        voiceCloneId: null,
+        voiceCloneId,
       }),
     });
 
@@ -211,16 +218,27 @@ export function AutonomousBuilder() {
           <span className="text-[12.5px] text-ink-muted">Presenter voice</span>
           {voiceConfigured ? (
             <select
-              value={voiceId ?? ""}
-              onChange={(event) => setVoiceId(event.target.value || null)}
+              value={voiceSelection}
+              onChange={(event) => setVoiceSelection(event.target.value)}
               className="mt-1.5 h-10 w-full rounded-xl border border-hairline bg-surface px-3 text-[13px] text-ink focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
             >
               <option value="">Default voice</option>
-              {voices.map((voice) => (
-                <option key={voice.id} value={voice.id}>
-                  {voice.name} — {voice.gender}, {voice.accent}
-                </option>
-              ))}
+              {readyClones.length > 0 && (
+                <optgroup label="Your cloned voices">
+                  {readyClones.map((clone) => (
+                    <option key={clone.id} value={`clone:${clone.id}`}>
+                      {clone.clone_name}
+                    </option>
+                  ))}
+                </optgroup>
+              )}
+              <optgroup label="Stock voices">
+                {voices.map((voice) => (
+                  <option key={voice.id} value={voice.id}>
+                    {voice.name} — {voice.gender}, {voice.accent}
+                  </option>
+                ))}
+              </optgroup>
             </select>
           ) : (
             <p className="mt-1.5 rounded-xl border border-hairline bg-surface px-3.5 py-2.5 text-[12.5px] text-ink-faint">
