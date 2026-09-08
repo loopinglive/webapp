@@ -680,3 +680,98 @@ Output ONLY a JSON object, nothing before or after it: {"reply": "...", "shouldE
     return { reply: "I'm not sure -- flagging this for the host to follow up.", shouldEscalate: true };
   }
 }
+
+export type AgentHistoryMessage = { role: "agent" | "lead"; content: string };
+
+/**
+ * Drafts one outbound message for an autonomous follow-up agent: a persona
+ * with an objective, writing to one specific lead given what is known about
+ * them and what has already been said. No inbound channel is wired up yet
+ * (see lib/agents/dispatch.ts), so `history` today is only ever the agent's
+ * own prior messages in this conversation -- there is no lead reply to react
+ * to. The shape still takes a lead role so that gap can close later without
+ * changing this function's contract.
+ */
+export async function generateAgentMessage({
+  agentName,
+  personality,
+  objective,
+  webinarTitle,
+  offerDescription,
+  registrantName,
+  engagementSummary,
+  channel,
+  history,
+}: {
+  agentName: string;
+  personality: string;
+  objective: string;
+  webinarTitle: string;
+  offerDescription: string;
+  registrantName: string;
+  engagementSummary: string;
+  channel: "email" | "sms" | "whatsapp";
+  history: AgentHistoryMessage[];
+}): Promise<{ subject: string; body: string }> {
+  const lengthRule =
+    channel === "email"
+      ? "This is an email. Write 2-4 short paragraphs and a subject line."
+      : "This is a text message. One or two short sentences, no subject line, no markdown, no emoji unless the personality calls for it.";
+
+  const system = `You are "${agentName}", an outreach agent for the webinar "${webinarTitle}".
+
+Personality: ${personality}
+Objective: ${objective}
+The offer you're following up about: ${offerDescription || "Not specified"}
+What you know about this lead: ${engagementSummary}
+
+Rules:
+- Write to ${registrantName || "this lead"} directly, by name if given.
+- Never invent a price, guarantee, deadline, or fact that was not given to you above.
+- Never claim to be human, and never pretend a previous message from you doesn't exist.
+- ${lengthRule}
+- If this is a follow-up (history is non-empty), do not repeat the same opening or offer summary as before -- move the conversation forward.
+
+Output ONLY a JSON object, nothing before or after it: {"subject": "...", "body": "..."} (subject can be "" for a text message)`;
+
+  const messages: Anthropic.MessageParam[] =
+    history.length > 0
+      ? [
+          {
+            role: "user" as const,
+            content: history.map((message) => `[${message.role}]: ${message.content}`).join("\n\n"),
+          },
+          { role: "assistant" as const, content: "Understood — here is the next message." },
+          { role: "user" as const, content: "Write the next message now." },
+        ]
+      : [{ role: "user" as const, content: "Write the first outreach message now." }];
+
+  const response = await getClient().messages.create({
+    model: MODEL,
+    max_tokens: 500,
+    system,
+    messages,
+  });
+
+  if (response.stop_reason === "refusal") {
+    return { subject: "", body: "" };
+  }
+
+  const text = response.content
+    .filter((block): block is Anthropic.TextBlock => block.type === "text")
+    .map((block) => block.text)
+    .join("");
+
+  const match = text.match(/\{[\s\S]*\}/);
+  if (!match) return { subject: "", body: "" };
+
+  try {
+    const parsed = JSON.parse(match[0]) as { subject?: unknown; body?: unknown };
+    return {
+      subject: typeof parsed.subject === "string" ? parsed.subject : "",
+      body: typeof parsed.body === "string" ? parsed.body : "",
+    };
+  } catch {
+    return { subject: "", body: "" };
+  }
+}
