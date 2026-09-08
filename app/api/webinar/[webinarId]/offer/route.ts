@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 
+import { createDealForOfferClick } from "@/lib/crm/pipeline";
 import { syncContactInBackground } from "@/lib/integrations/sync";
 import { dispatchPluginEventInBackground } from "@/lib/plugins/dispatch";
 import { dispatchWebhookInBackground } from "@/lib/webhooks/dispatch";
@@ -102,10 +103,21 @@ export async function POST(
 
     const { data: offer } = await supabase
       .from("webinar_offers")
-      .select("offer_title")
+      .select("offer_title, price_cents")
       .eq("webinar_id", webinarId)
       .eq("is_active", true)
       .maybeSingle();
+
+    // A click is the moment an attendee becomes a lead worth tracking, so
+    // it is also where the deal opens in the host's pipeline.
+    await createDealForOfferClick({
+      ownerId: webinar?.owner_id ?? null,
+      webinarId,
+      registrantId,
+      registrantName: before?.full_name ?? "",
+      offerTitle: offer?.offer_title ?? null,
+      valueCents: offer?.price_cents ?? null,
+    });
 
     dispatchWebhookInBackground(webinar?.owner_id ?? null, "registrant.clicked_offer", {
       registrantId,
