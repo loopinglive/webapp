@@ -22,6 +22,7 @@ import {
   Sparkle,
   TrendingUp,
   Users,
+  UsersRound,
   Video,
   Workflow,
 } from "lucide-react";
@@ -41,6 +42,7 @@ export const DASHBOARD_NAV = [
   { href: "/webinars/series", label: "Series", icon: Layers },
   { href: "/attendees", label: "Attendees", icon: Users },
   { href: "/crm", label: "Deals", icon: KanbanSquare },
+  { href: "/co-hosting", label: "Co-hosting", icon: UsersRound },
   { href: "/analytics", label: "Analytics", icon: BarChart3 },
   { href: "/competitor-intelligence", label: "Competitor Intel", icon: Binoculars },
   { href: "/automations", label: "Automations", icon: Workflow },

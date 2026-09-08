@@ -1049,6 +1049,22 @@ It's still a draft. Nothing goes live until you review it and publish.`,
     meta: [{ label: "Webinar", value: "{{webinar_title}}" }],
     cta: { label: "Review and publish", url: "{{review_link}}" },
   },
+  {
+    key: "co_host_invite",
+    label: "Co-host invitation",
+    audience: "host",
+    category: "activation",
+    transactional: true,
+    subject: "{{inviter_name}} invited you to co-host \"{{webinar_title}}\"",
+    eyebrow: "Co-host invitation",
+    body: `{{inviter_name}} has asked you to co-host "{{webinar_title}}".
+
+As a co-host you'll be able to {{permission_summary}} during the session. You'll need a {{brand}} account — the link below will sign you in or get you set up first.
+
+This invitation expires in 7 days.`,
+    meta: [{ label: "Webinar", value: "{{webinar_title}}" }],
+    cta: { label: "Accept invitation", url: "{{accept_link}}" },
+  },
 ];
 
 export const PLATFORM_TEMPLATE_BY_KEY = new Map(
