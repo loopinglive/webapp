@@ -5,6 +5,7 @@ import { AnnouncementBanner } from "@/components/dashboard/AnnouncementBanner";
 import { ImpersonationBanner } from "@/components/dashboard/ImpersonationBanner";
 import { MobileBar } from "@/components/dashboard/MobileBar";
 import { Sidebar } from "@/components/dashboard/sidebar";
+import { HelpWidget } from "@/components/docs/HelpWidget";
 import { SecondFactorGate } from "@/components/superadmin/SecondFactorGate";
 import { ErrorBoundary } from "@/components/ui/ErrorBoundary";
 import { PlanProvider } from "@/hooks/usePlan";
@@ -95,6 +96,7 @@ export default async function DashboardLayout({
             <ErrorBoundary area="dashboard">{children}</ErrorBoundary>
           </div>
         </div>
+        <HelpWidget />
       </div>
     </PlanProvider>
   );
