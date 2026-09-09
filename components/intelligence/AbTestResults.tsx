@@ -22,11 +22,11 @@ export function AbTestResults({ test, results }: { test: AbTest; results: Result
               key={variant.variant}
               className={cn(
                 "rounded-lg border px-3.5 py-3",
-                isWinner ? "border-[#00C851]/50 bg-[#00C851]/5" : "border-[#1E1E2E] bg-[#12121A]"
+                isWinner ? "border-[#00C851]/50 bg-[#00C851]/5" : "border-hairline bg-surface"
               )}
             >
               <div className="flex items-center justify-between">
-                <span className="text-[11px] font-semibold uppercase tracking-[0.1em] text-[#A0A0B0]">
+                <span className="text-[11px] font-semibold uppercase tracking-[0.1em] text-ink-muted">
                   Variant {label}
                 </span>
                 {isWinner && (
@@ -40,16 +40,16 @@ export function AbTestResults({ test, results }: { test: AbTest; results: Result
                 <p className="mt-1 line-clamp-2 text-[12.5px] text-[#C8C8D4]">{content}</p>
               )}
               <div className="mt-2.5 flex items-baseline gap-2">
-                <span className="text-xl font-semibold tabular-nums text-white">
+                <span className="text-xl font-semibold tabular-nums text-ink">
                   {variant.conversionRate}%
                 </span>
-                <span className="text-[11px] text-[#6A6A80]">
+                <span className="text-[11px] text-ink-faint">
                   {variant.conversions}/{variant.impressions} converted
                 </span>
               </div>
-              <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-[#1A1A2A]">
+              <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-surface-2">
                 <div
-                  className="h-full rounded-full bg-gradient-to-r from-[#6C47FF] to-[#00D4FF]"
+                  className="h-full rounded-full bg-gradient-to-r from-accent to-cyan"
                   style={{ width: `${(variant.conversionRate / max) * 100}%` }}
                 />
               </div>
@@ -58,7 +58,7 @@ export function AbTestResults({ test, results }: { test: AbTest; results: Result
         })}
       </div>
 
-      <p className="mt-3 text-[11.5px] text-[#6A6A80]">
+      <p className="mt-3 text-[11.5px] text-ink-faint">
         {results.significance.significant
           ? `Statistically significant at ${results.significance.confidenceLevel}% confidence.`
           : results.variants.every((v) => v.impressions >= 30)

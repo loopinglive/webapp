@@ -65,9 +65,9 @@ export function TemplateApplicator({
       <p className="mb-2 text-[11.5px] text-[#22C55E]">You own this.</p>
 
       {webinars === null ? (
-        <Loader2 className="h-4 w-4 animate-spin text-[#6C47FF]" />
+        <Loader2 className="h-4 w-4 animate-spin text-accent" />
       ) : webinars.length === 0 ? (
-        <p className="text-[12px] text-[#6E6E80]">
+        <p className="text-[12px] text-ink-faint">
           Create a webinar first, then come back to apply this {listingType.replace(/_/g, " ")}.
         </p>
       ) : (
@@ -75,7 +75,7 @@ export function TemplateApplicator({
           <select
             value={selected}
             onChange={(event) => setSelected(event.target.value)}
-            className="h-9 w-full rounded-lg border border-[#1E1E2E] bg-[#0D0D15] px-2.5 text-[12.5px] text-white focus:outline-none"
+            className="h-9 w-full rounded-lg border border-hairline bg-void px-2.5 text-[12.5px] text-ink focus:outline-none"
           >
             {webinars.map((webinar) => (
               <option key={webinar.id} value={webinar.id}>
@@ -86,7 +86,7 @@ export function TemplateApplicator({
           <button
             onClick={() => void apply()}
             disabled={applying}
-            className="mt-2 inline-flex h-9 w-full items-center justify-center gap-2 rounded-lg bg-[#1E1E2E] text-[12.5px] text-white hover:bg-[#2A2A3A] disabled:opacity-60"
+            className="mt-2 inline-flex h-9 w-full items-center justify-center gap-2 rounded-lg bg-hairline text-[12.5px] text-ink hover:bg-surface-3 disabled:opacity-60"
           >
             {applying && <Loader2 className="h-3.5 w-3.5 animate-spin" />}
             Apply to this webinar

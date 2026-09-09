@@ -14,7 +14,7 @@ export function MobilePreviewToggle({
   onChange: (device: PreviewDevice) => void;
 }) {
   return (
-    <div className="flex items-center gap-1 rounded-full border border-[#2A2A3A] bg-[#1A1A2A] p-1">
+    <div className="flex items-center gap-1 rounded-full border border-surface-3 bg-surface-2 p-1">
       {[
         { id: "desktop" as const, label: "Desktop", icon: Monitor },
         { id: "mobile" as const, label: "Mobile", icon: Smartphone },
@@ -25,8 +25,8 @@ export function MobilePreviewToggle({
           className={cn(
             "flex items-center gap-1.5 rounded-full px-3 py-1.5 text-[12px] transition-colors duration-200",
             device === option.id
-              ? "bg-[#6C47FF] text-white"
-              : "text-[#A0A0B0] hover:text-white"
+              ? "bg-accent text-white"
+              : "text-ink-muted hover:text-ink"
           )}
         >
           <option.icon className="h-3.5 w-3.5" />

@@ -187,15 +187,15 @@ export function PersonaBuilder({ webinarId }: { webinarId: string }) {
         {aiNotice && (
           <button
             onClick={() => setAiNotice(null)}
-            className="mb-4 w-full rounded-lg bg-[#6C47FF]/10 px-3.5 py-2.5 text-left text-[12.5px] text-[#B8A8FF] hover:bg-[#6C47FF]/15"
+            className="mb-4 w-full rounded-lg bg-accent/10 px-3.5 py-2.5 text-left text-[12.5px] text-[#B8A8FF] hover:bg-accent/15"
           >
             {aiNotice}
           </button>
         )}
 
         {aiOpen && (
-          <div className="mb-6 max-w-md space-y-3.5 rounded-xl border border-[#6C47FF]/30 bg-[#12121A] p-5">
-            <p className="text-[13px] font-medium text-white">Generate personas with AI</p>
+          <div className="mb-6 max-w-md space-y-3.5 rounded-xl border border-accent/30 bg-surface p-5">
+            <p className="text-[13px] font-medium text-ink">Generate personas with AI</p>
             <Field label="How many" hint="Up to 20 at a time">
               <TextInput
                 type="number"
@@ -212,12 +212,12 @@ export function PersonaBuilder({ webinarId }: { webinarId: string }) {
                 onChange={(event) => setAiBrief(event.target.value)}
               />
             </Field>
-            <label className="flex items-center gap-2 text-[12.5px] text-[#A0A0B0]">
+            <label className="flex items-center gap-2 text-[12.5px] text-ink-muted">
               <input
                 type="checkbox"
                 checked={aiGenerateComments}
                 onChange={(event) => setAiGenerateComments(event.target.checked)}
-                className="h-3.5 w-3.5 accent-[#6C47FF]"
+                className="h-3.5 w-3.5 accent-accent"
               />
               Also write their timed comments from the video&apos;s transcript
             </label>
@@ -225,7 +225,7 @@ export function PersonaBuilder({ webinarId }: { webinarId: string }) {
             <div className="flex justify-end gap-2">
               <button
                 onClick={() => setAiOpen(false)}
-                className="text-[12.5px] text-[#A0A0B0] hover:text-white"
+                className="text-[12.5px] text-ink-muted hover:text-ink"
               >
                 Cancel
               </button>
@@ -237,7 +237,7 @@ export function PersonaBuilder({ webinarId }: { webinarId: string }) {
         )}
 
         {creating && (
-          <div className="mb-6 max-w-md rounded-xl border border-[#6C47FF]/30 bg-[#12121A] p-5">
+          <div className="mb-6 max-w-md rounded-xl border border-accent/30 bg-surface p-5">
             <PersonaForm
               webinarId={webinarId}
               onSaved={() => {
@@ -251,10 +251,10 @@ export function PersonaBuilder({ webinarId }: { webinarId: string }) {
 
         {loading ? (
           <div className="grid place-items-center py-16">
-            <Loader2 className="h-5 w-5 animate-spin text-[#6C47FF]" />
+            <Loader2 className="h-5 w-5 animate-spin text-accent" />
           </div>
         ) : personas.length === 0 && !creating ? (
-          <p className="rounded-xl border border-dashed border-[#3A3A4A] px-6 py-14 text-center text-[13.5px] text-[#A0A0B0]">
+          <p className="rounded-xl border border-dashed border-surface-3 px-6 py-14 text-center text-[13.5px] text-ink-muted">
             No personas yet. They are the voices that make the room feel full.
           </p>
         ) : (
@@ -283,7 +283,7 @@ export function PersonaBuilder({ webinarId }: { webinarId: string }) {
               );
               await load();
             }}
-            className="mt-8 text-[12px] text-[#A0A0B0] transition-colors hover:text-[#FF3B3B]"
+            className="mt-8 text-[12px] text-ink-muted transition-colors hover:text-[#FF3B3B]"
           >
             Delete all personas
           </button>
@@ -298,25 +298,25 @@ export function PersonaBuilder({ webinarId }: { webinarId: string }) {
             onClick={() => setSelected(null)}
             className="fixed inset-0 z-40 bg-black/50 backdrop-blur-[2px]"
           />
-          <aside className="fixed right-0 top-0 z-50 flex h-dvh w-full max-w-[460px] animate-rise flex-col border-l border-[#1E1E2E] bg-[#0D0D17]">
-            <header className="flex items-start gap-3 border-b border-[#1E1E2E] px-5 py-4">
+          <aside className="fixed right-0 top-0 z-50 flex h-dvh w-full max-w-[460px] animate-rise flex-col border-l border-hairline bg-void">
+            <header className="flex items-start gap-3 border-b border-hairline px-5 py-4">
               <Avatar
                 name={selected.name}
                 avatarUrl={selected.avatar_url}
                 size={44}
               />
               <div className="min-w-0 flex-1">
-                <h2 className="truncate text-[15px] font-semibold text-white">
+                <h2 className="truncate text-[15px] font-semibold text-ink">
                   {selected.name}
                 </h2>
                 {selected.location && (
-                  <p className="text-[12px] text-[#A0A0B0]">{selected.location}</p>
+                  <p className="text-[12px] text-ink-muted">{selected.location}</p>
                 )}
               </div>
               <button
                 onClick={() => setSelected(null)}
                 aria-label="Close"
-                className="grid h-8 w-8 place-items-center rounded-full text-[#A0A0B0] transition-colors hover:bg-white/5 hover:text-white"
+                className="grid h-8 w-8 place-items-center rounded-full text-ink-muted transition-colors hover:bg-surface-2 hover:text-ink"
               >
                 <X className="h-4 w-4" />
               </button>
@@ -343,7 +343,7 @@ export function PersonaBuilder({ webinarId }: { webinarId: string }) {
             </div>
 
             {!editing && (
-              <footer className="flex items-center gap-2 border-t border-[#1E1E2E] px-5 py-4">
+              <footer className="flex items-center gap-2 border-t border-hairline px-5 py-4">
                 <AdminButton variant="secondary" onClick={() => setEditing(true)}>
                   Edit persona
                 </AdminButton>

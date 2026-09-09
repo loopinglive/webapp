@@ -100,8 +100,8 @@ export function ReportQueue() {
             onClick={() => setStatus(value)}
             className={`h-8 rounded-full px-3 text-[12.5px] capitalize transition-colors ${
               status === value
-                ? "bg-[#6C47FF] text-white"
-                : "text-[#A0A0B0] hover:text-white"
+                ? "bg-accent text-white"
+                : "text-ink-muted hover:text-white"
             }`}
           >
             {value}
@@ -111,7 +111,7 @@ export function ReportQueue() {
 
       {!reports ? (
         <div className="grid h-40 place-items-center">
-          <Loader2 className="h-5 w-5 animate-spin text-[#6C47FF]" />
+          <Loader2 className="h-5 w-5 animate-spin text-accent" />
         </div>
       ) : reports.length === 0 ? (
         <EmptyState
@@ -128,15 +128,15 @@ export function ReportQueue() {
           {reports.map((report) => (
             <li
               key={report.id}
-              className="rounded-2xl border border-[#1E1E2E] bg-[#12121A] p-4"
+              className="rounded-2xl border border-hairline bg-surface p-4"
             >
               <div className="flex flex-wrap items-start justify-between gap-3">
                 <div className="min-w-0">
-                  <p className="flex items-center gap-2 text-[13.5px] font-medium text-white">
+                  <p className="flex items-center gap-2 text-[13.5px] font-medium text-ink">
                     <Flag className="h-3.5 w-3.5 shrink-0 text-[#F5A623]" />
                     {REASON_LABELS[report.reason] ?? report.reason}
                   </p>
-                  <p className="mt-1 text-[12.5px] text-[#A0A0B0]">
+                  <p className="mt-1 text-[12.5px] text-ink-muted">
                     {report.webinar_title ?? "(deleted webinar)"}
                     {report.owner_email && (
                       <>
@@ -144,7 +144,7 @@ export function ReportQueue() {
                         {report.owner_id ? (
                           <Link
                             href={`/superadmin/users/${report.owner_id}`}
-                            className="text-[#00D4FF] hover:underline"
+                            className="text-cyan hover:underline"
                           >
                             {report.owner_email}
                           </Link>
@@ -152,20 +152,20 @@ export function ReportQueue() {
                           report.owner_email
                         )}
                         {report.owner_plan && (
-                          <span className="text-[#6E6E80]"> ({report.owner_plan})</span>
+                          <span className="text-ink-faint"> ({report.owner_plan})</span>
                         )}
                       </>
                     )}
                   </p>
                 </div>
 
-                <div className="shrink-0 text-right text-[11.5px] text-[#6E6E80]">
+                <div className="shrink-0 text-right text-[11.5px] text-ink-faint">
                   <p>
-                    <span className="text-white">{report.reports_for_webinar}</span>{" "}
+                    <span className="text-ink">{report.reports_for_webinar}</span>{" "}
                     {report.reports_for_webinar === 1 ? "report" : "reports"}
                   </p>
                   <p>
-                    <span className="text-white">
+                    <span className="text-ink">
                       {report.registrants_reached.toLocaleString()}
                     </span>{" "}
                     reached
@@ -174,7 +174,7 @@ export function ReportQueue() {
               </div>
 
               {report.detail && (
-                <p className="mt-2.5 whitespace-pre-wrap rounded-lg bg-[#0D0D15] px-3 py-2.5 text-[12.5px] leading-relaxed text-[#C4C4D0]">
+                <p className="mt-2.5 whitespace-pre-wrap rounded-lg bg-void px-3 py-2.5 text-[12.5px] leading-relaxed text-[#C4C4D0]">
                   {report.detail}
                 </p>
               )}
@@ -194,21 +194,21 @@ export function ReportQueue() {
                   <button
                     onClick={() => void resolve(report, "action", false)}
                     disabled={busy === report.id}
-                    className="h-8 rounded-lg border border-[#1E1E2E] px-3 text-[12px] text-[#A0A0B0] hover:text-white disabled:opacity-60"
+                    className="h-8 rounded-lg border border-hairline px-3 text-[12px] text-ink-muted hover:text-ink disabled:opacity-60"
                   >
                     Handled another way
                   </button>
                   <button
                     onClick={() => void resolve(report, "dismiss", false)}
                     disabled={busy === report.id}
-                    className="h-8 rounded-lg px-3 text-[12px] text-[#6E6E80] hover:text-white disabled:opacity-60"
+                    className="h-8 rounded-lg px-3 text-[12px] text-ink-faint hover:text-ink disabled:opacity-60"
                   >
                     Dismiss
                   </button>
                   <Link
                     href={`/webinar/${report.webinar_id}/register`}
                     target="_blank"
-                    className="ml-auto h-8 rounded-lg px-3 text-[12px] leading-8 text-[#00D4FF] hover:underline"
+                    className="ml-auto h-8 rounded-lg px-3 text-[12px] leading-8 text-cyan hover:underline"
                   >
                     See what they see
                   </Link>

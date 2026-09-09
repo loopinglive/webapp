@@ -206,9 +206,9 @@ export function FunnelChart({
           return (
             <li key={stage.label}>
               <div className="mb-1 flex items-baseline justify-between gap-3">
-                <span className="text-[12.5px] text-white">{stage.label}</span>
+                <span className="text-[12.5px] text-ink">{stage.label}</span>
                 <span className="flex items-baseline gap-2 text-[12px]">
-                  <span className="font-medium tabular-nums text-white">
+                  <span className="font-medium tabular-nums text-ink">
                     {stage.value.toLocaleString()}
                   </span>
                   {stage.ofPrevious !== null && (
@@ -229,7 +229,7 @@ export function FunnelChart({
                   )}
                 </span>
               </div>
-              <div className="h-2 overflow-hidden rounded-full bg-[#1A1A2A]">
+              <div className="h-2 overflow-hidden rounded-full bg-surface-2">
                 <div
                   className="h-full rounded-full transition-[width] duration-500"
                   style={{ width: `${width}%`, background: seriesColour(index) }}
@@ -278,15 +278,15 @@ export function BreakdownBars({
         {rows.map((row, index) => (
           <li key={row.label}>
             <div className="mb-1 flex items-baseline justify-between gap-3">
-              <span className="min-w-0 truncate text-[12.5px] text-white">
+              <span className="min-w-0 truncate text-[12.5px] text-ink">
                 {row.label}
               </span>
-              <span className="shrink-0 text-[12px] tabular-nums text-[#A0A0B0]">
+              <span className="shrink-0 text-[12px] tabular-nums text-ink-muted">
                 {row.value.toLocaleString()}
-                <span className="ml-1.5 text-[#6A6A80]">{row.share}%</span>
+                <span className="ml-1.5 text-ink-faint">{row.share}%</span>
               </span>
             </div>
-            <div className="h-2 overflow-hidden rounded-full bg-[#1A1A2A]">
+            <div className="h-2 overflow-hidden rounded-full bg-surface-2">
               <div
                 className="h-full rounded-full"
                 style={{
@@ -329,7 +329,7 @@ export function TimeSlotHeatmap({
               {hours.map((hour) => (
                 <th
                   key={hour}
-                  className="pb-1 text-[10px] font-medium tabular-nums text-[#6A6A80]"
+                  className="pb-1 text-[10px] font-medium tabular-nums text-ink-faint"
                 >
                   {String(hour).padStart(2, "0")}
                 </th>
@@ -339,7 +339,7 @@ export function TimeSlotHeatmap({
           <tbody>
             {WEEKDAYS.map((label, weekday) => (
               <tr key={label}>
-                <th className="pr-2 text-right text-[10.5px] font-medium text-[#A0A0B0]">
+                <th className="pr-2 text-right text-[10.5px] font-medium text-ink-muted">
                   {label}
                 </th>
                 {hours.map((hour) => {

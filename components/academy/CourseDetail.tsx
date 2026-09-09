@@ -10,12 +10,12 @@ export function CourseDetail({ courseId }: { courseId: string }) {
   const { course, lessons, completedLessonIds, loading, notFound } = useAcademyCourse(courseId);
 
   if (notFound) {
-    return <div className="px-6 py-16 text-center text-[13px] text-[#A0A0B0]">Not found.</div>;
+    return <div className="px-6 py-16 text-center text-[13px] text-ink-muted">Not found.</div>;
   }
   if (loading || !course) {
     return (
       <div className="grid h-64 place-items-center">
-        <Loader2 className="h-5 w-5 animate-spin text-[#6C47FF]" />
+        <Loader2 className="h-5 w-5 animate-spin text-accent" />
       </div>
     );
   }
@@ -25,23 +25,23 @@ export function CourseDetail({ courseId }: { courseId: string }) {
 
   return (
     <div className="mx-auto max-w-2xl px-6 py-6 lg:px-10">
-      <p className="text-[11px] uppercase tracking-[0.14em] text-[#6E6E80]">
+      <p className="text-[11px] uppercase tracking-[0.14em] text-ink-faint">
         {course.category} · {course.difficulty}
       </p>
-      <h1 className="mt-1.5 text-[22px] font-semibold tracking-[-0.02em] text-white">
+      <h1 className="mt-1.5 text-[22px] font-semibold tracking-[-0.02em] text-ink">
         {course.title}
       </h1>
       <p className="mt-2 text-[13.5px] leading-relaxed text-[#C4C4D0]">{course.description}</p>
 
       {lessons.length > 0 && (
         <div className="mt-4">
-          <div className="h-1.5 overflow-hidden rounded-full bg-[#1E1E2E]">
+          <div className="h-1.5 overflow-hidden rounded-full bg-hairline">
             <div
-              className="h-full rounded-full bg-[#6C47FF] transition-[width]"
+              className="h-full rounded-full bg-accent transition-[width]"
               style={{ width: `${pct}%` }}
             />
           </div>
-          <p className="mt-1.5 text-[11.5px] text-[#6E6E80]">
+          <p className="mt-1.5 text-[11.5px] text-ink-faint">
             {doneCount} of {lessons.length} lessons complete
           </p>
         </div>
@@ -54,22 +54,22 @@ export function CourseDetail({ courseId }: { courseId: string }) {
             <li key={lesson.id}>
               <Link
                 href={`/academy/course/${courseId}/lesson/${lesson.id}`}
-                className="flex items-center gap-3 rounded-xl border border-[#1E1E2E] bg-[#12121A] px-4 py-3 hover:border-[#6C47FF]/40"
+                className="flex items-center gap-3 rounded-xl border border-hairline bg-surface px-4 py-3 hover:border-accent/40"
               >
                 <span
                   className={`grid h-7 w-7 shrink-0 place-items-center rounded-full text-[11px] font-medium ${
-                    done ? "bg-[#22C55E] text-black" : "bg-[#1E1E2E] text-[#A0A0B0]"
+                    done ? "bg-[#22C55E] text-black" : "bg-hairline text-ink-muted"
                   }`}
                 >
                   {done ? <Check className="h-3.5 w-3.5" /> : index + 1}
                 </span>
-                <span className="min-w-0 flex-1 text-[13.5px] text-white">{lesson.title}</span>
+                <span className="min-w-0 flex-1 text-[13.5px] text-ink">{lesson.title}</span>
                 {lesson.duration_seconds && (
-                  <span className="shrink-0 text-[11.5px] text-[#6E6E80]">
+                  <span className="shrink-0 text-[11.5px] text-ink-faint">
                     {formatOffset(lesson.duration_seconds)}
                   </span>
                 )}
-                <Play className="h-3.5 w-3.5 shrink-0 text-[#6E6E80]" />
+                <Play className="h-3.5 w-3.5 shrink-0 text-ink-faint" />
               </Link>
             </li>
           );

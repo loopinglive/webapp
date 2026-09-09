@@ -43,27 +43,27 @@ export function TimezoneSelector({
       <button
         type="button"
         onClick={() => setOpen((current) => !current)}
-        className="flex h-11 w-full items-center justify-between gap-2 rounded-lg border border-[#2A2A3A] bg-[#1A1A2A] px-3.5 text-[13.5px] text-white transition-colors hover:border-[#3A3A4A] focus:border-[#6C47FF] focus:outline-none"
+        className="flex h-11 w-full items-center justify-between gap-2 rounded-lg border border-surface-3 bg-surface-2 px-3.5 text-[13.5px] text-ink transition-colors hover:border-surface-3 focus:border-accent focus:outline-none"
       >
         <span className="truncate">{value}</span>
         <ChevronDown
           className={cn(
-            "h-3.5 w-3.5 shrink-0 text-[#A0A0B0] transition-transform duration-200",
+            "h-3.5 w-3.5 shrink-0 text-ink-muted transition-transform duration-200",
             open && "rotate-180"
           )}
         />
       </button>
 
       {open && (
-        <div className="absolute left-0 right-0 top-[calc(100%+6px)] z-50 overflow-hidden rounded-xl border border-[#2A2A3A] bg-[#12121A] shadow-[0_28px_70px_-20px_rgba(0,0,0,0.9)]">
-          <div className="flex items-center gap-2 border-b border-[#1E1E2E] px-3.5 py-2.5">
-            <Search className="h-3.5 w-3.5 text-[#A0A0B0]" />
+        <div className="absolute left-0 right-0 top-[calc(100%+6px)] z-50 overflow-hidden rounded-xl border border-surface-3 bg-surface shadow-[0_28px_70px_-20px_rgba(0,0,0,0.9)]">
+          <div className="flex items-center gap-2 border-b border-hairline px-3.5 py-2.5">
+            <Search className="h-3.5 w-3.5 text-ink-muted" />
             <input
               autoFocus
               value={query}
               onChange={(event) => setQuery(event.target.value)}
               placeholder="Search timezones"
-              className="w-full bg-transparent text-[13px] text-white placeholder:text-[#A0A0B0]/60 focus:outline-none"
+              className="w-full bg-transparent text-[13px] text-ink placeholder:text-ink-muted/60 focus:outline-none"
             />
           </div>
 
@@ -80,19 +80,19 @@ export function TimezoneSelector({
                   className={cn(
                     "flex w-full items-center justify-between gap-2 px-3.5 py-2 text-left text-[12.5px] transition-colors",
                     zone === value
-                      ? "bg-[#6C47FF]/15 text-white"
-                      : "text-[#A0A0B0] hover:bg-white/5 hover:text-white"
+                      ? "bg-accent/15 text-ink"
+                      : "text-ink-muted hover:bg-surface-2 hover:text-ink"
                   )}
                 >
                   <span className="truncate">{zone}</span>
                   {zone === value && (
-                    <Check className="h-3.5 w-3.5 shrink-0 text-[#6C47FF]" />
+                    <Check className="h-3.5 w-3.5 shrink-0 text-accent" />
                   )}
                 </button>
               </li>
             ))}
             {!results.length && (
-              <li className="px-3.5 py-6 text-center text-[12.5px] text-[#A0A0B0]">
+              <li className="px-3.5 py-6 text-center text-[12.5px] text-ink-muted">
                 No timezone matches that.
               </li>
             )}

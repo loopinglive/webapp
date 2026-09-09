@@ -84,9 +84,9 @@ export function AnnouncementManager() {
 
   return (
     <div className="space-y-8 px-6 py-6 lg:px-8">
-      <section className="max-w-[620px] rounded-2xl border border-[#1E1E2E] bg-[#12121A] p-6">
-        <h2 className="text-[15px] font-semibold text-white">Post an announcement</h2>
-        <p className="mt-1 text-[12.5px] text-[#6E6E80]">
+      <section className="max-w-[620px] rounded-2xl border border-hairline bg-surface p-6">
+        <h2 className="text-[15px] font-semibold text-ink">Post an announcement</h2>
+        <p className="mt-1 text-[12.5px] text-ink-faint">
           Shown as a banner on every dashboard page. Critical announcements cannot be
           dismissed.
         </p>
@@ -96,14 +96,14 @@ export function AnnouncementManager() {
             value={title}
             onChange={(event) => setTitle(event.target.value)}
             placeholder="Title"
-            className="h-10 w-full rounded-xl border border-[#1E1E2E] bg-[#0D0D15] px-3.5 text-[13px] text-white placeholder:text-[#6E6E80] focus:border-[#6C47FF] focus:outline-none"
+            className="h-10 w-full rounded-xl border border-hairline bg-void px-3.5 text-[13px] text-ink placeholder:text-ink-faint focus:border-accent focus:outline-none"
           />
           <textarea
             value={body}
             onChange={(event) => setBody(event.target.value)}
             rows={3}
             placeholder="What do people need to know?"
-            className="w-full rounded-xl border border-[#1E1E2E] bg-[#0D0D15] px-3.5 py-2.5 text-[13px] text-white placeholder:text-[#6E6E80] focus:border-[#6C47FF] focus:outline-none"
+            className="w-full rounded-xl border border-hairline bg-void px-3.5 py-2.5 text-[13px] text-ink placeholder:text-ink-faint focus:border-accent focus:outline-none"
           />
 
           <div className="flex flex-wrap gap-2">
@@ -123,7 +123,7 @@ export function AnnouncementManager() {
           </div>
 
           <div>
-            <p className="mb-2 text-[12px] text-[#A0A0B0]">
+            <p className="mb-2 text-[12px] text-ink-muted">
               Show to — leave all unticked for everyone
             </p>
             <div className="flex flex-wrap gap-2">
@@ -153,14 +153,14 @@ export function AnnouncementManager() {
           </div>
 
           <div className="flex items-center gap-2">
-            <label className="text-[12.5px] text-[#A0A0B0]">Show until</label>
+            <label className="text-[12.5px] text-ink-muted">Show until</label>
             <input
               type="date"
               value={endsAt}
               onChange={(event) => setEndsAt(event.target.value)}
-              className="h-10 rounded-xl border border-[#1E1E2E] bg-[#0D0D15] px-3.5 text-[13px] text-white focus:border-[#6C47FF] focus:outline-none"
+              className="h-10 rounded-xl border border-hairline bg-void px-3.5 text-[13px] text-ink focus:border-accent focus:outline-none"
             />
-            <span className="text-[11.5px] text-[#6E6E80]">blank = permanent</span>
+            <span className="text-[11.5px] text-ink-faint">blank = permanent</span>
           </div>
 
           {error && <p className="text-[12.5px] text-[#FF6B6B]">{error}</p>}
@@ -168,7 +168,7 @@ export function AnnouncementManager() {
           <button
             onClick={create}
             disabled={busy || !title || !body}
-            className="inline-flex h-10 items-center gap-2 rounded-full bg-[#6C47FF] px-5 text-[13px] font-semibold text-white hover:bg-[#7C5AFF] disabled:opacity-40"
+            className="inline-flex h-10 items-center gap-2 rounded-full bg-accent px-5 text-[13px] font-semibold text-white hover:bg-accent-soft disabled:opacity-40"
           >
             {busy && <Loader2 className="h-3.5 w-3.5 animate-spin" />}
             Post announcement
@@ -177,9 +177,9 @@ export function AnnouncementManager() {
       </section>
 
       <section>
-        <h2 className="text-[15px] font-semibold text-white">Posted</h2>
+        <h2 className="text-[15px] font-semibold text-ink">Posted</h2>
         {items.length === 0 ? (
-          <p className="mt-3 text-[13px] text-[#6E6E80]">Nothing posted yet.</p>
+          <p className="mt-3 text-[13px] text-ink-faint">Nothing posted yet.</p>
         ) : (
           <ul className="mt-4 space-y-2">
             {items.map((item) => {
@@ -188,13 +188,13 @@ export function AnnouncementManager() {
               return (
                 <li
                   key={item.id}
-                  className="flex items-start gap-3 rounded-xl border border-[#1E1E2E] bg-[#12121A] p-4"
+                  className="flex items-start gap-3 rounded-xl border border-hairline bg-surface p-4"
                   style={{ borderLeftColor: colour, borderLeftWidth: 3 }}
                 >
                   <div className="min-w-0 flex-1">
-                    <p className="text-[13.5px] font-medium text-white">{item.title}</p>
-                    <p className="mt-0.5 text-[12.5px] text-[#A0A0B0]">{item.body}</p>
-                    <p className="mt-1.5 text-[11px] text-[#6E6E80]">
+                    <p className="text-[13.5px] font-medium text-ink">{item.title}</p>
+                    <p className="mt-0.5 text-[12.5px] text-ink-muted">{item.body}</p>
+                    <p className="mt-1.5 text-[11px] text-ink-faint">
                       {new Date(item.starts_at).toLocaleDateString(undefined, {
                         dateStyle: "medium",
                       })}
@@ -205,7 +205,7 @@ export function AnnouncementManager() {
                   </div>
                   <button
                     onClick={() => toggle(item)}
-                    className="shrink-0 text-[12px] text-[#A0A0B0] hover:text-white"
+                    className="shrink-0 text-[12px] text-ink-muted hover:text-ink"
                   >
                     {item.is_active ? "Deactivate" : "Reactivate"}
                   </button>

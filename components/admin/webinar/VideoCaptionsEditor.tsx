@@ -99,7 +99,7 @@ export function VideoCaptionsEditor({ webinarId }: { webinarId: string }) {
   if (loading) {
     return (
       <div className="grid place-items-center py-24">
-        <Loader2 className="h-6 w-6 animate-spin text-[#6C47FF]" />
+        <Loader2 className="h-6 w-6 animate-spin text-accent" />
       </div>
     );
   }
@@ -113,17 +113,17 @@ export function VideoCaptionsEditor({ webinarId }: { webinarId: string }) {
 
       <div className="max-w-2xl space-y-5 px-6 py-8 lg:px-8">
         {config && (
-          <div className="flex items-center justify-between rounded-xl border border-[#1E1E2E] bg-[#12121A] px-4 py-3.5">
+          <div className="flex items-center justify-between rounded-xl border border-hairline bg-surface px-4 py-3.5">
             <div className="flex items-center gap-2.5">
-              <Captions className="h-4 w-4 text-[#6C47FF]" />
-              <span className="text-[13px] text-white">
+              <Captions className="h-4 w-4 text-accent" />
+              <span className="text-[13px] text-ink">
                 {segmentCount} caption segments in {config.target_languages.join(", ")}
               </span>
             </div>
             <button
               onClick={() => void remove()}
               title="Delete captions"
-              className="grid h-8 w-8 place-items-center rounded-lg text-[#A0A0B0] transition-colors hover:bg-[#FF3B3B]/10 hover:text-[#FF3B3B]"
+              className="grid h-8 w-8 place-items-center rounded-lg text-ink-muted transition-colors hover:bg-[#FF3B3B]/10 hover:text-[#FF3B3B]"
             >
               <Trash2 className="h-3.5 w-3.5" />
             </button>
@@ -131,7 +131,7 @@ export function VideoCaptionsEditor({ webinarId }: { webinarId: string }) {
         )}
 
         <div>
-          <span className="text-[12.5px] text-[#A0A0B0]">Target languages</span>
+          <span className="text-[12.5px] text-ink-muted">Target languages</span>
           <div className="mt-1.5 flex flex-wrap gap-1.5">
             {LANGUAGES.map((language) => {
               const active = selected.includes(language.code);
@@ -144,7 +144,7 @@ export function VideoCaptionsEditor({ webinarId }: { webinarId: string }) {
                     )
                   }
                   className={`h-8 rounded-full px-3 text-[12.5px] transition-colors ${
-                    active ? "bg-[#6C47FF] text-white" : "border border-[#1E1E2E] text-[#A0A0B0] hover:text-white"
+                    active ? "bg-accent text-white" : "border border-hairline text-ink-muted hover:text-white"
                   }`}
                 >
                   {language.label}

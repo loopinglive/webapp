@@ -119,7 +119,7 @@ export function OfferBuilder({ webinarId }: { webinarId: string }) {
   if (loading) {
     return (
       <div className="grid h-[60dvh] place-items-center">
-        <Loader2 className="h-5 w-5 animate-spin text-[#6C47FF]" />
+        <Loader2 className="h-5 w-5 animate-spin text-accent" />
       </div>
     );
   }
@@ -198,7 +198,7 @@ export function OfferBuilder({ webinarId }: { webinarId: string }) {
           </div>
 
           <div>
-            <span className="text-[12px] font-medium text-[#A0A0B0]">
+            <span className="text-[12px] font-medium text-ink-muted">
               Button colour
             </span>
             <div className="mt-2">
@@ -210,7 +210,7 @@ export function OfferBuilder({ webinarId }: { webinarId: string }) {
           </div>
 
           <div>
-            <span className="text-[12px] font-medium text-[#A0A0B0]">Animation</span>
+            <span className="text-[12px] font-medium text-ink-muted">Animation</span>
             <div className="mt-2 flex flex-wrap gap-2">
               {ANIMATIONS.map((option) => (
                 <button
@@ -220,8 +220,8 @@ export function OfferBuilder({ webinarId }: { webinarId: string }) {
                   className={cn(
                     "rounded-full border px-3.5 py-1.5 text-[12.5px] transition-colors duration-200",
                     form.buttonAnimation === option.id
-                      ? "border-[#6C47FF] bg-[#6C47FF]/15 text-white"
-                      : "border-[#2A2A3A] text-[#A0A0B0] hover:text-white"
+                      ? "border-accent bg-accent/15 text-ink"
+                      : "border-surface-3 text-ink-muted hover:text-ink"
                   )}
                 >
                   {option.label}
@@ -241,15 +241,15 @@ export function OfferBuilder({ webinarId }: { webinarId: string }) {
             />
           </Field>
 
-          <div className="rounded-xl border border-[#1E1E2E] bg-[#12121A] p-4">
+          <div className="rounded-xl border border-hairline bg-surface p-4">
             <label className="flex cursor-pointer items-center gap-2.5">
               <input
                 type="checkbox"
                 checked={form.countdownEnabled}
                 onChange={(event) => set("countdownEnabled", event.target.checked)}
-                className="h-4 w-4 accent-[#6C47FF]"
+                className="h-4 w-4 accent-accent"
               />
-              <span className="text-[13px] text-white">
+              <span className="text-[13px] text-ink">
                 Show a countdown on the button
               </span>
             </label>
@@ -271,7 +271,7 @@ export function OfferBuilder({ webinarId }: { webinarId: string }) {
           </div>
 
           <div>
-            <span className="text-[12px] font-medium text-[#A0A0B0]">
+            <span className="text-[12px] font-medium text-ink-muted">
               Where the offer lives
             </span>
             <div className="mt-2 grid gap-2 sm:grid-cols-2">
@@ -294,14 +294,14 @@ export function OfferBuilder({ webinarId }: { webinarId: string }) {
                   className={cn(
                     "rounded-xl border p-3.5 text-left transition-colors duration-200",
                     form.offerType === option.id
-                      ? "border-[#6C47FF] bg-[#6C47FF]/10"
-                      : "border-[#2A2A3A] hover:border-[#3A3A4A]"
+                      ? "border-accent bg-accent/10"
+                      : "border-surface-3 hover:border-surface-3"
                   )}
                 >
-                  <p className="text-[13px] font-medium text-white">
+                  <p className="text-[13px] font-medium text-ink">
                     {option.title}
                   </p>
-                  <p className="mt-1 text-[11.5px] leading-relaxed text-[#A0A0B0]">
+                  <p className="mt-1 text-[11.5px] leading-relaxed text-ink-muted">
                     {option.body}
                   </p>
                 </button>
@@ -335,8 +335,8 @@ export function OfferBuilder({ webinarId }: { webinarId: string }) {
           )}
 
           <div>
-            <span className="text-[12px] font-medium text-[#A0A0B0]">Opens in</span>
-            <div className="mt-2 flex items-center gap-1 rounded-full border border-[#2A2A3A] bg-[#1A1A2A] p-1">
+            <span className="text-[12px] font-medium text-ink-muted">Opens in</span>
+            <div className="mt-2 flex items-center gap-1 rounded-full border border-surface-3 bg-surface-2 p-1">
               {[
                 { id: "modal" as const, label: "Modal (recommended)" },
                 { id: "new_tab" as const, label: "New tab" },
@@ -348,8 +348,8 @@ export function OfferBuilder({ webinarId }: { webinarId: string }) {
                   className={cn(
                     "flex-1 rounded-full px-3 py-1.5 text-[12.5px] transition-colors duration-200",
                     form.opensIn === option.id
-                      ? "bg-[#6C47FF] text-white"
-                      : "text-[#A0A0B0] hover:text-white"
+                      ? "bg-accent text-white"
+                      : "text-ink-muted hover:text-ink"
                   )}
                 >
                   {option.label}

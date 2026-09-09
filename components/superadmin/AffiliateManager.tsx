@@ -125,53 +125,53 @@ export function AffiliateManager() {
           description="Every account already has a referral code. An affiliate row appears here the moment someone enrols from their affiliate settings."
         />
       ) : (
-        <div className="overflow-x-auto rounded-xl border border-[#1E1E2E]">
+        <div className="overflow-x-auto rounded-xl border border-hairline">
           <table className="w-full min-w-[860px]">
-            <thead className="bg-[#12121A]">
+            <thead className="bg-surface">
               <tr>
-                <th className="px-4 py-2.5 text-left text-[10px] font-semibold uppercase tracking-[0.14em] text-[#6E6E80]">
+                <th className="px-4 py-2.5 text-left text-[10px] font-semibold uppercase tracking-[0.14em] text-ink-faint">
                   Affiliate
                 </th>
-                <th className="px-4 py-2.5 text-left text-[10px] font-semibold uppercase tracking-[0.14em] text-[#6E6E80]">
+                <th className="px-4 py-2.5 text-left text-[10px] font-semibold uppercase tracking-[0.14em] text-ink-faint">
                   Referrals
                 </th>
-                <th className="px-4 py-2.5 text-left text-[10px] font-semibold uppercase tracking-[0.14em] text-[#6E6E80]">
+                <th className="px-4 py-2.5 text-left text-[10px] font-semibold uppercase tracking-[0.14em] text-ink-faint">
                   <span className="inline-flex items-center gap-1.5">
                     Owed
                     <HelpTooltip content="Commission whose 30-day refund window has passed. This is the amount that is safe to pay out." />
                   </span>
                 </th>
-                <th className="px-4 py-2.5 text-left text-[10px] font-semibold uppercase tracking-[0.14em] text-[#6E6E80]">
+                <th className="px-4 py-2.5 text-left text-[10px] font-semibold uppercase tracking-[0.14em] text-ink-faint">
                   <span className="inline-flex items-center gap-1.5">
                     Pending
                     <HelpTooltip content="Earned, but still inside the refund window. Becomes payable automatically once 30 days have passed." />
                   </span>
                 </th>
-                <th className="px-4 py-2.5 text-left text-[10px] font-semibold uppercase tracking-[0.14em] text-[#6E6E80]">
+                <th className="px-4 py-2.5 text-left text-[10px] font-semibold uppercase tracking-[0.14em] text-ink-faint">
                   Paid
                 </th>
-                <th className="px-4 py-2.5 text-left text-[10px] font-semibold uppercase tracking-[0.14em] text-[#6E6E80]">
+                <th className="px-4 py-2.5 text-left text-[10px] font-semibold uppercase tracking-[0.14em] text-ink-faint">
                   Method
                 </th>
                 <th />
               </tr>
             </thead>
-            <tbody className="divide-y divide-[#1E1E2E]">
+            <tbody className="divide-y divide-hairline">
               {data.affiliates.map((row) => (
                 <tr key={row.id} className={row.isActive ? "" : "opacity-50"}>
                   <td className="px-4 py-3">
                     <Link
                       href={`/superadmin/users/${row.userId}`}
-                      className="text-[13px] text-white hover:text-[#6C47FF]"
+                      className="text-[13px] text-ink hover:text-accent"
                     >
                       {row.name}
                     </Link>
-                    <p className="text-[11px] text-[#6E6E80]">
-                      {row.email} · <code className="text-[#00D4FF]">{row.referralCode}</code> ·{" "}
+                    <p className="text-[11px] text-ink-faint">
+                      {row.email} · <code className="text-cyan">{row.referralCode}</code> ·{" "}
                       {row.commissionRate}%
                     </p>
                   </td>
-                  <td className="px-4 py-3 text-[13px] tabular-nums text-[#A0A0B0]">
+                  <td className="px-4 py-3 text-[13px] tabular-nums text-ink-muted">
                     {row.totalReferrals}
                   </td>
                   <td
@@ -180,13 +180,13 @@ export function AffiliateManager() {
                   >
                     {money(row.confirmedOwing)}
                   </td>
-                  <td className="px-4 py-3 text-[13px] tabular-nums text-[#6E6E80]">
+                  <td className="px-4 py-3 text-[13px] tabular-nums text-ink-faint">
                     {money(row.stillPending)}
                   </td>
-                  <td className="px-4 py-3 text-[13px] tabular-nums text-[#A0A0B0]">
+                  <td className="px-4 py-3 text-[13px] tabular-nums text-ink-muted">
                     {money(row.paidEarnings)}
                   </td>
-                  <td className="px-4 py-3 text-[12px] text-[#6E6E80]">
+                  <td className="px-4 py-3 text-[12px] text-ink-faint">
                     {row.payoutMethod ?? "not set"}
                   </td>
                   <td className="px-4 py-3">
@@ -201,7 +201,7 @@ export function AffiliateManager() {
                               ? "Mark the owed balance as paid"
                               : `Below the ${money(data.threshold)} threshold, but payable`
                         }
-                        className="inline-flex h-8 items-center gap-1.5 rounded-lg border border-[#1E1E2E] px-2.5 text-[12px] text-[#A0A0B0] hover:border-[#00C851]/50 hover:text-[#00C851] disabled:opacity-30"
+                        className="inline-flex h-8 items-center gap-1.5 rounded-lg border border-hairline px-2.5 text-[12px] text-ink-muted hover:border-[#00C851]/50 hover:text-[#00C851] disabled:opacity-30"
                       >
                         {busy === row.id ? (
                           <Loader2 className="h-3 w-3 animate-spin" />
@@ -219,7 +219,7 @@ export function AffiliateManager() {
                           )
                         }
                         disabled={busy === row.id}
-                        className="inline-flex h-8 items-center gap-1.5 rounded-lg border border-[#1E1E2E] px-2.5 text-[12px] text-[#A0A0B0] hover:text-white disabled:opacity-40"
+                        className="inline-flex h-8 items-center gap-1.5 rounded-lg border border-hairline px-2.5 text-[12px] text-ink-muted hover:text-ink disabled:opacity-40"
                       >
                         <BadgeCheck className="h-3 w-3" />
                         {row.isActive ? "Disable" : "Enable"}
@@ -233,7 +233,7 @@ export function AffiliateManager() {
         </div>
       )}
 
-      <p className="text-[12px] leading-relaxed text-[#6E6E80]">
+      <p className="text-[12px] leading-relaxed text-ink-faint">
         Marking paid settles every referral whose refund window has closed and adds the
         total to that affiliate&rsquo;s paid balance. It records the amount and the count
         in the audit log. It does <strong>not</strong> move money — pay them through
@@ -255,8 +255,8 @@ function Tile({
   accent?: string;
 }) {
   return (
-    <div className="rounded-xl border border-[#1E1E2E] bg-[#12121A] px-4 py-3.5">
-      <p className="text-[10px] font-semibold uppercase tracking-[0.14em] text-[#6E6E80]">
+    <div className="rounded-xl border border-hairline bg-surface px-4 py-3.5">
+      <p className="text-[10px] font-semibold uppercase tracking-[0.14em] text-ink-faint">
         {label}
       </p>
       <p
@@ -265,7 +265,7 @@ function Tile({
       >
         {value}
       </p>
-      {hint && <p className="mt-0.5 text-[11px] text-[#6E6E80]">{hint}</p>}
+      {hint && <p className="mt-0.5 text-[11px] text-ink-faint">{hint}</p>}
     </div>
   );
 }

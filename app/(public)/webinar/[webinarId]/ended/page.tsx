@@ -32,17 +32,17 @@ export default async function ThankYouPage({
   const nextSession = upcoming?.[0]?.starts_at ?? null;
 
   return (
-    <main className="relative grid min-h-dvh place-items-center overflow-hidden bg-[#0A0A0F] px-5 py-16">
+    <main className="relative grid min-h-dvh place-items-center overflow-hidden bg-void px-5 py-16">
       <Aurora />
       <ExitSurveyGate webinarId={webinarId} />
 
-      <div className="relative w-full max-w-lg rounded-xl border border-white/8 bg-[#12121A]/80 px-8 py-12 text-center backdrop-blur-2xl">
-        <CheckCircle2 className="mx-auto h-10 w-10 text-[#6C47FF]" />
+      <div className="relative w-full max-w-lg rounded-xl border border-hairline bg-surface/80 px-8 py-12 text-center backdrop-blur-2xl">
+        <CheckCircle2 className="mx-auto h-10 w-10 text-accent" />
 
-        <h1 className="mt-6 text-balance text-[28px] font-semibold leading-tight tracking-[-0.03em] text-white">
+        <h1 className="mt-6 text-balance text-[28px] font-semibold leading-tight tracking-[-0.03em] text-ink">
           That&rsquo;s a wrap
         </h1>
-        <p className="mt-3 text-[15px] leading-relaxed text-[#A0A0B0]">
+        <p className="mt-3 text-[15px] leading-relaxed text-ink-muted">
           Thanks for watching{webinar?.title ? ` ${webinar.title}` : ""}.
         </p>
 
@@ -54,7 +54,7 @@ export default async function ThankYouPage({
           {nextSession && (
             <Row icon={CalendarClock}>
               The next session runs{" "}
-              <LocalTime iso={nextSession} className="text-white" fallback="soon" />.
+              <LocalTime iso={nextSession} className="text-ink" fallback="soon" />.
             </Row>
           )}
         </div>
@@ -62,7 +62,7 @@ export default async function ThankYouPage({
         {nextSession && (
           <Link
             href={`/webinar/${webinarId}/register`}
-            className="mt-8 inline-flex h-12 items-center justify-center rounded-full bg-[#6C47FF] px-7 text-[15px] font-semibold text-white shadow-[0_12px_40px_-10px_#6C47FF] transition-all duration-200 hover:bg-[#7C5AFF] active:scale-[0.99]"
+            className="mt-8 inline-flex h-12 items-center justify-center rounded-full bg-accent px-7 text-[15px] font-semibold text-white shadow-[0_12px_40px_-10px_#6C47FF] transition-all duration-200 hover:bg-accent-soft active:scale-[0.99]"
           >
             Save a seat for the next one
           </Link>
@@ -80,9 +80,9 @@ function Row({
   children: React.ReactNode;
 }) {
   return (
-    <div className="flex items-start gap-3 rounded-xl border border-[#1E1E2E] bg-[#12121A]/60 px-4 py-3.5">
-      <Icon className="mt-0.5 h-4 w-4 shrink-0 text-[#6C47FF]" />
-      <p className="text-[13.5px] leading-relaxed text-[#A0A0B0]">{children}</p>
+    <div className="flex items-start gap-3 rounded-xl border border-hairline bg-surface/60 px-4 py-3.5">
+      <Icon className="mt-0.5 h-4 w-4 shrink-0 text-accent" />
+      <p className="text-[13.5px] leading-relaxed text-ink-muted">{children}</p>
     </div>
   );
 }

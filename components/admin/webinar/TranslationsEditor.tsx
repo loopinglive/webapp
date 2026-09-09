@@ -120,7 +120,7 @@ export function TranslationsEditor({ webinarId }: { webinarId: string }) {
   if (loading) {
     return (
       <div className="grid place-items-center py-24">
-        <Loader2 className="h-6 w-6 animate-spin text-[#6C47FF]" />
+        <Loader2 className="h-6 w-6 animate-spin text-accent" />
       </div>
     );
   }
@@ -143,13 +143,13 @@ export function TranslationsEditor({ webinarId }: { webinarId: string }) {
               key={t.language_code}
               className={cn(
                 "flex items-center justify-between rounded-lg px-3 py-2 text-[12.5px]",
-                active === t.language_code ? "bg-[#1E1E2E] text-white" : "text-[#A0A0B0] hover:bg-[#1A1A2A]"
+                active === t.language_code ? "bg-hairline text-ink" : "text-ink-muted hover:bg-surface-2"
               )}
             >
               <button onClick={() => setActive(t.language_code)} className="flex-1 text-left uppercase">
                 {t.language_code}
               </button>
-              <button onClick={() => remove(t.language_code)} className="text-[#A0A0B0] hover:text-[#FF3B3B]">
+              <button onClick={() => remove(t.language_code)} className="text-ink-muted hover:text-[#FF3B3B]">
                 <Trash2 className="h-3.5 w-3.5" />
               </button>
             </div>
@@ -159,7 +159,7 @@ export function TranslationsEditor({ webinarId }: { webinarId: string }) {
             <select
               value=""
               onChange={(event) => event.target.value && setActive(event.target.value)}
-              className="mt-2 w-full rounded-lg border border-[#2A2A3A] bg-[#1A1A2A] px-2.5 py-2 text-[12px] text-[#A0A0B0]"
+              className="mt-2 w-full rounded-lg border border-surface-3 bg-surface-2 px-2.5 py-2 text-[12px] text-ink-muted"
             >
               <option value="">+ Add language</option>
               {availableToAdd.map((lang) => (
@@ -172,14 +172,14 @@ export function TranslationsEditor({ webinarId }: { webinarId: string }) {
         </div>
 
         {!draft ? (
-          <p className="text-[12.5px] text-[#A0A0B0]">Pick or add a language to translate.</p>
+          <p className="text-[12.5px] text-ink-muted">Pick or add a language to translate.</p>
         ) : (
           <div className="space-y-4">
             <div className="flex items-center justify-between">
-              <p className="text-[13px] font-medium text-white">
+              <p className="text-[13px] font-medium text-ink">
                 {COMMON_LANGUAGES.find((l) => l.code === draft.language_code)?.label ?? draft.language_code}
                 {draft.auto_translated && (
-                  <span className="ml-2 rounded-full bg-[#6C47FF]/15 px-2 py-0.5 text-[10.5px] text-[#6C47FF]">
+                  <span className="ml-2 rounded-full bg-accent/15 px-2 py-0.5 text-[10.5px] text-accent">
                     AI translated
                   </span>
                 )}

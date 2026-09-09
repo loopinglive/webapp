@@ -9,10 +9,10 @@ const variants: Record<Variant, string> = {
   primary:
     "bg-accent text-white shadow-[0_10px_40px_-12px_var(--color-accent)] hover:bg-accent-soft active:scale-[0.985]",
   secondary:
-    "bg-surface-2 text-ink border border-white/10 hover:bg-surface-3 active:scale-[0.985]",
-  ghost: "text-ink-muted hover:text-ink hover:bg-white/5",
+    "bg-surface-2 text-ink border border-hairline hover:bg-surface-3 active:scale-[0.985]",
+  ghost: "text-ink-muted hover:text-ink hover:bg-surface-2",
   outline:
-    "border border-white/15 text-ink hover:border-accent/60 hover:bg-accent/10",
+    "border border-hairline text-ink hover:border-accent/60 hover:bg-accent/10",
 };
 
 const sizes: Record<Size, string> = {

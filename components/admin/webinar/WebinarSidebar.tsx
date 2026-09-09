@@ -42,6 +42,7 @@ import {
 } from "lucide-react";
 
 import { UpgradeWall } from "@/components/billing/UpgradeWall";
+import { ThemeToggleButton } from "@/components/ui/ThemeToggle";
 import { REQUIRED_STEPS } from "@/lib/setup-steps";
 import { cn } from "@/lib/utils";
 import type { SetupChecklist } from "@/types";
@@ -149,10 +150,10 @@ export function WebinarSidebar({
   }
 
   return (
-    <aside className="sticky top-0 flex h-dvh w-[240px] shrink-0 flex-col border-r border-[#1E1E2E] bg-[#0D0D17] px-3 py-5">
+    <aside className="sticky top-0 flex h-dvh w-[240px] shrink-0 flex-col border-r border-hairline bg-void px-3 py-5">
       <Link
         href="/admin/dashboard"
-        className="mb-6 flex items-center gap-2 px-3 text-[12.5px] text-[#A0A0B0] transition-colors hover:text-white"
+        className="mb-6 flex items-center gap-2 px-3 text-[12.5px] text-ink-muted transition-colors hover:text-ink"
       >
         <ArrowLeft className="h-3.5 w-3.5" />
         All webinars
@@ -160,16 +161,16 @@ export function WebinarSidebar({
 
       <div className="mb-5 px-3">
         <div className="flex items-baseline justify-between">
-          <span className="text-[10px] font-semibold uppercase tracking-[0.16em] text-[#A0A0B0]">
+          <span className="text-[10px] font-semibold uppercase tracking-[0.16em] text-ink-muted">
             Setup
           </span>
-          <span className="text-[11.5px] tabular-nums text-white">
+          <span className="text-[11.5px] tabular-nums text-ink">
             {done}/{REQUIRED_STEPS.length}
           </span>
         </div>
-        <div className="mt-2 h-1 overflow-hidden rounded-full bg-[#1A1A2A]">
+        <div className="mt-2 h-1 overflow-hidden rounded-full bg-surface-2">
           <div
-            className="h-full rounded-full bg-gradient-to-r from-[#6C47FF] to-[#00D4FF] transition-[width] duration-500"
+            className="h-full rounded-full bg-gradient-to-r from-accent to-cyan transition-[width] duration-500"
             style={{ width: `${(done / REQUIRED_STEPS.length) * 100}%` }}
           />
         </div>
@@ -190,14 +191,14 @@ export function WebinarSidebar({
               className={cn(
                 "flex items-center gap-2.5 rounded-lg border-l-2 px-3 py-2.5 text-[13px] transition-colors duration-200",
                 active
-                  ? "border-[#6C47FF] bg-[#6C47FF]/15 text-white"
-                  : "border-transparent text-[#A0A0B0] hover:bg-white/5 hover:text-white"
+                  ? "border-accent bg-accent/15 text-ink"
+                  : "border-transparent text-ink-muted hover:bg-surface-2 hover:text-ink"
               )}
             >
               <item.icon
                 className={cn(
                   "h-4 w-4 shrink-0",
-                  active ? "text-[#6C47FF]" : "text-[#A0A0B0]/70"
+                  active ? "text-accent" : "text-ink-muted/70"
                 )}
               />
               <span className="flex-1 truncate">{item.label}</span>
@@ -205,10 +206,10 @@ export function WebinarSidebar({
                 <span
                   className={cn(
                     "grid h-4 w-4 shrink-0 place-items-center rounded-full",
-                    complete ? "bg-[#00C851]" : "bg-[#3A3A4A]"
+                    complete ? "bg-[#00C851]" : "bg-surface-3"
                   )}
                 >
-                  {complete && <Check className="h-2.5 w-2.5 text-[#0A0A0F]" />}
+                  {complete && <Check className="h-2.5 w-2.5 text-void" />}
                 </span>
               )}
             </Link>
@@ -216,7 +217,11 @@ export function WebinarSidebar({
         })}
       </nav>
 
-      <div className="mt-4 border-t border-[#1E1E2E] pt-4">
+      <div className="mt-4 border-t border-hairline pt-4">
+        <div className="mb-3 flex items-center justify-between gap-2">
+          <span className="text-[11px] text-ink-faint">Theme</span>
+          <ThemeToggleButton />
+        </div>
         <button
           onClick={togglePublish}
           disabled={busy || (!published && !ready)}
@@ -228,8 +233,8 @@ export function WebinarSidebar({
           className={cn(
             "flex h-10 w-full items-center justify-center gap-2 rounded-full text-[13px] font-semibold transition-all duration-200",
             published
-              ? "border border-[#2A2A3A] text-[#A0A0B0] hover:border-[#FF3B3B]/50 hover:text-[#FF3B3B]"
-              : "bg-[#6C47FF] text-white shadow-[0_10px_30px_-10px_#6C47FF] hover:bg-[#7C5AFF]",
+              ? "border border-surface-3 text-ink-muted hover:border-[#FF3B3B]/50 hover:text-[#FF3B3B]"
+              : "bg-accent text-white shadow-[0_10px_30px_-10px_#6C47FF] hover:bg-accent-soft",
             "disabled:pointer-events-none disabled:opacity-40"
           )}
         >

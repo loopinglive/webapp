@@ -76,7 +76,7 @@ export function PollBuilder({
 
   return (
     <div className="space-y-6">
-      <section className="space-y-4 rounded-xl border border-[#1E1E2E] bg-[#12121A] p-5">
+      <section className="space-y-4 rounded-xl border border-hairline bg-surface p-5">
         <Field label="Question" required>
           <TextInput
             value={question}
@@ -86,7 +86,7 @@ export function PollBuilder({
         </Field>
 
         <div className="space-y-2">
-          <span className="text-[12px] font-medium text-[#A0A0B0]">Options</span>
+          <span className="text-[12px] font-medium text-ink-muted">Options</span>
           {options.map((option, index) => (
             <TextInput
               key={index}
@@ -137,7 +137,7 @@ export function PollBuilder({
               timestamp={formatOffset(poll.video_offset_seconds)}
               onDelete={() => remove(poll.id)}
             >
-              <p className="text-[13px] text-white">{poll.question}</p>
+              <p className="text-[13px] text-ink">{poll.question}</p>
               <PollStandings
                 webinarId={webinarId}
                 pollId={poll.id}
@@ -195,7 +195,7 @@ function PollStandings({
 
   if (!results || total === 0) {
     return (
-      <p className="mt-1 text-[11.5px] text-[#A0A0B0]">
+      <p className="mt-1 text-[11.5px] text-ink-muted">
         {options.map((option) => option.label).join(" · ")}
         {results ? " · no answers yet" : ""}
       </p>
@@ -208,21 +208,21 @@ function PollStandings({
     <div className="mt-2 space-y-1.5">
       {byShare.map((row) => (
         <div key={row.option_id} className="flex items-center gap-2">
-          <div className="relative h-5 flex-1 overflow-hidden rounded bg-[#12121A]">
+          <div className="relative h-5 flex-1 overflow-hidden rounded bg-surface">
             <div
-              className="absolute inset-y-0 left-0 bg-[#6C47FF]/30"
+              className="absolute inset-y-0 left-0 bg-accent/30"
               style={{ width: `${row.share}%` }}
             />
-            <span className="relative flex h-full items-center px-2 text-[11.5px] text-white">
+            <span className="relative flex h-full items-center px-2 text-[11.5px] text-ink">
               {labels.get(row.option_id) ?? row.option_id}
             </span>
           </div>
-          <span className="w-20 shrink-0 text-right text-[11.5px] tabular-nums text-[#A0A0B0]">
+          <span className="w-20 shrink-0 text-right text-[11.5px] tabular-nums text-ink-muted">
             {row.share}% · {row.votes}
           </span>
         </div>
       ))}
-      <p className="text-[11px] text-[#6E6E80]">
+      <p className="text-[11px] text-ink-faint">
         {total.toLocaleString()} {total === 1 ? "answer" : "answers"} across all
         sessions
       </p>

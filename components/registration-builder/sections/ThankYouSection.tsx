@@ -49,7 +49,7 @@ export function ThankYouSection({ config, update }: SectionProps) {
           placeholder="https://yoursite.com/thanks"
         />
       </Field>
-      <p className="text-[11px] leading-relaxed text-[#A0A0B0]">
+      <p className="text-[11px] leading-relaxed text-ink-muted">
         If set, registrants see a five second countdown and are then sent here
         instead of seeing the thank you page.
       </p>

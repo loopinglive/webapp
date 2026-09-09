@@ -26,8 +26,8 @@ export default async function VideoFeaturesPage({
   return (
     <div className="space-y-10 px-6 py-8 lg:px-10">
       <section>
-        <h1 className="text-[20px] font-semibold tracking-tight text-white">Video Chapters</h1>
-        <p className="mt-1.5 max-w-[62ch] text-[13.5px] text-[#A0A0B0]">
+        <h1 className="text-[20px] font-semibold tracking-tight text-ink">Video Chapters</h1>
+        <p className="mt-1.5 max-w-[62ch] text-[13.5px] text-ink-muted">
           Chapters give replay and on-demand viewers a way to jump to the part
           that matters — never shown during a fake-live session, since there is
           nothing to skip to.
@@ -37,9 +37,9 @@ export default async function VideoFeaturesPage({
         </div>
       </section>
 
-      <section className="border-t border-[#1E1E2E] pt-8">
-        <h2 className="text-[16px] font-semibold text-white">Interactive Elements</h2>
-        <p className="mt-1.5 max-w-[62ch] text-[13.5px] text-[#A0A0B0]">
+      <section className="border-t border-hairline pt-8">
+        <h2 className="text-[16px] font-semibold text-ink">Interactive Elements</h2>
+        <p className="mt-1.5 max-w-[62ch] text-[13.5px] text-ink-muted">
           Hotspots and share prompts overlay the video at a timestamp you set.
           Progress milestones and chapter-transition cards happen automatically
           — nothing to configure for those.

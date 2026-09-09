@@ -126,7 +126,7 @@ export function IntegrationsHub() {
         {Array.from({ length: 6 }, (_, index) => (
           <div
             key={index}
-            className="rounded-2xl border border-[#1E1E2E] bg-[#12121A] p-5"
+            className="rounded-2xl border border-hairline bg-surface p-5"
           >
             <Skeleton className="h-4 w-28" />
             <Skeleton className="mt-3 h-3 w-full" />
@@ -149,23 +149,23 @@ export function IntegrationsHub() {
           return (
             <div
               key={provider.id}
-              className="flex flex-col rounded-2xl border border-[#1E1E2E] bg-[#12121A] p-5"
+              className="flex flex-col rounded-2xl border border-hairline bg-surface p-5"
             >
               <div className="flex items-start justify-between gap-3">
-                <h3 className="text-[15px] font-semibold text-white">{provider.name}</h3>
+                <h3 className="text-[15px] font-semibold text-ink">{provider.name}</h3>
                 {active ? (
                   <span className="inline-flex items-center gap-1.5 rounded-full bg-[#00C851]/12 px-2.5 py-1 text-[10.5px] font-semibold uppercase tracking-[0.1em] text-[#00C851]">
                     <CheckCircle2 className="h-3 w-3" />
                     Connected
                   </span>
                 ) : (
-                  <span className="rounded-full bg-[#1E1E2E] px-2.5 py-1 text-[10.5px] font-semibold uppercase tracking-[0.1em] text-[#6E6E80]">
+                  <span className="rounded-full bg-hairline px-2.5 py-1 text-[10.5px] font-semibold uppercase tracking-[0.1em] text-ink-faint">
                     Not connected
                   </span>
                 )}
               </div>
 
-              <p className="mt-2 flex-1 text-[13px] leading-relaxed text-[#A0A0B0]">
+              <p className="mt-2 flex-1 text-[13px] leading-relaxed text-ink-muted">
                 {provider.blurb}
               </p>
 
@@ -176,7 +176,7 @@ export function IntegrationsHub() {
               )}
 
               {active?.last_synced_at && (
-                <p className="mt-3 text-[11.5px] text-[#6E6E80]">
+                <p className="mt-3 text-[11.5px] text-ink-faint">
                   Last synced{" "}
                   {new Date(active.last_synced_at).toLocaleString(undefined, {
                     dateStyle: "medium",
@@ -189,14 +189,14 @@ export function IntegrationsHub() {
                 {active ? (
                   <button
                     onClick={() => disconnect(provider.id)}
-                    className="h-9 rounded-full border border-[#2A2A3A] px-4 text-[13px] text-[#A0A0B0] transition-colors hover:border-[#FF5A5A]/50 hover:text-[#FF5A5A]"
+                    className="h-9 rounded-full border border-surface-3 px-4 text-[13px] text-ink-muted transition-colors hover:border-[#FF5A5A]/50 hover:text-[#FF5A5A]"
                   >
                     Disconnect
                   </button>
                 ) : (
                   <button
                     onClick={() => setOpen(provider.id)}
-                    className="h-9 rounded-full bg-[#6C47FF] px-4 text-[13px] font-medium text-white transition-colors hover:bg-[#7C5AFF]"
+                    className="h-9 rounded-full bg-accent px-4 text-[13px] font-medium text-white transition-colors hover:bg-accent-soft"
                   >
                     Connect
                   </button>
@@ -219,18 +219,18 @@ export function IntegrationsHub() {
         })}
 
         {/* Zapier is not an API connection — it is the webhook surface. */}
-        <div className="flex flex-col rounded-2xl border border-[#1E1E2E] bg-[#12121A] p-5">
+        <div className="flex flex-col rounded-2xl border border-hairline bg-surface p-5">
           <div className="flex items-center gap-2">
             <Zap className="h-4 w-4 text-[#FFB020]" />
-            <h3 className="text-[15px] font-semibold text-white">Zapier</h3>
+            <h3 className="text-[15px] font-semibold text-ink">Zapier</h3>
           </div>
-          <p className="mt-2 flex-1 text-[13px] leading-relaxed text-[#A0A0B0]">
+          <p className="mt-2 flex-1 text-[13px] leading-relaxed text-ink-muted">
             Send every webinar event to Zapier — or anywhere else — with outbound
             webhooks.
           </p>
           <Link
             href="/settings/webhooks"
-            className="mt-5 inline-flex h-9 w-fit items-center rounded-full border border-[#2A2A3A] px-4 text-[13px] text-white transition-colors hover:border-[#6C47FF]/50"
+            className="mt-5 inline-flex h-9 w-fit items-center rounded-full border border-surface-3 px-4 text-[13px] text-ink transition-colors hover:border-accent/50"
           >
             Manage webhooks
           </Link>
@@ -238,7 +238,7 @@ export function IntegrationsHub() {
       </div>
 
       {PROVIDERS.length === 0 && (
-        <p className="text-[12.5px] leading-relaxed text-[#6E6E80]">
+        <p className="text-[12.5px] leading-relaxed text-ink-faint">
           More direct integrations are coming. In the meantime a single Zapier
           webhook reaches Mailchimp, ConvertKit, ActiveCampaign, GoHighLevel and
           several thousand other apps.
@@ -303,33 +303,33 @@ function ConnectForm({
   }
 
   return (
-    <div className="mt-4 space-y-3 border-t border-[#1E1E2E] pt-4">
+    <div className="mt-4 space-y-3 border-t border-hairline pt-4">
       {!options ? (
         <>
           {provider.fields.map((field) => (
             <label key={field.key} className="block">
-              <span className="text-[12px] text-[#A0A0B0]">{field.label}</span>
+              <span className="text-[12px] text-ink-muted">{field.label}</span>
               <input
                 value={values[field.key] ?? ""}
                 onChange={(event) =>
                   setValues((current) => ({ ...current, [field.key]: event.target.value }))
                 }
                 placeholder={field.placeholder}
-                className="mt-1.5 h-9 w-full rounded-lg border border-[#1E1E2E] bg-[#0D0D15] px-3 text-[13px] text-white placeholder:text-[#6E6E80] focus:border-[#6C47FF] focus:outline-none"
+                className="mt-1.5 h-9 w-full rounded-lg border border-hairline bg-void px-3 text-[13px] text-ink placeholder:text-ink-faint focus:border-accent focus:outline-none"
               />
             </label>
           ))}
         </>
       ) : (
         <label className="block">
-          <span className="flex items-center gap-1.5 text-[12px] text-[#A0A0B0]">
+          <span className="flex items-center gap-1.5 text-[12px] text-ink-muted">
             {provider.optionLabel}
             <HelpTooltip content="New registrants are added here, and tagged as they attend, watch and buy." />
           </span>
           <select
             value={chosen}
             onChange={(event) => setChosen(event.target.value)}
-            className="mt-1.5 h-9 w-full rounded-lg border border-[#1E1E2E] bg-[#0D0D15] px-2.5 text-[13px] text-white focus:outline-none"
+            className="mt-1.5 h-9 w-full rounded-lg border border-hairline bg-void px-2.5 text-[13px] text-ink focus:outline-none"
           >
             <option value="">Choose…</option>
             {options.map((option) => (
@@ -347,14 +347,14 @@ function ConnectForm({
         <button
           onClick={() => submit(options ? chosen : undefined)}
           disabled={busy || !apiKey || (Boolean(options) && !chosen)}
-          className="inline-flex h-9 items-center gap-2 rounded-full bg-[#6C47FF] px-4 text-[13px] font-medium text-white hover:bg-[#7C5AFF] disabled:opacity-40"
+          className="inline-flex h-9 items-center gap-2 rounded-full bg-accent px-4 text-[13px] font-medium text-white hover:bg-accent-soft disabled:opacity-40"
         >
           {busy ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Plug className="h-3.5 w-3.5" />}
           {options ? "Finish" : "Verify key"}
         </button>
         <button
           onClick={onClose}
-          className="h-9 px-2 text-[13px] text-[#6E6E80] hover:text-white"
+          className="h-9 px-2 text-[13px] text-ink-faint hover:text-ink"
         >
           Cancel
         </button>

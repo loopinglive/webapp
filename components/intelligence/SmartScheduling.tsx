@@ -34,16 +34,16 @@ export function SmartScheduling({ webinarId }: { webinarId: string }) {
       <div className="px-6 py-6 lg:px-8">
         {loading ? (
           <div className="grid h-40 place-items-center">
-            <Loader2 className="h-5 w-5 animate-spin text-[#6C47FF]" />
+            <Loader2 className="h-5 w-5 animate-spin text-accent" />
           </div>
         ) : !latest ? (
-          <div className="grid h-32 place-items-center rounded-xl border border-dashed border-[#1E1E2E] text-[13px] text-[#6A6A80]">
+          <div className="grid h-32 place-items-center rounded-xl border border-dashed border-hairline text-[13px] text-ink-faint">
             No recommendation yet. Run the analysis once this webinar has a few ended sessions.
           </div>
         ) : (
           <>
             <div className="mb-4 flex items-center gap-3">
-              <span className="text-[12.5px] text-[#6A6A80]">
+              <span className="text-[12.5px] text-ink-faint">
                 Based on {latest.based_on_sessions} session{latest.based_on_sessions === 1 ? "" : "s"}
               </span>
               <span
@@ -53,7 +53,7 @@ export function SmartScheduling({ webinarId }: { webinarId: string }) {
                     ? "bg-[#00C851]/15 text-[#00C851]"
                     : (latest.confidence_score ?? 0) > 0
                       ? "bg-[#FF9500]/15 text-[#FF9500]"
-                      : "bg-[#3A3A4A] text-[#A0A0B0]"
+                      : "bg-surface-3 text-ink-muted"
                 )}
               >
                 {latest.confidence_score ?? 0}% confidence
@@ -68,14 +68,14 @@ export function SmartScheduling({ webinarId }: { webinarId: string }) {
 
             <div className="grid gap-3 sm:grid-cols-3">
               {latest.recommended_times.map((slot, index) => (
-                <div key={index} className="rounded-xl border border-[#1E1E2E] bg-[#12121A] p-4">
-                  <span className="text-[10px] font-semibold uppercase tracking-[0.12em] text-[#A0A0B0]">
+                <div key={index} className="rounded-xl border border-hairline bg-surface p-4">
+                  <span className="text-[10px] font-semibold uppercase tracking-[0.12em] text-ink-muted">
                     #{index + 1}
                   </span>
-                  <p className="mt-1.5 text-[15px] font-semibold text-white">
+                  <p className="mt-1.5 text-[15px] font-semibold text-ink">
                     {DAYS[slot.dayOfWeek]} · {formatHour(slot.hour)}
                   </p>
-                  <p className="mt-1 text-[12px] text-[#6A6A80]">
+                  <p className="mt-1 text-[12px] text-ink-faint">
                     {slot.source === "historical"
                       ? `${slot.attendanceRate}% of registrants attended`
                       : "Industry-standard slot — not enough history yet"}
@@ -86,7 +86,7 @@ export function SmartScheduling({ webinarId }: { webinarId: string }) {
 
             {latest.analysis_data.length > 0 && (
               <div className="mt-6">
-                <p className="mb-2 text-[12px] font-medium text-[#A0A0B0]">All observed slots</p>
+                <p className="mb-2 text-[12px] font-medium text-ink-muted">All observed slots</p>
                 <div className="flex flex-col gap-1.5">
                   {[...latest.analysis_data]
                     .sort((a, b) => b.attendanceRate - a.attendanceRate)
@@ -95,16 +95,16 @@ export function SmartScheduling({ webinarId }: { webinarId: string }) {
                         <span className="w-32 shrink-0 text-[12px] text-[#C8C8D4]">
                           {DAYS[slot.dayOfWeek]} {formatHour(slot.hour)}
                         </span>
-                        <span className="h-1.5 flex-1 overflow-hidden rounded-full bg-[#1A1A2A]">
+                        <span className="h-1.5 flex-1 overflow-hidden rounded-full bg-surface-2">
                           <span
-                            className="block h-full rounded-full bg-gradient-to-r from-[#6C47FF] to-[#00D4FF]"
+                            className="block h-full rounded-full bg-gradient-to-r from-accent to-cyan"
                             style={{ width: `${slot.attendanceRate}%` }}
                           />
                         </span>
-                        <span className="w-16 shrink-0 text-right text-[11.5px] tabular-nums text-white">
+                        <span className="w-16 shrink-0 text-right text-[11.5px] tabular-nums text-ink">
                           {slot.attendanceRate}%
                         </span>
-                        <span className="w-20 shrink-0 text-right text-[10.5px] text-[#6A6A80]">
+                        <span className="w-20 shrink-0 text-right text-[10.5px] text-ink-faint">
                           {slot.sampleSessions} session{slot.sampleSessions === 1 ? "" : "s"}
                         </span>
                       </div>

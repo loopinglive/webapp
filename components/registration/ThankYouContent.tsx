@@ -81,34 +81,34 @@ export function ThankYouContent({
         ["--brand" as string]: config.primary_colour,
       }}
     >
-      <div className="w-full max-w-lg rounded-xl border border-white/10 bg-[#12121A]/85 px-8 py-12 text-center backdrop-blur-2xl">
+      <div className="w-full max-w-lg rounded-xl border border-hairline bg-surface/85 px-8 py-12 text-center backdrop-blur-2xl">
         <CheckCircle2 className="mx-auto h-10 w-10" style={{ color: "var(--brand)" }} />
 
-        <h1 className="mt-6 text-balance text-[28px] font-semibold leading-tight tracking-[-0.03em] text-white">
+        <h1 className="mt-6 text-balance text-[28px] font-semibold leading-tight tracking-[-0.03em] text-ink">
           {config.thank_you_headline}
         </h1>
 
         {config.thank_you_subheadline && (
-          <p className="mt-3 text-[14.5px] leading-relaxed text-white/70">
+          <p className="mt-3 text-[14.5px] leading-relaxed text-ink/70">
             {config.thank_you_subheadline}
           </p>
         )}
 
         {startsAt && (
-          <p className="mt-6 inline-flex items-center gap-2 rounded-full border border-white/12 bg-black/25 px-4 py-2 text-[13.5px] text-white">
+          <p className="mt-6 inline-flex items-center gap-2 rounded-full border border-hairline bg-black/25 px-4 py-2 text-[13.5px] text-ink">
             <LocalTime iso={startsAt} />
           </p>
         )}
 
         {redirectTo && (
-          <p className="mt-6 text-[13px] text-white/60">
+          <p className="mt-6 text-[13px] text-ink/60">
             Redirecting in {remaining} second{remaining === 1 ? "" : "s"}…
           </p>
         )}
 
         {config.show_add_to_calendar && calendar && (
           <div className="mt-8">
-            <p className="mb-3 flex items-center justify-center gap-1.5 text-[11px] font-semibold uppercase tracking-[0.16em] text-white/45">
+            <p className="mb-3 flex items-center justify-center gap-1.5 text-[11px] font-semibold uppercase tracking-[0.16em] text-ink/45">
               <CalendarPlus className="h-3 w-3" />
               Add to calendar
             </p>
@@ -123,7 +123,7 @@ export function ThankYouContent({
                   href={option.href}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="rounded-full border border-white/12 px-4 py-2 text-[12.5px] text-white/80 transition-colors hover:border-[var(--brand)] hover:text-white"
+                  className="rounded-full border border-hairline px-4 py-2 text-[12.5px] text-ink/80 transition-colors hover:border-[var(--brand)] hover:text-ink"
                 >
                   {option.label}
                 </a>
@@ -134,7 +134,7 @@ export function ThankYouContent({
 
         {config.show_social_share && hydrated && (
           <div className="mt-7">
-            <p className="mb-3 text-[11px] font-semibold uppercase tracking-[0.16em] text-white/45">
+            <p className="mb-3 text-[11px] font-semibold uppercase tracking-[0.16em] text-ink/45">
               Tell someone
             </p>
             <div className="flex flex-wrap justify-center gap-2">
@@ -157,7 +157,7 @@ export function ThankYouContent({
                   href={option.href}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="rounded-full border border-white/12 px-4 py-2 text-[12.5px] text-white/80 transition-colors hover:border-[var(--brand)] hover:text-white"
+                  className="rounded-full border border-hairline px-4 py-2 text-[12.5px] text-ink/80 transition-colors hover:border-[var(--brand)] hover:text-ink"
                 >
                   {option.label}
                 </a>
@@ -170,8 +170,8 @@ export function ThankYouContent({
                   setTimeout(() => setCopied(false), 1600);
                 }}
                 className={cn(
-                  "inline-flex items-center gap-1.5 rounded-full border border-white/12 px-4 py-2 text-[12.5px] transition-colors",
-                  copied ? "border-[#00C851] text-[#00C851]" : "text-white/80 hover:text-white"
+                  "inline-flex items-center gap-1.5 rounded-full border border-hairline px-4 py-2 text-[12.5px] transition-colors",
+                  copied ? "border-[#00C851] text-[#00C851]" : "text-ink/80 hover:text-ink"
                 )}
               >
                 {copied ? <Check className="h-3 w-3" /> : <Copy className="h-3 w-3" />}
@@ -183,7 +183,7 @@ export function ThankYouContent({
 
         <a
           href={`/webinar/${webinarId}/waiting-room`}
-          className="mt-9 inline-flex h-12 items-center gap-2 rounded-full px-7 text-[15px] font-semibold text-white transition-[filter] hover:brightness-110"
+          className="mt-9 inline-flex h-12 items-center gap-2 rounded-full px-7 text-[15px] font-semibold text-ink transition-[filter] hover:brightness-110"
           style={{
             background: config.primary_colour,
             boxShadow: `0 12px 40px -10px ${config.primary_colour}`,

@@ -87,8 +87,8 @@ export function CouponManager() {
 
   return (
     <div className="space-y-8 px-6 py-6 lg:px-8">
-      <section className="max-w-[620px] rounded-2xl border border-[#1E1E2E] bg-[#12121A] p-6">
-        <h2 className="text-[15px] font-semibold text-white">Create a coupon</h2>
+      <section className="max-w-[620px] rounded-2xl border border-hairline bg-surface p-6">
+        <h2 className="text-[15px] font-semibold text-ink">Create a coupon</h2>
 
         <div className="mt-4 space-y-3.5">
           <div className="flex gap-2">
@@ -96,7 +96,7 @@ export function CouponManager() {
               value={code}
               onChange={(event) => setCode(event.target.value.toUpperCase())}
               placeholder="LAUNCH20"
-              className="h-10 flex-1 rounded-xl border border-[#1E1E2E] bg-[#0D0D15] px-3.5 text-[13px] text-white placeholder:text-[#6E6E80] focus:border-[#6C47FF] focus:outline-none"
+              className="h-10 flex-1 rounded-xl border border-hairline bg-void px-3.5 text-[13px] text-ink placeholder:text-ink-faint focus:border-accent focus:outline-none"
             />
             <button
               onClick={() =>
@@ -108,7 +108,7 @@ export function CouponManager() {
                   ).join("")
                 )
               }
-              className="inline-flex h-10 items-center gap-2 rounded-xl border border-[#1E1E2E] px-3.5 text-[12.5px] text-[#A0A0B0] hover:text-white"
+              className="inline-flex h-10 items-center gap-2 rounded-xl border border-hairline px-3.5 text-[12.5px] text-ink-muted hover:text-ink"
             >
               <Shuffle className="h-3.5 w-3.5" />
               Generate
@@ -121,7 +121,7 @@ export function CouponManager() {
               onChange={(event) =>
                 setDiscountType(event.target.value as "percent" | "amount")
               }
-              className="h-10 rounded-xl border border-[#1E1E2E] bg-[#0D0D15] px-3 text-[13px] text-white focus:outline-none"
+              className="h-10 rounded-xl border border-hairline bg-void px-3 text-[13px] text-ink focus:outline-none"
             >
               <option value="percent">Percentage off</option>
               <option value="amount">Fixed amount off</option>
@@ -130,22 +130,22 @@ export function CouponManager() {
               type="number"
               value={discountValue}
               onChange={(event) => setDiscountValue(event.target.value)}
-              className="h-10 w-[110px] rounded-xl border border-[#1E1E2E] bg-[#0D0D15] px-3.5 text-[13px] text-white focus:border-[#6C47FF] focus:outline-none"
+              className="h-10 w-[110px] rounded-xl border border-hairline bg-void px-3.5 text-[13px] text-ink focus:border-accent focus:outline-none"
             />
-            <span className="self-center text-[13px] text-[#6E6E80]">
+            <span className="self-center text-[13px] text-ink-faint">
               {discountType === "percent" ? "%" : "USD"}
             </span>
           </div>
 
           <div>
-            <p className="mb-2 text-[12px] text-[#A0A0B0]">
+            <p className="mb-2 text-[12px] text-ink-muted">
               Applies to (none selected means every paid plan)
             </p>
             <div className="flex flex-wrap gap-2">
               {PAID.map((plan) => (
                 <label
                   key={plan.slug}
-                  className="flex cursor-pointer items-center gap-2 rounded-full border border-[#1E1E2E] px-3 py-1.5 text-[12.5px] text-[#A0A0B0]"
+                  className="flex cursor-pointer items-center gap-2 rounded-full border border-hairline px-3 py-1.5 text-[12.5px] text-ink-muted"
                 >
                   <input
                     type="checkbox"
@@ -157,7 +157,7 @@ export function CouponManager() {
                           : current.filter((slug) => slug !== plan.slug)
                       )
                     }
-                    className="h-3.5 w-3.5 accent-[#6C47FF]"
+                    className="h-3.5 w-3.5 accent-accent"
                   />
                   {plan.name}
                 </label>
@@ -171,13 +171,13 @@ export function CouponManager() {
               value={maxUses}
               onChange={(event) => setMaxUses(event.target.value)}
               placeholder="Max uses (blank = unlimited)"
-              className="h-10 flex-1 rounded-xl border border-[#1E1E2E] bg-[#0D0D15] px-3.5 text-[13px] text-white placeholder:text-[#6E6E80] focus:border-[#6C47FF] focus:outline-none"
+              className="h-10 flex-1 rounded-xl border border-hairline bg-void px-3.5 text-[13px] text-ink placeholder:text-ink-faint focus:border-accent focus:outline-none"
             />
             <input
               type="date"
               value={expiresAt}
               onChange={(event) => setExpiresAt(event.target.value)}
-              className="h-10 rounded-xl border border-[#1E1E2E] bg-[#0D0D15] px-3.5 text-[13px] text-white focus:border-[#6C47FF] focus:outline-none"
+              className="h-10 rounded-xl border border-hairline bg-void px-3.5 text-[13px] text-ink focus:border-accent focus:outline-none"
             />
           </div>
 
@@ -186,13 +186,13 @@ export function CouponManager() {
           <button
             onClick={create}
             disabled={busy || !code}
-            className="inline-flex h-10 items-center gap-2 rounded-full bg-[#6C47FF] px-5 text-[13px] font-semibold text-white hover:bg-[#7C5AFF] disabled:opacity-40"
+            className="inline-flex h-10 items-center gap-2 rounded-full bg-accent px-5 text-[13px] font-semibold text-white hover:bg-accent-soft disabled:opacity-40"
           >
             {busy && <Loader2 className="h-3.5 w-3.5 animate-spin" />}
             Create coupon
           </button>
 
-          <p className="text-[11.5px] text-[#6E6E80]">
+          <p className="text-[11.5px] text-ink-faint">
             The coupon is created in Stripe first — one that cannot be applied at
             checkout would fail in front of a paying customer.
           </p>
@@ -200,19 +200,19 @@ export function CouponManager() {
       </section>
 
       <section>
-        <h2 className="text-[15px] font-semibold text-white">All coupons</h2>
+        <h2 className="text-[15px] font-semibold text-ink">All coupons</h2>
         {coupons.length === 0 ? (
-          <p className="mt-3 text-[13px] text-[#6E6E80]">No coupons yet.</p>
+          <p className="mt-3 text-[13px] text-ink-faint">No coupons yet.</p>
         ) : (
-          <div className="mt-4 overflow-x-auto rounded-xl border border-[#1E1E2E]">
+          <div className="mt-4 overflow-x-auto rounded-xl border border-hairline">
             <table className="w-full min-w-[720px]">
-              <thead className="bg-[#12121A]">
+              <thead className="bg-surface">
                 <tr>
                   {["Code", "Discount", "Applies to", "Uses", "Expires", "Status", ""].map(
                     (h) => (
                       <th
                         key={h}
-                        className="px-4 py-2.5 text-left text-[10px] font-semibold uppercase tracking-[0.14em] text-[#6E6E80]"
+                        className="px-4 py-2.5 text-left text-[10px] font-semibold uppercase tracking-[0.14em] text-ink-faint"
                       >
                         {h}
                       </th>
@@ -220,27 +220,27 @@ export function CouponManager() {
                   )}
                 </tr>
               </thead>
-              <tbody className="divide-y divide-[#1E1E2E]">
+              <tbody className="divide-y divide-hairline">
                 {coupons.map((coupon) => (
                   <tr key={coupon.id}>
-                    <td className="px-4 py-3 font-mono text-[12.5px] text-[#00D4FF]">
+                    <td className="px-4 py-3 font-mono text-[12.5px] text-cyan">
                       {coupon.code}
                     </td>
-                    <td className="px-4 py-3 text-[12.5px] text-white">
+                    <td className="px-4 py-3 text-[12.5px] text-ink">
                       {coupon.discount_type === "percent"
                         ? `${coupon.discount_value}%`
                         : `$${coupon.discount_value}`}
                     </td>
-                    <td className="px-4 py-3 text-[12.5px] capitalize text-[#A0A0B0]">
+                    <td className="px-4 py-3 text-[12.5px] capitalize text-ink-muted">
                       {(coupon.applies_to ?? []).length
                         ? (coupon.applies_to ?? []).join(", ")
                         : "all paid"}
                     </td>
-                    <td className="px-4 py-3 text-[12.5px] tabular-nums text-[#A0A0B0]">
+                    <td className="px-4 py-3 text-[12.5px] tabular-nums text-ink-muted">
                       {coupon.uses_count}
                       {coupon.max_uses ? ` / ${coupon.max_uses}` : ""}
                     </td>
-                    <td className="px-4 py-3 text-[12.5px] text-[#A0A0B0]">
+                    <td className="px-4 py-3 text-[12.5px] text-ink-muted">
                       {coupon.expires_at
                         ? new Date(coupon.expires_at).toLocaleDateString(undefined, {
                             dateStyle: "medium",
@@ -261,7 +261,7 @@ export function CouponManager() {
                     <td className="px-4 py-3 text-right">
                       <button
                         onClick={() => toggle(coupon)}
-                        className="text-[12px] text-[#A0A0B0] hover:text-white"
+                        className="text-[12px] text-ink-muted hover:text-ink"
                       >
                         {coupon.is_active ? "Disable" : "Enable"}
                       </button>

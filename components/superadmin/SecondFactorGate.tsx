@@ -57,13 +57,13 @@ export function SecondFactorGate({
   }
 
   return (
-    <main className="grid min-h-dvh place-items-center bg-[#0A0A0F] px-6">
+    <main className="grid min-h-dvh place-items-center bg-void px-6">
       <div className="w-full max-w-sm">
-        <ShieldCheck className="h-6 w-6 text-[#6C47FF]" />
-        <h1 className="mt-3 text-[20px] font-semibold tracking-[-0.02em] text-white">
+        <ShieldCheck className="h-6 w-6 text-accent" />
+        <h1 className="mt-3 text-[20px] font-semibold tracking-[-0.02em] text-ink">
           Enter your code
         </h1>
-        <p className="mt-1.5 text-[13px] leading-relaxed text-[#A0A0B0]">
+        <p className="mt-1.5 text-[13px] leading-relaxed text-ink-muted">
           From your authenticator app. A recovery code works too, and using one
           spends it.
         </p>
@@ -79,7 +79,7 @@ export function SecondFactorGate({
           autoFocus
           placeholder="000000"
           aria-label="Authentication code"
-          className="mt-4 h-12 w-full rounded-xl border border-[#1E1E2E] bg-[#12121A] px-4 font-mono text-[18px] tracking-[0.3em] text-white placeholder:text-[#3A3A4A] focus:border-[#6C47FF] focus:outline-none"
+          className="mt-4 h-12 w-full rounded-xl border border-hairline bg-surface px-4 font-mono text-[18px] tracking-[0.3em] text-ink placeholder:text-surface-3 focus:border-accent focus:outline-none"
         />
 
         {error && <p className="mt-2 text-[12.5px] text-[#FF5A5A]">{error}</p>}
@@ -87,13 +87,13 @@ export function SecondFactorGate({
         <button
           onClick={() => void submit()}
           disabled={busy || code.trim().length < 6}
-          className="mt-3 inline-flex h-11 w-full items-center justify-center gap-2 rounded-xl bg-[#6C47FF] text-[14px] font-medium text-white hover:bg-[#5B39E0] disabled:opacity-50"
+          className="mt-3 inline-flex h-11 w-full items-center justify-center gap-2 rounded-xl bg-accent text-[14px] font-medium text-white hover:bg-accent-deep disabled:opacity-50"
         >
           {busy && <Loader2 className="h-4 w-4 animate-spin" />}
           Continue
         </button>
 
-        <p className="mt-4 text-[11.5px] leading-relaxed text-[#6E6E80]">
+        <p className="mt-4 text-[11.5px] leading-relaxed text-ink-faint">
           Asked once every twelve hours per browser. Long enough not to be in
           the way through a working day, short enough that a laptop left open
           overnight is not still signed in tomorrow.

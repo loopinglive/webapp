@@ -56,14 +56,14 @@ export class ErrorBoundary extends Component<Props, State> {
 
     if (this.props.compact) {
       return (
-        <div className="flex items-center gap-3 rounded-xl border border-[#23232F] bg-[#12121A] px-4 py-5">
+        <div className="flex items-center gap-3 rounded-xl border border-[#23232F] bg-surface px-4 py-5">
           <AlertTriangle className="h-4 w-4 shrink-0 text-[#FFB020]" />
-          <p className="flex-1 text-[13px] text-[#A0A0B0]">
+          <p className="flex-1 text-[13px] text-ink-muted">
             This section could not be displayed.
           </p>
           <button
             onClick={this.reset}
-            className="shrink-0 text-[12.5px] text-[#6C47FF] hover:text-[#8A6BFF]"
+            className="shrink-0 text-[12.5px] text-accent hover:text-[#8A6BFF]"
           >
             Retry
           </button>
@@ -78,10 +78,10 @@ export class ErrorBoundary extends Component<Props, State> {
             <AlertTriangle className="h-5 w-5 text-[#FFB020]" />
           </span>
 
-          <h2 className="mt-4 text-[20px] font-semibold tracking-[-0.02em] text-white">
+          <h2 className="mt-4 text-[20px] font-semibold tracking-[-0.02em] text-ink">
             Something went wrong
           </h2>
-          <p className="mt-2 text-[13.5px] leading-relaxed text-[#A0A0B0]">
+          <p className="mt-2 text-[13.5px] leading-relaxed text-ink-muted">
             We have been notified and are looking into it. Nothing you had saved is
             affected.
           </p>
@@ -89,14 +89,14 @@ export class ErrorBoundary extends Component<Props, State> {
           <div className="mt-6 flex items-center justify-center gap-3">
             <button
               onClick={this.reset}
-              className="inline-flex h-10 items-center gap-2 rounded-full bg-[#6C47FF] px-4 text-[13px] font-medium text-white transition-colors hover:bg-[#7C5AFF]"
+              className="inline-flex h-10 items-center gap-2 rounded-full bg-accent px-4 text-[13px] font-medium text-white transition-colors hover:bg-accent-soft"
             >
               <RotateCw className="h-3.5 w-3.5" />
               Try again
             </button>
             <Link
               href="/dashboard"
-              className="text-[13px] text-[#A0A0B0] transition-colors hover:text-white"
+              className="text-[13px] text-ink-muted transition-colors hover:text-ink"
             >
               Back to dashboard
             </Link>

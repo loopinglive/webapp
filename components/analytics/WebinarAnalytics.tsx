@@ -104,7 +104,7 @@ export function WebinarAnalytics({ webinarId }: { webinarId: string }) {
   if (!fresh) {
     return (
       <div className="grid h-[60dvh] place-items-center">
-        <Loader2 className="h-5 w-5 animate-spin text-[#6C47FF]" />
+        <Loader2 className="h-5 w-5 animate-spin text-accent" />
       </div>
     );
   }
@@ -114,7 +114,7 @@ export function WebinarAnalytics({ webinarId }: { webinarId: string }) {
   if (!data) {
     return (
       <div className="grid h-[60dvh] place-items-center px-6 text-center">
-        <p className="text-[14px] text-[#A0A0B0]">
+        <p className="text-[14px] text-ink-muted">
           Could not load analytics for this webinar.
         </p>
       </div>
@@ -244,7 +244,7 @@ export function WebinarAnalytics({ webinarId }: { webinarId: string }) {
                     (heading) => (
                       <th
                         key={heading}
-                        className="pb-2 text-[10px] font-semibold uppercase tracking-[0.14em] text-[#A0A0B0]"
+                        className="pb-2 text-[10px] font-semibold uppercase tracking-[0.14em] text-ink-muted"
                       >
                         {heading}
                       </th>
@@ -252,30 +252,30 @@ export function WebinarAnalytics({ webinarId }: { webinarId: string }) {
                   )}
                 </tr>
               </thead>
-              <tbody className="divide-y divide-[#1E1E2E]">
+              <tbody className="divide-y divide-hairline">
                 {data.sessions.map((session) => (
                   <tr key={session.id}>
                     <td className="py-2.5">
                       <Link
                         href={`/admin/webinar/${webinarId}/analytics/${session.id}`}
-                        className="text-[12.5px] text-white transition-colors hover:text-[#6C47FF]"
+                        className="text-[12.5px] text-ink transition-colors hover:text-accent"
                       >
                         {new Date(session.startsAt).toLocaleString()}
                       </Link>
                     </td>
-                    <td className="py-2.5 text-[12.5px] tabular-nums text-[#A0A0B0]">
+                    <td className="py-2.5 text-[12.5px] tabular-nums text-ink-muted">
                       {session.registrations}
                     </td>
-                    <td className="py-2.5 text-[12.5px] tabular-nums text-[#A0A0B0]">
+                    <td className="py-2.5 text-[12.5px] tabular-nums text-ink-muted">
                       {session.attendees}
                     </td>
-                    <td className="py-2.5 text-[12.5px] tabular-nums text-[#A0A0B0]">
+                    <td className="py-2.5 text-[12.5px] tabular-nums text-ink-muted">
                       {session.attendanceRate}%
                     </td>
-                    <td className="py-2.5 text-[12.5px] tabular-nums text-[#A0A0B0]">
+                    <td className="py-2.5 text-[12.5px] tabular-nums text-ink-muted">
                       {session.avgWatchPercentage}%
                     </td>
-                    <td className="py-2.5 text-[12.5px] tabular-nums text-[#A0A0B0]">
+                    <td className="py-2.5 text-[12.5px] tabular-nums text-ink-muted">
                       {session.conversionRate}%
                     </td>
                   </tr>

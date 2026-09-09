@@ -66,10 +66,10 @@ export function PersonalisationRules({ webinarId }: { webinarId: string }) {
 
         {loading ? (
           <div className="grid h-40 place-items-center">
-            <Loader2 className="h-5 w-5 animate-spin text-[#6C47FF]" />
+            <Loader2 className="h-5 w-5 animate-spin text-accent" />
           </div>
         ) : !rules || rules.length === 0 ? (
-          <div className="grid h-32 place-items-center rounded-xl border border-dashed border-[#1E1E2E] text-[13px] text-[#6A6A80]">
+          <div className="grid h-32 place-items-center rounded-xl border border-dashed border-hairline text-[13px] text-ink-faint">
             No rules yet. The first one you create runs for everyone until you add conditions.
           </div>
         ) : (
@@ -96,10 +96,10 @@ function RuleRow({
   onRemove: (id: string) => Promise<void>;
 }) {
   return (
-    <div className="flex flex-wrap items-center gap-3 rounded-xl border border-[#1E1E2E] bg-[#12121A] px-4 py-3.5">
+    <div className="flex flex-wrap items-center gap-3 rounded-xl border border-hairline bg-surface px-4 py-3.5">
       <div className="min-w-0 flex-1">
-        <p className="truncate text-[13.5px] font-medium text-white">{rule.rule_name}</p>
-        <p className="mt-0.5 text-[11.5px] text-[#6A6A80]">
+        <p className="truncate text-[13.5px] font-medium text-ink">{rule.rule_name}</p>
+        <p className="mt-0.5 text-[11.5px] text-ink-faint">
           {rule.conditions.length === 0
             ? "Matches everyone"
             : rule.conditions
@@ -109,19 +109,19 @@ function RuleRow({
           {rule.actions.map((a) => ACTION_TYPES.find((t) => t.id === a.type)?.label ?? a.type).join(", ")}
         </p>
       </div>
-      <span className="text-[11px] tabular-nums text-[#6A6A80]">priority {rule.priority}</span>
+      <span className="text-[11px] tabular-nums text-ink-faint">priority {rule.priority}</span>
       <button
         onClick={() => void onToggle(rule.id, !rule.is_active)}
         className={cn(
           "rounded-full px-2.5 py-1 text-[11px] font-semibold uppercase tracking-[0.06em] transition-colors",
-          rule.is_active ? "bg-[#00C851]/15 text-[#00C851]" : "bg-[#3A3A4A] text-[#A0A0B0]"
+          rule.is_active ? "bg-[#00C851]/15 text-[#00C851]" : "bg-surface-3 text-ink-muted"
         )}
       >
         {rule.is_active ? "Active" : "Paused"}
       </button>
       <button
         onClick={() => void onRemove(rule.id)}
-        className="rounded-full p-1.5 text-[#6A6A80] transition-colors hover:bg-[#FF3B3B]/10 hover:text-[#FF3B3B]"
+        className="rounded-full p-1.5 text-ink-faint transition-colors hover:bg-[#FF3B3B]/10 hover:text-[#FF3B3B]"
       >
         <Trash2 className="h-3.5 w-3.5" />
       </button>
@@ -150,14 +150,14 @@ function RuleForm({
   const valid = ruleName.trim().length > 0 && actions.every((a) => a.value.trim().length > 0);
 
   return (
-    <div className="mb-6 rounded-xl border border-[#1E1E2E] bg-[#12121A] p-4">
+    <div className="mb-6 rounded-xl border border-hairline bg-surface p-4">
       <Field label="Rule name" required>
         <TextInput value={ruleName} onChange={(e) => setRuleName(e.target.value)} placeholder="Mobile visitors from Facebook" />
       </Field>
 
       <div className="mt-4">
-        <p className="mb-2 text-[12px] font-medium text-[#A0A0B0]">
-          Conditions <span className="text-[#6A6A80]">(all must match)</span>
+        <p className="mb-2 text-[12px] font-medium text-ink-muted">
+          Conditions <span className="text-ink-faint">(all must match)</span>
         </p>
         <div className="flex flex-col gap-2">
           {conditions.map((condition, index) => (
@@ -169,7 +169,7 @@ function RuleForm({
                   next[index] = { ...next[index], field: e.target.value as ConditionField };
                   setConditions(next);
                 }}
-                className="h-10 rounded-lg border border-[#2A2A3A] bg-[#1A1A2A] px-3 text-[13px] text-white focus:border-[#6C47FF] focus:outline-none"
+                className="h-10 rounded-lg border border-surface-3 bg-surface-2 px-3 text-[13px] text-ink focus:border-accent focus:outline-none"
               >
                 {FIELDS.map((f) => (
                   <option key={f.id} value={f.id}>
@@ -184,7 +184,7 @@ function RuleForm({
                   next[index] = { ...next[index], operator: e.target.value as ConditionOperator };
                   setConditions(next);
                 }}
-                className="h-10 rounded-lg border border-[#2A2A3A] bg-[#1A1A2A] px-3 text-[13px] text-white focus:border-[#6C47FF] focus:outline-none"
+                className="h-10 rounded-lg border border-surface-3 bg-surface-2 px-3 text-[13px] text-ink focus:border-accent focus:outline-none"
               >
                 {OPERATORS.map((o) => (
                   <option key={o.id} value={o.id}>
@@ -204,7 +204,7 @@ function RuleForm({
               />
               <button
                 onClick={() => setConditions(conditions.filter((_, i) => i !== index))}
-                className="rounded-full p-1.5 text-[#6A6A80] hover:bg-[#FF3B3B]/10 hover:text-[#FF3B3B]"
+                className="rounded-full p-1.5 text-ink-faint hover:bg-[#FF3B3B]/10 hover:text-[#FF3B3B]"
               >
                 <Trash2 className="h-3.5 w-3.5" />
               </button>
@@ -213,14 +213,14 @@ function RuleForm({
         </div>
         <button
           onClick={() => setConditions([...conditions, { field: "deviceType", operator: "equals", value: "" }])}
-          className="mt-2 text-[12px] font-medium text-[#6C47FF] hover:text-[#7C5AFF]"
+          className="mt-2 text-[12px] font-medium text-accent hover:text-accent-soft"
         >
           + Add condition
         </button>
       </div>
 
       <div className="mt-4">
-        <p className="mb-2 text-[12px] font-medium text-[#A0A0B0]">Actions</p>
+        <p className="mb-2 text-[12px] font-medium text-ink-muted">Actions</p>
         <div className="flex flex-col gap-2">
           {actions.map((action, index) => (
             <div key={index} className="flex flex-wrap items-center gap-2">
@@ -231,7 +231,7 @@ function RuleForm({
                   next[index] = { ...next[index], type: e.target.value as PersonalisationAction["type"] };
                   setActions(next);
                 }}
-                className="h-10 rounded-lg border border-[#2A2A3A] bg-[#1A1A2A] px-3 text-[13px] text-white focus:border-[#6C47FF] focus:outline-none"
+                className="h-10 rounded-lg border border-surface-3 bg-surface-2 px-3 text-[13px] text-ink focus:border-accent focus:outline-none"
               >
                 {ACTION_TYPES.map((t) => (
                   <option key={t.id} value={t.id}>
@@ -252,7 +252,7 @@ function RuleForm({
               {actions.length > 1 && (
                 <button
                   onClick={() => setActions(actions.filter((_, i) => i !== index))}
-                  className="rounded-full p-1.5 text-[#6A6A80] hover:bg-[#FF3B3B]/10 hover:text-[#FF3B3B]"
+                  className="rounded-full p-1.5 text-ink-faint hover:bg-[#FF3B3B]/10 hover:text-[#FF3B3B]"
                 >
                   <Trash2 className="h-3.5 w-3.5" />
                 </button>
@@ -262,7 +262,7 @@ function RuleForm({
         </div>
         <button
           onClick={() => setActions([...actions, { type: "custom_message", value: "" }])}
-          className="mt-2 text-[12px] font-medium text-[#6C47FF] hover:text-[#7C5AFF]"
+          className="mt-2 text-[12px] font-medium text-accent hover:text-accent-soft"
         >
           + Add action
         </button>
@@ -317,10 +317,10 @@ function PreviewTester({
   }
 
   return (
-    <div className="mt-8 rounded-xl border border-[#1E1E2E] bg-[#12121A] p-4">
+    <div className="mt-8 rounded-xl border border-hairline bg-surface p-4">
       <div className="mb-3 flex items-center gap-2">
-        <Wand2 className="h-4 w-4 text-[#6C47FF]" />
-        <p className="text-[13px] font-semibold text-white">Test against a sample visitor</p>
+        <Wand2 className="h-4 w-4 text-accent" />
+        <p className="text-[13px] font-semibold text-ink">Test against a sample visitor</p>
       </div>
 
       <div className="grid gap-3 sm:grid-cols-3">
@@ -328,7 +328,7 @@ function PreviewTester({
           <select
             value={context.deviceType ?? ""}
             onChange={(e) => setContext({ ...context, deviceType: e.target.value })}
-            className="h-10 w-full rounded-lg border border-[#2A2A3A] bg-[#1A1A2A] px-3 text-[13px] text-white focus:border-[#6C47FF] focus:outline-none"
+            className="h-10 w-full rounded-lg border border-surface-3 bg-surface-2 px-3 text-[13px] text-ink focus:border-accent focus:outline-none"
           >
             <option value="mobile">Mobile</option>
             <option value="desktop">Desktop</option>

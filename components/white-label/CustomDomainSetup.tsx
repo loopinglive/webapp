@@ -41,13 +41,13 @@ export function CustomDomainSetup({
           value={form.custom_domain ?? ""}
           onChange={(event) => update("custom_domain", event.target.value)}
           placeholder="webinars.yourbrand.com"
-          className="flex-1 rounded-lg border border-[#1E1E2E] bg-[#1A1A24] px-3 py-2.5 text-[13px] text-white placeholder:text-[#6E6E80] focus:border-[#6C47FF] focus:outline-none"
+          className="flex-1 rounded-lg border border-hairline bg-[#1A1A24] px-3 py-2.5 text-[13px] text-white placeholder:text-ink-faint focus:border-accent focus:outline-none"
         />
         <button
           type="button"
           onClick={check}
           disabled={!form.custom_domain || verifying}
-          className="flex items-center gap-1.5 rounded-lg border border-[#1E1E2E] bg-[#1A1A24] px-3.5 py-2.5 text-[12.5px] font-medium text-white transition hover:bg-[#22222E] disabled:opacity-40"
+          className="flex items-center gap-1.5 rounded-lg border border-hairline bg-[#1A1A24] px-3.5 py-2.5 text-[12.5px] font-medium text-white transition hover:bg-[#22222E] disabled:opacity-40"
         >
           {verifying && <Loader2 className="h-3.5 w-3.5 animate-spin" />}
           Verify DNS
@@ -66,16 +66,16 @@ export function CustomDomainSetup({
               ? "text-[#00C851]"
               : status === "Not verified"
                 ? "text-[#FF9500]"
-                : "text-[#6E6E80]"
+                : "text-ink-faint"
           }
         >
           {status}
         </span>
       </div>
 
-      <div className="rounded-lg border border-[#1E1E2E] bg-[#0D0D17] px-3.5 py-3 text-[12px] leading-relaxed text-[#A0A0B0]">
+      <div className="rounded-lg border border-hairline bg-void px-3.5 py-3 text-[12px] leading-relaxed text-ink-muted">
         Add a CNAME record at your DNS provider:
-        <div className="mt-2 flex items-center gap-2 rounded bg-black/40 px-2.5 py-1.5 font-mono text-[11px] text-[#00D4FF]">
+        <div className="mt-2 flex items-center gap-2 rounded bg-black/40 px-2.5 py-1.5 font-mono text-[11px] text-cyan">
           {form.custom_domain || "webinars.yourbrand.com"} → {EXPECTED_TARGET}
         </div>
         SSL is provisioned automatically once verified. Propagation can take up to an hour.

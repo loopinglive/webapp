@@ -86,36 +86,36 @@ export function CreateListingForm() {
 
   return (
     <div className="mx-auto max-w-xl space-y-4 px-6 py-6 lg:px-10">
-      <h1 className="text-[20px] font-semibold text-white">New listing</h1>
-      <p className="text-[12.5px] text-[#6E6E80]">
+      <h1 className="text-[20px] font-semibold text-ink">New listing</h1>
+      <p className="text-[12.5px] text-ink-faint">
         Reviewed before it goes live — usually within 48 hours.
       </p>
 
       <label className="block">
-        <span className="text-[12px] text-[#A0A0B0]">Title</span>
+        <span className="text-[12px] text-ink-muted">Title</span>
         <input
           value={title}
           onChange={(event) => setTitle(event.target.value)}
-          className="mt-1 h-10 w-full rounded-lg border border-[#1E1E2E] bg-[#12121A] px-3 text-[13.5px] text-white focus:border-[#6C47FF] focus:outline-none"
+          className="mt-1 h-10 w-full rounded-lg border border-hairline bg-surface px-3 text-[13.5px] text-ink focus:border-accent focus:outline-none"
         />
       </label>
 
       <label className="block">
-        <span className="text-[12px] text-[#A0A0B0]">Description</span>
+        <span className="text-[12px] text-ink-muted">Description</span>
         <textarea
           value={description}
           onChange={(event) => setDescription(event.target.value)}
           rows={4}
-          className="mt-1 w-full rounded-lg border border-[#1E1E2E] bg-[#12121A] px-3 py-2 text-[13.5px] text-white focus:border-[#6C47FF] focus:outline-none"
+          className="mt-1 w-full rounded-lg border border-hairline bg-surface px-3 py-2 text-[13.5px] text-ink focus:border-accent focus:outline-none"
         />
       </label>
 
       <label className="block">
-        <span className="text-[12px] text-[#A0A0B0]">Type</span>
+        <span className="text-[12px] text-ink-muted">Type</span>
         <select
           value={type}
           onChange={(event) => setType(event.target.value as typeof type)}
-          className="mt-1 h-10 w-full rounded-lg border border-[#1E1E2E] bg-[#12121A] px-3 text-[13.5px] text-white focus:outline-none"
+          className="mt-1 h-10 w-full rounded-lg border border-hairline bg-surface px-3 text-[13.5px] text-ink focus:outline-none"
         >
           {TYPES.map((entry) => (
             <option key={entry.id} value={entry.id}>
@@ -127,38 +127,38 @@ export function CreateListingForm() {
 
       <div className="flex gap-3">
         <label className="block flex-1">
-          <span className="text-[12px] text-[#A0A0B0]">Price ($0 = free, min $5)</span>
+          <span className="text-[12px] text-ink-muted">Price ($0 = free, min $5)</span>
           <input
             type="number"
             min="0"
             step="0.01"
             value={price}
             onChange={(event) => setPrice(event.target.value)}
-            className="mt-1 h-10 w-full rounded-lg border border-[#1E1E2E] bg-[#12121A] px-3 text-[13.5px] text-white focus:border-[#6C47FF] focus:outline-none"
+            className="mt-1 h-10 w-full rounded-lg border border-hairline bg-surface px-3 text-[13.5px] text-ink focus:border-accent focus:outline-none"
           />
         </label>
         <label className="block flex-1">
-          <span className="text-[12px] text-[#A0A0B0]">Tags, comma separated</span>
+          <span className="text-[12px] text-ink-muted">Tags, comma separated</span>
           <input
             value={tags}
             onChange={(event) => setTags(event.target.value)}
-            className="mt-1 h-10 w-full rounded-lg border border-[#1E1E2E] bg-[#12121A] px-3 text-[13.5px] text-white focus:border-[#6C47FF] focus:outline-none"
+            className="mt-1 h-10 w-full rounded-lg border border-hairline bg-surface px-3 text-[13.5px] text-ink focus:border-accent focus:outline-none"
           />
         </label>
       </div>
 
       <label className="block">
-        <span className="text-[12px] text-[#A0A0B0]">Thumbnail URL</span>
+        <span className="text-[12px] text-ink-muted">Thumbnail URL</span>
         <input
           value={thumbnailUrl}
           onChange={(event) => setThumbnailUrl(event.target.value)}
           placeholder="https://…"
-          className="mt-1 h-10 w-full rounded-lg border border-[#1E1E2E] bg-[#12121A] px-3 text-[13.5px] text-white placeholder:text-[#4A4A5C] focus:border-[#6C47FF] focus:outline-none"
+          className="mt-1 h-10 w-full rounded-lg border border-hairline bg-surface px-3 text-[13.5px] text-ink placeholder:text-ink-faint focus:border-accent focus:outline-none"
         />
       </label>
 
       <label className="block">
-        <span className="text-[12px] text-[#A0A0B0]">
+        <span className="text-[12px] text-ink-muted">
           What buyers receive (JSON){activeType?.hint && ` — ${activeType.hint}`}
         </span>
         <textarea
@@ -166,7 +166,7 @@ export function CreateListingForm() {
           onChange={(event) => setIncludedJson(event.target.value)}
           rows={8}
           spellCheck={false}
-          className="mt-1 w-full rounded-lg border border-[#1E1E2E] bg-[#0A0A0F] px-3 py-2 font-mono text-[12.5px] text-white focus:border-[#6C47FF] focus:outline-none"
+          className="mt-1 w-full rounded-lg border border-hairline bg-void px-3 py-2 font-mono text-[12.5px] text-ink focus:border-accent focus:outline-none"
         />
       </label>
 
@@ -175,7 +175,7 @@ export function CreateListingForm() {
       <button
         onClick={() => void save()}
         disabled={saving || !title.trim() || !description.trim() || !thumbnailUrl.trim()}
-        className="inline-flex h-10 items-center gap-2 rounded-lg bg-[#6C47FF] px-4 text-[13.5px] font-medium text-white hover:bg-[#5B39E0] disabled:opacity-50"
+        className="inline-flex h-10 items-center gap-2 rounded-lg bg-accent px-4 text-[13.5px] font-medium text-white hover:bg-accent-deep disabled:opacity-50"
       >
         {saving && <Loader2 className="h-4 w-4 animate-spin" />}
         Submit for review

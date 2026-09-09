@@ -42,7 +42,7 @@ export function HelpTooltip({
         onFocus={() => setOpen(true)}
         onBlur={() => setOpen(false)}
         onClick={() => setOpen((value) => !value)}
-        className="text-[#6E6E80] transition-colors hover:text-[#A0A0B0] focus:text-[#A0A0B0] focus:outline-none"
+        className="text-ink-faint transition-colors hover:text-ink-muted focus:text-ink-muted focus:outline-none"
       >
         <HelpCircle className="h-3.5 w-3.5" />
       </button>
@@ -52,7 +52,7 @@ export function HelpTooltip({
           id={id}
           role="tooltip"
           className={cn(
-            "absolute z-50 w-[220px] rounded-lg border border-[#2A2A3A] bg-[#1A1A26] px-3 py-2 text-[12px] font-normal leading-relaxed text-[#D4D4DE] shadow-xl",
+            "absolute z-50 w-[220px] rounded-lg border border-surface-3 bg-[#1A1A26] px-3 py-2 text-[12px] font-normal leading-relaxed text-[#D4D4DE] shadow-xl",
             placement
           )}
         >

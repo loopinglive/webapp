@@ -16,7 +16,7 @@ export function TrackingSection({ config, update }: SectionProps) {
       </Field>
 
       {config.facebook_pixel_id && (
-        <div className="space-y-3 rounded-lg border border-[#2A2A3A] bg-[#1A1A2A] p-3">
+        <div className="space-y-3 rounded-lg border border-surface-3 bg-surface-2 p-3">
           <Toggle
             label="Fire PageView on load"
             checked={config.fb_track_pageview}
@@ -39,7 +39,7 @@ export function TrackingSection({ config, update }: SectionProps) {
       </Field>
 
       {config.google_analytics_id && (
-        <div className="rounded-lg border border-[#2A2A3A] bg-[#1A1A2A] p-3">
+        <div className="rounded-lg border border-surface-3 bg-surface-2 p-3">
           <Toggle
             label="Track registration as a conversion"
             checked={config.ga_track_conversion}
@@ -48,7 +48,7 @@ export function TrackingSection({ config, update }: SectionProps) {
         </div>
       )}
 
-      <p className="text-[11px] leading-relaxed text-[#A0A0B0]">
+      <p className="text-[11px] leading-relaxed text-ink-muted">
         Scripts are only added to the page when an ID is set here. Leave these
         blank and nothing third-party loads.
       </p>

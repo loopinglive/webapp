@@ -65,7 +65,7 @@ export function SellerDashboard() {
   if (state.status === "loading") {
     return (
       <div className="grid h-64 place-items-center">
-        <Loader2 className="h-5 w-5 animate-spin text-[#6C47FF]" />
+        <Loader2 className="h-5 w-5 animate-spin text-accent" />
       </div>
     );
   }
@@ -73,9 +73,9 @@ export function SellerDashboard() {
   if (state.status === "not_a_seller") {
     return (
       <div className="mx-auto max-w-md px-6 py-16 text-center">
-        <Store className="mx-auto h-8 w-8 text-[#6C47FF]" />
-        <h1 className="mt-4 text-[20px] font-semibold text-white">Sell on the marketplace</h1>
-        <p className="mt-2 text-[13px] leading-relaxed text-[#A0A0B0]">
+        <Store className="mx-auto h-8 w-8 text-accent" />
+        <h1 className="mt-4 text-[20px] font-semibold text-ink">Sell on the marketplace</h1>
+        <p className="mt-2 text-[13px] leading-relaxed text-ink-muted">
           Package a template, a persona pack, or a comment script and put it in
           front of every host on the platform. Loopinglive takes 20% of each
           sale.
@@ -85,18 +85,18 @@ export function SellerDashboard() {
             value={displayName}
             onChange={(event) => setDisplayName(event.target.value)}
             placeholder="Your seller name"
-            className="h-10 flex-1 rounded-lg border border-[#1E1E2E] bg-[#12121A] px-3 text-[13.5px] text-white placeholder:text-[#4A4A5C] focus:border-[#6C47FF] focus:outline-none"
+            className="h-10 flex-1 rounded-lg border border-hairline bg-surface px-3 text-[13.5px] text-ink placeholder:text-ink-faint focus:border-accent focus:outline-none"
           />
           <button
             onClick={() => void register()}
             disabled={registering || !displayName.trim()}
-            className="inline-flex h-10 items-center gap-2 rounded-lg bg-[#6C47FF] px-4 text-[13.5px] font-medium text-white hover:bg-[#5B39E0] disabled:opacity-50"
+            className="inline-flex h-10 items-center gap-2 rounded-lg bg-accent px-4 text-[13.5px] font-medium text-white hover:bg-accent-deep disabled:opacity-50"
           >
             {registering && <Loader2 className="h-4 w-4 animate-spin" />}
             Start selling
           </button>
         </div>
-        <p className="mt-3 text-[11px] text-[#6E6E80]">
+        <p className="mt-3 text-[11px] text-ink-faint">
           Payouts need a connected payment account, set up separately once you
           have a listing ready.
         </p>
@@ -110,10 +110,10 @@ export function SellerDashboard() {
     <div className="px-6 py-6 lg:px-10">
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div>
-          <h1 className="text-[22px] font-semibold tracking-[-0.02em] text-white">
+          <h1 className="text-[22px] font-semibold tracking-[-0.02em] text-ink">
             {profile.display_name}
           </h1>
-          <p className="mt-1 text-[13px] text-[#A0A0B0]">
+          <p className="mt-1 text-[13px] text-ink-muted">
             {profile.total_sales} sales ·{" "}
             {new Intl.NumberFormat("en-US", { style: "currency", currency: "usd" }).format(
               profile.total_earnings
@@ -123,7 +123,7 @@ export function SellerDashboard() {
         </div>
         <Link
           href="/marketplace/sell/new"
-          className="inline-flex h-9 items-center gap-2 rounded-full bg-[#6C47FF] px-3.5 text-[13px] font-medium text-white hover:bg-[#5B39E0]"
+          className="inline-flex h-9 items-center gap-2 rounded-full bg-accent px-3.5 text-[13px] font-medium text-white hover:bg-accent-deep"
         >
           <Plus className="h-3.5 w-3.5" />
           New listing
@@ -135,7 +135,7 @@ export function SellerDashboard() {
           <MarketplaceCard key={listing.id} listing={listing} />
         ))}
         {listings.length === 0 && (
-          <p className="text-[13px] text-[#6E6E80]">No listings yet.</p>
+          <p className="text-[13px] text-ink-faint">No listings yet.</p>
         )}
       </div>
     </div>

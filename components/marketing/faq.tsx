@@ -46,7 +46,7 @@ export function Faq() {
           Questions worth asking.
         </h2>
 
-        <div className="mt-12 divide-y divide-white/8 border-y border-white/8">
+        <div className="mt-12 divide-y divide-hairline border-y border-hairline">
           {ITEMS.map((item, i) => {
             const isOpen = open === i;
             return (

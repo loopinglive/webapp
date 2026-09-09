@@ -57,7 +57,7 @@ export function HeroSection({ config, update }: SectionProps) {
       </Field>
 
       <div>
-        <span className="text-[12px] font-medium text-[#A0A0B0]">Host photo</span>
+        <span className="text-[12px] font-medium text-ink-muted">Host photo</span>
         <div className="mt-2">
           <VideoUploader
             kind="image"

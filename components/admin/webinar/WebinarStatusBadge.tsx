@@ -5,7 +5,7 @@ const STYLES: Record<
   WebinarStatus | "live",
   { label: string; className: string }
 > = {
-  draft: { label: "Draft", className: "bg-[#3A3A4A]/40 text-[#A0A0B0]" },
+  draft: { label: "Draft", className: "bg-surface-3/40 text-ink-muted" },
   published: { label: "Published", className: "bg-[#00C851]/15 text-[#00C851]" },
   live: { label: "Live", className: "bg-[#FF3B3B]/15 text-[#FF3B3B]" },
 };

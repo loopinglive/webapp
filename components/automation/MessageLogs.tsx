@@ -75,7 +75,7 @@ export function MessageLogs({ webinarId }: { webinarId: string }) {
         action={
           <Link
             href={`/admin/webinar/${webinarId}/automation`}
-            className="inline-flex items-center gap-2 text-[13px] text-[#A0A0B0] transition-colors hover:text-white"
+            className="inline-flex items-center gap-2 text-[13px] text-ink-muted transition-colors hover:text-ink"
           >
             <ArrowLeft className="h-3.5 w-3.5" />
             Automation
@@ -98,7 +98,7 @@ export function MessageLogs({ webinarId }: { webinarId: string }) {
           ].map((stat) => (
             <div
               key={stat.label}
-              className="rounded-xl border border-[#1E1E2E] bg-[#12121A] px-4 py-3.5"
+              className="rounded-xl border border-hairline bg-surface px-4 py-3.5"
             >
               <dt
                 className="text-[10px] font-semibold uppercase tracking-[0.14em]"
@@ -106,7 +106,7 @@ export function MessageLogs({ webinarId }: { webinarId: string }) {
               >
                 {stat.label}
               </dt>
-              <dd className="mt-1.5 text-2xl font-semibold tabular-nums tracking-[-0.03em] text-white">
+              <dd className="mt-1.5 text-2xl font-semibold tabular-nums tracking-[-0.03em] text-ink">
                 {stat.value.toLocaleString()}
               </dd>
             </div>
@@ -115,14 +115,14 @@ export function MessageLogs({ webinarId }: { webinarId: string }) {
 
         {/* Filters */}
         <div className="flex flex-wrap items-center gap-2">
-          <div className="flex min-w-[190px] flex-1 items-center gap-2 rounded-full border border-[#1E1E2E] bg-[#12121A] px-4 py-2 focus-within:border-[#6C47FF]/60">
-            <Search className="h-3.5 w-3.5 shrink-0 text-[#A0A0B0]" />
+          <div className="flex min-w-[190px] flex-1 items-center gap-2 rounded-full border border-hairline bg-surface px-4 py-2 focus-within:border-accent/60">
+            <Search className="h-3.5 w-3.5 shrink-0 text-ink-muted" />
             <input
               value={logs.search}
               onChange={(event) => logs.setSearch(event.target.value)}
               placeholder="Search recipient"
               aria-label="Search recipient"
-              className="w-full bg-transparent text-[12.5px] text-white placeholder:text-[#A0A0B0]/60 focus:outline-none"
+              className="w-full bg-transparent text-[12.5px] text-ink placeholder:text-ink-muted/60 focus:outline-none"
             />
           </div>
 
@@ -161,23 +161,23 @@ export function MessageLogs({ webinarId }: { webinarId: string }) {
 
         {/* Table */}
         {logs.isLoading ? (
-          <div className="grid place-items-center rounded-xl border border-[#1E1E2E] py-20">
-            <Loader2 className="h-5 w-5 animate-spin text-[#6C47FF]" />
+          <div className="grid place-items-center rounded-xl border border-hairline py-20">
+            <Loader2 className="h-5 w-5 animate-spin text-accent" />
           </div>
         ) : !logs.logs.length ? (
-          <p className="rounded-xl border border-dashed border-[#3A3A4A] px-6 py-16 text-center text-[13.5px] text-[#A0A0B0]">
+          <p className="rounded-xl border border-dashed border-surface-3 px-6 py-16 text-center text-[13.5px] text-ink-muted">
             Nothing queued yet. Messages appear here as soon as someone registers.
           </p>
         ) : (
-          <div className="overflow-x-auto rounded-xl border border-[#1E1E2E]">
+          <div className="overflow-x-auto rounded-xl border border-hairline">
             <table className="w-full min-w-[860px]">
               <thead>
-                <tr className="border-b border-[#1E1E2E] bg-[#12121A] text-left">
+                <tr className="border-b border-hairline bg-surface text-left">
                   {["Recipient", "Channel", "Message", "Status", "Scheduled", "Sent", ""].map(
                     (heading) => (
                       <th
                         key={heading}
-                        className="px-4 py-2.5 text-[10px] font-semibold uppercase tracking-[0.14em] text-[#A0A0B0]"
+                        className="px-4 py-2.5 text-[10px] font-semibold uppercase tracking-[0.14em] text-ink-muted"
                       >
                         {heading}
                       </th>
@@ -186,22 +186,22 @@ export function MessageLogs({ webinarId }: { webinarId: string }) {
                 </tr>
               </thead>
 
-              <tbody className="divide-y divide-[#1E1E2E]">
+              <tbody className="divide-y divide-hairline">
                 {logs.logs.map((log) => {
                   const style = STATUS_STYLE[log.status] ?? STATUS_STYLE.pending;
                   const Icon = CHANNEL_ICON[log.channel];
                   const failed = log.status.startsWith("failed");
 
                   return (
-                    <tr key={log.id} className="bg-[#0D0D17]">
+                    <tr key={log.id} className="bg-void">
                       <td className="px-4 py-2.5">
                         <Link
                           href={`/admin/webinar/${webinarId}/attendees/${log.registrant_id}`}
-                          className="text-[12.5px] text-white transition-colors hover:text-[#6C47FF]"
+                          className="text-[12.5px] text-ink transition-colors hover:text-accent"
                         >
                           {log.recipient_name ?? "—"}
                         </Link>
-                        <p className="truncate text-[11px] text-[#A0A0B0]">
+                        <p className="truncate text-[11px] text-ink-muted">
                           {log.channel === "email"
                             ? log.recipient_email
                             : log.recipient_phone}
@@ -209,13 +209,13 @@ export function MessageLogs({ webinarId }: { webinarId: string }) {
                       </td>
 
                       <td className="px-4 py-2.5">
-                        <span className="inline-flex items-center gap-1.5 text-[12px] text-[#A0A0B0]">
+                        <span className="inline-flex items-center gap-1.5 text-[12px] text-ink-muted">
                           <Icon className="h-3.5 w-3.5" />
                           {log.channel}
                         </span>
                       </td>
 
-                      <td className="px-4 py-2.5 text-[12.5px] text-[#A0A0B0]">
+                      <td className="px-4 py-2.5 text-[12.5px] text-ink-muted">
                         {TEMPLATE_BY_KEY.get(log.template_key ?? "")?.label ??
                           log.template_key}
                       </td>
@@ -232,17 +232,17 @@ export function MessageLogs({ webinarId }: { webinarId: string }) {
                           {style.label}
                         </span>
                         {log.error_message && (
-                          <p className="mt-1 max-w-[200px] truncate text-[10.5px] text-[#A0A0B0]">
+                          <p className="mt-1 max-w-[200px] truncate text-[10.5px] text-ink-muted">
                             {log.error_message}
                           </p>
                         )}
                       </td>
 
-                      <td className="whitespace-nowrap px-4 py-2.5 text-[11.5px] tabular-nums text-[#A0A0B0]">
+                      <td className="whitespace-nowrap px-4 py-2.5 text-[11.5px] tabular-nums text-ink-muted">
                         {new Date(log.scheduled_for).toLocaleString()}
                       </td>
 
-                      <td className="whitespace-nowrap px-4 py-2.5 text-[11.5px] tabular-nums text-[#A0A0B0]">
+                      <td className="whitespace-nowrap px-4 py-2.5 text-[11.5px] tabular-nums text-ink-muted">
                         {log.sent_at ? new Date(log.sent_at).toLocaleString() : "—"}
                       </td>
 
@@ -252,7 +252,7 @@ export function MessageLogs({ webinarId }: { webinarId: string }) {
                             onClick={() => void logs.retry(log.id)}
                             title="Retry now"
                             aria-label="Retry"
-                            className="grid h-7 w-7 place-items-center rounded-lg text-[#A0A0B0] transition-colors hover:bg-white/5 hover:text-white"
+                            className="grid h-7 w-7 place-items-center rounded-lg text-ink-muted transition-colors hover:bg-surface-2 hover:text-ink"
                           >
                             <RotateCw className="h-3.5 w-3.5" />
                           </button>
@@ -268,7 +268,7 @@ export function MessageLogs({ webinarId }: { webinarId: string }) {
 
         {logs.totalPages > 1 && (
           <div className="flex items-center justify-between gap-3">
-            <span className="text-[12px] text-[#A0A0B0]">
+            <span className="text-[12px] text-ink-muted">
               Page {logs.page} of {logs.totalPages} · {logs.total} messages
             </span>
             <div className="flex items-center gap-2">
@@ -304,7 +304,7 @@ function Segmented({
   options: { id: string; label: string }[];
 }) {
   return (
-    <div className="flex items-center gap-1 rounded-full border border-[#1E1E2E] bg-[#12121A] p-1">
+    <div className="flex items-center gap-1 rounded-full border border-hairline bg-surface p-1">
       {options.map((option) => (
         <button
           key={option.id}
@@ -312,8 +312,8 @@ function Segmented({
           className={cn(
             "rounded-full px-3 py-1.5 text-[12px] transition-colors",
             value === option.id
-              ? "bg-[#6C47FF] text-white"
-              : "text-[#A0A0B0] hover:text-white"
+              ? "bg-accent text-white"
+              : "text-ink-muted hover:text-ink"
           )}
         >
           {option.label}

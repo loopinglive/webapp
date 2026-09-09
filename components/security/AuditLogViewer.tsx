@@ -62,12 +62,12 @@ export function AuditLogViewer({ teamId }: { teamId?: string }) {
             value={actionFilter}
             onChange={(event) => setActionFilter(event.target.value)}
             placeholder="Filter by action, e.g. webinar.created"
-            className="h-9 w-64 rounded-lg border border-[#1E1E2E] bg-[#0D0D15] px-3 text-[12.5px] text-white placeholder:text-[#6E6E80] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#6C47FF]"
+            className="h-9 w-64 rounded-lg border border-hairline bg-void px-3 text-[12.5px] text-ink placeholder:text-ink-faint focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
           />
         </label>
         <button
           onClick={exportCsv}
-          className="inline-flex h-9 items-center gap-1.5 rounded-lg border border-[#1E1E2E] px-3 text-[12.5px] text-[#A0A0B0] transition-colors hover:text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#6C47FF]"
+          className="inline-flex h-9 items-center gap-1.5 rounded-lg border border-hairline px-3 text-[12.5px] text-ink-muted transition-colors hover:text-ink focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
         >
           <Download className="h-3.5 w-3.5" />
           Export CSV
@@ -85,40 +85,40 @@ export function AuditLogViewer({ teamId }: { teamId?: string }) {
           description="Every significant action — creating a webinar, changing a team member's role, exporting data — appears here as it happens."
         />
       ) : (
-        <div className="overflow-x-auto rounded-xl border border-[#1E1E2E]">
+        <div className="overflow-x-auto rounded-xl border border-hairline">
           <table className="w-full min-w-[720px]">
-            <thead className="bg-[#12121A]">
+            <thead className="bg-surface">
               <tr>
                 {["When", "Action", "Resource", "IP address"].map((h) => (
                   <th
                     key={h}
                     scope="col"
-                    className="px-4 py-2.5 text-left text-[10px] font-semibold uppercase tracking-[0.14em] text-[#6E6E80]"
+                    className="px-4 py-2.5 text-left text-[10px] font-semibold uppercase tracking-[0.14em] text-ink-faint"
                   >
                     {h}
                   </th>
                 ))}
               </tr>
             </thead>
-            <tbody className="divide-y divide-[#1E1E2E]">
+            <tbody className="divide-y divide-hairline">
               {logs.map((log) => (
                 <tr key={log.id}>
-                  <td className="px-4 py-3 text-[12px] text-[#6E6E80]">
+                  <td className="px-4 py-3 text-[12px] text-ink-faint">
                     {new Date(log.created_at).toLocaleString(undefined, {
                       dateStyle: "medium",
                       timeStyle: "short",
                     })}
                   </td>
-                  <td className="px-4 py-3 font-mono text-[12px] text-white">{log.action}</td>
-                  <td className="px-4 py-3 text-[12.5px] text-[#A0A0B0]">
+                  <td className="px-4 py-3 font-mono text-[12px] text-ink">{log.action}</td>
+                  <td className="px-4 py-3 text-[12.5px] text-ink-muted">
                     {log.resource_type}
                     {log.resource_id && (
-                      <span className="ml-1.5 font-mono text-[11px] text-[#6E6E80]">
+                      <span className="ml-1.5 font-mono text-[11px] text-ink-faint">
                         {log.resource_id.slice(0, 8)}
                       </span>
                     )}
                   </td>
-                  <td className="px-4 py-3 font-mono text-[12px] text-[#6E6E80]">
+                  <td className="px-4 py-3 font-mono text-[12px] text-ink-faint">
                     {log.ip_address ?? "—"}
                   </td>
                 </tr>

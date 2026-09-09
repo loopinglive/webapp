@@ -38,7 +38,7 @@ export function AttendeeSegmentTabs({
 
   return (
     <div className="space-y-2">
-      <div className="flex flex-wrap items-center gap-1 rounded-full border border-[#1E1E2E] bg-[#12121A] p-1">
+      <div className="flex flex-wrap items-center gap-1 rounded-full border border-hairline bg-surface p-1">
         {tabs.map((tab) => {
           const selected = active === tab.id;
           return (
@@ -48,15 +48,15 @@ export function AttendeeSegmentTabs({
               className={cn(
                 "flex items-center gap-1.5 rounded-full px-3.5 py-1.5 text-[12.5px] transition-colors duration-200",
                 selected
-                  ? "bg-[#6C47FF] text-white"
-                  : "text-[#A0A0B0] hover:bg-white/5 hover:text-white"
+                  ? "bg-accent text-white"
+                  : "text-ink-muted hover:bg-surface-2 hover:text-ink"
               )}
             >
               {tab.label}
               <span
                 className={cn(
                   "rounded-full px-1.5 text-[10px] tabular-nums",
-                  selected ? "bg-white/20" : "bg-white/5"
+                  selected ? "bg-surface-2" : "bg-surface-2"
                 )}
               >
                 {tab.count}
@@ -68,7 +68,7 @@ export function AttendeeSegmentTabs({
 
       {showDepth && (
         <div className="flex flex-wrap items-center gap-1.5 pl-1">
-          <span className="text-[11px] text-[#A0A0B0]">Depth:</span>
+          <span className="text-[11px] text-ink-muted">Depth:</span>
           {WATCHED_SEGMENTS.map((segment) => {
             const meta = SEGMENT_META[segment];
             const selected = active === segment;
@@ -78,7 +78,7 @@ export function AttendeeSegmentTabs({
                 onClick={() => onSelect(selected ? WATCHED_FILTER : segment)}
                 className={cn(
                   "rounded-full border px-2.5 py-1 text-[11.5px] transition-colors duration-200",
-                  selected ? "text-white" : "border-[#2A2A3A] text-[#A0A0B0] hover:text-white"
+                  selected ? "text-ink" : "border-surface-3 text-ink-muted hover:text-ink"
                 )}
                 style={
                   selected

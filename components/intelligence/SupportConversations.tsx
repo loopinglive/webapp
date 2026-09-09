@@ -8,7 +8,7 @@ import { useSupportConversations, type SupportConversation } from "@/hooks/useSu
 import { cn } from "@/lib/utils";
 
 const STATUS_STYLE: Record<SupportConversation["status"], string> = {
-  open: "bg-[#00D4FF]/15 text-[#00D4FF]",
+  open: "bg-cyan/15 text-cyan",
   resolved: "bg-[#00C851]/15 text-[#00C851]",
   escalated: "bg-[#FF9500]/15 text-[#FF9500]",
 };
@@ -27,10 +27,10 @@ export function SupportConversations({ webinarId }: { webinarId: string }) {
       <div className="px-6 py-6 lg:px-8">
         {loading ? (
           <div className="grid h-40 place-items-center">
-            <Loader2 className="h-5 w-5 animate-spin text-[#6C47FF]" />
+            <Loader2 className="h-5 w-5 animate-spin text-accent" />
           </div>
         ) : !conversations || conversations.length === 0 ? (
-          <div className="grid h-32 place-items-center rounded-xl border border-dashed border-[#1E1E2E] text-[13px] text-[#6A6A80]">
+          <div className="grid h-32 place-items-center rounded-xl border border-dashed border-hairline text-[13px] text-ink-faint">
             No support conversations yet.
           </div>
         ) : (
@@ -38,16 +38,16 @@ export function SupportConversations({ webinarId }: { webinarId: string }) {
             {conversations.map((conversation) => {
               const open = openId === conversation.id;
               return (
-                <div key={conversation.id} className="rounded-xl border border-[#1E1E2E] bg-[#12121A]">
+                <div key={conversation.id} className="rounded-xl border border-hairline bg-surface">
                   <div
                     onClick={() => setOpenId(open ? null : conversation.id)}
                     className="flex cursor-pointer flex-wrap items-center gap-3 px-4 py-3.5"
                   >
                     <div className="min-w-0 flex-1">
-                      <p className="truncate text-[13.5px] font-medium text-white">
+                      <p className="truncate text-[13.5px] font-medium text-ink">
                         {conversation.registrant?.full_name ?? "Unknown attendee"}
                       </p>
-                      <p className="truncate text-[11.5px] text-[#6A6A80]">
+                      <p className="truncate text-[11.5px] text-ink-faint">
                         {conversation.messages.length} messages
                       </p>
                     </div>
@@ -65,16 +65,16 @@ export function SupportConversations({ webinarId }: { webinarId: string }) {
                           e.stopPropagation();
                           void setStatus(conversation.id, "resolved");
                         }}
-                        className="rounded-full border border-[#2A2A3A] px-3 py-1 text-[11.5px] text-[#A0A0B0] transition-colors hover:border-[#3A3A4A] hover:text-white"
+                        className="rounded-full border border-surface-3 px-3 py-1 text-[11.5px] text-ink-muted transition-colors hover:border-surface-3 hover:text-ink"
                       >
                         Mark resolved
                       </button>
                     )}
-                    <ChevronDown className={cn("h-4 w-4 text-[#6A6A80] transition-transform", open && "rotate-180")} />
+                    <ChevronDown className={cn("h-4 w-4 text-ink-faint transition-transform", open && "rotate-180")} />
                   </div>
 
                   {open && (
-                    <div className="border-t border-[#1E1E2E] px-4 py-3">
+                    <div className="border-t border-hairline px-4 py-3">
                       <div className="flex flex-col gap-2">
                         {conversation.messages.map((message, index) => (
                           <Fragment key={index}>
@@ -82,8 +82,8 @@ export function SupportConversations({ webinarId }: { webinarId: string }) {
                               className={cn(
                                 "max-w-[80%] rounded-lg px-3 py-2 text-[12.5px]",
                                 message.role === "attendee"
-                                  ? "self-start bg-[#1A1A2A] text-[#C8C8D4]"
-                                  : "self-end ml-auto bg-[#6C47FF]/15 text-white"
+                                  ? "self-start bg-surface-2 text-[#C8C8D4]"
+                                  : "self-end ml-auto bg-accent/15 text-ink"
                               )}
                             >
                               {message.content}

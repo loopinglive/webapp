@@ -82,7 +82,7 @@ export function GdprRequestForm({ initialWebinarId }: { initialWebinarId?: strin
           {REQUEST_TYPES.map((type) => (
             <label
               key={type.value}
-              className="flex cursor-pointer items-center gap-2.5 rounded-lg px-2 py-1.5 text-[13px] text-ink-muted hover:bg-white/5"
+              className="flex cursor-pointer items-center gap-2.5 rounded-lg px-2 py-1.5 text-[13px] text-ink-muted hover:bg-surface-2"
             >
               <input
                 type="radio"

@@ -75,7 +75,7 @@ export function CommentForm({
 
   if (!personas.length) {
     return (
-      <p className="rounded-xl border border-dashed border-[#3A3A4A] px-4 py-10 text-center text-[12.5px] text-[#A0A0B0]">
+      <p className="rounded-xl border border-dashed border-surface-3 px-4 py-10 text-center text-[12.5px] text-ink-muted">
         Create a persona first — someone has to say it.
       </p>
     );
@@ -83,7 +83,7 @@ export function CommentForm({
 
   return (
     <div className="space-y-4">
-      <h3 className="text-[11px] font-semibold uppercase tracking-[0.16em] text-[#A0A0B0]">
+      <h3 className="text-[11px] font-semibold uppercase tracking-[0.16em] text-ink-muted">
         {comment ? "Edit comment" : "New comment"}
       </h3>
 
@@ -92,7 +92,7 @@ export function CommentForm({
       </Field>
 
       <div>
-        <span className="text-[12px] font-medium text-[#A0A0B0]">Who says it</span>
+        <span className="text-[12px] font-medium text-ink-muted">Who says it</span>
         <div className="mt-2 flex flex-wrap gap-1.5">
           {personas.map((persona) => {
             const active = persona.id === personaId;
@@ -105,8 +105,8 @@ export function CommentForm({
                 className={cn(
                   "flex items-center gap-1.5 rounded-full border px-2 py-1 pr-3 text-[12px] transition-colors duration-200",
                   active
-                    ? "bg-white/5 text-white"
-                    : "border-[#2A2A3A] text-[#A0A0B0] hover:text-white"
+                    ? "bg-surface-2 text-ink"
+                    : "border-surface-3 text-ink-muted hover:text-ink"
                 )}
               >
                 <Avatar
@@ -150,7 +150,7 @@ export function CommentForm({
               </li>
             ))}
           </ul>
-          <p className="mt-2 text-[11px] leading-relaxed text-[#6E6E80]">
+          <p className="mt-2 text-[11px] leading-relaxed text-ink-faint">
             This persona is a character you wrote, so anything it says is
             something you are saying. You can post it anyway.
           </p>

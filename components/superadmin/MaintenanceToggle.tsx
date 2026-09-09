@@ -67,10 +67,10 @@ export function MaintenanceToggle() {
   if (!status) return null;
 
   return (
-    <section className="rounded-2xl border border-[#1E1E2E] bg-[#12121A] p-5">
+    <section className="rounded-2xl border border-hairline bg-surface p-5">
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div>
-          <h2 className="flex items-center gap-2 text-[14px] font-semibold text-white">
+          <h2 className="flex items-center gap-2 text-[14px] font-semibold text-ink">
             <Power
               className={`h-4 w-4 ${
                 status.enabled ? "text-[#FF5A5A]" : "text-[#22C55E]"
@@ -78,7 +78,7 @@ export function MaintenanceToggle() {
             />
             {status.enabled ? "Down for maintenance" : "Serving normally"}
           </h2>
-          <p className="mt-1 text-[11.5px] leading-relaxed text-[#6E6E80]">
+          <p className="mt-1 text-[11.5px] leading-relaxed text-ink-faint">
             Attendee pages, registration and the API return a maintenance
             response. This console, the login page, scheduled jobs and incoming
             webhooks keep working — so you can get back in, and so the sessions
@@ -108,7 +108,7 @@ export function MaintenanceToggle() {
               </button>
               <button
                 onClick={() => setConfirming(false)}
-                className="h-9 rounded-lg px-2.5 text-[12.5px] text-[#A0A0B0] hover:text-white"
+                className="h-9 rounded-lg px-2.5 text-[12.5px] text-ink-muted hover:text-ink"
               >
                 Cancel
               </button>
@@ -116,7 +116,7 @@ export function MaintenanceToggle() {
           ) : (
             <button
               onClick={() => setConfirming(true)}
-              className="inline-flex h-9 shrink-0 items-center gap-2 rounded-lg border border-[#1E1E2E] px-3.5 text-[12.5px] text-[#A0A0B0] hover:border-[#FF5A5A]/50 hover:text-[#FF5A5A]"
+              className="inline-flex h-9 shrink-0 items-center gap-2 rounded-lg border border-hairline px-3.5 text-[12.5px] text-ink-muted hover:border-[#FF5A5A]/50 hover:text-[#FF5A5A]"
             >
               Take the site down
             </button>
@@ -132,7 +132,7 @@ export function MaintenanceToggle() {
       )}
 
       <label className="mt-4 block">
-        <span className="text-[12px] text-[#A0A0B0]">
+        <span className="text-[12px] text-ink-muted">
           What visitors see while it is down
         </span>
         <textarea
@@ -140,16 +140,16 @@ export function MaintenanceToggle() {
           onChange={(event) => setMessage(event.target.value)}
           rows={2}
           placeholder="We are carrying out planned maintenance and will be back shortly."
-          className="mt-1.5 w-full rounded-xl border border-[#1E1E2E] bg-[#0D0D15] px-3.5 py-2.5 text-[13px] text-white placeholder:text-[#4A4A5C] focus:border-[#6C47FF] focus:outline-none"
+          className="mt-1.5 w-full rounded-xl border border-hairline bg-void px-3.5 py-2.5 text-[13px] text-ink placeholder:text-ink-faint focus:border-accent focus:outline-none"
         />
-        <span className="mt-1 block text-[11px] text-[#6E6E80]">
+        <span className="mt-1 block text-[11px] text-ink-faint">
           &ldquo;Back at 3pm UTC after a database migration&rdquo; is a much
           better thing to read than &ldquo;back shortly&rdquo;, and it can only
           be written by someone who knows.
         </span>
       </label>
 
-      <p className="mt-3 text-[11px] text-[#6E6E80]">
+      <p className="mt-3 text-[11px] text-ink-faint">
         Takes up to 30 seconds to reach every request — the flag is cached
         rather than read on every page load.
       </p>

@@ -35,7 +35,7 @@ export function AdminMessageCard({
         "group rounded-xl px-3 py-2.5 transition-colors",
         // Rule 3: real users are the leads. They should be findable at a glance.
         isReal
-          ? "border-l-[3px] border-[#6C47FF] bg-[#6C47FF]/12"
+          ? "border-l-[3px] border-accent bg-accent/12"
           : "border-l-[3px] border-transparent hover:bg-white/[0.03]"
       )}
     >
@@ -49,17 +49,17 @@ export function AdminMessageCard({
 
         <div className="min-w-0 flex-1">
           <div className="flex flex-wrap items-baseline gap-x-2 gap-y-1">
-            <span className="text-[13px] font-semibold text-white">
+            <span className="text-[13px] font-semibold text-ink">
               {message.sender_name}
             </span>
             {message.sender_location && (
-              <span className="text-[11px] text-[#A0A0B0]/70">
+              <span className="text-[11px] text-ink-muted/70">
                 from {message.sender_location}
               </span>
             )}
 
             {isReal && (
-              <span className="rounded-full bg-[#6C47FF] px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-[0.1em] text-white">
+              <span className="rounded-full bg-accent px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-[0.1em] text-white">
                 Real user
               </span>
             )}
@@ -77,13 +77,13 @@ export function AdminMessageCard({
 
             <time
               dateTime={message.sent_at}
-              className="ml-auto shrink-0 text-[10.5px] tabular-nums text-[#A0A0B0]/60"
+              className="ml-auto shrink-0 text-[10.5px] tabular-nums text-ink-muted/60"
             >
               {formatClock(new Date(message.sent_at))}
             </time>
           </div>
 
-          <p className="mt-1 break-words text-[13px] leading-relaxed text-[#A0A0B0]">
+          <p className="mt-1 break-words text-[13px] leading-relaxed text-ink-muted">
             {message.content}
           </p>
         </div>
@@ -94,8 +94,8 @@ export function AdminMessageCard({
           className={cn(
             "flex h-7 shrink-0 items-center gap-1.5 self-start rounded-full border px-3 text-[11px] transition-all duration-200",
             replyOpen
-              ? "border-[#6C47FF] bg-[#6C47FF]/15 text-white"
-              : "border-[#1E1E2E] text-[#A0A0B0] opacity-0 hover:border-[#6C47FF]/60 hover:text-white focus-visible:opacity-100 group-hover:opacity-100"
+              ? "border-accent bg-accent/15 text-ink"
+              : "border-hairline text-ink-muted opacity-0 hover:border-accent/60 hover:text-ink focus-visible:opacity-100 group-hover:opacity-100"
           )}
         >
           <CornerDownLeft className="h-3 w-3" />

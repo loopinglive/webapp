@@ -177,7 +177,7 @@ function PartnershipRow({
             <span className="truncate text-[13px] text-ink">{partnership.partner_platform_url}</span>
             <span
               className={`rounded-full px-2 py-0.5 text-[10px] ${
-                partnership.status === "active" ? "bg-[#00C851]/15 text-[#00C851]" : "bg-white/8 text-ink-faint"
+                partnership.status === "active" ? "bg-[#00C851]/15 text-[#00C851]" : "bg-surface-2 text-ink-faint"
               }`}
             >
               {partnership.status}

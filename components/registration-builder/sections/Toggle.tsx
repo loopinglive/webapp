@@ -16,9 +16,9 @@ export function Toggle({
   return (
     <label className="flex cursor-pointer items-start justify-between gap-3">
       <span className="min-w-0">
-        <span className="block text-[12.5px] text-white">{label}</span>
+        <span className="block text-[12.5px] text-ink">{label}</span>
         {hint && (
-          <span className="mt-0.5 block text-[11px] leading-relaxed text-[#A0A0B0]">
+          <span className="mt-0.5 block text-[11px] leading-relaxed text-ink-muted">
             {hint}
           </span>
         )}
@@ -32,7 +32,7 @@ export function Toggle({
         onClick={() => onChange(!checked)}
         className={cn(
           "relative mt-0.5 h-5 w-9 shrink-0 rounded-full transition-colors duration-200",
-          checked ? "bg-[#6C47FF]" : "bg-[#3A3A4A]"
+          checked ? "bg-accent" : "bg-surface-3"
         )}
       >
         <span

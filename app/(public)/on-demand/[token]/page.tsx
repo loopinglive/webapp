@@ -66,9 +66,9 @@ export default async function OnDemandPage({
   if (!data) notFound();
 
   return (
-    <main className="min-h-dvh bg-[#0A0A0F] px-6 py-10 text-white">
+    <main className="min-h-dvh bg-void px-6 py-10 text-ink">
       <div className="mx-auto max-w-5xl">
-        <p className="mb-1 text-[12px] font-semibold uppercase tracking-[0.08em] text-[#6C47FF]">
+        <p className="mb-1 text-[12px] font-semibold uppercase tracking-[0.08em] text-accent">
           Watch on demand
         </p>
         <h1 className="mb-6 text-[24px] font-semibold tracking-[-0.02em]">{data.webinar.title}</h1>

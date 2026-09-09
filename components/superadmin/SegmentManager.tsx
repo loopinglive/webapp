@@ -183,8 +183,8 @@ export function SegmentManager() {
   return (
     <div className="space-y-8 px-6 py-6 lg:px-8">
       {/* Build */}
-      <section className="max-w-[680px] rounded-2xl border border-[#1E1E2E] bg-[#12121A] p-5">
-        <h2 className="text-[15px] font-semibold text-white">Build a segment</h2>
+      <section className="max-w-[680px] rounded-2xl border border-hairline bg-surface p-5">
+        <h2 className="text-[15px] font-semibold text-ink">Build a segment</h2>
 
         <div className="mt-3 flex flex-wrap gap-1.5">
           {PRESETS.map((preset) => (
@@ -195,7 +195,7 @@ export function SegmentManager() {
                 setName(preset.name);
               }}
               title={preset.description}
-              className="rounded-full border border-[#1E1E2E] px-3 py-1.5 text-[12px] text-[#A0A0B0] transition-colors hover:border-[#6C47FF]/50 hover:text-white"
+              className="rounded-full border border-hairline px-3 py-1.5 text-[12px] text-ink-muted transition-colors hover:border-accent/50 hover:text-ink"
             >
               {preset.name}
             </button>
@@ -204,7 +204,7 @@ export function SegmentManager() {
 
         <div className="mt-5 space-y-3.5">
           <div>
-            <p className="mb-1.5 text-[12px] text-[#A0A0B0]">On plan</p>
+            <p className="mb-1.5 text-[12px] text-ink-muted">On plan</p>
             <div className="flex flex-wrap gap-1.5">
               {PLANS.map((plan) => {
                 const on = filters.plan?.includes(plan.slug) ?? false;
@@ -221,8 +221,8 @@ export function SegmentManager() {
                     className={cn(
                       "rounded-full border px-3 py-1 text-[12px] transition-colors",
                       on
-                        ? "border-[#6C47FF] bg-[#6C47FF]/15 text-white"
-                        : "border-[#1E1E2E] text-[#6E6E80] hover:text-white"
+                        ? "border-accent bg-accent/15 text-ink"
+                        : "border-hairline text-ink-faint hover:text-ink"
                     )}
                   >
                     {plan.name}
@@ -247,7 +247,7 @@ export function SegmentManager() {
 
           <div className="grid gap-3 sm:grid-cols-2">
             <label className="block">
-              <span className="text-[12px] text-[#A0A0B0]">Signed up within (days)</span>
+              <span className="text-[12px] text-ink-muted">Signed up within (days)</span>
               <input
                 inputMode="numeric"
                 value={filters.signedUpWithinDays ?? ""}
@@ -258,12 +258,12 @@ export function SegmentManager() {
                   )
                 }
                 placeholder="any"
-                className="mt-1.5 h-9 w-full rounded-lg border border-[#1E1E2E] bg-[#0D0D15] px-3 text-[13px] text-white placeholder:text-[#4A4A5C] focus:outline-none"
+                className="mt-1.5 h-9 w-full rounded-lg border border-hairline bg-void px-3 text-[13px] text-ink placeholder:text-ink-faint focus:outline-none"
               />
             </label>
 
             <label className="block">
-              <span className="flex items-center gap-1.5 text-[12px] text-[#A0A0B0]">
+              <span className="flex items-center gap-1.5 text-[12px] text-ink-muted">
                 Not seen in (days)
                 <HelpTooltip content="Matches accounts whose last sign-in is older than this, and accounts that have never signed in." />
               </span>
@@ -277,23 +277,23 @@ export function SegmentManager() {
                   )
                 }
                 placeholder="any"
-                className="mt-1.5 h-9 w-full rounded-lg border border-[#1E1E2E] bg-[#0D0D15] px-3 text-[13px] text-white placeholder:text-[#4A4A5C] focus:outline-none"
+                className="mt-1.5 h-9 w-full rounded-lg border border-hairline bg-void px-3 text-[13px] text-ink placeholder:text-ink-faint focus:outline-none"
               />
             </label>
           </div>
         </div>
 
         {visiblePreview && (
-          <div className="mt-4 flex flex-wrap items-center gap-3 rounded-xl border border-[#1E1E2E] bg-[#0D0D15] px-4 py-3">
-            <Users className="h-4 w-4 text-[#00D4FF]" />
-            <span className="text-[14px] font-semibold tabular-nums text-white">
+          <div className="mt-4 flex flex-wrap items-center gap-3 rounded-xl border border-hairline bg-void px-4 py-3">
+            <Users className="h-4 w-4 text-cyan" />
+            <span className="text-[14px] font-semibold tabular-nums text-ink">
               {visiblePreview.count.toLocaleString()}
             </span>
-            <span className="text-[12.5px] text-[#A0A0B0]">
+            <span className="text-[12.5px] text-ink-muted">
               {visiblePreview.count === 1 ? "account matches" : "accounts match"}
             </span>
             {visiblePreview.sample.length > 0 && (
-              <span className="ml-auto truncate text-[11.5px] text-[#6E6E80]">
+              <span className="ml-auto truncate text-[11.5px] text-ink-faint">
                 {visiblePreview.sample.slice(0, 2).join(", ")}
                 {visiblePreview.count > 2 && ` +${visiblePreview.count - 2} more`}
               </span>
@@ -306,12 +306,12 @@ export function SegmentManager() {
             value={name}
             onChange={(e) => setName(e.target.value)}
             placeholder="Name this segment"
-            className="h-9 flex-1 rounded-lg border border-[#1E1E2E] bg-[#0D0D15] px-3 text-[13px] text-white placeholder:text-[#4A4A5C] focus:outline-none"
+            className="h-9 flex-1 rounded-lg border border-hairline bg-void px-3 text-[13px] text-ink placeholder:text-ink-faint focus:outline-none"
           />
           <button
             onClick={save}
             disabled={busy !== null || !name.trim() || !visiblePreview}
-            className="inline-flex h-9 items-center gap-2 rounded-full border border-[#2A2A3A] px-4 text-[12.5px] text-white hover:border-[#6C47FF]/50 disabled:opacity-40"
+            className="inline-flex h-9 items-center gap-2 rounded-full border border-surface-3 px-4 text-[12.5px] text-ink hover:border-accent/50 disabled:opacity-40"
           >
             {busy === "save" && <Loader2 className="h-3.5 w-3.5 animate-spin" />}
             Save segment
@@ -320,10 +320,10 @@ export function SegmentManager() {
       </section>
 
       {/* Send */}
-      <section className="max-w-[680px] rounded-2xl border border-[#1E1E2E] bg-[#12121A] p-5">
-        <h2 className="text-[15px] font-semibold text-white">Email this segment</h2>
-        <p className="mt-0.5 text-[12px] text-[#6E6E80]">
-          Uses the platform email design. <code className="text-[#00D4FF]">{"{{name}}"}</code>{" "}
+      <section className="max-w-[680px] rounded-2xl border border-hairline bg-surface p-5">
+        <h2 className="text-[15px] font-semibold text-ink">Email this segment</h2>
+        <p className="mt-0.5 text-[12px] text-ink-faint">
+          Uses the platform email design. <code className="text-cyan">{"{{name}}"}</code>{" "}
           becomes their first name.
         </p>
 
@@ -332,20 +332,20 @@ export function SegmentManager() {
             value={subject}
             onChange={(e) => setSubject(e.target.value)}
             placeholder="Subject"
-            className="h-10 w-full rounded-xl border border-[#1E1E2E] bg-[#0D0D15] px-3.5 text-[13px] text-white placeholder:text-[#4A4A5C] focus:border-[#6C47FF] focus:outline-none"
+            className="h-10 w-full rounded-xl border border-hairline bg-void px-3.5 text-[13px] text-ink placeholder:text-ink-faint focus:border-accent focus:outline-none"
           />
           <textarea
             value={body}
             onChange={(e) => setBody(e.target.value)}
             rows={6}
             placeholder={"Hi {{name}},\n\nBlank lines separate paragraphs. Lines starting with - become bullets."}
-            className="w-full rounded-xl border border-[#1E1E2E] bg-[#0D0D15] px-3.5 py-2.5 text-[13px] leading-relaxed text-white placeholder:text-[#4A4A5C] focus:border-[#6C47FF] focus:outline-none"
+            className="w-full rounded-xl border border-hairline bg-void px-3.5 py-2.5 text-[13px] leading-relaxed text-ink placeholder:text-ink-faint focus:border-accent focus:outline-none"
           />
 
           <button
             onClick={send}
             disabled={busy !== null || !subject.trim() || !body.trim() || !visiblePreview?.count}
-            className="inline-flex h-10 items-center gap-2 rounded-full bg-[#6C47FF] px-5 text-[13px] font-semibold text-white hover:bg-[#7C5AFF] disabled:opacity-40"
+            className="inline-flex h-10 items-center gap-2 rounded-full bg-accent px-5 text-[13px] font-semibold text-white hover:bg-accent-soft disabled:opacity-40"
           >
             {busy === "send" ? (
               <Loader2 className="h-3.5 w-3.5 animate-spin" />
@@ -361,7 +361,7 @@ export function SegmentManager() {
 
       {/* Saved */}
       <section>
-        <h2 className="text-[15px] font-semibold text-white">Saved segments</h2>
+        <h2 className="text-[15px] font-semibold text-ink">Saved segments</h2>
         {data.segments.length === 0 ? (
           <EmptyState
             className="mt-3"
@@ -374,20 +374,20 @@ export function SegmentManager() {
             {data.segments.map((segment) => (
               <li
                 key={segment.id}
-                className="flex items-center gap-3 rounded-xl border border-[#1E1E2E] bg-[#12121A] px-4 py-3"
+                className="flex items-center gap-3 rounded-xl border border-hairline bg-surface px-4 py-3"
               >
                 <div className="min-w-0 flex-1">
-                  <p className="text-[13px] text-white">{segment.name}</p>
+                  <p className="text-[13px] text-ink">{segment.name}</p>
                   {segment.description && (
-                    <p className="text-[11.5px] text-[#6E6E80]">{segment.description}</p>
+                    <p className="text-[11.5px] text-ink-faint">{segment.description}</p>
                   )}
                 </div>
-                <span className="text-[13px] tabular-nums text-[#00D4FF]">
+                <span className="text-[13px] tabular-nums text-cyan">
                   {segment.count.toLocaleString()}
                 </span>
                 <button
                   onClick={() => setFilters(segment.filters)}
-                  className="text-[12px] text-[#A0A0B0] hover:text-white"
+                  className="text-[12px] text-ink-muted hover:text-ink"
                 >
                   Use
                 </button>
@@ -400,14 +400,14 @@ export function SegmentManager() {
       {/* History */}
       {data.broadcasts.length > 0 && (
         <section>
-          <h2 className="text-[15px] font-semibold text-white">Recent broadcasts</h2>
+          <h2 className="text-[15px] font-semibold text-ink">Recent broadcasts</h2>
           <ul className="mt-3 space-y-1.5">
             {data.broadcasts.map((broadcast) => (
               <li
                 key={broadcast.id}
-                className="flex items-center gap-3 rounded-xl border border-[#1E1E2E] bg-[#12121A] px-4 py-2.5 text-[12.5px]"
+                className="flex items-center gap-3 rounded-xl border border-hairline bg-surface px-4 py-2.5 text-[12.5px]"
               >
-                <span className="min-w-0 flex-1 truncate text-white">
+                <span className="min-w-0 flex-1 truncate text-ink">
                   {broadcast.subject}
                 </span>
                 <span className="tabular-nums text-[#00C851]">{broadcast.sent_count} sent</span>
@@ -416,7 +416,7 @@ export function SegmentManager() {
                     {broadcast.failed_count} failed
                   </span>
                 )}
-                <span className="text-[11px] text-[#6E6E80]">
+                <span className="text-[11px] text-ink-faint">
                   {broadcast.sent_at
                     ? new Date(broadcast.sent_at).toLocaleDateString(undefined, {
                         dateStyle: "medium",
@@ -450,8 +450,8 @@ function Tri({
 
   return (
     <div className="flex items-center gap-3">
-      <span className="flex-1 text-[12.5px] text-[#A0A0B0]">{label}</span>
-      <div className="flex gap-1 rounded-full border border-[#1E1E2E] bg-[#0D0D15] p-0.5">
+      <span className="flex-1 text-[12.5px] text-ink-muted">{label}</span>
+      <div className="flex gap-1 rounded-full border border-hairline bg-void p-0.5">
         {options.map((option) => (
           <button
             key={String(option.value)}
@@ -459,8 +459,8 @@ function Tri({
             className={cn(
               "rounded-full px-2.5 py-1 text-[11.5px] transition-colors",
               value === option.value
-                ? "bg-[#6C47FF] text-white"
-                : "text-[#6E6E80] hover:text-white"
+                ? "bg-accent text-white"
+                : "text-ink-faint hover:text-ink"
             )}
           >
             {option.label}

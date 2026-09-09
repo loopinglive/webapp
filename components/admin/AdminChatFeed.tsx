@@ -41,7 +41,7 @@ export function AdminChatFeed({
       className="min-h-0 flex-1 space-y-1.5 overflow-y-auto px-3 py-4"
     >
       {messages.length === 0 ? (
-        <p className="px-3 py-12 text-center text-[13px] text-[#A0A0B0]/70">
+        <p className="px-3 py-12 text-center text-[13px] text-ink-muted/70">
           Nothing matches this filter yet.
         </p>
       ) : (

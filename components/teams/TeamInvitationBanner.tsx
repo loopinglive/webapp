@@ -77,7 +77,7 @@ export function TeamInvitationBanner({ token }: { token: string }) {
   if (state.status === "loading") {
     return (
       <div className="grid h-40 place-items-center">
-        <Loader2 className="h-5 w-5 animate-spin text-[#6C47FF]" />
+        <Loader2 className="h-5 w-5 animate-spin text-accent" />
       </div>
     );
   }
@@ -92,11 +92,11 @@ export function TeamInvitationBanner({ token }: { token: string }) {
 
   return (
     <div className="mx-auto max-w-md px-6 py-16 text-center">
-      <h1 className="text-[20px] font-semibold text-white">
+      <h1 className="text-[20px] font-semibold text-ink">
         Join {state.status === "ready" ? state.team?.name ?? "this team" : "…"}
       </h1>
       {state.status === "ready" && (
-        <p className="mt-2 text-[13.5px] leading-relaxed text-[#A0A0B0]">
+        <p className="mt-2 text-[13.5px] leading-relaxed text-ink-muted">
           You have been invited as {TEAM_ROLE_LABELS[state.role]}. This must be
           accepted while signed in as {state.email}.
         </p>
@@ -104,7 +104,7 @@ export function TeamInvitationBanner({ token }: { token: string }) {
       <button
         onClick={() => void accept()}
         disabled={state.status === "accepting"}
-        className="mt-5 inline-flex h-11 items-center gap-2 rounded-xl bg-[#6C47FF] px-5 text-[14px] font-medium text-white hover:bg-[#5B39E0] disabled:opacity-60"
+        className="mt-5 inline-flex h-11 items-center gap-2 rounded-xl bg-accent px-5 text-[14px] font-medium text-white hover:bg-accent-deep disabled:opacity-60"
       >
         {state.status === "accepting" && <Loader2 className="h-4 w-4 animate-spin" />}
         Accept invitation

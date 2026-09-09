@@ -125,14 +125,14 @@ export function EmailOperations() {
   return (
     <div className="space-y-6">
       <div className="flex flex-wrap items-center gap-2">
-        <div className="flex gap-1 rounded-full border border-[#1E1E2E] bg-[#12121A] p-1">
+        <div className="flex gap-1 rounded-full border border-hairline bg-surface p-1">
           {RANGES.map((option) => (
             <button
               key={option}
               onClick={() => setDays(option)}
               className={cn(
                 "rounded-full px-3 py-1 text-[12px] transition-colors",
-                days === option ? "bg-[#6C47FF] text-white" : "text-[#A0A0B0] hover:text-white"
+                days === option ? "bg-accent text-white" : "text-ink-muted hover:text-ink"
               )}
             >
               {option} days
@@ -143,7 +143,7 @@ export function EmailOperations() {
         <select
           value={channel}
           onChange={(event) => setChannel(event.target.value)}
-          className="h-8 rounded-full border border-[#1E1E2E] bg-[#12121A] px-3 text-[12.5px] text-white focus:outline-none"
+          className="h-8 rounded-full border border-hairline bg-surface px-3 text-[12.5px] text-ink focus:outline-none"
         >
           <option value="all">All channels</option>
           <option value="email">Email</option>
@@ -154,7 +154,7 @@ export function EmailOperations() {
         <select
           value={status}
           onChange={(event) => setStatus(event.target.value)}
-          className="h-8 rounded-full border border-[#1E1E2E] bg-[#12121A] px-3 text-[12.5px] text-white focus:outline-none"
+          className="h-8 rounded-full border border-hairline bg-surface px-3 text-[12.5px] text-ink focus:outline-none"
         >
           <option value="all">Any status</option>
           <option value="sent">Sent</option>
@@ -183,15 +183,15 @@ export function EmailOperations() {
 
       {/* Per channel */}
       <section>
-        <h2 className="text-[15px] font-semibold text-white">By channel</h2>
+        <h2 className="text-[15px] font-semibold text-ink">By channel</h2>
         <div className="mt-3 grid gap-3 sm:grid-cols-3">
           {data.channels.map((row) => (
             <div
               key={row.channel}
-              className="rounded-xl border border-[#1E1E2E] bg-[#12121A] p-4"
+              className="rounded-xl border border-hairline bg-surface p-4"
             >
               <div className="flex items-center justify-between">
-                <span className="text-[13px] font-medium capitalize text-white">
+                <span className="text-[13px] font-medium capitalize text-ink">
                   {row.channel}
                 </span>
                 <span
@@ -211,7 +211,7 @@ export function EmailOperations() {
                   ["Cancelled", row.cancelled, "#6E6E80"],
                 ].map(([label, value, colour]) => (
                   <div key={String(label)} className="flex justify-between">
-                    <dt className="text-[#6E6E80]">{label}</dt>
+                    <dt className="text-ink-faint">{label}</dt>
                     <dd className="tabular-nums" style={{ color: colour as string }}>
                       {Number(value).toLocaleString()}
                     </dd>
@@ -223,7 +223,7 @@ export function EmailOperations() {
         </div>
 
         {email && email.total === 0 && (
-          <p className="mt-3 text-[12.5px] text-[#6E6E80]">
+          <p className="mt-3 text-[12.5px] text-ink-faint">
             No messages queued in this window. Automation only schedules messages once a
             webinar has registrants.
           </p>
@@ -233,11 +233,11 @@ export function EmailOperations() {
       {/* Failures by template */}
       {data.failuresByTemplate.length > 0 && (
         <section>
-          <h2 className="flex items-center gap-2 text-[15px] font-semibold text-white">
+          <h2 className="flex items-center gap-2 text-[15px] font-semibold text-ink">
             <AlertTriangle className="h-4 w-4 text-[#FFB020]" />
             Failures by template
           </h2>
-          <p className="mt-0.5 text-[12.5px] text-[#6E6E80]">
+          <p className="mt-0.5 text-[12.5px] text-ink-faint">
             Grouped so one broken template is obvious rather than diluted across the
             total.
           </p>
@@ -246,15 +246,15 @@ export function EmailOperations() {
             {data.failuresByTemplate.map((row) => (
               <li
                 key={`${row.template}-${row.channel}`}
-                className="flex items-start gap-3 rounded-xl border border-[#1E1E2E] bg-[#12121A] px-4 py-3"
+                className="flex items-start gap-3 rounded-xl border border-hairline bg-surface px-4 py-3"
               >
                 <span className="shrink-0 rounded-md bg-[#FFB020]/12 px-2 py-0.5 font-mono text-[11px] tabular-nums text-[#FFB020]">
                   {row.count}
                 </span>
                 <div className="min-w-0 flex-1">
-                  <p className="font-mono text-[12.5px] text-white">
+                  <p className="font-mono text-[12.5px] text-ink">
                     {row.template}
-                    <span className="ml-2 text-[11px] capitalize text-[#6E6E80]">
+                    <span className="ml-2 text-[11px] capitalize text-ink-faint">
                       {row.channel}
                     </span>
                   </p>
@@ -272,7 +272,7 @@ export function EmailOperations() {
 
       {/* Recent */}
       <section>
-        <h2 className="text-[15px] font-semibold text-white">Recent messages</h2>
+        <h2 className="text-[15px] font-semibold text-ink">Recent messages</h2>
 
         {data.messages.length === 0 ? (
           <EmptyState
@@ -282,15 +282,15 @@ export function EmailOperations() {
             description="Messages appear here as automation schedules and sends them. Try widening the range or clearing the filters."
           />
         ) : (
-          <div className="mt-3 overflow-x-auto rounded-xl border border-[#1E1E2E]">
+          <div className="mt-3 overflow-x-auto rounded-xl border border-hairline">
             <table className="w-full min-w-[880px]">
-              <thead className="bg-[#12121A]">
+              <thead className="bg-surface">
                 <tr>
                   {["When", "Channel", "Template", "Recipient", "Webinar", "Status", ""].map(
                     (h) => (
                       <th
                         key={h}
-                        className="px-4 py-2.5 text-left text-[10px] font-semibold uppercase tracking-[0.14em] text-[#6E6E80]"
+                        className="px-4 py-2.5 text-left text-[10px] font-semibold uppercase tracking-[0.14em] text-ink-faint"
                       >
                         {h}
                       </th>
@@ -298,25 +298,25 @@ export function EmailOperations() {
                   )}
                 </tr>
               </thead>
-              <tbody className="divide-y divide-[#1E1E2E]">
+              <tbody className="divide-y divide-hairline">
                 {data.messages.map((message) => (
                   <tr key={message.id}>
-                    <td className="px-4 py-3 text-[11.5px] text-[#6E6E80]">
+                    <td className="px-4 py-3 text-[11.5px] text-ink-faint">
                       {new Date(message.sent_at ?? message.scheduled_for).toLocaleString(
                         undefined,
                         { dateStyle: "short", timeStyle: "short" }
                       )}
                     </td>
-                    <td className="px-4 py-3 text-[12px] capitalize text-[#A0A0B0]">
+                    <td className="px-4 py-3 text-[12px] capitalize text-ink-muted">
                       {message.channel}
                     </td>
-                    <td className="px-4 py-3 font-mono text-[11.5px] text-[#A0A0B0]">
+                    <td className="px-4 py-3 font-mono text-[11.5px] text-ink-muted">
                       {message.template_key ?? "—"}
                     </td>
-                    <td className="px-4 py-3 text-[11.5px] text-[#6E6E80]">
+                    <td className="px-4 py-3 text-[11.5px] text-ink-faint">
                       {message.recipient_email ?? message.recipient_phone ?? "—"}
                     </td>
-                    <td className="max-w-[180px] truncate px-4 py-3 text-[11.5px] text-[#6E6E80]">
+                    <td className="max-w-[180px] truncate px-4 py-3 text-[11.5px] text-ink-faint">
                       {message.webinarTitle ?? "—"}
                     </td>
                     <td className="px-4 py-3">
@@ -337,7 +337,7 @@ export function EmailOperations() {
                         <button
                           onClick={() => retry(message.id)}
                           disabled={retrying === message.id}
-                          className="inline-flex h-7 items-center gap-1.5 rounded-lg border border-[#1E1E2E] px-2 text-[11.5px] text-[#A0A0B0] hover:text-white disabled:opacity-40"
+                          className="inline-flex h-7 items-center gap-1.5 rounded-lg border border-hairline px-2 text-[11.5px] text-ink-muted hover:text-ink disabled:opacity-40"
                         >
                           {retrying === message.id ? (
                             <Loader2 className="h-3 w-3 animate-spin" />
@@ -356,14 +356,14 @@ export function EmailOperations() {
         )}
       </section>
 
-      <p className="flex items-start gap-2 text-[12px] leading-relaxed text-[#6E6E80]">
+      <p className="flex items-start gap-2 text-[12px] leading-relaxed text-ink-faint">
         <Mail className="mt-0.5 h-3.5 w-3.5 shrink-0" />
         <span>
           Retrying hands the message back to the normal dispatcher, so every rule still
           applies — someone who has since unsubscribed, bought, or attended will not be
           messaged again. Bounced addresses are suppressed by Resend and cannot be
           resent to at all; check{" "}
-          <Link href="/superadmin/health" className="text-[#6C47FF]">
+          <Link href="/superadmin/health" className="text-accent">
             Platform health
           </Link>{" "}
           for provider status.
@@ -385,8 +385,8 @@ function Tile({
   accent?: string;
 }) {
   return (
-    <div className="rounded-xl border border-[#1E1E2E] bg-[#12121A] px-4 py-3.5">
-      <p className="text-[10px] font-semibold uppercase tracking-[0.14em] text-[#6E6E80]">
+    <div className="rounded-xl border border-hairline bg-surface px-4 py-3.5">
+      <p className="text-[10px] font-semibold uppercase tracking-[0.14em] text-ink-faint">
         {label}
       </p>
       <p
@@ -395,7 +395,7 @@ function Tile({
       >
         {value}
       </p>
-      {hint && <p className="mt-0.5 text-[11px] text-[#6E6E80]">{hint}</p>}
+      {hint && <p className="mt-0.5 text-[11px] text-ink-faint">{hint}</p>}
     </div>
   );
 }

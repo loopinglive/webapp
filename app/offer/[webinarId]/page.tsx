@@ -55,16 +55,16 @@ export default async function InternalOfferPage({
   const { headline, bullets, price, paragraphs } = parse(raw);
 
   return (
-    <main className="relative min-h-dvh overflow-hidden bg-[#0A0A0F] px-5 py-16">
+    <main className="relative min-h-dvh overflow-hidden bg-void px-5 py-16">
       <Aurora />
 
       <article className="relative mx-auto max-w-2xl">
-        <h1 className="text-balance text-4xl font-semibold leading-[1.08] tracking-[-0.03em] text-white sm:text-5xl">
+        <h1 className="text-balance text-4xl font-semibold leading-[1.08] tracking-[-0.03em] text-ink sm:text-5xl">
           {headline || offer.offer_title}
         </h1>
 
         {offer.offer_description && (
-          <p className="mt-5 text-pretty text-[16.5px] leading-relaxed text-[#A0A0B0]">
+          <p className="mt-5 text-pretty text-[16.5px] leading-relaxed text-ink-muted">
             {offer.offer_description}
           </p>
         )}
@@ -72,7 +72,7 @@ export default async function InternalOfferPage({
         {paragraphs.map((paragraph, index) => (
           <p
             key={index}
-            className="mt-4 text-pretty text-[15px] leading-relaxed text-[#A0A0B0]"
+            className="mt-4 text-pretty text-[15px] leading-relaxed text-ink-muted"
           >
             {paragraph}
           </p>
@@ -82,10 +82,10 @@ export default async function InternalOfferPage({
           <ul className="mt-8 space-y-3">
             {bullets.map((bullet, index) => (
               <li key={index} className="flex items-start gap-3">
-                <span className="mt-0.5 grid h-5 w-5 shrink-0 place-items-center rounded-full bg-[#6C47FF]/15">
-                  <Check className="h-3 w-3 text-[#6C47FF]" />
+                <span className="mt-0.5 grid h-5 w-5 shrink-0 place-items-center rounded-full bg-accent/15">
+                  <Check className="h-3 w-3 text-accent" />
                 </span>
-                <span className="text-[15px] leading-relaxed text-white">
+                <span className="text-[15px] leading-relaxed text-ink">
                   {bullet}
                 </span>
               </li>
@@ -93,14 +93,14 @@ export default async function InternalOfferPage({
           </ul>
         )}
 
-        <div className="mt-10 rounded-xl border border-white/8 bg-[#12121A]/80 p-7 text-center backdrop-blur-2xl">
+        <div className="mt-10 rounded-xl border border-hairline bg-surface/80 p-7 text-center backdrop-blur-2xl">
           {price && (
-            <p className="text-4xl font-semibold tracking-[-0.03em] text-white">
+            <p className="text-4xl font-semibold tracking-[-0.03em] text-ink">
               {price}
             </p>
           )}
           {/* Checkout lands in Phase 7 — until then this is the host's own link. */}
-          <p className="mt-4 text-[13px] text-[#A0A0B0]">
+          <p className="mt-4 text-[13px] text-ink-muted">
             Checkout is not connected yet. Add a Stripe account in billing to take
             payments here.
           </p>

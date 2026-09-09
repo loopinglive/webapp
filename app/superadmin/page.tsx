@@ -8,12 +8,12 @@ export const metadata: Metadata = { title: "Super admin" };
 export default function SuperAdminHome() {
   return (
     <>
-      <header className="flex flex-wrap items-end justify-between gap-4 border-b border-[#1E1E2E] px-6 py-5 lg:px-8">
+      <header className="flex flex-wrap items-end justify-between gap-4 border-b border-hairline px-6 py-5 lg:px-8">
         <div>
-          <h1 className="text-[20px] font-semibold tracking-[-0.02em] text-white">
+          <h1 className="text-[20px] font-semibold tracking-[-0.02em] text-ink">
             Platform overview
           </h1>
-          <p className="mt-0.5 text-[13px] text-[#A0A0B0]">
+          <p className="mt-0.5 text-[13px] text-ink-muted">
             Everything at a glance.
           </p>
         </div>
@@ -26,7 +26,7 @@ export default function SuperAdminHome() {
             <Link
               key={action.href}
               href={action.href}
-              className="rounded-full border border-[#2A2A3A] px-3.5 py-1.5 text-[12.5px] text-[#A0A0B0] transition-colors hover:border-[#6C47FF]/50 hover:text-white"
+              className="rounded-full border border-surface-3 px-3.5 py-1.5 text-[12.5px] text-ink-muted transition-colors hover:border-accent/50 hover:text-ink"
             >
               {action.label}
             </Link>

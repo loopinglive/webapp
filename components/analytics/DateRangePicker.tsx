@@ -19,7 +19,7 @@ export function DateRangePicker({
   onChange: (value: RangeId) => void;
 }) {
   return (
-    <div className="flex items-center gap-1 rounded-full border border-[#1E1E2E] bg-[#12121A] p-1">
+    <div className="flex items-center gap-1 rounded-full border border-hairline bg-surface p-1">
       {RANGES.map((range) => (
         <button
           key={range.id}
@@ -27,8 +27,8 @@ export function DateRangePicker({
           className={cn(
             "rounded-full px-3 py-1.5 text-[12px] transition-colors",
             value === range.id
-              ? "bg-[#6C47FF] text-white"
-              : "text-[#A0A0B0] hover:text-white"
+              ? "bg-accent text-white"
+              : "text-ink-muted hover:text-ink"
           )}
         >
           {range.label}

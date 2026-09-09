@@ -53,24 +53,24 @@ export function OfferButtonPreview({
 
   return (
     <div className="sticky top-6">
-      <p className="mb-3 text-[11px] font-semibold uppercase tracking-[0.16em] text-[#A0A0B0]">
+      <p className="mb-3 text-[11px] font-semibold uppercase tracking-[0.16em] text-ink-muted">
         Live preview
       </p>
 
-      <div className="overflow-hidden rounded-xl border border-[#1E1E2E] bg-[#0A0A0F]">
-        <div className="flex items-center justify-between border-b border-[#1E1E2E] px-3 py-2">
+      <div className="overflow-hidden rounded-xl border border-hairline bg-void">
+        <div className="flex items-center justify-between border-b border-hairline px-3 py-2">
           <span className="inline-flex items-center gap-1.5 rounded-full bg-[#FF3B3B]/15 px-2 py-0.5 text-[9px] font-bold uppercase tracking-[0.12em] text-[#FF3B3B]">
             <span className="h-1 w-1 rounded-full bg-[#FF3B3B]" />
             Live
           </span>
-          <span className="flex items-center gap-1 text-[10px] text-[#A0A0B0]">
+          <span className="flex items-center gap-1 text-[10px] text-ink-muted">
             <Users className="h-2.5 w-2.5" />
             847
           </span>
         </div>
 
-        <div className="relative aspect-video bg-gradient-to-br from-[#6C47FF]/20 via-[#12121A] to-[#00D4FF]/10">
-          <span className="absolute bottom-2 left-3 font-mono text-[10px] tabular-nums text-white/50">
+        <div className="relative aspect-video bg-gradient-to-br from-accent/20 via-surface to-cyan/10">
+          <span className="absolute bottom-2 left-3 font-mono text-[10px] tabular-nums text-ink/50">
             {formatOffset(triggerSeconds)}
           </span>
         </div>
@@ -83,20 +83,20 @@ export function OfferButtonPreview({
               ANIMATIONS[animation] ?? ""
             )}
           >
-            <span className="truncate text-[13px] font-semibold text-white">
+            <span className="truncate text-[13px] font-semibold text-ink">
               {buttonText || "Your button text"}
             </span>
             {countdownEnabled && (
-              <span className="shrink-0 rounded-full bg-black/20 px-1.5 py-0.5 text-[11px] tabular-nums text-white">
+              <span className="shrink-0 rounded-full bg-black/20 px-1.5 py-0.5 text-[11px] tabular-nums text-ink">
                 {formatOffset(remaining).replace(/^00:/, "")}
               </span>
             )}
-            <ArrowUpRight className="h-3.5 w-3.5 shrink-0 text-white" />
+            <ArrowUpRight className="h-3.5 w-3.5 shrink-0 text-ink" />
           </button>
         </div>
       </div>
 
-      <p className="mt-3 text-[11.5px] leading-relaxed text-[#A0A0B0]">
+      <p className="mt-3 text-[11.5px] leading-relaxed text-ink-muted">
         Appears at {formatOffset(triggerSeconds)} and stays for the rest of the
         session.
       </p>

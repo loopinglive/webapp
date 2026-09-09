@@ -17,7 +17,7 @@ export default async function NewWebinarPage() {
   }
 
   return (
-    <main className="min-h-dvh bg-[#0A0A0F]">
+    <main className="min-h-dvh bg-void">
       <WebinarForm />
     </main>
   );

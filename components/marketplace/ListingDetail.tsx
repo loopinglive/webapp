@@ -83,12 +83,12 @@ export function ListingDetail({ listingId }: { listingId: string }) {
   }
 
   if (notFound) {
-    return <div className="px-6 py-16 text-center text-[13px] text-[#A0A0B0]">Not found.</div>;
+    return <div className="px-6 py-16 text-center text-[13px] text-ink-muted">Not found.</div>;
   }
   if (!data) {
     return (
       <div className="grid h-64 place-items-center">
-        <Loader2 className="h-5 w-5 animate-spin text-[#6C47FF]" />
+        <Loader2 className="h-5 w-5 animate-spin text-accent" />
       </div>
     );
   }
@@ -103,12 +103,12 @@ export function ListingDetail({ listingId }: { listingId: string }) {
           <img
             src={listing.thumbnail_url}
             alt=""
-            className="w-full rounded-2xl border border-[#1E1E2E] object-cover"
+            className="w-full rounded-2xl border border-hairline object-cover"
           />
         )}
 
         <div>
-          <h1 className="text-[24px] font-semibold tracking-[-0.02em] text-white">
+          <h1 className="text-[24px] font-semibold tracking-[-0.02em] text-ink">
             {listing.title}
           </h1>
           <p className="mt-3 whitespace-pre-wrap text-[13.5px] leading-relaxed text-[#C4C4D0]">
@@ -117,15 +117,15 @@ export function ListingDetail({ listingId }: { listingId: string }) {
         </div>
 
         <section>
-          <h2 className="text-[13px] font-semibold text-white">
+          <h2 className="text-[13px] font-semibold text-ink">
             Reviews {reviews.length > 0 && `(${reviews.length})`}
           </h2>
           {reviews.length === 0 ? (
-            <p className="mt-2 text-[12.5px] text-[#6E6E80]">No reviews yet.</p>
+            <p className="mt-2 text-[12.5px] text-ink-faint">No reviews yet.</p>
           ) : (
             <ul className="mt-3 space-y-3">
               {reviews.map((review) => (
-                <li key={review.id} className="rounded-xl border border-[#1E1E2E] p-3.5">
+                <li key={review.id} className="rounded-xl border border-hairline p-3.5">
                   <div className="flex items-center gap-1">
                     {Array.from({ length: 5 }).map((_, index) => (
                       <Star
@@ -133,16 +133,16 @@ export function ListingDetail({ listingId }: { listingId: string }) {
                         className={`h-3 w-3 ${
                           index < review.rating
                             ? "fill-[#F5A623] text-[#F5A623]"
-                            : "text-[#2A2A3A]"
+                            : "text-surface-3"
                         }`}
                       />
                     ))}
                   </div>
                   {review.title && (
-                    <p className="mt-1.5 text-[13px] font-medium text-white">{review.title}</p>
+                    <p className="mt-1.5 text-[13px] font-medium text-ink">{review.title}</p>
                   )}
                   {review.body && (
-                    <p className="mt-1 text-[12.5px] leading-relaxed text-[#A0A0B0]">
+                    <p className="mt-1 text-[12.5px] leading-relaxed text-ink-muted">
                       {review.body}
                     </p>
                   )}
@@ -154,8 +154,8 @@ export function ListingDetail({ listingId }: { listingId: string }) {
       </div>
 
       <div className="space-y-4">
-        <div className="rounded-2xl border border-[#1E1E2E] bg-[#12121A] p-5">
-          <p className="text-[26px] font-semibold text-white">
+        <div className="rounded-2xl border border-hairline bg-surface p-5">
+          <p className="text-[26px] font-semibold text-ink">
             {listing.price > 0
               ? new Intl.NumberFormat("en-US", {
                   style: "currency",
@@ -170,31 +170,31 @@ export function ListingDetail({ listingId }: { listingId: string }) {
             <button
               onClick={() => void buy()}
               disabled={buying}
-              className="mt-3 inline-flex h-10 w-full items-center justify-center gap-2 rounded-lg bg-[#6C47FF] text-[13.5px] font-medium text-white hover:bg-[#5B39E0] disabled:opacity-60"
+              className="mt-3 inline-flex h-10 w-full items-center justify-center gap-2 rounded-lg bg-accent text-[13.5px] font-medium text-white hover:bg-accent-deep disabled:opacity-60"
             >
               {buying && <Loader2 className="h-4 w-4 animate-spin" />}
               {listing.price > 0 ? "Buy now" : "Get it free"}
             </button>
           )}
 
-          <p className="mt-3 flex items-center gap-1.5 text-[11.5px] text-[#6E6E80]">
+          <p className="mt-3 flex items-center gap-1.5 text-[11.5px] text-ink-faint">
             <ShieldCheck className="h-3.5 w-3.5" />
             Secure payment via Stripe
           </p>
 
           {listing.total_sales > 0 && (
-            <p className="mt-2 text-[11.5px] text-[#6E6E80]">
+            <p className="mt-2 text-[11.5px] text-ink-faint">
               {listing.total_sales} {listing.total_sales === 1 ? "sale" : "sales"}
             </p>
           )}
         </div>
 
         {seller && (
-          <div className="rounded-2xl border border-[#1E1E2E] bg-[#12121A] p-5">
-            <p className="text-[11px] uppercase tracking-[0.1em] text-[#6E6E80]">Seller</p>
-            <p className="mt-1 text-[14px] font-medium text-white">{seller.display_name}</p>
+          <div className="rounded-2xl border border-hairline bg-surface p-5">
+            <p className="text-[11px] uppercase tracking-[0.1em] text-ink-faint">Seller</p>
+            <p className="mt-1 text-[14px] font-medium text-ink">{seller.display_name}</p>
             {seller.bio && (
-              <p className="mt-1.5 text-[12px] leading-relaxed text-[#A0A0B0]">{seller.bio}</p>
+              <p className="mt-1.5 text-[12px] leading-relaxed text-ink-muted">{seller.bio}</p>
             )}
           </div>
         )}

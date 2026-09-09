@@ -158,7 +158,7 @@ export function OfferExperiments({ webinarId }: { webinarId: string }) {
     <div className="space-y-6 px-6 py-6 lg:px-8">
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div className="max-w-[60ch]">
-          <p className="text-[13px] leading-relaxed text-[#A0A0B0]">
+          <p className="text-[13px] leading-relaxed text-ink-muted">
             A variant overrides only what you set — anything left blank inherits from
             the offer. Assignment sticks to a person, so someone returning to a replay
             sees the same price they were shown the first time.
@@ -172,7 +172,7 @@ export function OfferExperiments({ webinarId }: { webinarId: string }) {
 
         <button
           onClick={() => setCreating((v) => !v)}
-          className="inline-flex h-9 shrink-0 items-center gap-2 rounded-full bg-[#6C47FF] px-4 text-[13px] font-medium text-white hover:bg-[#7C5AFF]"
+          className="inline-flex h-9 shrink-0 items-center gap-2 rounded-full bg-accent px-4 text-[13px] font-medium text-white hover:bg-accent-soft"
         >
           <Plus className="h-3.5 w-3.5" />
           Add variant
@@ -180,7 +180,7 @@ export function OfferExperiments({ webinarId }: { webinarId: string }) {
       </div>
 
       {creating && (
-        <div className="max-w-[560px] space-y-3.5 rounded-2xl border border-[#1E1E2E] bg-[#12121A] p-5">
+        <div className="max-w-[560px] space-y-3.5 rounded-2xl border border-hairline bg-surface p-5">
           <Field label="Name" hint="For you, not for attendees.">
             <input
               value={name}
@@ -246,12 +246,12 @@ export function OfferExperiments({ webinarId }: { webinarId: string }) {
               />
             </Field>
 
-            <label className="flex cursor-pointer items-center gap-2 pb-2 text-[12.5px] text-[#A0A0B0]">
+            <label className="flex cursor-pointer items-center gap-2 pb-2 text-[12.5px] text-ink-muted">
               <input
                 type="checkbox"
                 checked={isControl}
                 onChange={(e) => setIsControl(e.target.checked)}
-                className="h-3.5 w-3.5 accent-[#6C47FF]"
+                className="h-3.5 w-3.5 accent-accent"
               />
               This is the control
               <HelpTooltip content="The variant everything else is compared against. Setting a new control clears the old one — a test with two controls is not a test." />
@@ -261,7 +261,7 @@ export function OfferExperiments({ webinarId }: { webinarId: string }) {
           <button
             onClick={create}
             disabled={busy || !name.trim()}
-            className="inline-flex h-10 items-center gap-2 rounded-full bg-[#6C47FF] px-5 text-[13px] font-semibold text-white hover:bg-[#7C5AFF] disabled:opacity-40"
+            className="inline-flex h-10 items-center gap-2 rounded-full bg-accent px-5 text-[13px] font-semibold text-white hover:bg-accent-soft disabled:opacity-40"
           >
             {busy && <Loader2 className="h-3.5 w-3.5 animate-spin" />}
             Save variant
@@ -276,9 +276,9 @@ export function OfferExperiments({ webinarId }: { webinarId: string }) {
           description="Add two and traffic splits between them automatically. Until then everyone sees the offer exactly as configured."
         />
       ) : (
-        <div className="overflow-x-auto rounded-xl border border-[#1E1E2E]">
+        <div className="overflow-x-auto rounded-xl border border-hairline">
           <table className="w-full min-w-[820px]">
-            <thead className="bg-[#12121A]">
+            <thead className="bg-surface">
               <tr>
                 {[
                   "Variant",
@@ -292,14 +292,14 @@ export function OfferExperiments({ webinarId }: { webinarId: string }) {
                 ].map((h) => (
                   <th
                     key={h}
-                    className="px-4 py-2.5 text-left text-[10px] font-semibold uppercase tracking-[0.14em] text-[#6E6E80]"
+                    className="px-4 py-2.5 text-left text-[10px] font-semibold uppercase tracking-[0.14em] text-ink-faint"
                   >
                     {h}
                   </th>
                 ))}
               </tr>
             </thead>
-            <tbody className="divide-y divide-[#1E1E2E]">
+            <tbody className="divide-y divide-hairline">
               {data.variants.map((variant) => {
                 const result = resultsById.get(variant.id);
                 const overrides = [
@@ -327,27 +327,27 @@ export function OfferExperiments({ webinarId }: { webinarId: string }) {
                 return (
                   <tr key={variant.id}>
                     <td className="px-4 py-3">
-                      <span className="text-[13px] text-white">{variant.name}</span>
+                      <span className="text-[13px] text-ink">{variant.name}</span>
                       {variant.is_control && (
-                        <span className="ml-2 rounded-full bg-[#1E1E2E] px-2 py-0.5 text-[10px] text-[#A0A0B0]">
+                        <span className="ml-2 rounded-full bg-hairline px-2 py-0.5 text-[10px] text-ink-muted">
                           control
                         </span>
                       )}
                     </td>
-                    <td className="px-4 py-3 text-[12px] text-[#A0A0B0]">
+                    <td className="px-4 py-3 text-[12px] text-ink-muted">
                       {overrides.length ? overrides.join(" · ") : "inherits everything"}
                     </td>
-                    <td className="px-4 py-3 text-[12.5px] tabular-nums text-[#A0A0B0]">
+                    <td className="px-4 py-3 text-[12.5px] tabular-nums text-ink-muted">
                       {variant.weight}
                     </td>
-                    <td className="px-4 py-3 text-[12.5px] tabular-nums text-[#A0A0B0]">
+                    <td className="px-4 py-3 text-[12.5px] tabular-nums text-ink-muted">
                       {result?.assigned ?? 0}
                     </td>
-                    <td className="px-4 py-3 text-[12.5px] tabular-nums text-[#A0A0B0]">
+                    <td className="px-4 py-3 text-[12.5px] tabular-nums text-ink-muted">
                       {result?.bought ?? 0}
                     </td>
                     <td className="px-4 py-3">
-                      <span className="text-[12.5px] tabular-nums text-white">
+                      <span className="text-[12.5px] tabular-nums text-ink">
                         {result?.conversion ?? 0}%
                       </span>
                       {lift !== null && (
@@ -360,14 +360,14 @@ export function OfferExperiments({ webinarId }: { webinarId: string }) {
                         </span>
                       )}
                     </td>
-                    <td className="px-4 py-3 text-[12.5px] tabular-nums text-[#A0A0B0]">
+                    <td className="px-4 py-3 text-[12.5px] tabular-nums text-ink-muted">
                       {money(result?.revenue_cents ?? 0, base.currency)}
                     </td>
                     <td className="px-4 py-3 text-right">
                       <button
                         onClick={() => remove(variant.id)}
                         aria-label="Stop this variant"
-                        className="grid h-8 w-8 place-items-center rounded-lg border border-[#1E1E2E] text-[#A0A0B0] hover:border-[#FF5A5A]/50 hover:text-[#FF5A5A]"
+                        className="grid h-8 w-8 place-items-center rounded-lg border border-hairline text-ink-muted hover:border-[#FF5A5A]/50 hover:text-[#FF5A5A]"
                       >
                         <Trash2 className="h-3 w-3" />
                       </button>
@@ -395,7 +395,7 @@ export function OfferExperiments({ webinarId }: { webinarId: string }) {
 }
 
 const inputClass =
-  "h-10 w-full rounded-xl border border-[#1E1E2E] bg-[#0D0D15] px-3.5 text-[13px] text-white placeholder:text-[#4A4A5C] focus:border-[#6C47FF] focus:outline-none";
+  "h-10 w-full rounded-xl border border-hairline bg-void px-3.5 text-[13px] text-ink placeholder:text-ink-faint focus:border-accent focus:outline-none";
 
 function Field({
   label,
@@ -410,8 +410,8 @@ function Field({
 }) {
   return (
     <label className={cn("block", className)}>
-      <span className="text-[12px] text-[#A0A0B0]">{label}</span>
-      {hint && <span className="ml-2 text-[11px] text-[#6E6E80]">{hint}</span>}
+      <span className="text-[12px] text-ink-muted">{label}</span>
+      {hint && <span className="ml-2 text-[11px] text-ink-faint">{hint}</span>}
       <div className="mt-1.5">{children}</div>
     </label>
   );

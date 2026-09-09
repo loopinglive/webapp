@@ -62,7 +62,7 @@ export function CTABuilder({
 
   return (
     <div className="space-y-6">
-      <section className="space-y-4 rounded-xl border border-[#1E1E2E] bg-[#12121A] p-5">
+      <section className="space-y-4 rounded-xl border border-hairline bg-surface p-5">
         <Field label="Button text" required>
           <TextInput
             value={text}
@@ -81,7 +81,7 @@ export function CTABuilder({
         </Field>
 
         <div>
-          <span className="text-[12px] font-medium text-[#A0A0B0]">Colour</span>
+          <span className="text-[12px] font-medium text-ink-muted">Colour</span>
           <div className="mt-2">
             <ColourPicker value={colour} onChange={setColour} />
           </div>
@@ -101,13 +101,13 @@ export function CTABuilder({
           </Field>
         </div>
 
-        <div className="rounded-lg border border-[#2A2A3A] bg-[#0A0A0F] p-4">
-          <p className="mb-3 text-[10px] font-semibold uppercase tracking-[0.14em] text-[#A0A0B0]">
+        <div className="rounded-lg border border-surface-3 bg-void p-4">
+          <p className="mb-3 text-[10px] font-semibold uppercase tracking-[0.14em] text-ink-muted">
             Preview
           </p>
           <span
             style={{ background: colour }}
-            className="inline-flex h-10 items-center rounded-full px-5 text-[13.5px] font-semibold text-white"
+            className="inline-flex h-10 items-center rounded-full px-5 text-[13.5px] font-semibold text-ink"
           >
             {text || "Your button text"}
           </span>
@@ -132,14 +132,14 @@ export function CTABuilder({
                 onChanged();
               }}
             >
-              <p className="flex items-center gap-2 text-[13px] text-white">
+              <p className="flex items-center gap-2 text-[13px] text-ink">
                 <span
                   className="h-2.5 w-2.5 rounded-full"
                   style={{ background: cta.button_colour }}
                 />
                 {cta.button_text}
               </p>
-              <p className="mt-0.5 truncate text-[11.5px] text-[#A0A0B0]">
+              <p className="mt-0.5 truncate text-[11.5px] text-ink-muted">
                 {cta.button_url}
               </p>
             </EngagementRow>

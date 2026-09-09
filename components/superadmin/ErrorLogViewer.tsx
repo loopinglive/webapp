@@ -49,7 +49,7 @@ export function ErrorLogViewer() {
   return (
     <div className="space-y-5 px-6 py-6 lg:px-8">
       <div className="flex flex-wrap items-center gap-3">
-        <div className="flex gap-1 rounded-full border border-[#1E1E2E] bg-[#12121A] p-1">
+        <div className="flex gap-1 rounded-full border border-hairline bg-surface p-1">
           {RANGES.map((option) => (
             <button
               key={option}
@@ -58,7 +58,7 @@ export function ErrorLogViewer() {
                 "rounded-full px-3 py-1 text-[12px] transition-colors",
                 days === option
                   ? "bg-[#FF5A5A] text-white"
-                  : "text-[#A0A0B0] hover:text-white"
+                  : "text-ink-muted hover:text-ink"
               )}
             >
               {option === 1 ? "24 hours" : `${option} days`}
@@ -67,7 +67,7 @@ export function ErrorLogViewer() {
         </div>
 
         {data && (
-          <p className="text-[12.5px] text-[#6E6E80]">
+          <p className="text-[12.5px] text-ink-faint">
             {data.totalEvents.toLocaleString()} events in {data.groups.length} distinct
             {data.groups.length === 1 ? " problem" : " problems"}
             {data.truncated && " · sample capped at 2,000"}
@@ -76,7 +76,7 @@ export function ErrorLogViewer() {
 
         <a
           href="/api/superadmin/export?dataset=errors"
-          className="ml-auto inline-flex h-8 items-center gap-2 rounded-full border border-[#1E1E2E] px-3 text-[12.5px] text-[#A0A0B0] hover:text-white"
+          className="ml-auto inline-flex h-8 items-center gap-2 rounded-full border border-hairline px-3 text-[12.5px] text-ink-muted hover:text-ink"
         >
           <Download className="h-3 w-3" />
           Export
@@ -96,7 +96,7 @@ export function ErrorLogViewer() {
           {data.groups.map((group) => (
             <li
               key={group.key}
-              className="overflow-hidden rounded-xl border border-[#1E1E2E] bg-[#12121A]"
+              className="overflow-hidden rounded-xl border border-hairline bg-surface"
             >
               <button
                 onClick={() =>
@@ -110,11 +110,11 @@ export function ErrorLogViewer() {
                 </span>
 
                 <span className="min-w-0 flex-1">
-                  <span className="block truncate text-[13px] text-white">
+                  <span className="block truncate text-[13px] text-ink">
                     {group.message}
                   </span>
-                  <span className="mt-0.5 block text-[11.5px] text-[#6E6E80]">
-                    <code className="text-[#00D4FF]">{group.errorType}</code>
+                  <span className="mt-0.5 block text-[11.5px] text-ink-faint">
+                    <code className="text-cyan">{group.errorType}</code>
                     {" · "}
                     {group.affectedUsers === 0
                       ? "no signed-in users"
@@ -129,24 +129,24 @@ export function ErrorLogViewer() {
 
                 <ChevronDown
                   className={cn(
-                    "mt-1 h-3.5 w-3.5 shrink-0 text-[#6E6E80] transition-transform",
+                    "mt-1 h-3.5 w-3.5 shrink-0 text-ink-faint transition-transform",
                     expanded === group.key && "rotate-180"
                   )}
                 />
               </button>
 
               {expanded === group.key && (
-                <div className="border-t border-[#1E1E2E] px-4 py-3">
+                <div className="border-t border-hairline px-4 py-3">
                   <dl className="grid gap-x-6 gap-y-1.5 text-[12px] sm:grid-cols-2">
                     <div className="flex gap-2">
-                      <dt className="text-[#6E6E80]">First seen</dt>
-                      <dd className="text-[#A0A0B0]">
+                      <dt className="text-ink-faint">First seen</dt>
+                      <dd className="text-ink-muted">
                         {new Date(group.firstSeen).toLocaleString()}
                       </dd>
                     </div>
                     <div className="flex gap-2">
-                      <dt className="text-[#6E6E80]">Last seen</dt>
-                      <dd className="text-[#A0A0B0]">
+                      <dt className="text-ink-faint">Last seen</dt>
+                      <dd className="text-ink-muted">
                         {new Date(group.lastSeen).toLocaleString()}
                       </dd>
                     </div>
@@ -154,12 +154,12 @@ export function ErrorLogViewer() {
 
                   {group.pages.length > 0 && (
                     <div className="mt-3">
-                      <p className="text-[11px] font-semibold uppercase tracking-[0.12em] text-[#6E6E80]">
+                      <p className="text-[11px] font-semibold uppercase tracking-[0.12em] text-ink-faint">
                         Pages
                       </p>
                       <ul className="mt-1 space-y-0.5">
                         {group.pages.map((page) => (
-                          <li key={page} className="truncate font-mono text-[11.5px] text-[#A0A0B0]">
+                          <li key={page} className="truncate font-mono text-[11.5px] text-ink-muted">
                             {page}
                           </li>
                         ))}
@@ -169,10 +169,10 @@ export function ErrorLogViewer() {
 
                   {group.sampleStack && (
                     <div className="mt-3">
-                      <p className="text-[11px] font-semibold uppercase tracking-[0.12em] text-[#6E6E80]">
+                      <p className="text-[11px] font-semibold uppercase tracking-[0.12em] text-ink-faint">
                         Stack
                       </p>
-                      <pre className="mt-1 max-h-[240px] overflow-auto rounded-lg border border-[#1E1E2E] bg-[#0B0B12] p-3 font-mono text-[11px] leading-relaxed text-[#A0A0B0]">
+                      <pre className="mt-1 max-h-[240px] overflow-auto rounded-lg border border-hairline bg-[#0B0B12] p-3 font-mono text-[11px] leading-relaxed text-ink-muted">
                         {group.sampleStack}
                       </pre>
                     </div>

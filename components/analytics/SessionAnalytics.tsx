@@ -49,7 +49,7 @@ export function SessionAnalytics({
   if (loading) {
     return (
       <div className="grid h-[60dvh] place-items-center">
-        <Loader2 className="h-5 w-5 animate-spin text-[#6C47FF]" />
+        <Loader2 className="h-5 w-5 animate-spin text-accent" />
       </div>
     );
   }
@@ -57,7 +57,7 @@ export function SessionAnalytics({
   if (!data) {
     return (
       <div className="grid h-[60dvh] place-items-center px-6 text-center">
-        <p className="text-[14px] text-[#A0A0B0]">This session could not be found.</p>
+        <p className="text-[14px] text-ink-muted">This session could not be found.</p>
       </div>
     );
   }
@@ -72,7 +72,7 @@ export function SessionAnalytics({
         action={
           <Link
             href={`/admin/webinar/${webinarId}/analytics`}
-            className="inline-flex items-center gap-2 text-[13px] text-[#A0A0B0] transition-colors hover:text-white"
+            className="inline-flex items-center gap-2 text-[13px] text-ink-muted transition-colors hover:text-ink"
           >
             <ArrowLeft className="h-3.5 w-3.5" />
             All sessions
@@ -94,7 +94,7 @@ export function SessionAnalytics({
           <StatTile label="Bought" value={totals.bought.toLocaleString()} />
         </div>
 
-        <p className="text-[11.5px] text-[#6A6A80]">
+        <p className="text-[11.5px] text-ink-faint">
           Every chart below is on the video&rsquo;s own clock, so they line up with
           each other and with the timed comment editor.
         </p>
@@ -134,11 +134,11 @@ export function SessionAnalytics({
                       >
                         <Link
                           href={`/admin/webinar/${webinarId}/comments`}
-                          className="font-mono tabular-nums text-white transition-colors hover:text-[#6C47FF]"
+                          className="font-mono tabular-nums text-ink transition-colors hover:text-accent"
                         >
                           {formatOffset(drop.offset)}
                         </Link>
-                        <span className="text-[#A0A0B0]">
+                        <span className="text-ink-muted">
                           {drop.lost} left
                         </span>
                       </li>
@@ -160,11 +160,11 @@ export function SessionAnalytics({
                       >
                         <Link
                           href={`/admin/webinar/${webinarId}/comments`}
-                          className="font-mono tabular-nums text-white transition-colors hover:text-[#6C47FF]"
+                          className="font-mono tabular-nums text-ink transition-colors hover:text-accent"
                         >
                           {formatOffset(peak.offset)}
                         </Link>
-                        <span className="text-[#A0A0B0]">
+                        <span className="text-ink-muted">
                           {peak.messages} messages
                         </span>
                       </li>

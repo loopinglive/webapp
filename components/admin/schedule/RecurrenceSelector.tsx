@@ -20,9 +20,9 @@ export function RecurrenceSelector({
 }) {
   return (
     <div>
-      <span className="text-[12px] font-medium text-[#A0A0B0]">Repeats</span>
+      <span className="text-[12px] font-medium text-ink-muted">Repeats</span>
 
-      <div className="mt-2 flex items-center gap-1 rounded-full border border-[#2A2A3A] bg-[#1A1A2A] p-1">
+      <div className="mt-2 flex items-center gap-1 rounded-full border border-surface-3 bg-surface-2 p-1">
         {[
           { id: false, label: "One time" },
           { id: true, label: "Recurring" },
@@ -34,8 +34,8 @@ export function RecurrenceSelector({
             className={cn(
               "flex-1 rounded-full px-4 py-1.5 text-[12.5px] transition-colors duration-200",
               recurring === option.id
-                ? "bg-[#6C47FF] text-white"
-                : "text-[#A0A0B0] hover:text-white"
+                ? "bg-accent text-white"
+                : "text-ink-muted hover:text-ink"
             )}
           >
             {option.label}
@@ -54,8 +54,8 @@ export function RecurrenceSelector({
                 className={cn(
                   "rounded-full border px-3.5 py-1.5 text-[12.5px] transition-colors duration-200",
                   pattern === preset.id
-                    ? "border-[#6C47FF] bg-[#6C47FF]/15 text-white"
-                    : "border-[#2A2A3A] text-[#A0A0B0] hover:border-[#6C47FF]/40 hover:text-white"
+                    ? "border-accent bg-accent/15 text-ink"
+                    : "border-surface-3 text-ink-muted hover:border-accent/40 hover:text-ink"
                 )}
               >
                 {preset.label}
@@ -81,8 +81,8 @@ export function RecurrenceSelector({
                     className={cn(
                       "h-9 w-11 rounded-lg border text-[11.5px] font-semibold transition-colors duration-200",
                       on
-                        ? "border-[#6C47FF] bg-[#6C47FF]/15 text-white"
-                        : "border-[#2A2A3A] text-[#A0A0B0] hover:text-white"
+                        ? "border-accent bg-accent/15 text-ink"
+                        : "border-surface-3 text-ink-muted hover:text-ink"
                     )}
                   >
                     {code[0] + code.slice(1, 3).toLowerCase()}

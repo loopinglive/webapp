@@ -43,11 +43,11 @@ function CreateTeamPrompt() {
 
   return (
     <div className="mx-auto max-w-md px-6 py-16 text-center">
-      <Users className="mx-auto h-8 w-8 text-[#6C47FF]" />
-      <h1 className="mt-4 text-[22px] font-semibold tracking-[-0.02em] text-white">
+      <Users className="mx-auto h-8 w-8 text-accent" />
+      <h1 className="mt-4 text-[22px] font-semibold tracking-[-0.02em] text-ink">
         Bring your team in
       </h1>
-      <p className="mt-2 text-[13.5px] leading-relaxed text-[#A0A0B0]">
+      <p className="mt-2 text-[13.5px] leading-relaxed text-ink-muted">
         Everyone on a team shares one subscription and can collaborate on
         webinars, with permissions that match what they should actually be
         able to touch.
@@ -61,12 +61,12 @@ function CreateTeamPrompt() {
             if (event.key === "Enter") void create();
           }}
           placeholder="Your team's name"
-          className="h-11 flex-1 rounded-xl border border-[#1E1E2E] bg-[#12121A] px-4 text-[14px] text-white placeholder:text-[#4A4A5C] focus:border-[#6C47FF] focus:outline-none"
+          className="h-11 flex-1 rounded-xl border border-hairline bg-surface px-4 text-[14px] text-ink placeholder:text-ink-faint focus:border-accent focus:outline-none"
         />
         <button
           onClick={() => void create()}
           disabled={creating || !name.trim()}
-          className="inline-flex h-11 items-center gap-2 rounded-xl bg-[#6C47FF] px-4 text-[14px] font-medium text-white hover:bg-[#5B39E0] disabled:opacity-50"
+          className="inline-flex h-11 items-center gap-2 rounded-xl bg-accent px-4 text-[14px] font-medium text-white hover:bg-accent-deep disabled:opacity-50"
         >
           {creating && <Loader2 className="h-4 w-4 animate-spin" />}
           Create
@@ -84,7 +84,7 @@ export function TeamDashboard({ teamId }: { teamId: string | null }) {
   if (loading || !team) {
     return (
       <div className="grid h-64 place-items-center">
-        <Loader2 className="h-5 w-5 animate-spin text-[#6C47FF]" />
+        <Loader2 className="h-5 w-5 animate-spin text-accent" />
       </div>
     );
   }
@@ -99,18 +99,18 @@ export function TeamDashboard({ teamId }: { teamId: string | null }) {
     <div className="space-y-6 px-6 py-6 lg:px-10">
       <div className="flex flex-wrap items-center justify-between gap-4">
         <div>
-          <h1 className="text-[22px] font-semibold tracking-[-0.02em] text-white">
+          <h1 className="text-[22px] font-semibold tracking-[-0.02em] text-ink">
             {team.name}
           </h1>
           {role && (
-            <p className="mt-0.5 text-[12.5px] text-[#6E6E80]">
+            <p className="mt-0.5 text-[12.5px] text-ink-faint">
               You are the {role}. {TEAM_ROLE_DESCRIPTIONS[role]}
             </p>
           )}
         </div>
         <Link
           href="/team/members"
-          className="inline-flex h-9 items-center gap-2 rounded-lg border border-[#1E1E2E] px-3.5 text-[13px] text-[#A0A0B0] hover:text-white"
+          className="inline-flex h-9 items-center gap-2 rounded-lg border border-hairline px-3.5 text-[13px] text-ink-muted hover:text-ink"
         >
           <Users className="h-3.5 w-3.5" />
           Manage members
@@ -118,20 +118,20 @@ export function TeamDashboard({ teamId }: { teamId: string | null }) {
       </div>
 
       <div className="grid gap-4 sm:grid-cols-2">
-        <div className="rounded-2xl border border-[#1E1E2E] bg-[#12121A] p-5">
-          <p className="text-[11px] uppercase tracking-[0.14em] text-[#6E6E80]">
+        <div className="rounded-2xl border border-hairline bg-surface p-5">
+          <p className="text-[11px] uppercase tracking-[0.14em] text-ink-faint">
             Members
           </p>
-          <p className="mt-1.5 text-[24px] font-semibold text-white">
+          <p className="mt-1.5 text-[24px] font-semibold text-ink">
             {usage!.members}
-            <span className="text-[14px] font-normal text-[#6E6E80]">
+            <span className="text-[14px] font-normal text-ink-faint">
               {" "}
               / {team.max_members}
             </span>
           </p>
-          <div className="mt-2.5 h-1.5 overflow-hidden rounded-full bg-[#1E1E2E]">
+          <div className="mt-2.5 h-1.5 overflow-hidden rounded-full bg-hairline">
             <div
-              className="h-full rounded-full bg-[#6C47FF] transition-[width]"
+              className="h-full rounded-full bg-accent transition-[width]"
               style={{ width: `${memberPct}%` }}
             />
           </div>
@@ -142,21 +142,21 @@ export function TeamDashboard({ teamId }: { teamId: string | null }) {
           )}
         </div>
 
-        <div className="rounded-2xl border border-[#1E1E2E] bg-[#12121A] p-5">
-          <p className="text-[11px] uppercase tracking-[0.14em] text-[#6E6E80]">
+        <div className="rounded-2xl border border-hairline bg-surface p-5">
+          <p className="text-[11px] uppercase tracking-[0.14em] text-ink-faint">
             Webinars
           </p>
-          <p className="mt-1.5 text-[24px] font-semibold text-white">
+          <p className="mt-1.5 text-[24px] font-semibold text-ink">
             {usage!.webinars}
-            <span className="text-[14px] font-normal text-[#6E6E80]">
+            <span className="text-[14px] font-normal text-ink-faint">
               {" "}
               / {team.max_webinars || "∞"}
             </span>
           </p>
           {team.max_webinars > 0 && (
-            <div className="mt-2.5 h-1.5 overflow-hidden rounded-full bg-[#1E1E2E]">
+            <div className="mt-2.5 h-1.5 overflow-hidden rounded-full bg-hairline">
               <div
-                className="h-full rounded-full bg-[#00D4FF] transition-[width]"
+                className="h-full rounded-full bg-cyan transition-[width]"
                 style={{ width: `${webinarPct}%` }}
               />
             </div>
@@ -164,12 +164,12 @@ export function TeamDashboard({ teamId }: { teamId: string | null }) {
         </div>
       </div>
 
-      <div className="rounded-2xl border border-[#6C47FF]/25 bg-[#6C47FF]/[0.06] p-5">
-        <p className="flex items-center gap-2 text-[13px] font-medium text-white">
-          <Sparkles className="h-4 w-4 text-[#6C47FF]" />
+      <div className="rounded-2xl border border-accent/25 bg-accent/[0.06] p-5">
+        <p className="flex items-center gap-2 text-[13px] font-medium text-ink">
+          <Sparkles className="h-4 w-4 text-accent" />
           Webinars this team runs are shared
         </p>
-        <p className="mt-1.5 text-[12.5px] leading-relaxed text-[#A0A0B0]">
+        <p className="mt-1.5 text-[12.5px] leading-relaxed text-ink-muted">
           Owners and admins see every webinar any teammate creates. Editors
           only see their own — teammates cannot see what someone else on the
           team is running unless they are given a broader role.

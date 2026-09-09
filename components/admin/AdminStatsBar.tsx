@@ -63,7 +63,7 @@ export function AdminStatsBar({
   }, [webinarId, sessionId]);
 
   return (
-    <div className="grid grid-cols-2 gap-px overflow-hidden rounded-xl border border-[#1E1E2E] bg-[#1E1E2E] backdrop-blur-2xl sm:grid-cols-3 lg:grid-cols-5">
+    <div className="grid grid-cols-2 gap-px overflow-hidden rounded-xl border border-hairline bg-hairline backdrop-blur-2xl sm:grid-cols-3 lg:grid-cols-5">
       <Stat
         icon={Users}
         label="Viewers"
@@ -106,18 +106,18 @@ function Stat({
   tone?: string;
 }) {
   return (
-    <div className="bg-[#12121A]/90 px-4 py-3">
-      <div className="flex items-center gap-1.5 text-[10px] font-semibold uppercase tracking-[0.16em] text-[#A0A0B0]">
+    <div className="bg-surface/90 px-4 py-3">
+      <div className="flex items-center gap-1.5 text-[10px] font-semibold uppercase tracking-[0.16em] text-ink-muted">
         <Icon className="h-3 w-3" />
         {label}
       </div>
       <div
-        className="mt-1.5 text-xl font-semibold tabular-nums tracking-[-0.02em] text-white"
+        className="mt-1.5 text-xl font-semibold tabular-nums tracking-[-0.02em] text-ink"
         style={tone ? { color: tone } : undefined}
       >
         {value}
         {hint && (
-          <span className="ml-1.5 text-[11px] font-normal text-[#A0A0B0]/70">
+          <span className="ml-1.5 text-[11px] font-normal text-ink-muted/70">
             {hint}
           </span>
         )}

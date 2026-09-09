@@ -87,7 +87,7 @@ export function RoomPreview() {
         </div>
 
         <div className="absolute inset-0 grid place-items-center">
-          <div className="flex h-16 w-16 items-center justify-center rounded-full bg-white/8 backdrop-blur-sm animate-pulse-ring">
+          <div className="flex h-16 w-16 items-center justify-center rounded-full bg-surface-2 backdrop-blur-sm animate-pulse-ring">
             <Play className="ml-0.5 h-5 w-5 fill-ink text-ink" />
           </div>
         </div>
@@ -98,7 +98,7 @@ export function RoomPreview() {
             <span>{formatOffset(elapsed * 62)}</span>
             <span>{formatOffset(loop * 62)}</span>
           </div>
-          <div className="relative h-1 overflow-hidden rounded-full bg-white/10">
+          <div className="relative h-1 overflow-hidden rounded-full bg-surface-2">
             <motion.div
               className="h-full rounded-full bg-gradient-to-r from-accent to-cyan"
               animate={{ width: `${(elapsed / loop) * 100}%` }}
@@ -118,7 +118,7 @@ export function RoomPreview() {
             >
               <div className="glow-accent flex items-center justify-between rounded-full bg-accent px-5 py-3 text-sm font-semibold text-white">
                 <span>Claim your seat — 40% off</span>
-                <span className="tabular-nums text-white/80">14:32</span>
+                <span className="tabular-nums text-ink/80">14:32</span>
               </div>
             </motion.div>
           )}
@@ -126,8 +126,8 @@ export function RoomPreview() {
       </div>
 
       {/* Chat */}
-      <div className="flex min-h-[380px] flex-col border-t border-white/8 lg:border-l lg:border-t-0">
-        <div className="flex items-center justify-between border-b border-white/8 px-4 py-3">
+      <div className="flex min-h-[380px] flex-col border-t border-hairline lg:border-l lg:border-t-0">
+        <div className="flex items-center justify-between border-b border-hairline px-4 py-3">
           <span className="text-[13px] font-semibold">Live chat</span>
           <span className="text-[11px] text-ink-faint">Q&amp;A</span>
         </div>
@@ -177,8 +177,8 @@ export function RoomPreview() {
           </AnimatePresence>
         </div>
 
-        <div className="border-t border-white/8 p-3">
-          <div className="flex items-center gap-2 rounded-full border border-white/10 bg-surface-2/70 px-4 py-2.5">
+        <div className="border-t border-hairline p-3">
+          <div className="flex items-center gap-2 rounded-full border border-hairline bg-surface-2/70 px-4 py-2.5">
             <span className="flex-1 text-[12.5px] text-ink-faint">
               Say something…
             </span>

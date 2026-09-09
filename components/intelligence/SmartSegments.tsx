@@ -63,10 +63,10 @@ export function SmartSegments({ webinarId }: { webinarId: string }) {
 
         {loading ? (
           <div className="grid h-40 place-items-center">
-            <Loader2 className="h-5 w-5 animate-spin text-[#6C47FF]" />
+            <Loader2 className="h-5 w-5 animate-spin text-accent" />
           </div>
         ) : !segments || segments.length === 0 ? (
-          <div className="grid h-32 place-items-center rounded-xl border border-dashed border-[#1E1E2E] text-[13px] text-[#6A6A80]">
+          <div className="grid h-32 place-items-center rounded-xl border border-dashed border-hairline text-[13px] text-ink-faint">
             No segments yet. Build one to see who fits it right now.
           </div>
         ) : (
@@ -133,11 +133,11 @@ function SegmentRow({
   }
 
   return (
-    <div className="rounded-xl border border-[#1E1E2E] bg-[#12121A]">
+    <div className="rounded-xl border border-hairline bg-surface">
       <div onClick={() => void toggle()} className="flex cursor-pointer flex-wrap items-center gap-3 px-4 py-3.5">
         <div className="min-w-0 flex-1">
-          <p className="truncate text-[13.5px] font-medium text-white">{segment.name}</p>
-          <p className="mt-0.5 truncate text-[11.5px] text-[#6A6A80]">
+          <p className="truncate text-[13.5px] font-medium text-ink">{segment.name}</p>
+          <p className="mt-0.5 truncate text-[11.5px] text-ink-faint">
             {segment.conditions.length === 0
               ? "Everyone"
               : segment.conditions
@@ -145,7 +145,7 @@ function SegmentRow({
                   .join(" and ")}
           </p>
         </div>
-        <span className="rounded-full bg-[#6C47FF]/15 px-2.5 py-0.5 text-[12px] font-semibold tabular-nums text-[#6C47FF]">
+        <span className="rounded-full bg-accent/15 px-2.5 py-0.5 text-[12px] font-semibold tabular-nums text-accent">
           {segment.registrant_count}
         </span>
         <div className="flex items-center gap-1" onClick={(e) => e.stopPropagation()}>
@@ -159,18 +159,18 @@ function SegmentRow({
       </div>
 
       {open && (
-        <div className="border-t border-[#1E1E2E] px-4 py-3">
+        <div className="border-t border-hairline px-4 py-3">
           {loadingMembers ? (
             <div className="grid h-16 place-items-center">
-              <Loader2 className="h-4 w-4 animate-spin text-[#6C47FF]" />
+              <Loader2 className="h-4 w-4 animate-spin text-accent" />
             </div>
           ) : members && members.length > 0 ? (
             <>
               <div className="mb-2 flex items-center justify-between">
-                <p className="text-[11.5px] text-[#6A6A80]">{members.length} members</p>
+                <p className="text-[11.5px] text-ink-faint">{members.length} members</p>
                 <button
                   onClick={() => downloadCsv(segment.name, members)}
-                  className="flex items-center gap-1.5 text-[12px] font-medium text-[#6C47FF] hover:text-[#7C5AFF]"
+                  className="flex items-center gap-1.5 text-[12px] font-medium text-accent hover:text-accent-soft"
                 >
                   <Download className="h-3.5 w-3.5" />
                   Export CSV
@@ -178,15 +178,15 @@ function SegmentRow({
               </div>
               <div className="max-h-48 overflow-y-auto">
                 {members.map((member) => (
-                  <div key={member.id} className="flex items-center justify-between border-b border-[#1E1E2E] py-1.5 text-[12.5px]">
-                    <span className="text-white">{member.full_name}</span>
-                    <span className="text-[#6A6A80]">{member.email}</span>
+                  <div key={member.id} className="flex items-center justify-between border-b border-hairline py-1.5 text-[12.5px]">
+                    <span className="text-ink">{member.full_name}</span>
+                    <span className="text-ink-faint">{member.email}</span>
                   </div>
                 ))}
               </div>
             </>
           ) : (
-            <p className="text-[12.5px] text-[#6A6A80]">No one currently matches this segment.</p>
+            <p className="text-[12.5px] text-ink-faint">No one currently matches this segment.</p>
           )}
         </div>
       )}
@@ -209,7 +209,7 @@ function IconButton({
     <button
       title={title}
       onClick={onClick}
-      className={`rounded-full p-1.5 transition-colors ${danger ? "text-[#6A6A80] hover:bg-[#FF3B3B]/10 hover:text-[#FF3B3B]" : "text-[#6A6A80] hover:bg-white/5 hover:text-white"}`}
+      className={`rounded-full p-1.5 transition-colors ${danger ? "text-ink-faint hover:bg-[#FF3B3B]/10 hover:text-[#FF3B3B]" : "text-ink-faint hover:bg-surface-2 hover:text-ink"}`}
     >
       {children}
     </button>
@@ -234,7 +234,7 @@ function SegmentForm({
   const valid = name.trim().length > 0;
 
   return (
-    <div className="mb-6 rounded-xl border border-[#1E1E2E] bg-[#12121A] p-4">
+    <div className="mb-6 rounded-xl border border-hairline bg-surface p-4">
       <Field label="Segment name" required>
         <TextInput value={name} onChange={(e) => setName(e.target.value)} placeholder="Engaged mobile visitors" />
       </Field>
@@ -244,8 +244,8 @@ function SegmentForm({
       </Field>
 
       <div className="mt-4">
-        <p className="mb-2 text-[12px] font-medium text-[#A0A0B0]">
-          Conditions <span className="text-[#6A6A80]">(all must match)</span>
+        <p className="mb-2 text-[12px] font-medium text-ink-muted">
+          Conditions <span className="text-ink-faint">(all must match)</span>
         </p>
         <div className="flex flex-col gap-2">
           {conditions.map((condition, index) => (
@@ -257,7 +257,7 @@ function SegmentForm({
                   next[index] = { ...next[index], field: e.target.value as ConditionField };
                   setConditions(next);
                 }}
-                className="h-10 rounded-lg border border-[#2A2A3A] bg-[#1A1A2A] px-3 text-[13px] text-white focus:border-[#6C47FF] focus:outline-none"
+                className="h-10 rounded-lg border border-surface-3 bg-surface-2 px-3 text-[13px] text-ink focus:border-accent focus:outline-none"
               >
                 {FIELDS.map((f) => (
                   <option key={f.id} value={f.id}>
@@ -272,7 +272,7 @@ function SegmentForm({
                   next[index] = { ...next[index], operator: e.target.value as ConditionOperator };
                   setConditions(next);
                 }}
-                className="h-10 rounded-lg border border-[#2A2A3A] bg-[#1A1A2A] px-3 text-[13px] text-white focus:border-[#6C47FF] focus:outline-none"
+                className="h-10 rounded-lg border border-surface-3 bg-surface-2 px-3 text-[13px] text-ink focus:border-accent focus:outline-none"
               >
                 {OPERATORS.map((o) => (
                   <option key={o.id} value={o.id}>
@@ -292,7 +292,7 @@ function SegmentForm({
               />
               <button
                 onClick={() => setConditions(conditions.filter((_, i) => i !== index))}
-                className="rounded-full p-1.5 text-[#6A6A80] hover:bg-[#FF3B3B]/10 hover:text-[#FF3B3B]"
+                className="rounded-full p-1.5 text-ink-faint hover:bg-[#FF3B3B]/10 hover:text-[#FF3B3B]"
               >
                 <Trash2 className="h-3.5 w-3.5" />
               </button>
@@ -301,7 +301,7 @@ function SegmentForm({
         </div>
         <button
           onClick={() => setConditions([...conditions, { field: "deviceType", operator: "equals", value: "" }])}
-          className="mt-2 text-[12px] font-medium text-[#6C47FF] hover:text-[#7C5AFF]"
+          className="mt-2 text-[12px] font-medium text-accent hover:text-accent-soft"
         >
           + Add condition
         </button>

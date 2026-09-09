@@ -26,7 +26,7 @@ export function WhatYouWillLearnSection({ config, update }: SectionProps) {
 
   return (
     <>
-      <p className="text-[11.5px] leading-relaxed text-[#A0A0B0]">
+      <p className="text-[11.5px] leading-relaxed text-ink-muted">
         Shown as a checklist. Up to {MAX_BULLETS}.
       </p>
 
@@ -38,7 +38,7 @@ export function WhatYouWillLearnSection({ config, update }: SectionProps) {
                 onClick={() => move(index, -1)}
                 disabled={index === 0}
                 aria-label="Move up"
-                className="text-[#A0A0B0] transition-colors hover:text-white disabled:opacity-25"
+                className="text-ink-muted transition-colors hover:text-ink disabled:opacity-25"
               >
                 <ChevronUp className="h-3 w-3" />
               </button>
@@ -46,7 +46,7 @@ export function WhatYouWillLearnSection({ config, update }: SectionProps) {
                 onClick={() => move(index, 1)}
                 disabled={index === bullets.length - 1}
                 aria-label="Move down"
-                className="text-[#A0A0B0] transition-colors hover:text-white disabled:opacity-25"
+                className="text-ink-muted transition-colors hover:text-ink disabled:opacity-25"
               >
                 <ChevronDown className="h-3 w-3" />
               </button>
@@ -65,7 +65,7 @@ export function WhatYouWillLearnSection({ config, update }: SectionProps) {
             <button
               onClick={() => set(bullets.filter((_, i) => i !== index))}
               aria-label="Remove"
-              className="shrink-0 text-[#A0A0B0] transition-colors hover:text-[#FF3B3B]"
+              className="shrink-0 text-ink-muted transition-colors hover:text-[#FF3B3B]"
             >
               <X className="h-3.5 w-3.5" />
             </button>

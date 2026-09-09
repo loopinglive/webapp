@@ -66,7 +66,7 @@ export function TimedCommentEditor({ webinarId }: { webinarId: string }) {
             personas={personas}
             onAccept={addComment}
           />
-          <div className="flex items-center gap-1 rounded-full border border-[#2A2A3A] bg-[#1A1A2A] p-1">
+          <div className="flex items-center gap-1 rounded-full border border-surface-3 bg-surface-2 p-1">
             {[
               { id: "timeline" as const, label: "Timeline", icon: Waypoints },
               { id: "list" as const, label: "List", icon: List },
@@ -77,8 +77,8 @@ export function TimedCommentEditor({ webinarId }: { webinarId: string }) {
                 className={cn(
                   "flex items-center gap-1.5 rounded-full px-3 py-1.5 text-[12px] transition-colors",
                   view === option.id
-                    ? "bg-[#6C47FF] text-white"
-                    : "text-[#A0A0B0] hover:text-white"
+                    ? "bg-accent text-white"
+                    : "text-ink-muted hover:text-ink"
                 )}
               >
                 <option.icon className="h-3.5 w-3.5" />
@@ -93,7 +93,7 @@ export function TimedCommentEditor({ webinarId }: { webinarId: string }) {
       <div className="px-6 py-6 lg:px-8">
         {loading ? (
           <div className="grid place-items-center py-20">
-            <Loader2 className="h-5 w-5 animate-spin text-[#6C47FF]" />
+            <Loader2 className="h-5 w-5 animate-spin text-accent" />
           </div>
         ) : view === "timeline" ? (
           <>
@@ -195,36 +195,36 @@ function ListView({
 }) {
   if (!comments.length) {
     return (
-      <p className="rounded-xl border border-dashed border-[#3A3A4A] px-6 py-16 text-center text-[13.5px] text-[#A0A0B0]">
+      <p className="rounded-xl border border-dashed border-surface-3 px-6 py-16 text-center text-[13.5px] text-ink-muted">
         Nothing scheduled yet. Switch to the timeline and pin your first comment.
       </p>
     );
   }
 
   return (
-    <div className="overflow-hidden rounded-xl border border-[#1E1E2E]">
+    <div className="overflow-hidden rounded-xl border border-hairline">
       <table className="w-full">
         <thead>
-          <tr className="border-b border-[#1E1E2E] bg-[#12121A] text-left">
+          <tr className="border-b border-hairline bg-surface text-left">
             {["Time", "Persona", "Comment", ""].map((heading) => (
               <th
                 key={heading}
-                className="px-4 py-2.5 text-[10px] font-semibold uppercase tracking-[0.14em] text-[#A0A0B0]"
+                className="px-4 py-2.5 text-[10px] font-semibold uppercase tracking-[0.14em] text-ink-muted"
               >
                 {heading}
               </th>
             ))}
           </tr>
         </thead>
-        <tbody className="divide-y divide-[#1E1E2E]">
+        <tbody className="divide-y divide-hairline">
           {comments.map((comment) => {
             const persona = personas.find((p) => p.id === comment.persona_id);
             return (
               <tr
                 key={comment.id}
-                className="group bg-[#0D0D17] transition-colors hover:bg-[#12121A]"
+                className="group bg-void transition-colors hover:bg-surface"
               >
-                <td className="px-4 py-2.5 font-mono text-[11.5px] tabular-nums text-[#6C47FF]">
+                <td className="px-4 py-2.5 font-mono text-[11.5px] tabular-nums text-accent">
                   {formatOffset(comment.video_offset_seconds)}
                 </td>
                 <td className="px-4 py-2.5">
@@ -240,26 +240,26 @@ function ListView({
                       avatarUrl={persona?.avatar_url}
                       size={22}
                     />
-                    <span className="truncate text-[12.5px] text-white">
+                    <span className="truncate text-[12.5px] text-ink">
                       {persona?.name ?? "Unknown"}
                     </span>
                   </span>
                 </td>
-                <td className="px-4 py-2.5 text-[12.5px] text-[#A0A0B0]">
+                <td className="px-4 py-2.5 text-[12.5px] text-ink-muted">
                   {comment.content}
                 </td>
                 <td className="px-4 py-2.5 text-right">
                   <span className="flex items-center justify-end gap-1 opacity-0 transition-opacity group-hover:opacity-100">
                     <button
                       onClick={() => onEdit(comment)}
-                      className="rounded-lg px-2.5 py-1 text-[11.5px] text-[#A0A0B0] transition-colors hover:bg-white/5 hover:text-white"
+                      className="rounded-lg px-2.5 py-1 text-[11.5px] text-ink-muted transition-colors hover:bg-surface-2 hover:text-ink"
                     >
                       Edit
                     </button>
                     <button
                       onClick={() => onDelete(comment.id)}
                       aria-label="Delete"
-                      className="grid h-7 w-7 place-items-center rounded-lg text-[#A0A0B0] transition-colors hover:bg-[#FF3B3B]/10 hover:text-[#FF3B3B]"
+                      className="grid h-7 w-7 place-items-center rounded-lg text-ink-muted transition-colors hover:bg-[#FF3B3B]/10 hover:text-[#FF3B3B]"
                     >
                       <Trash2 className="h-3.5 w-3.5" />
                     </button>

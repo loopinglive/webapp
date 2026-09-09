@@ -202,12 +202,12 @@ export default async function RegisterPage({
   // The host has taken the page offline.
   if (!config.is_active) {
     return (
-      <main className="grid min-h-dvh place-items-center bg-[#0A0A0F] px-5 text-center">
+      <main className="grid min-h-dvh place-items-center bg-void px-5 text-center">
         <div>
-          <h1 className="text-[26px] font-semibold tracking-[-0.025em] text-white">
+          <h1 className="text-[26px] font-semibold tracking-[-0.025em] text-ink">
             Coming soon
           </h1>
-          <p className="mt-3 text-[14.5px] text-[#A0A0B0]">
+          <p className="mt-3 text-[14.5px] text-ink-muted">
             Registration for this webinar is not open yet.
           </p>
         </div>
@@ -220,7 +220,7 @@ export default async function RegisterPage({
   ) as CustomField[];
 
   return (
-    <main className="min-h-dvh bg-[#0A0A0F]">
+    <main className="min-h-dvh bg-void">
       {config.facebook_pixel_id && (
         <Script id="fb-pixel" strategy="afterInteractive">
           {facebookPixelSnippet(config.facebook_pixel_id, config.fb_track_pageview)}
@@ -252,10 +252,10 @@ export default async function RegisterPage({
         }
         interactive
       >
-        <h2 className="text-[20px] font-semibold tracking-[-0.02em] text-white">
+        <h2 className="text-[20px] font-semibold tracking-[-0.02em] text-ink">
           Save your seat
         </h2>
-        <p className="mt-1.5 text-[13.5px] text-white/60">
+        <p className="mt-1.5 text-[13.5px] text-ink/60">
           We will send the link to your email and phone.
         </p>
         <div className="mt-6">
@@ -273,14 +273,14 @@ export default async function RegisterPage({
       </RegistrationPagePreview>
 
       {(showPrimaryOption || otherLanguages.length > 0) && (
-        <div className="flex flex-wrap items-center justify-center gap-x-3 gap-y-1 pb-10 text-[12px] text-white/40">
+        <div className="flex flex-wrap items-center justify-center gap-x-3 gap-y-1 pb-10 text-[12px] text-ink/40">
           {showPrimaryOption && (
-            <a href={`?`} className="hover:text-white/70">
+            <a href={`?`} className="hover:text-ink/70">
               {languageLabel(primaryLanguage)}
             </a>
           )}
           {otherLanguages.map((code) => (
-            <a key={code} href={`?lang=${code}`} className="hover:text-white/70">
+            <a key={code} href={`?lang=${code}`} className="hover:text-ink/70">
               {languageLabel(code)}
             </a>
           ))}

@@ -11,17 +11,17 @@ export function AcademyHome() {
 
   return (
     <div className="px-6 py-6 lg:px-10">
-      <h1 className="text-[22px] font-semibold tracking-[-0.02em] text-white">
+      <h1 className="text-[22px] font-semibold tracking-[-0.02em] text-ink">
         Loopinglive Academy
       </h1>
-      <p className="mt-1 text-[13px] text-[#A0A0B0]">
+      <p className="mt-1 text-[13px] text-ink-muted">
         Free, for every plan. How to build a webinar that actually converts.
       </p>
 
       <div className="mt-6">
         {!courses ? (
           <div className="grid h-40 place-items-center">
-            <Loader2 className="h-5 w-5 animate-spin text-[#6C47FF]" />
+            <Loader2 className="h-5 w-5 animate-spin text-accent" />
           </div>
         ) : courses.length === 0 ? (
           <EmptyState icon="🎓" title="Nothing published yet" description="Check back soon." />

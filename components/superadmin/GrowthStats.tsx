@@ -106,15 +106,15 @@ export function GrowthStats() {
             {data.adoption.map((row) => (
               <li key={row.label}>
                 <div className="flex items-baseline justify-between gap-3">
-                  <span className="text-[13px] text-white">{row.label}</span>
-                  <span className="text-[12px] tabular-nums text-[#A0A0B0]">
+                  <span className="text-[13px] text-ink">{row.label}</span>
+                  <span className="text-[12px] tabular-nums text-ink-muted">
                     {row.used} of {row.of}
-                    <span className="ml-2 text-[#6E6E80]">{row.share}%</span>
+                    <span className="ml-2 text-ink-faint">{row.share}%</span>
                   </span>
                 </div>
-                <div className="mt-1.5 h-1.5 overflow-hidden rounded-full bg-[#1A1A2A]">
+                <div className="mt-1.5 h-1.5 overflow-hidden rounded-full bg-surface-2">
                   <div
-                    className="h-full rounded-full bg-[#6C47FF] transition-[width] duration-500"
+                    className="h-full rounded-full bg-accent transition-[width] duration-500"
                     style={{ width: `${Math.min(100, row.share)}%` }}
                   />
                 </div>
@@ -137,16 +137,16 @@ export function GrowthStats() {
           <table className="min-w-[520px] border-separate border-spacing-1">
             <thead>
               <tr>
-                <th className="pb-1 text-left text-[10px] font-semibold uppercase tracking-[0.12em] text-[#6E6E80]">
+                <th className="pb-1 text-left text-[10px] font-semibold uppercase tracking-[0.12em] text-ink-faint">
                   Cohort
                 </th>
-                <th className="pb-1 text-left text-[10px] font-semibold uppercase tracking-[0.12em] text-[#6E6E80]">
+                <th className="pb-1 text-left text-[10px] font-semibold uppercase tracking-[0.12em] text-ink-faint">
                   Size
                 </th>
                 {offsets.map((offset) => (
                   <th
                     key={offset}
-                    className="pb-1 text-center text-[10px] font-semibold uppercase tracking-[0.12em] text-[#6E6E80]"
+                    className="pb-1 text-center text-[10px] font-semibold uppercase tracking-[0.12em] text-ink-faint"
                   >
                     M{offset}
                   </th>
@@ -159,10 +159,10 @@ export function GrowthStats() {
 
                 return (
                   <tr key={cohort}>
-                    <td className="pr-3 text-[12.5px] whitespace-nowrap text-white">
+                    <td className="pr-3 text-[12.5px] whitespace-nowrap text-ink">
                       {cohort}
                     </td>
-                    <td className="pr-3 text-[12.5px] tabular-nums text-[#A0A0B0]">
+                    <td className="pr-3 text-[12.5px] tabular-nums text-ink-muted">
                       {size}
                     </td>
                     {offsets.map((offset) => {

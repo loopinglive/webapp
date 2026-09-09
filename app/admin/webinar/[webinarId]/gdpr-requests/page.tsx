@@ -13,8 +13,8 @@ export default async function GdprRequestsPage({
 
   return (
     <div className="px-6 py-8 lg:px-10">
-      <h1 className="text-[22px] font-semibold tracking-tight text-white">GDPR Requests</h1>
-      <p className="mt-1.5 max-w-[62ch] text-[13.5px] text-[#A0A0B0]">
+      <h1 className="text-[22px] font-semibold tracking-tight text-ink">GDPR Requests</h1>
+      <p className="mt-1.5 max-w-[62ch] text-[13.5px] text-ink-muted">
         Attendees who submit a data request at loopinglive.com/gdpr-request for
         this webinar show up here. You have 30 days to respond — Loopinglive
         processes their data on your instruction, but the response is yours to

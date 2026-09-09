@@ -131,7 +131,7 @@ export function OnDemandPlayer({
 
   return (
     <div className="grid gap-6 lg:grid-cols-[1fr_320px]">
-      <div className="overflow-hidden rounded-2xl border border-[#1E1E2E] bg-black">
+      <div className="overflow-hidden rounded-2xl border border-hairline bg-black">
         <div className="relative">
           {src ? (
             <video
@@ -146,7 +146,7 @@ export function OnDemandPlayer({
             </video>
           ) : (
             <div className="grid aspect-video place-items-center">
-              <Loader2 className="h-6 w-6 animate-spin text-white/40" />
+              <Loader2 className="h-6 w-6 animate-spin text-ink/40" />
             </div>
           )}
           {webinar.on_demand_allow_seek && src && (
@@ -159,7 +159,7 @@ export function OnDemandPlayer({
           )}
         </div>
         {!webinar.on_demand_allow_seek && (
-          <p className="border-t border-white/5 px-4 py-2 text-[11.5px] text-white/40">
+          <p className="border-t border-hairline px-4 py-2 text-[11.5px] text-ink/40">
             Seeking ahead is disabled for this replay — you can watch back, not skip forward.
           </p>
         )}
@@ -176,15 +176,15 @@ export function OnDemandPlayer({
           />
         )}
 
-        <div className="flex max-h-[70dvh] flex-1 flex-col rounded-2xl border border-[#1E1E2E] bg-[#12121A]">
-          <div className="border-b border-[#1E1E2E] px-4 py-3 text-[13px] font-semibold text-white">
+        <div className="flex max-h-[70dvh] flex-1 flex-col rounded-2xl border border-hairline bg-surface">
+          <div className="border-b border-hairline px-4 py-3 text-[13px] font-semibold text-ink">
             Live chat replay
           </div>
           <div className="flex-1 space-y-2.5 overflow-y-auto px-4 py-3">
             {visible.map((comment) => (
               <div key={comment.id} className="text-[13px] leading-snug">
-                <span className="font-medium text-[#00D4FF]">{comment.persona?.name ?? "Guest"}</span>{" "}
-                <span className="text-white/80">{comment.content}</span>
+                <span className="font-medium text-cyan">{comment.persona?.name ?? "Guest"}</span>{" "}
+                <span className="text-ink/80">{comment.content}</span>
               </div>
             ))}
           </div>

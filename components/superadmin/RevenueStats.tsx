@@ -52,7 +52,7 @@ export function RevenueStats() {
   if (!data) {
     return (
       <div className="grid h-[50dvh] place-items-center">
-        <Loader2 className="h-5 w-5 animate-spin text-[#6C47FF]" />
+        <Loader2 className="h-5 w-5 animate-spin text-accent" />
       </div>
     );
   }
@@ -196,8 +196,8 @@ export function RevenueStats() {
                   className="h-2.5 w-2.5 rounded-sm"
                   style={{ background: seriesColour(index) }}
                 />
-                <span className="text-white">{slice.name}</span>
-                <span className="ml-auto tabular-nums text-[#A0A0B0]">{slice.value}</span>
+                <span className="text-ink">{slice.name}</span>
+                <span className="ml-auto tabular-nums text-ink-muted">{slice.value}</span>
               </li>
             ))}
           </ul>

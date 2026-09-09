@@ -12,7 +12,7 @@ export function TeamBillingClient({ teamId }: { teamId: string }) {
   if (loading || !team || !usage) {
     return (
       <div className="grid h-64 place-items-center">
-        <Loader2 className="h-5 w-5 animate-spin text-[#6C47FF]" />
+        <Loader2 className="h-5 w-5 animate-spin text-accent" />
       </div>
     );
   }

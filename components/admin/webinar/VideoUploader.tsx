@@ -63,10 +63,10 @@ export function VideoUploader({
           {/* "Saved", not "uploaded": the confirm step has already written it
               to this webinar, and the host needs to know it is kept, not that
               some bytes arrived somewhere. */}
-          <p className="text-[13.5px] font-medium text-white">
+          <p className="text-[13.5px] font-medium text-ink">
             {status === "complete" ? `${noun} saved` : `${noun} saved earlier`}
           </p>
-          <p className="truncate text-[12px] text-[#A0A0B0]">
+          <p className="truncate text-[12px] text-ink-muted">
             {existingLabel ?? "Attached to this webinar — nothing else to do."}
           </p>
         </div>
@@ -92,20 +92,20 @@ export function VideoUploader({
 
   if (status === "uploading" || status === "processing") {
     return (
-      <div className="rounded-xl border border-[#6C47FF]/40 bg-[#6C47FF]/6 px-5 py-6">
+      <div className="rounded-xl border border-accent/40 bg-accent/6 px-5 py-6">
         <div className="flex items-center gap-3">
           {status === "processing" ? (
-            <Loader2 className="h-5 w-5 animate-spin text-[#6C47FF]" />
+            <Loader2 className="h-5 w-5 animate-spin text-accent" />
           ) : (
-            <Film className="h-5 w-5 text-[#6C47FF]" />
+            <Film className="h-5 w-5 text-accent" />
           )}
           <div className="min-w-0 flex-1">
-            <p className="text-[13.5px] font-medium text-white">
+            <p className="text-[13.5px] font-medium text-ink">
               {status === "processing"
                 ? "Processing your video…"
                 : `Uploading your video… ${Math.round(progress)}%`}
             </p>
-            <p className="text-[12px] text-[#A0A0B0]">
+            <p className="text-[12px] text-ink-muted">
               {status === "processing"
                 ? "Almost there. This can take a moment for long recordings."
                 : secondsRemaining !== null
@@ -120,10 +120,10 @@ export function VideoUploader({
           )}
         </div>
 
-        <div className="mt-4 h-1.5 overflow-hidden rounded-full bg-[#1A1A2A]">
+        <div className="mt-4 h-1.5 overflow-hidden rounded-full bg-surface-2">
           <div
             className={cn(
-              "h-full rounded-full bg-gradient-to-r from-[#6C47FF] to-[#00D4FF] transition-[width] duration-300",
+              "h-full rounded-full bg-gradient-to-r from-accent to-cyan transition-[width] duration-300",
               status === "processing" && "animate-pulse"
             )}
             style={{ width: `${Math.max(progress, 2)}%` }}
@@ -152,15 +152,15 @@ export function VideoUploader({
           "flex w-full flex-col items-center justify-center gap-3 rounded-xl border-2 border-dashed px-6 py-14",
           "transition-colors duration-200",
           dragging
-            ? "border-[#6C47FF] bg-[#6C47FF]/5"
-            : "border-[#3A3A4A] hover:border-[#6C47FF] hover:bg-[#6C47FF]/5"
+            ? "border-accent bg-accent/5"
+            : "border-surface-3 hover:border-accent hover:bg-accent/5"
         )}
       >
-        <div className="grid h-12 w-12 place-items-center rounded-full bg-[#6C47FF]/12">
-          <UploadCloud className="h-5 w-5 text-[#6C47FF]" />
+        <div className="grid h-12 w-12 place-items-center rounded-full bg-accent/12">
+          <UploadCloud className="h-5 w-5 text-accent" />
         </div>
-        <p className="text-[14px] font-medium text-white">{LABELS[kind].title}</p>
-        <p className="text-[12.5px] text-[#A0A0B0]">
+        <p className="text-[14px] font-medium text-ink">{LABELS[kind].title}</p>
+        <p className="text-[12.5px] text-ink-muted">
           or click to browse · {LABELS[kind].hint}
         </p>
       </button>

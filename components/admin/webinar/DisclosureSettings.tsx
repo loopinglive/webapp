@@ -77,10 +77,10 @@ export function DisclosureSettings() {
   return (
     <section className="space-y-4">
       <div>
-        <h2 className="text-[11px] font-semibold uppercase tracking-[0.16em] text-[#A0A0B0]">
+        <h2 className="text-[11px] font-semibold uppercase tracking-[0.16em] text-ink-muted">
           How this is described
         </h2>
-        <p className="mt-1.5 text-[12px] leading-relaxed text-[#6E6E80]">
+        <p className="mt-1.5 text-[12px] leading-relaxed text-ink-faint">
           The badge attendees see, and whether the page says the session was
           recorded.
         </p>
@@ -95,18 +95,18 @@ export function DisclosureSettings() {
               onClick={() => updateWebinar({ broadcastLabel: label.id })}
               className={`rounded-xl border px-3.5 py-3 text-left transition-colors ${
                 active
-                  ? "border-[#6C47FF] bg-[#6C47FF]/10"
-                  : "border-[#1E1E2E] hover:border-[#6C47FF]/40"
+                  ? "border-accent bg-accent/10"
+                  : "border-hairline hover:border-accent/40"
               }`}
             >
               <span
                 className={`text-[13px] font-medium ${
-                  active ? "text-white" : "text-[#C4C4D0]"
+                  active ? "text-ink" : "text-[#C4C4D0]"
                 }`}
               >
                 {label.name}
               </span>
-              <span className="mt-0.5 block text-[11.5px] leading-relaxed text-[#6E6E80]">
+              <span className="mt-0.5 block text-[11.5px] leading-relaxed text-ink-faint">
                 {label.blurb}
               </span>
             </button>
@@ -114,20 +114,20 @@ export function DisclosureSettings() {
         })}
       </div>
 
-      <label className="flex cursor-pointer items-start gap-2.5 rounded-xl border border-[#1E1E2E] px-3.5 py-3">
+      <label className="flex cursor-pointer items-start gap-2.5 rounded-xl border border-hairline px-3.5 py-3">
         <input
           type="checkbox"
           defaultChecked={webinar.show_recorded_notice}
           onChange={(event) =>
             updateWebinar({ showRecordedNotice: event.target.checked })
           }
-          className="mt-0.5 h-4 w-4 shrink-0 accent-[#6C47FF]"
+          className="mt-0.5 h-4 w-4 shrink-0 accent-accent"
         />
         <span>
-          <span className="block text-[13px] text-white">
+          <span className="block text-[13px] text-ink">
             Say on the page that this was recorded
           </span>
-          <span className="mt-0.5 block text-[11.5px] leading-relaxed text-[#6E6E80]">
+          <span className="mt-0.5 block text-[11.5px] leading-relaxed text-ink-faint">
             A line under the video reading &ldquo;This presentation was recorded
             in advance.&rdquo; Some markets and some niches expect it.
           </span>
@@ -146,7 +146,7 @@ export function DisclosureSettings() {
         <p className="flex gap-2 rounded-xl bg-[#F5A623]/10 px-3.5 py-3 text-[11.5px] leading-relaxed text-[#C4C4D0]">
           <Users className="mt-0.5 h-3.5 w-3.5 shrink-0 text-[#F5A623]" />
           <span>
-            <strong className="font-medium text-white">
+            <strong className="font-medium text-ink">
               {Math.round(geo.regulatedShare * 100)}%
             </strong>{" "}
             of {geo.total.toLocaleString()} registrants are in markets — the US,
@@ -158,8 +158,8 @@ export function DisclosureSettings() {
         </p>
       )}
 
-      <p className="flex gap-2 rounded-xl bg-[#12121A] px-3.5 py-3 text-[11.5px] leading-relaxed text-[#6E6E80]">
-        <Info className="mt-0.5 h-3.5 w-3.5 shrink-0 text-[#A0A0B0]" />
+      <p className="flex gap-2 rounded-xl bg-surface px-3.5 py-3 text-[11.5px] leading-relaxed text-ink-faint">
+        <Info className="mt-0.5 h-3.5 w-3.5 shrink-0 text-ink-muted" />
         <span>
           We cannot tell you what your jurisdiction requires, and this setting is
           not legal advice. If you sell into a regulated market, it is worth an

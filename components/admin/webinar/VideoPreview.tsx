@@ -23,17 +23,17 @@ export function VideoPreview({
 }) {
   if (!src) {
     return (
-      <div className="grid aspect-video place-items-center rounded-xl border border-[#1E1E2E] bg-[#12121A] text-center">
+      <div className="grid aspect-video place-items-center rounded-xl border border-hairline bg-surface text-center">
         <div>
-          <Film className="mx-auto h-6 w-6 text-[#3A3A4A]" />
-          <p className="mt-2 text-[12.5px] text-[#A0A0B0]">No video yet</p>
+          <Film className="mx-auto h-6 w-6 text-surface-3" />
+          <p className="mt-2 text-[12.5px] text-ink-muted">No video yet</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="overflow-hidden rounded-xl border border-[#1E1E2E] bg-black">
+    <div className="overflow-hidden rounded-xl border border-hairline bg-black">
       <video
         src={src}
         poster={poster ?? undefined}
@@ -43,10 +43,10 @@ export function VideoPreview({
         onContextMenu={(event) => event.preventDefault()}
         className="aspect-video w-full bg-black"
       />
-      <div className="flex items-center justify-between gap-3 bg-[#12121A] px-4 py-2.5">
-        <span className="truncate text-[12.5px] text-white">{label}</span>
+      <div className="flex items-center justify-between gap-3 bg-surface px-4 py-2.5">
+        <span className="truncate text-[12.5px] text-ink">{label}</span>
         {durationSeconds ? (
-          <span className="flex shrink-0 items-center gap-1.5 text-[11.5px] tabular-nums text-[#A0A0B0]">
+          <span className="flex shrink-0 items-center gap-1.5 text-[11.5px] tabular-nums text-ink-muted">
             <Clock className="h-3 w-3" />
             {formatOffset(durationSeconds)}
           </span>

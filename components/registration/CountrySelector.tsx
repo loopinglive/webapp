@@ -59,7 +59,7 @@ export function CountrySelector({ value, onChange, name = "countryCode" }: Props
         name={name}
         defaultValue={value.code}
         aria-label="Country"
-        className="h-[52px] shrink-0 rounded-lg border border-[#1E1E2E] bg-[#12121A] px-3 text-sm text-white outline-none"
+        className="h-[52px] shrink-0 rounded-lg border border-hairline bg-surface px-3 text-sm text-ink outline-none"
       >
         {COUNTRIES.map((country) => (
           <option key={country.code} value={country.code}>
@@ -80,32 +80,32 @@ export function CountrySelector({ value, onChange, name = "countryCode" }: Props
         aria-haspopup="listbox"
         aria-expanded={open}
         className={cn(
-          "flex h-[52px] items-center gap-1.5 rounded-lg border border-[#1E1E2E] bg-[#12121A] px-3 text-sm text-white",
-          "transition-colors duration-200 hover:border-[#6C47FF]/50",
-          "focus:border-[#6C47FF] focus:outline-none focus:ring-2 focus:ring-[#6C47FF]/25",
-          open && "border-[#6C47FF]"
+          "flex h-[52px] items-center gap-1.5 rounded-lg border border-hairline bg-surface px-3 text-sm text-ink",
+          "transition-colors duration-200 hover:border-accent/50",
+          "focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/25",
+          open && "border-accent"
         )}
       >
         <span className="text-lg leading-none">{flagFor(value.code)}</span>
         <span className="tabular-nums">{value.dial}</span>
         <ChevronDown
           className={cn(
-            "h-3.5 w-3.5 text-[#A0A0B0] transition-transform duration-200",
+            "h-3.5 w-3.5 text-ink-muted transition-transform duration-200",
             open && "rotate-180"
           )}
         />
       </button>
 
       {open && (
-        <div className="absolute left-0 top-[calc(100%+8px)] z-50 w-[320px] overflow-hidden rounded-xl border border-[#1E1E2E] bg-[#12121A]/95 shadow-[0_32px_80px_-24px_rgba(0,0,0,0.9)] backdrop-blur-2xl">
-          <div className="flex items-center gap-2 border-b border-[#1E1E2E] px-3.5 py-3">
-            <Search className="h-3.5 w-3.5 text-[#A0A0B0]" />
+        <div className="absolute left-0 top-[calc(100%+8px)] z-50 w-[320px] overflow-hidden rounded-xl border border-hairline bg-surface/95 shadow-[0_32px_80px_-24px_rgba(0,0,0,0.9)] backdrop-blur-2xl">
+          <div className="flex items-center gap-2 border-b border-hairline px-3.5 py-3">
+            <Search className="h-3.5 w-3.5 text-ink-muted" />
             <input
               ref={searchRef}
               value={query}
               onChange={(event) => setQuery(event.target.value)}
               placeholder="Search countries"
-              className="w-full bg-transparent text-sm text-white placeholder:text-[#A0A0B0]/70 focus:outline-none"
+              className="w-full bg-transparent text-sm text-ink placeholder:text-ink-muted/70 focus:outline-none"
             />
           </div>
 
@@ -126,25 +126,25 @@ export function CountrySelector({ value, onChange, name = "countryCode" }: Props
                     className={cn(
                       "flex w-full items-center gap-3 px-3.5 py-2.5 text-left text-sm transition-colors",
                       selected
-                        ? "bg-[#6C47FF]/15 text-white"
-                        : "text-[#A0A0B0] hover:bg-white/5 hover:text-white"
+                        ? "bg-accent/15 text-ink"
+                        : "text-ink-muted hover:bg-surface-2 hover:text-ink"
                     )}
                   >
                     <span className="text-lg leading-none">
                       {flagFor(country.code)}
                     </span>
                     <span className="flex-1 truncate">{country.name}</span>
-                    <span className="tabular-nums text-[#A0A0B0]">
+                    <span className="tabular-nums text-ink-muted">
                       {country.dial}
                     </span>
-                    {selected && <Check className="h-3.5 w-3.5 text-[#6C47FF]" />}
+                    {selected && <Check className="h-3.5 w-3.5 text-accent" />}
                   </button>
                 </li>
               );
             })}
 
             {!results.length && (
-              <li className="px-3.5 py-6 text-center text-[13px] text-[#A0A0B0]">
+              <li className="px-3.5 py-6 text-center text-[13px] text-ink-muted">
                 No country matches “{query}”.
               </li>
             )}

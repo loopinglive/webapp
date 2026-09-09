@@ -47,27 +47,27 @@ export function HowItWorks() {
           {STEPS.map((step, index) => (
             <li
               key={step.title}
-              className="relative rounded-2xl border border-[#1E1E2E] bg-[#12121A] p-6"
+              className="relative rounded-2xl border border-hairline bg-surface p-6"
             >
               {/* The connector only makes sense between cards on one row. */}
               {index < STEPS.length - 1 && (
                 <span
                   aria-hidden
-                  className="absolute -right-3 top-11 hidden h-px w-6 bg-gradient-to-r from-[#6C47FF]/60 to-transparent lg:block"
+                  className="absolute -right-3 top-11 hidden h-px w-6 bg-gradient-to-r from-accent/60 to-transparent lg:block"
                 />
               )}
 
               <div className="flex items-center gap-3">
-                <span className="grid h-9 w-9 place-items-center rounded-xl bg-[#6C47FF]/12 text-[13px] font-semibold tabular-nums text-[#6C47FF]">
+                <span className="grid h-9 w-9 place-items-center rounded-xl bg-accent/12 text-[13px] font-semibold tabular-nums text-accent">
                   {index + 1}
                 </span>
-                <step.icon className="h-4 w-4 text-[#00D4FF]" />
+                <step.icon className="h-4 w-4 text-cyan" />
               </div>
 
-              <h3 className="mt-4 text-[16px] font-semibold tracking-[-0.01em] text-white">
+              <h3 className="mt-4 text-[16px] font-semibold tracking-[-0.01em] text-ink">
                 {step.title}
               </h3>
-              <p className="mt-2 text-[13.5px] leading-relaxed text-[#A0A0B0]">
+              <p className="mt-2 text-[13.5px] leading-relaxed text-ink-muted">
                 {step.body}
               </p>
             </li>
@@ -76,7 +76,7 @@ export function HowItWorks() {
 
         <Link
           href="/signup"
-          className="mt-10 inline-flex items-center gap-2 text-[14px] font-medium text-[#6C47FF] transition-colors hover:text-[#8A6BFF]"
+          className="mt-10 inline-flex items-center gap-2 text-[14px] font-medium text-accent transition-colors hover:text-[#8A6BFF]"
         >
           Start setting up for free
           <ArrowRight className="h-3.5 w-3.5" />

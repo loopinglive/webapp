@@ -191,7 +191,7 @@ export function VoiceCloneStudio() {
                   onClick={() => void handleTest(clone.id)}
                   disabled={testingId === clone.id}
                   title="Play test line"
-                  className="grid h-8 w-8 place-items-center rounded-lg text-ink-faint transition-colors hover:bg-white/5 hover:text-ink disabled:opacity-40"
+                  className="grid h-8 w-8 place-items-center rounded-lg text-ink-faint transition-colors hover:bg-surface-2 hover:text-ink disabled:opacity-40"
                 >
                   {testingId === clone.id ? (
                     <Loader2 className="h-3.5 w-3.5 animate-spin" />
@@ -203,7 +203,7 @@ export function VoiceCloneStudio() {
                   <button
                     onClick={() => void handlePrimary(clone.id)}
                     title="Make default"
-                    className="grid h-8 w-8 place-items-center rounded-lg text-ink-faint transition-colors hover:bg-white/5 hover:text-ink"
+                    className="grid h-8 w-8 place-items-center rounded-lg text-ink-faint transition-colors hover:bg-surface-2 hover:text-ink"
                   >
                     <Star className="h-3.5 w-3.5" />
                   </button>

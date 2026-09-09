@@ -51,15 +51,32 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#0A0A0F",
-  colorScheme: "dark",
+  themeColor: [
+    { media: "(prefers-color-scheme: dark)", color: "#0A0A0F" },
+    { media: "(prefers-color-scheme: light)", color: "#F6F6F9" },
+  ],
+  colorScheme: "dark light",
 };
+
+/*
+ * Applied before first paint.
+ *
+ * The theme lives in localStorage, which React cannot read until it hydrates —
+ * so without this the page paints dark and then snaps to light, which is worse
+ * than not offering the choice. Kept deliberately tiny and dependency-free
+ * because it blocks rendering, and it mirrors the same default as
+ * hooks/useTheme.tsx: dark unless something else was chosen.
+ */
+const NO_FLASH_THEME = `(function(){try{var c=localStorage.getItem("loopinglive-theme");var t=c==="light"||c==="dark"?c:c==="system"?(window.matchMedia("(prefers-color-scheme: light)").matches?"light":"dark"):"dark";document.documentElement.dataset.theme=t;document.documentElement.style.colorScheme=t;}catch(e){document.documentElement.dataset.theme="dark";}})();`;
 
 export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en" className={inter.variable}>
+    <html lang="en" className={inter.variable} data-theme="dark" suppressHydrationWarning>
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: NO_FLASH_THEME }} />
+      </head>
       <body className="bg-void text-ink antialiased">
         <SkipToContent />
         <ToastProvider>

@@ -240,7 +240,7 @@ export function UserList() {
     <div className="px-6 py-6 lg:px-8">
       <div className="mb-5 flex flex-wrap items-center gap-2">
         <div className="relative">
-          <Search className="pointer-events-none absolute left-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-[#6E6E80]" />
+          <Search className="pointer-events-none absolute left-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-ink-faint" />
           <input
             value={query}
             onChange={(event) => {
@@ -248,7 +248,7 @@ export function UserList() {
               setPage(1);
             }}
             placeholder="Search name or email"
-            className="h-9 w-[240px] rounded-full border border-[#1E1E2E] bg-[#12121A] pl-9 pr-4 text-[13px] text-white placeholder:text-[#6E6E80] focus:border-[#6C47FF] focus:outline-none"
+            className="h-9 w-[240px] rounded-full border border-hairline bg-surface pl-9 pr-4 text-[13px] text-ink placeholder:text-ink-faint focus:border-accent focus:outline-none"
           />
         </div>
 
@@ -258,7 +258,7 @@ export function UserList() {
             setPlan(event.target.value);
             setPage(1);
           }}
-          className="h-9 rounded-full border border-[#1E1E2E] bg-[#12121A] px-3 text-[13px] text-white focus:outline-none"
+          className="h-9 rounded-full border border-hairline bg-surface px-3 text-[13px] text-ink focus:outline-none"
         >
           <option value="all">All plans</option>
           {PLANS.map((p) => (
@@ -274,7 +274,7 @@ export function UserList() {
             setStatus(event.target.value);
             setPage(1);
           }}
-          className="h-9 rounded-full border border-[#1E1E2E] bg-[#12121A] px-3 text-[13px] text-white focus:outline-none"
+          className="h-9 rounded-full border border-hairline bg-surface px-3 text-[13px] text-ink focus:outline-none"
         >
           <option value="all">Any status</option>
           <option value="active">Active</option>
@@ -298,17 +298,17 @@ export function UserList() {
             }
             await loadSaved();
           }}
-          className="inline-flex h-9 items-center gap-2 rounded-full border border-[#1E1E2E] px-3.5 text-[12.5px] text-[#A0A0B0] hover:border-[#6C47FF]/50 hover:text-white"
+          className="inline-flex h-9 items-center gap-2 rounded-full border border-hairline px-3.5 text-[12.5px] text-ink-muted hover:border-accent/50 hover:text-ink"
         >
           <Star className="h-3 w-3" />
           Save view
         </button>
 
-        {loading && <Loader2 className="h-4 w-4 animate-spin text-[#6C47FF]" />}
+        {loading && <Loader2 className="h-4 w-4 animate-spin text-accent" />}
 
         <a
           href="/api/superadmin/export?dataset=users"
-          className="ml-auto inline-flex h-9 items-center gap-2 rounded-full border border-[#1E1E2E] px-3.5 text-[12.5px] text-[#A0A0B0] hover:text-white"
+          className="ml-auto inline-flex h-9 items-center gap-2 rounded-full border border-hairline px-3.5 text-[12.5px] text-ink-muted hover:text-ink"
         >
           <Download className="h-3 w-3" />
           Export CSV
@@ -316,29 +316,29 @@ export function UserList() {
       </div>
 
       {selectedIds.length > 0 && (
-        <div className="mb-4 flex flex-wrap items-center gap-2 rounded-xl border border-[#6C47FF]/40 bg-[#6C47FF]/10 px-4 py-2.5">
-          <span className="text-[12.5px] text-white">
+        <div className="mb-4 flex flex-wrap items-center gap-2 rounded-xl border border-accent/40 bg-accent/10 px-4 py-2.5">
+          <span className="text-[12.5px] text-ink">
             {selectedIds.length} selected
           </span>
 
           <button
             onClick={() => void bulk("suspend")}
             disabled={bulkBusy}
-            className="h-8 rounded-lg border border-[#1E1E2E] px-3 text-[12px] text-[#A0A0B0] hover:border-[#FF5A5A]/50 hover:text-[#FF5A5A] disabled:opacity-60"
+            className="h-8 rounded-lg border border-hairline px-3 text-[12px] text-ink-muted hover:border-[#FF5A5A]/50 hover:text-[#FF5A5A] disabled:opacity-60"
           >
             Suspend
           </button>
           <button
             onClick={() => void bulk("unsuspend")}
             disabled={bulkBusy}
-            className="h-8 rounded-lg border border-[#1E1E2E] px-3 text-[12px] text-[#A0A0B0] hover:text-white disabled:opacity-60"
+            className="h-8 rounded-lg border border-hairline px-3 text-[12px] text-ink-muted hover:text-ink disabled:opacity-60"
           >
             Unsuspend
           </button>
           <button
             onClick={() => void bulk("add_note")}
             disabled={bulkBusy}
-            className="h-8 rounded-lg border border-[#1E1E2E] px-3 text-[12px] text-[#A0A0B0] hover:text-white disabled:opacity-60"
+            className="h-8 rounded-lg border border-hairline px-3 text-[12px] text-ink-muted hover:text-ink disabled:opacity-60"
           >
             Add a note
           </button>
@@ -350,7 +350,7 @@ export function UserList() {
               event.target.value = "";
               if (plan) void bulk("grant_plan", plan);
             }}
-            className="h-8 rounded-lg border border-[#1E1E2E] bg-[#0D0D15] px-2 text-[12px] text-[#A0A0B0]"
+            className="h-8 rounded-lg border border-hairline bg-void px-2 text-[12px] text-ink-muted"
           >
             <option value="">Grant plan…</option>
             {PLANS.map((p) => (
@@ -360,11 +360,11 @@ export function UserList() {
             ))}
           </select>
 
-          {bulkBusy && <Loader2 className="h-4 w-4 animate-spin text-[#6C47FF]" />}
+          {bulkBusy && <Loader2 className="h-4 w-4 animate-spin text-accent" />}
 
           <button
             onClick={() => setSelected(new Set())}
-            className="ml-auto text-[12px] text-[#A0A0B0] hover:text-white"
+            className="ml-auto text-[12px] text-ink-muted hover:text-ink"
           >
             Clear
           </button>
@@ -381,8 +381,8 @@ export function UserList() {
                 className={cn(
                   "group inline-flex h-7 items-center gap-1 rounded-full border pl-3 pr-1.5 text-[12px] transition-colors",
                   current
-                    ? "border-[#6C47FF] bg-[#6C47FF]/10 text-white"
-                    : "border-[#1E1E2E] text-[#A0A0B0] hover:text-white"
+                    ? "border-accent bg-accent/10 text-ink"
+                    : "border-hairline text-ink-muted hover:text-ink"
                 )}
               >
                 <button onClick={() => applySaved(filter)}>{filter.name}</button>
@@ -395,7 +395,7 @@ export function UserList() {
                     await loadSaved();
                   }}
                   aria-label={`Delete the ${filter.name} view`}
-                  className="rounded-full p-0.5 text-[#6E6E80] opacity-0 transition-opacity hover:text-[#FF5A5A] focus:opacity-100 group-hover:opacity-100"
+                  className="rounded-full p-0.5 text-ink-faint opacity-0 transition-opacity hover:text-[#FF5A5A] focus:opacity-100 group-hover:opacity-100"
                 >
                   <X className="h-3 w-3" />
                 </button>
@@ -415,9 +415,9 @@ export function UserList() {
         />
       ) : (
         <>
-          <div className="overflow-x-auto rounded-xl border border-[#1E1E2E]">
+          <div className="overflow-x-auto rounded-xl border border-hairline">
             <table className="w-full min-w-[840px]">
-              <thead className="bg-[#12121A]">
+              <thead className="bg-surface">
                 <tr>
                   <th className="w-9 px-3 py-2.5">
                     <input
@@ -433,20 +433,20 @@ export function UserList() {
                             : new Set()
                         )
                       }
-                      className="h-3.5 w-3.5 accent-[#6C47FF]"
+                      className="h-3.5 w-3.5 accent-accent"
                     />
                   </th>
                   {COLUMNS.map((column) => (
                     <th
                       key={column.key}
-                      className="px-4 py-2.5 text-left text-[10px] font-semibold uppercase tracking-[0.14em] text-[#6E6E80]"
+                      className="px-4 py-2.5 text-left text-[10px] font-semibold uppercase tracking-[0.14em] text-ink-faint"
                     >
                       {column.sortable ? (
                         <button
                           onClick={() => toggleSort(column.key)}
                           className={cn(
-                            "inline-flex items-center gap-1 transition-colors hover:text-white",
-                            sort === column.key && "text-white"
+                            "inline-flex items-center gap-1 transition-colors hover:text-ink",
+                            sort === column.key && "text-ink"
                           )}
                         >
                           {column.label}
@@ -464,7 +464,7 @@ export function UserList() {
                   ))}
                 </tr>
               </thead>
-              <tbody className="divide-y divide-[#1E1E2E]">
+              <tbody className="divide-y divide-hairline">
                 {data.users.map((user) => (
                   <tr
                     key={user.id}
@@ -486,13 +486,13 @@ export function UserList() {
                             return next;
                           })
                         }
-                        className="h-3.5 w-3.5 accent-[#6C47FF]"
+                        className="h-3.5 w-3.5 accent-accent"
                       />
                     </td>
                     <td className="px-4 py-3">
                       <Link
                         href={`/superadmin/users/${user.id}`}
-                        className="text-[13px] font-medium text-white hover:text-[#6C47FF]"
+                        className="text-[13px] font-medium text-ink hover:text-accent"
                       >
                         {user.full_name || "—"}
                       </Link>
@@ -507,7 +507,7 @@ export function UserList() {
                           aria-label="Has an admin note"
                         />
                       )}
-                      <p className="text-[11.5px] text-[#6E6E80]">{user.email}</p>
+                      <p className="text-[11.5px] text-ink-faint">{user.email}</p>
                     </td>
 
                     <td className="px-4 py-3">
@@ -522,7 +522,7 @@ export function UserList() {
                       </span>
                     </td>
 
-                    <td className="px-4 py-3 text-[12px] text-[#A0A0B0]">
+                    <td className="px-4 py-3 text-[12px] text-ink-muted">
                       {user.is_suspended ? (
                         <span
                           className="text-[#FF6B6B]"
@@ -535,17 +535,17 @@ export function UserList() {
                       )}
                     </td>
 
-                    <td className="px-4 py-3 text-[12.5px] tabular-nums text-[#A0A0B0]">
+                    <td className="px-4 py-3 text-[12.5px] tabular-nums text-ink-muted">
                       {user.webinars}
                     </td>
 
-                    <td className="px-4 py-3 text-[12px] text-[#6E6E80]">
+                    <td className="px-4 py-3 text-[12px] text-ink-faint">
                       {new Date(user.created_at).toLocaleDateString(undefined, {
                         dateStyle: "medium",
                       })}
                     </td>
 
-                    <td className="px-4 py-3 text-[12px] text-[#6E6E80]">
+                    <td className="px-4 py-3 text-[12px] text-ink-faint">
                       {user.last_login_at
                         ? new Date(user.last_login_at).toLocaleDateString(undefined, {
                             dateStyle: "medium",
@@ -561,7 +561,7 @@ export function UserList() {
           {/* Pagination. The list was previously capped at 200 rows with
               nothing on screen to say a customer beyond that existed. */}
           <div className="mt-4 flex flex-wrap items-center justify-between gap-3">
-            <p className="text-[12.5px] text-[#6E6E80]">
+            <p className="text-[12.5px] text-ink-faint">
               {from}&ndash;{to} of {data.total.toLocaleString()}
             </p>
 
@@ -569,20 +569,20 @@ export function UserList() {
               <button
                 onClick={() => setPage((p) => Math.max(1, p - 1))}
                 disabled={data.page <= 1 || loading}
-                className="inline-flex h-8 items-center gap-1 rounded-lg border border-[#1E1E2E] px-2.5 text-[12.5px] text-[#A0A0B0] hover:text-white disabled:opacity-30"
+                className="inline-flex h-8 items-center gap-1 rounded-lg border border-hairline px-2.5 text-[12.5px] text-ink-muted hover:text-ink disabled:opacity-30"
               >
                 <ChevronLeft className="h-3.5 w-3.5" />
                 Previous
               </button>
 
-              <span className="text-[12.5px] tabular-nums text-[#6E6E80]">
+              <span className="text-[12.5px] tabular-nums text-ink-faint">
                 {data.page} / {data.pages}
               </span>
 
               <button
                 onClick={() => setPage((p) => Math.min(data.pages, p + 1))}
                 disabled={data.page >= data.pages || loading}
-                className="inline-flex h-8 items-center gap-1 rounded-lg border border-[#1E1E2E] px-2.5 text-[12.5px] text-[#A0A0B0] hover:text-white disabled:opacity-30"
+                className="inline-flex h-8 items-center gap-1 rounded-lg border border-hairline px-2.5 text-[12.5px] text-ink-muted hover:text-ink disabled:opacity-30"
               >
                 Next
                 <ChevronRight className="h-3.5 w-3.5" />

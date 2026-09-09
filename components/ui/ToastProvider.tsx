@@ -107,7 +107,7 @@ function ToastRow({
 
   return (
     <div
-      className="pointer-events-auto flex animate-[toast-in_200ms_ease-out] items-start gap-3 rounded-xl border border-[#23232F] bg-[#12121A] p-3.5 shadow-[0_16px_40px_-12px_rgba(0,0,0,.7)]"
+      className="pointer-events-auto flex animate-[toast-in_200ms_ease-out] items-start gap-3 rounded-xl border border-[#23232F] bg-surface p-3.5 shadow-[0_16px_40px_-12px_rgba(0,0,0,.7)]"
       style={{ borderLeftColor: tone.colour, borderLeftWidth: 3 }}
     >
       <Icon className="mt-0.5 h-4 w-4 shrink-0" style={{ color: tone.colour }} />
@@ -117,7 +117,7 @@ function ToastRow({
       <button
         onClick={() => onDismiss(toast.id)}
         aria-label="Dismiss"
-        className="shrink-0 rounded-md p-0.5 text-[#6E6E80] transition-colors hover:text-white"
+        className="shrink-0 rounded-md p-0.5 text-ink-faint transition-colors hover:text-ink"
       >
         <X className="h-3.5 w-3.5" />
       </button>

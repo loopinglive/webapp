@@ -31,14 +31,14 @@ export function MyPurchases() {
   if (!purchases) {
     return (
       <div className="grid h-40 place-items-center">
-        <Loader2 className="h-5 w-5 animate-spin text-[#6C47FF]" />
+        <Loader2 className="h-5 w-5 animate-spin text-accent" />
       </div>
     );
   }
 
   return (
     <div className="px-6 py-6 lg:px-10">
-      <h1 className="text-[20px] font-semibold text-white">My purchases</h1>
+      <h1 className="text-[20px] font-semibold text-ink">My purchases</h1>
 
       {purchases.length === 0 ? (
         <div className="mt-6">
@@ -53,7 +53,7 @@ export function MyPurchases() {
           {purchases.map((purchase) => (
             <li
               key={purchase.id}
-              className="flex items-center gap-3 rounded-xl border border-[#1E1E2E] bg-[#12121A] px-4 py-3"
+              className="flex items-center gap-3 rounded-xl border border-hairline bg-surface px-4 py-3"
             >
               {purchase.listing?.thumbnail_url && (
                 // eslint-disable-next-line @next/next/no-img-element
@@ -66,11 +66,11 @@ export function MyPurchases() {
               <div className="min-w-0 flex-1">
                 <Link
                   href={`/marketplace/listing/${purchase.listing_id}`}
-                  className="text-[13.5px] text-white hover:text-[#6C47FF]"
+                  className="text-[13.5px] text-ink hover:text-accent"
                 >
                   {purchase.listing?.title ?? "(removed)"}
                 </Link>
-                <p className="text-[11.5px] text-[#6E6E80]">
+                <p className="text-[11.5px] text-ink-faint">
                   {new Date(purchase.purchased_at).toLocaleDateString()} ·{" "}
                   {purchase.amount_paid > 0
                     ? new Intl.NumberFormat("en-US", { style: "currency", currency: "usd" }).format(

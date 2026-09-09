@@ -30,7 +30,7 @@ function Gauge({ label, value, color }: { label: string; value: number; color: s
   return (
     <div>
       <div className="flex items-baseline justify-between">
-        <span className="text-[11px] text-[#A0A0B0]">{label}</span>
+        <span className="text-[11px] text-ink-muted">{label}</span>
         <span
           className={cn("text-[13px] font-semibold tabular-nums")}
           style={{ color }}
@@ -38,7 +38,7 @@ function Gauge({ label, value, color }: { label: string; value: number; color: s
           {value}%
         </span>
       </div>
-      <div className="mt-1.5 h-1.5 overflow-hidden rounded-full bg-[#1A1A2A]">
+      <div className="mt-1.5 h-1.5 overflow-hidden rounded-full bg-surface-2">
         <div
           className="h-full rounded-full transition-[width] duration-500"
           style={{ width: `${Math.min(value, 100)}%`, backgroundColor: color }}

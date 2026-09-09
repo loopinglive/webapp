@@ -33,7 +33,7 @@ export function AttendeeProfile({
   if (isLoading) {
     return (
       <div className="grid h-dvh place-items-center">
-        <Loader2 className="h-5 w-5 animate-spin text-[#6C47FF]" />
+        <Loader2 className="h-5 w-5 animate-spin text-accent" />
       </div>
     );
   }
@@ -41,7 +41,7 @@ export function AttendeeProfile({
   if (error || !data) {
     return (
       <div className="grid h-dvh place-items-center px-6 text-center">
-        <p className="text-[14px] text-[#A0A0B0]">
+        <p className="text-[14px] text-ink-muted">
           {error ?? "This attendee could not be found."}
         </p>
       </div>
@@ -60,10 +60,10 @@ export function AttendeeProfile({
 
   return (
     <div className="min-h-dvh">
-      <div className="border-b border-[#1E1E2E] px-6 py-4 lg:px-8">
+      <div className="border-b border-hairline px-6 py-4 lg:px-8">
         <Link
           href={`/admin/webinar/${webinarId}/attendees`}
-          className="inline-flex items-center gap-2 text-[13px] text-[#A0A0B0] transition-colors hover:text-white"
+          className="inline-flex items-center gap-2 text-[13px] text-ink-muted transition-colors hover:text-ink"
         >
           <ArrowLeft className="h-3.5 w-3.5" />
           Back to attendees
@@ -73,9 +73,9 @@ export function AttendeeProfile({
       <div className="grid gap-8 px-6 py-6 lg:grid-cols-[320px_1fr] lg:px-8">
         {/* Summary */}
         <aside className="space-y-5">
-          <div className="rounded-xl border border-[#1E1E2E] bg-[#12121A] p-5">
+          <div className="rounded-xl border border-hairline bg-surface p-5">
             <Avatar name={attendee.full_name} size={56} />
-            <h1 className="mt-4 text-[20px] font-semibold tracking-[-0.02em] text-white">
+            <h1 className="mt-4 text-[20px] font-semibold tracking-[-0.02em] text-ink">
               {attendee.full_name}
             </h1>
             <div className="mt-2">
@@ -86,7 +86,7 @@ export function AttendeeProfile({
               <Row label="Email">
                 <button
                   onClick={() => copy(attendee.email, "email")}
-                  className="flex min-w-0 items-center gap-1.5 text-white transition-colors hover:text-[#6C47FF]"
+                  className="flex min-w-0 items-center gap-1.5 text-ink transition-colors hover:text-accent"
                 >
                   <span className="truncate">{attendee.email}</span>
                   {copied === "email" ? (
@@ -100,7 +100,7 @@ export function AttendeeProfile({
               <Row label="Phone">
                 <button
                   onClick={() => copy(attendee.phone, "phone")}
-                  className="flex items-center gap-1.5 text-white transition-colors hover:text-[#6C47FF]"
+                  className="flex items-center gap-1.5 text-ink transition-colors hover:text-accent"
                 >
                   <span>{attendee.country_flag}</span>
                   <span>{attendee.phone}</span>
@@ -113,20 +113,20 @@ export function AttendeeProfile({
               </Row>
 
               <Row label="Registered">
-                <span className="text-white">
+                <span className="text-ink">
                   {new Date(attendee.created_at).toLocaleString()}
                 </span>
               </Row>
 
               <Row label="Sessions">
-                <span className="text-white">
+                <span className="text-ink">
                   {attendee.total_sessions_attended}
                 </span>
               </Row>
             </dl>
 
             <div className="mt-5">
-              <span className="text-[10px] font-semibold uppercase tracking-[0.14em] text-[#A0A0B0]">
+              <span className="text-[10px] font-semibold uppercase tracking-[0.14em] text-ink-muted">
                 Watch depth
               </span>
               <div className="mt-2">
@@ -138,9 +138,9 @@ export function AttendeeProfile({
               </div>
             </div>
 
-            <dl className="mt-5 space-y-2.5 border-t border-[#1E1E2E] pt-4 text-[12.5px]">
+            <dl className="mt-5 space-y-2.5 border-t border-hairline pt-4 text-[12.5px]">
               <Row label="Offer clicked">
-                <span className={attendee.clicked_offer ? "text-[#FFD93D]" : "text-[#A0A0B0]"}>
+                <span className={attendee.clicked_offer ? "text-[#FFD93D]" : "text-ink-muted"}>
                   {attendee.clicked_offer
                     ? attendee.offer_clicked_at
                       ? new Date(attendee.offer_clicked_at).toLocaleString()
@@ -150,7 +150,7 @@ export function AttendeeProfile({
               </Row>
 
               <div className="flex items-center justify-between gap-3">
-                <dt className="text-[#A0A0B0]">Bought</dt>
+                <dt className="text-ink-muted">Bought</dt>
                 <dd className="flex items-center gap-2">
                   {attendee.bought && attendee.bought_at && (
                     <span className="text-[11.5px] text-[#00C851]">
@@ -169,34 +169,34 @@ export function AttendeeProfile({
           </div>
 
           {/* Source */}
-          <div className="rounded-xl border border-[#1E1E2E] bg-[#12121A] p-5">
-            <h2 className="text-[10px] font-semibold uppercase tracking-[0.14em] text-[#A0A0B0]">
+          <div className="rounded-xl border border-hairline bg-surface p-5">
+            <h2 className="text-[10px] font-semibold uppercase tracking-[0.14em] text-ink-muted">
               Where they came from
             </h2>
             {source &&
             (source.utm_source || source.utm_campaign || source.referrer_url) ? (
               <dl className="mt-3 space-y-2 text-[12px]">
-                {source.utm_source && <Row label="Source"><span className="text-white">{source.utm_source}</span></Row>}
-                {source.utm_medium && <Row label="Medium"><span className="text-white">{source.utm_medium}</span></Row>}
-                {source.utm_campaign && <Row label="Campaign"><span className="text-white">{source.utm_campaign}</span></Row>}
+                {source.utm_source && <Row label="Source"><span className="text-ink">{source.utm_source}</span></Row>}
+                {source.utm_medium && <Row label="Medium"><span className="text-ink">{source.utm_medium}</span></Row>}
+                {source.utm_campaign && <Row label="Campaign"><span className="text-ink">{source.utm_campaign}</span></Row>}
                 {source.referrer_url && (
                   <Row label="Referrer">
-                    <span className="truncate text-white" title={source.referrer_url}>
+                    <span className="truncate text-ink" title={source.referrer_url}>
                       {source.referrer_url}
                     </span>
                   </Row>
                 )}
               </dl>
             ) : (
-              <p className="mt-2 text-[12px] text-[#A0A0B0]">
+              <p className="mt-2 text-[12px] text-ink-muted">
                 No tracking parameters were on the link they used.
               </p>
             )}
           </div>
 
           {/* Tags */}
-          <div className="rounded-xl border border-[#1E1E2E] bg-[#12121A] p-5">
-            <h2 className="text-[10px] font-semibold uppercase tracking-[0.14em] text-[#A0A0B0]">
+          <div className="rounded-xl border border-hairline bg-surface p-5">
+            <h2 className="text-[10px] font-semibold uppercase tracking-[0.14em] text-ink-muted">
               Tags
             </h2>
             <div className="mt-3 flex flex-wrap gap-1.5">
@@ -204,7 +204,7 @@ export function AttendeeProfile({
                 <button
                   key={tag}
                   onClick={() => void save({ tags: tags.filter((t) => t !== tag) })}
-                  className="group inline-flex items-center gap-1 rounded-full bg-[#2A2A3A] px-2.5 py-1 text-[11.5px] text-white transition-colors hover:bg-[#6C47FF]"
+                  className="group inline-flex items-center gap-1 rounded-full bg-surface-3 px-2.5 py-1 text-[11.5px] text-white transition-colors hover:bg-accent"
                 >
                   {tag}
                   <X className="h-2.5 w-2.5 opacity-50 group-hover:opacity-100" />
@@ -226,12 +226,12 @@ export function AttendeeProfile({
                 value={newTag}
                 onChange={(event) => setNewTag(event.target.value)}
                 placeholder="Hot lead"
-                className="h-8 min-w-0 flex-1 rounded-lg border border-[#2A2A3A] bg-[#1A1A2A] px-2.5 text-[12px] text-white placeholder:text-[#A0A0B0]/50 focus:border-[#6C47FF] focus:outline-none"
+                className="h-8 min-w-0 flex-1 rounded-lg border border-surface-3 bg-surface-2 px-2.5 text-[12px] text-ink placeholder:text-ink-muted/50 focus:border-accent focus:outline-none"
               />
               <button
                 type="submit"
                 aria-label="Add tag"
-                className="grid h-8 w-8 shrink-0 place-items-center rounded-lg bg-[#2A2A3A] text-[#A0A0B0] transition-colors hover:bg-[#6C47FF] hover:text-white"
+                className="grid h-8 w-8 shrink-0 place-items-center rounded-lg bg-surface-3 text-ink-muted transition-colors hover:bg-accent hover:text-white"
               >
                 <Plus className="h-3.5 w-3.5" />
               </button>
@@ -239,15 +239,15 @@ export function AttendeeProfile({
           </div>
 
           {/* Notes */}
-          <div className="rounded-xl border border-[#1E1E2E] bg-[#12121A] p-5">
+          <div className="rounded-xl border border-hairline bg-surface p-5">
             <div className="flex items-baseline justify-between">
-              <h2 className="text-[10px] font-semibold uppercase tracking-[0.14em] text-[#A0A0B0]">
+              <h2 className="text-[10px] font-semibold uppercase tracking-[0.14em] text-ink-muted">
                 Private notes
               </h2>
               <span
                 className={cn(
                   "text-[10.5px] tabular-nums",
-                  noteValue.length > MAX_NOTES ? "text-[#FF3B3B]" : "text-[#A0A0B0]"
+                  noteValue.length > MAX_NOTES ? "text-[#FF3B3B]" : "text-ink-muted"
                 )}
               >
                 {noteValue.length}/{MAX_NOTES}
@@ -272,14 +272,14 @@ export function AttendeeProfile({
         {/* Activity */}
         <div className="min-w-0 space-y-8">
           <section>
-            <h2 className="mb-4 text-[11px] font-semibold uppercase tracking-[0.16em] text-[#A0A0B0]">
+            <h2 className="mb-4 text-[11px] font-semibold uppercase tracking-[0.16em] text-ink-muted">
               Activity
             </h2>
             <AttendeeTimeline events={data.events} />
           </section>
 
           <section>
-            <h2 className="mb-4 text-[11px] font-semibold uppercase tracking-[0.16em] text-[#A0A0B0]">
+            <h2 className="mb-4 text-[11px] font-semibold uppercase tracking-[0.16em] text-ink-muted">
               Messages sent ({data.messages.length})
             </h2>
             <AttendeeMessages messages={data.messages} />
@@ -305,7 +305,7 @@ function Row({
 }) {
   return (
     <div className="flex items-center justify-between gap-3">
-      <dt className="shrink-0 text-[#A0A0B0]">{label}</dt>
+      <dt className="shrink-0 text-ink-muted">{label}</dt>
       <dd className="min-w-0 text-right">{children}</dd>
     </div>
   );

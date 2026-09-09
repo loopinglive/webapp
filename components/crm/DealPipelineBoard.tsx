@@ -213,7 +213,7 @@ function DealCard({
         <button onClick={onWon} title="Mark won" className="grid h-7 w-7 place-items-center rounded text-ink-faint hover:bg-[#00C851]/10 hover:text-[#00C851]">
           <Check className="h-3.5 w-3.5" />
         </button>
-        <button onClick={onLost} title="Mark lost" className="grid h-7 w-7 place-items-center rounded text-ink-faint hover:bg-white/5 hover:text-ink">
+        <button onClick={onLost} title="Mark lost" className="grid h-7 w-7 place-items-center rounded text-ink-faint hover:bg-surface-2 hover:text-ink">
           <X className="h-3.5 w-3.5" />
         </button>
         <button onClick={onDelete} title="Delete" className="grid h-7 w-7 place-items-center rounded text-ink-faint hover:bg-[#FF6B6B]/10 hover:text-[#FF6B6B]">

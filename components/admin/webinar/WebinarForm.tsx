@@ -86,7 +86,7 @@ export function WebinarForm() {
     <div className="mx-auto max-w-2xl px-5 py-10 lg:py-16">
       <button
         onClick={() => router.push("/admin/dashboard")}
-        className="mb-8 inline-flex items-center gap-2 text-[13px] text-[#A0A0B0] transition-colors hover:text-white"
+        className="mb-8 inline-flex items-center gap-2 text-[13px] text-ink-muted transition-colors hover:text-ink"
       >
         <ArrowLeft className="h-3.5 w-3.5" />
         Back to dashboard
@@ -99,10 +99,10 @@ export function WebinarForm() {
               className={cn(
                 "grid h-7 w-7 shrink-0 place-items-center rounded-full text-[11.5px] font-semibold transition-colors",
                 index < step
-                  ? "bg-[#00C851] text-[#0A0A0F]"
+                  ? "bg-[#00C851] text-void"
                   : index === step
-                    ? "bg-[#6C47FF] text-white"
-                    : "bg-[#3A3A4A]/50 text-[#A0A0B0]"
+                    ? "bg-accent text-white"
+                    : "bg-surface-3/50 text-ink-muted"
               )}
             >
               {index < step ? <Check className="h-3.5 w-3.5" /> : index + 1}
@@ -110,13 +110,13 @@ export function WebinarForm() {
             <span
               className={cn(
                 "hidden text-[12.5px] sm:block",
-                index === step ? "text-white" : "text-[#A0A0B0]"
+                index === step ? "text-ink" : "text-ink-muted"
               )}
             >
               {label}
             </span>
             {index < STEPS.length - 1 && (
-              <span className="h-px flex-1 bg-[#1E1E2E]" />
+              <span className="h-px flex-1 bg-hairline" />
             )}
           </li>
         ))}
@@ -125,10 +125,10 @@ export function WebinarForm() {
       {step === 0 && (
         <section className="space-y-5">
           <div>
-            <h1 className="text-[24px] font-semibold tracking-[-0.025em] text-white">
+            <h1 className="text-[24px] font-semibold tracking-[-0.025em] text-ink">
               What is this webinar?
             </h1>
-            <p className="mt-2 text-[13.5px] text-[#A0A0B0]">
+            <p className="mt-2 text-[13.5px] text-ink-muted">
               The last three fields are what your AI moderators read to answer
               questions in the room.
             </p>
@@ -145,7 +145,7 @@ export function WebinarForm() {
           */}
           {!dirty && (
             <div>
-              <span className="text-[12px] font-medium text-[#A0A0B0]">
+              <span className="text-[12px] font-medium text-ink-muted">
                 Start from a template
               </span>
               <div className="mt-2 grid gap-2 sm:grid-cols-2">
@@ -166,21 +166,21 @@ export function WebinarForm() {
                     className={cn(
                       "rounded-xl border px-3.5 py-3 text-left transition-colors",
                       picked === template.id
-                        ? "border-[#6C47FF] bg-[#6C47FF]/10"
-                        : "border-[#1E1E2E] hover:border-[#6C47FF]/40"
+                        ? "border-accent bg-accent/10"
+                        : "border-hairline hover:border-accent/40"
                     )}
                   >
-                    <span className="block text-[13px] font-medium text-white">
+                    <span className="block text-[13px] font-medium text-ink">
                       {template.name}
                     </span>
-                    <span className="mt-0.5 block text-[11.5px] leading-relaxed text-[#6E6E80]">
+                    <span className="mt-0.5 block text-[11.5px] leading-relaxed text-ink-faint">
                       {template.audience}
                     </span>
                   </button>
                 ))}
               </div>
               {picked && picked !== "blank" && (
-                <p className="mt-2 text-[11.5px] leading-relaxed text-[#6E6E80]">
+                <p className="mt-2 text-[11.5px] leading-relaxed text-ink-faint">
                   Everything below is a worked example — replace the bracketed
                   parts with yours. Around {templateById(picked)?.minutes} minutes
                   usually works for this shape, with the offer about{" "}
@@ -265,7 +265,7 @@ export function WebinarForm() {
                 </>
               )}
             </AdminButton>
-            <span className="text-[11.5px] text-[#6E6E80]">
+            <span className="text-[11.5px] text-ink-faint">
               Saves as a draft — you can come back and change any of this later.
             </span>
           </div>
@@ -275,10 +275,10 @@ export function WebinarForm() {
       {step === 1 && webinarId && (
         <section className="space-y-5">
           <div>
-            <h1 className="text-[24px] font-semibold tracking-[-0.025em] text-white">
+            <h1 className="text-[24px] font-semibold tracking-[-0.025em] text-ink">
               Upload your video
             </h1>
-            <p className="mt-2 text-[13.5px] text-[#A0A0B0]">
+            <p className="mt-2 text-[13.5px] text-ink-muted">
               This is the recording that plays as your live session.
             </p>
           </div>
@@ -308,10 +308,10 @@ export function WebinarForm() {
       {step === 2 && webinarId && (
         <section className="space-y-5">
           <div>
-            <h1 className="text-[24px] font-semibold tracking-[-0.025em] text-white">
+            <h1 className="text-[24px] font-semibold tracking-[-0.025em] text-ink">
               Add a thumbnail
             </h1>
-            <p className="mt-2 text-[13.5px] text-[#A0A0B0]">
+            <p className="mt-2 text-[13.5px] text-ink-muted">
               Shown on your dashboard and behind the registration page.
             </p>
           </div>

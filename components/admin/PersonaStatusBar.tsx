@@ -16,7 +16,7 @@ export function PersonaStatusBar({
 }) {
   if (!personas.length) {
     return (
-      <div className="rounded-xl border border-[#1E1E2E] bg-[#12121A]/80 px-4 py-6 text-center text-[12.5px] text-[#A0A0B0]">
+      <div className="rounded-xl border border-hairline bg-surface/80 px-4 py-6 text-center text-[12.5px] text-ink-muted">
         No AI personas configured for this webinar yet.
       </div>
     );
@@ -24,7 +24,7 @@ export function PersonaStatusBar({
 
   return (
     <div className="space-y-2">
-      <h2 className="text-[10px] font-semibold uppercase tracking-[0.18em] text-[#A0A0B0]">
+      <h2 className="text-[10px] font-semibold uppercase tracking-[0.18em] text-ink-muted">
         Personas
       </h2>
       {personas.map((persona) => (

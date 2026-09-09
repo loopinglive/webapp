@@ -19,7 +19,7 @@ export function AdminLivePanel({ sessionId }: { sessionId: string }) {
   if (loading) {
     return (
       <Shell>
-        <Loader2 className="h-6 w-6 animate-spin text-[#6C47FF]" />
+        <Loader2 className="h-6 w-6 animate-spin text-accent" />
       </Shell>
     );
   }
@@ -27,7 +27,7 @@ export function AdminLivePanel({ sessionId }: { sessionId: string }) {
   if (error || !sessionData) {
     return (
       <Shell>
-        <p className="text-[15px] text-[#A0A0B0]">
+        <p className="text-[15px] text-ink-muted">
           {error ?? "This session is not available."}
         </p>
       </Shell>
@@ -73,19 +73,19 @@ function Panel({
 
   return (
     <main className="flex h-dvh flex-col overflow-hidden bg-[#0F0F1A]">
-      <header className="shrink-0 border-b border-[#1E1E2E] px-4 py-3.5 lg:px-6">
+      <header className="shrink-0 border-b border-hairline px-4 py-3.5 lg:px-6">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div className="flex min-w-0 items-center gap-3">
             <Link
               href="/admin"
-              className="grid h-8 w-8 shrink-0 place-items-center rounded-full border border-[#1E1E2E] text-[#A0A0B0] transition-colors hover:border-[#6C47FF]/60 hover:text-white"
+              className="grid h-8 w-8 shrink-0 place-items-center rounded-full border border-hairline text-ink-muted transition-colors hover:border-accent/60 hover:text-ink"
               aria-label="Back to admin"
             >
               <ArrowLeft className="h-4 w-4" />
             </Link>
             <div className="min-w-0">
               <div className="flex items-center gap-2">
-                <span className="text-[10px] font-semibold uppercase tracking-[0.2em] text-[#6C47FF]">
+                <span className="text-[10px] font-semibold uppercase tracking-[0.2em] text-accent">
                   Live session
                 </span>
                 <span
@@ -93,7 +93,7 @@ function Panel({
                   style={{ background: connected ? "#00C851" : "#A0A0B0" }}
                 />
               </div>
-              <h1 className="truncate text-[15px] font-semibold tracking-[-0.01em] text-white">
+              <h1 className="truncate text-[15px] font-semibold tracking-[-0.01em] text-ink">
                 {data.webinar.title}
               </h1>
             </div>
@@ -109,7 +109,7 @@ function Panel({
             </span>
             <LocalTime
               iso={data.session.starts_at}
-              className="hidden text-[12px] text-[#A0A0B0] sm:block"
+              className="hidden text-[12px] text-ink-muted sm:block"
             />
           </div>
         </div>
@@ -137,8 +137,8 @@ function Panel({
           />
         </aside>
 
-        <section className="flex min-h-0 flex-1 flex-col overflow-hidden rounded-xl border border-[#1E1E2E] bg-[#12121A]/60 backdrop-blur-2xl">
-          <div className="shrink-0 border-b border-[#1E1E2E] p-3">
+        <section className="flex min-h-0 flex-1 flex-col overflow-hidden rounded-xl border border-hairline bg-surface/60 backdrop-blur-2xl">
+          <div className="shrink-0 border-b border-hairline p-3">
             <AdminFilterBar
               filter={filter}
               onFilterChange={setFilter}

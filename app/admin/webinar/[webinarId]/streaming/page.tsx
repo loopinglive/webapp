@@ -13,8 +13,8 @@ export default async function StreamingPage({
 
   return (
     <div className="px-6 py-8 lg:px-10">
-      <h1 className="text-[20px] font-semibold tracking-tight text-white">Multi-Platform Streaming</h1>
-      <p className="mt-1.5 max-w-[62ch] text-[13.5px] text-[#A0A0B0]">
+      <h1 className="text-[20px] font-semibold tracking-tight text-ink">Multi-Platform Streaming</h1>
+      <p className="mt-1.5 max-w-[62ch] text-[13.5px] text-ink-muted">
         Stream to YouTube, Facebook, LinkedIn, Twitch, or a custom RTMP
         endpoint at the same time as your live session — set up your
         destinations here, then start streaming from the Go Live tab once

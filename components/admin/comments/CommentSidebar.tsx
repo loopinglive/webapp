@@ -19,7 +19,7 @@ export function CommentSidebar({
 }) {
   return (
     <div>
-      <h3 className="text-[11px] font-semibold uppercase tracking-[0.16em] text-[#A0A0B0]">
+      <h3 className="text-[11px] font-semibold uppercase tracking-[0.16em] text-ink-muted">
         Personas
       </h3>
 
@@ -29,8 +29,8 @@ export function CommentSidebar({
           className={cn(
             "flex w-full items-center justify-between gap-2 rounded-lg px-3 py-2 text-[12.5px] transition-colors",
             activeId === null
-              ? "bg-[#6C47FF]/15 text-white"
-              : "text-[#A0A0B0] hover:bg-white/5 hover:text-white"
+              ? "bg-accent/15 text-ink"
+              : "text-ink-muted hover:bg-surface-2 hover:text-ink"
           )}
         >
           All personas
@@ -48,8 +48,8 @@ export function CommentSidebar({
               className={cn(
                 "flex w-full items-center gap-2.5 rounded-lg px-3 py-2 text-left text-[12.5px] transition-colors",
                 active
-                  ? "bg-[#6C47FF]/15 text-white"
-                  : "text-[#A0A0B0] hover:bg-white/5 hover:text-white"
+                  ? "bg-accent/15 text-ink"
+                  : "text-ink-muted hover:bg-surface-2 hover:text-ink"
               )}
             >
               <span className="relative shrink-0">
@@ -59,7 +59,7 @@ export function CommentSidebar({
                   size={26}
                 />
                 <span
-                  className="absolute -bottom-0.5 -right-0.5 h-2.5 w-2.5 rounded-full border-2 border-[#0A0A0F]"
+                  className="absolute -bottom-0.5 -right-0.5 h-2.5 w-2.5 rounded-full border-2 border-void"
                   style={{ background: colourForPersona(personas, persona.id) }}
                 />
               </span>

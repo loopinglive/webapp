@@ -53,7 +53,7 @@ export function AutomationHub({ webinarId }: { webinarId: string }) {
   if (loading) {
     return (
       <div className="grid h-[60dvh] place-items-center">
-        <Loader2 className="h-5 w-5 animate-spin text-[#6C47FF]" />
+        <Loader2 className="h-5 w-5 animate-spin text-accent" />
       </div>
     );
   }
@@ -61,7 +61,7 @@ export function AutomationHub({ webinarId }: { webinarId: string }) {
   if (!settings) {
     return (
       <div className="grid h-[60dvh] place-items-center px-6 text-center">
-        <p className="text-[14px] text-[#A0A0B0]">
+        <p className="text-[14px] text-ink-muted">
           {error ?? "Could not load automation settings."}
         </p>
       </div>
@@ -83,7 +83,7 @@ export function AutomationHub({ webinarId }: { webinarId: string }) {
             <span
               className={cn(
                 "flex items-center gap-1.5 text-[11.5px]",
-                saveStatus === "error" ? "text-[#FF3B3B]" : "text-[#A0A0B0]"
+                saveStatus === "error" ? "text-[#FF3B3B]" : "text-ink-muted"
               )}
             >
               {saveStatus === "saving" && <Loader2 className="h-3 w-3 animate-spin" />}
@@ -109,7 +109,7 @@ export function AutomationHub({ webinarId }: { webinarId: string }) {
       <div className="max-w-4xl space-y-8 px-6 py-8 lg:px-8">
         {/* Channels */}
         <section>
-          <h2 className="text-[11px] font-semibold uppercase tracking-[0.16em] text-[#A0A0B0]">
+          <h2 className="text-[11px] font-semibold uppercase tracking-[0.16em] text-ink-muted">
             Channels
           </h2>
           <div className="mt-4 grid gap-3 sm:grid-cols-3">
@@ -121,8 +121,8 @@ export function AutomationHub({ webinarId }: { webinarId: string }) {
                 <div
                   key={channel.id}
                   className={cn(
-                    "rounded-xl border bg-[#12121A] p-4 transition-colors",
-                    on && configured ? "border-[#6C47FF]" : "border-[#1E1E2E]"
+                    "rounded-xl border bg-surface p-4 transition-colors",
+                    on && configured ? "border-accent" : "border-hairline"
                   )}
                 >
                   <div className="flex items-start justify-between gap-3">
@@ -139,7 +139,7 @@ export function AutomationHub({ webinarId }: { webinarId: string }) {
                       aria-label={`Toggle ${channel.label}`}
                       className={cn(
                         "relative h-5 w-9 shrink-0 rounded-full transition-colors",
-                        on && configured ? "bg-[#6C47FF]" : "bg-[#3A3A4A]",
+                        on && configured ? "bg-accent" : "bg-surface-3",
                         !configured && "opacity-40"
                       )}
                     >
@@ -152,10 +152,10 @@ export function AutomationHub({ webinarId }: { webinarId: string }) {
                     </button>
                   </div>
 
-                  <p className="mt-3 text-[13.5px] font-medium text-white">
+                  <p className="mt-3 text-[13.5px] font-medium text-ink">
                     {channel.label}
                   </p>
-                  <p className="mt-1 text-[11px] leading-relaxed text-[#A0A0B0]">
+                  <p className="mt-1 text-[11px] leading-relaxed text-ink-muted">
                     {channel.note}
                   </p>
 
@@ -173,8 +173,8 @@ export function AutomationHub({ webinarId }: { webinarId: string }) {
         </section>
 
         {/* Sender */}
-        <section className="rounded-xl border border-[#1E1E2E] bg-[#12121A] p-5">
-          <h2 className="text-[13px] font-semibold text-white">Sender</h2>
+        <section className="rounded-xl border border-hairline bg-surface p-5">
+          <h2 className="text-[13px] font-semibold text-ink">Sender</h2>
           <div className="mt-4 grid gap-4 sm:grid-cols-2">
             <Field label="From name">
               <TextInput
@@ -207,7 +207,7 @@ export function AutomationHub({ webinarId }: { webinarId: string }) {
               />
             </Field>
           </div>
-          <p className="mt-3 text-[11px] leading-relaxed text-[#A0A0B0]">
+          <p className="mt-3 text-[11px] leading-relaxed text-ink-muted">
             Some countries do not support custom sender IDs — a Twilio number is
             used there instead. Deliverability is better from a domain you own and
             have verified with your email provider.
@@ -215,8 +215,8 @@ export function AutomationHub({ webinarId }: { webinarId: string }) {
         </section>
 
         {/* Replay */}
-        <section className="rounded-xl border border-[#1E1E2E] bg-[#12121A] p-5">
-          <h2 className="text-[13px] font-semibold text-white">Replay</h2>
+        <section className="rounded-xl border border-hairline bg-surface p-5">
+          <h2 className="text-[13px] font-semibold text-ink">Replay</h2>
           <div className="mt-4 space-y-4">
             <Toggle
               label="Send a replay link to non-buyers"
@@ -242,8 +242,8 @@ export function AutomationHub({ webinarId }: { webinarId: string }) {
         </section>
 
         {/* Re-engagement */}
-        <section className="rounded-xl border border-[#1E1E2E] bg-[#12121A] p-5">
-          <h2 className="text-[13px] font-semibold text-white">Re-engagement</h2>
+        <section className="rounded-xl border border-hairline bg-surface p-5">
+          <h2 className="text-[13px] font-semibold text-ink">Re-engagement</h2>
           <div className="mt-4 space-y-4">
             <Toggle
               label="Bring non-buyers back"
@@ -293,11 +293,11 @@ export function AutomationHub({ webinarId }: { webinarId: string }) {
                   </Field>
                 </div>
 
-                <div className="rounded-lg border border-[#2A2A3A] bg-[#1A1A2A] p-3">
-                  <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-[#A0A0B0]">
+                <div className="rounded-lg border border-surface-3 bg-surface-2 p-3">
+                  <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-ink-muted">
                     Stops automatically when
                   </p>
-                  <ul className="mt-2 space-y-1 text-[12px] text-white/75">
+                  <ul className="mt-2 space-y-1 text-[12px] text-ink/75">
                     <li>They register for another session</li>
                     <li>They buy</li>
                     <li>They unsubscribe</li>
@@ -310,18 +310,18 @@ export function AutomationHub({ webinarId }: { webinarId: string }) {
         </section>
 
         {/* Stats */}
-        <dl className="grid grid-cols-3 gap-px overflow-hidden rounded-xl border border-[#1E1E2E] bg-[#1E1E2E]">
+        <dl className="grid grid-cols-3 gap-px overflow-hidden rounded-xl border border-hairline bg-hairline">
           {[
             { label: "Sent", value: stats.sent, tone: "#00C851" },
             { label: "Failed", value: stats.failed, tone: stats.failed ? "#FF3B3B" : undefined },
             { label: "Unsubscribed", value: stats.unsubscribed },
           ].map((stat) => (
-            <div key={stat.label} className="bg-[#12121A] px-5 py-4">
-              <dt className="text-[10px] font-semibold uppercase tracking-[0.16em] text-[#A0A0B0]">
+            <div key={stat.label} className="bg-surface px-5 py-4">
+              <dt className="text-[10px] font-semibold uppercase tracking-[0.16em] text-ink-muted">
                 {stat.label}
               </dt>
               <dd
-                className="mt-1.5 text-2xl font-semibold tabular-nums tracking-[-0.03em] text-white"
+                className="mt-1.5 text-2xl font-semibold tabular-nums tracking-[-0.03em] text-ink"
                 style={stat.tone ? { color: stat.tone } : undefined}
               >
                 {stat.value.toLocaleString()}

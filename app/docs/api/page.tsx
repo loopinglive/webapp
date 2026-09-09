@@ -11,16 +11,16 @@ export const metadata: Metadata = {
 
 export default function ApiDocsPage() {
   return (
-    <main className="min-h-dvh bg-[#0A0A0F]">
-      <header className="sticky top-0 z-30 border-b border-[#1E1E2E] bg-[#0A0A0F]/85 backdrop-blur">
+    <main className="min-h-dvh bg-void">
+      <header className="sticky top-0 z-30 border-b border-hairline bg-void/85 backdrop-blur">
         <div className="mx-auto flex max-w-[1080px] items-center justify-between px-6 py-4">
-          <Link href="/" className="text-[14px] font-semibold tracking-[-0.01em] text-white">
+          <Link href="/" className="text-[14px] font-semibold tracking-[-0.01em] text-ink">
             Loopinglive{" "}
-            <span className="font-normal text-[#6E6E80]">/ API</span>
+            <span className="font-normal text-ink-faint">/ API</span>
           </Link>
           <Link
             href="/settings/api-keys"
-            className="rounded-full border border-[#2A2A3A] px-3.5 py-1.5 text-[12.5px] text-[#A0A0B0] transition-colors hover:border-[#6C47FF]/50 hover:text-white"
+            className="rounded-full border border-surface-3 px-3.5 py-1.5 text-[12.5px] text-ink-muted transition-colors hover:border-accent/50 hover:text-ink"
           >
             Get an API key
           </Link>

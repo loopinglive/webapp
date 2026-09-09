@@ -36,20 +36,20 @@ export function SocialProof() {
           {TESTIMONIALS.map((item) => (
             <figure
               key={item.name}
-              className="flex flex-col rounded-2xl border border-[#1E1E2E] bg-[#12121A] p-7"
+              className="flex flex-col rounded-2xl border border-hairline bg-surface p-7"
             >
               <blockquote className="flex-1 text-[15px] leading-relaxed text-[#D4D4DE]">
                 &ldquo;{item.quote}&rdquo;
               </blockquote>
               <figcaption className="mt-6 flex items-center gap-3">
-                <span className="grid h-9 w-9 place-items-center rounded-full bg-gradient-to-br from-[#6C47FF] to-[#00D4FF] text-[13px] font-semibold text-white">
+                <span className="grid h-9 w-9 place-items-center rounded-full bg-gradient-to-br from-accent to-cyan text-[13px] font-semibold text-white">
                   {item.name.charAt(0)}
                 </span>
                 <span>
-                  <span className="block text-[13.5px] font-medium text-white">
+                  <span className="block text-[13.5px] font-medium text-ink">
                     {item.name}
                   </span>
-                  <span className="block text-[12px] text-[#6E6E80]">{item.role}</span>
+                  <span className="block text-[12px] text-ink-faint">{item.role}</span>
                 </span>
               </figcaption>
             </figure>

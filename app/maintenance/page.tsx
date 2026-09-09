@@ -26,16 +26,16 @@ export default async function MaintenancePage() {
   }
 
   return (
-    <main className="grid min-h-dvh place-items-center bg-[#0A0A0F] px-6">
+    <main className="grid min-h-dvh place-items-center bg-void px-6">
       <div className="max-w-md text-center">
-        <div className="mx-auto mb-6 h-1 w-10 rounded-full bg-[#6C47FF]" />
-        <h1 className="text-[22px] font-semibold tracking-[-0.02em] text-white">
+        <div className="mx-auto mb-6 h-1 w-10 rounded-full bg-accent" />
+        <h1 className="text-[22px] font-semibold tracking-[-0.02em] text-ink">
           Back shortly
         </h1>
-        <p className="mt-3 text-[14px] leading-relaxed text-[#A0A0B0]">
+        <p className="mt-3 text-[14px] leading-relaxed text-ink-muted">
           {message}
         </p>
-        <p className="mt-6 text-[12px] text-[#4A4A5C]">
+        <p className="mt-6 text-[12px] text-ink-faint">
           Scheduled sessions and reminders are unaffected.
         </p>
       </div>

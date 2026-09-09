@@ -32,16 +32,16 @@ function Toggle({
   onChange: (value: boolean) => void;
 }) {
   return (
-    <label className="flex items-center justify-between rounded-lg border border-[#2A2A3A] bg-[#1A1A2A] px-4 py-3.5">
+    <label className="flex items-center justify-between rounded-lg border border-surface-3 bg-surface-2 px-4 py-3.5">
       <div>
-        <p className="text-[13px] font-medium text-white">{label}</p>
-        <p className="mt-0.5 text-[12px] text-[#A0A0B0]">{hint}</p>
+        <p className="text-[13px] font-medium text-ink">{label}</p>
+        <p className="mt-0.5 text-[12px] text-ink-muted">{hint}</p>
       </div>
       <input
         type="checkbox"
         checked={checked}
         onChange={(event) => onChange(event.target.checked)}
-        className="h-5 w-9 shrink-0 accent-[#6C47FF]"
+        className="h-5 w-9 shrink-0 accent-accent"
       />
     </label>
   );
@@ -135,7 +135,7 @@ export function CeleBioSettings() {
   if (loading) {
     return (
       <div className="grid place-items-center py-24">
-        <Loader2 className="h-6 w-6 animate-spin text-[#6C47FF]" />
+        <Loader2 className="h-6 w-6 animate-spin text-accent" />
       </div>
     );
   }
@@ -143,10 +143,10 @@ export function CeleBioSettings() {
   if (!connection) {
     return (
       <div className="max-w-xl space-y-4 px-6 py-8 lg:px-10">
-        <p className="text-[13.5px] text-[#A0A0B0]">
+        <p className="text-[13.5px] text-ink-muted">
           Connect your Cele.bio account to list your webinars as products on your Cele.bio profile page.
         </p>
-        <div className="space-y-3 rounded-xl border border-[#2A2A3A] bg-[#12121A] p-5">
+        <div className="space-y-3 rounded-xl border border-surface-3 bg-surface p-5">
           <Field label="Cele.bio username">
             <TextInput value={username} onChange={(event) => setUsername(event.target.value)} placeholder="yourname" />
           </Field>
@@ -167,25 +167,25 @@ export function CeleBioSettings() {
 
   return (
     <div className="max-w-2xl space-y-8 px-6 py-8 lg:px-10">
-      <div className="flex items-center justify-between rounded-xl border border-[#2A2A3A] bg-[#12121A] p-5">
+      <div className="flex items-center justify-between rounded-xl border border-surface-3 bg-surface p-5">
         <div className="flex items-center gap-2">
-          <CheckCircle2 className="h-4 w-4 text-[#00D4FF]" />
+          <CheckCircle2 className="h-4 w-4 text-cyan" />
           <div>
-            <p className="text-[13px] font-medium text-white">Connected as @{connection.cele_bio_username}</p>
-            <p className="text-[11.5px] text-[#A0A0B0]">
+            <p className="text-[13px] font-medium text-ink">Connected as @{connection.cele_bio_username}</p>
+            <p className="text-[11.5px] text-ink-muted">
               {connection.last_synced_at
                 ? `Last synced ${new Date(connection.last_synced_at).toLocaleString()}`
                 : "Not synced yet"}
             </p>
           </div>
         </div>
-        <button onClick={disconnect} className="text-[12px] text-[#A0A0B0] hover:text-[#FF3B3B]">
+        <button onClick={disconnect} className="text-[12px] text-ink-muted hover:text-[#FF3B3B]">
           Disconnect
         </button>
       </div>
 
       <section className="space-y-3">
-        <h2 className="text-[13.5px] font-semibold text-white">Settings</h2>
+        <h2 className="text-[13.5px] font-semibold text-ink">Settings</h2>
         <Toggle
           label="Auto-sync new webinars"
           hint="New webinars are listed on your Cele.bio profile automatically."
@@ -207,9 +207,9 @@ export function CeleBioSettings() {
       </section>
 
       <section className="space-y-3">
-        <h2 className="text-[13.5px] font-semibold text-white">Webinars</h2>
+        <h2 className="text-[13.5px] font-semibold text-ink">Webinars</h2>
         {webinars.length === 0 ? (
-          <p className="text-[13px] text-[#A0A0B0]">No webinars yet.</p>
+          <p className="text-[13px] text-ink-muted">No webinars yet.</p>
         ) : (
           <div className="space-y-2">
             {webinars.map((webinar) => {
@@ -217,15 +217,15 @@ export function CeleBioSettings() {
               return (
                 <div
                   key={webinar.id}
-                  className="flex items-center justify-between rounded-lg border border-[#2A2A3A] bg-[#12121A] px-4 py-3"
+                  className="flex items-center justify-between rounded-lg border border-surface-3 bg-surface px-4 py-3"
                 >
-                  <p className="text-[13px] text-white">{webinar.title}</p>
+                  <p className="text-[13px] text-ink">{webinar.title}</p>
                   <button
                     onClick={() => toggleSync(webinar.id, isSynced)}
                     className={
                       isSynced
-                        ? "text-[11.5px] font-medium text-[#00D4FF]"
-                        : "text-[11.5px] font-medium text-[#6C47FF] hover:text-[#7C5AFF]"
+                        ? "text-[11.5px] font-medium text-cyan"
+                        : "text-[11.5px] font-medium text-accent hover:text-accent-soft"
                     }
                   >
                     {isSynced ? "Synced ✓" : "Sync"}

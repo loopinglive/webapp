@@ -101,17 +101,17 @@ export function OrderBumpEditor({
 
   if (!hasOffer) {
     return (
-      <p className="rounded-xl border border-dashed border-[#2A2A3A] px-4 py-4 text-center text-[12px] text-[#6E6E80]">
+      <p className="rounded-xl border border-dashed border-surface-3 px-4 py-4 text-center text-[12px] text-ink-faint">
         Set a price on the offer above, then a bump can attach to it.
       </p>
     );
   }
 
   return (
-    <div className="space-y-3.5 rounded-2xl border border-[#1E1E2E] p-4">
+    <div className="space-y-3.5 rounded-2xl border border-hairline p-4">
       <div>
-        <h3 className="text-[13px] font-semibold text-white">Order bump</h3>
-        <p className="mt-0.5 text-[11.5px] leading-relaxed text-[#6E6E80]">
+        <h3 className="text-[13px] font-semibold text-ink">Order bump</h3>
+        <p className="mt-0.5 text-[11.5px] leading-relaxed text-ink-faint">
           A one-click add-on shown at checkout, unticked by default. Never
           pre-checked — that is a charge someone did not choose.
         </p>
@@ -161,7 +161,7 @@ export function OrderBumpEditor({
           <button
             onClick={() => void remove()}
             disabled={saving}
-            className="inline-flex h-8 items-center gap-1.5 rounded-lg px-2.5 text-[12px] text-[#6E6E80] hover:text-[#FF5A5A] disabled:opacity-50"
+            className="inline-flex h-8 items-center gap-1.5 rounded-lg px-2.5 text-[12px] text-ink-faint hover:text-[#FF5A5A] disabled:opacity-50"
           >
             <Trash2 className="h-3.5 w-3.5" />
             Remove

@@ -90,7 +90,7 @@ export function HelpWidget() {
                 <li key={result.slug}>
                   <Link
                     href={`/docs/${toSlug(result.category)}/${result.slug}`}
-                    className="block rounded-lg px-2.5 py-2 text-[12.5px] text-ink-muted hover:bg-white/5 hover:text-ink"
+                    className="block rounded-lg px-2.5 py-2 text-[12.5px] text-ink-muted hover:bg-surface-2 hover:text-ink"
                   >
                     {result.title}
                   </Link>

@@ -16,10 +16,10 @@ import {
 import { cn } from "@/lib/utils";
 
 const STATUS_STYLE: Record<AbTest["status"], string> = {
-  draft: "bg-[#3A3A4A] text-[#A0A0B0]",
+  draft: "bg-surface-3 text-ink-muted",
   running: "bg-[#00C851]/15 text-[#00C851]",
   paused: "bg-[#FF9500]/15 text-[#FF9500]",
-  completed: "bg-[#6C47FF]/15 text-[#6C47FF]",
+  completed: "bg-accent/15 text-accent",
 };
 
 export function AbTesting({ webinarId }: { webinarId: string }) {
@@ -56,10 +56,10 @@ export function AbTesting({ webinarId }: { webinarId: string }) {
 
         {loading ? (
           <div className="grid h-40 place-items-center">
-            <Loader2 className="h-5 w-5 animate-spin text-[#6C47FF]" />
+            <Loader2 className="h-5 w-5 animate-spin text-accent" />
           </div>
         ) : !tests || tests.length === 0 ? (
-          <div className="grid h-40 place-items-center rounded-xl border border-dashed border-[#1E1E2E] text-[13px] text-[#6A6A80]">
+          <div className="grid h-40 place-items-center rounded-xl border border-dashed border-hairline text-[13px] text-ink-faint">
             No tests yet. Start one to compare two versions of your post-registration copy.
           </div>
         ) : (
@@ -108,14 +108,14 @@ function TestRow({
   }
 
   return (
-    <div className="rounded-xl border border-[#1E1E2E] bg-[#12121A]">
+    <div className="rounded-xl border border-hairline bg-surface">
       <div
         onClick={() => void toggle()}
         className="flex cursor-pointer flex-wrap items-center gap-3 px-4 py-3.5"
       >
         <div className="min-w-0 flex-1">
-          <p className="truncate text-[13.5px] font-medium text-white">{test.name}</p>
-          <p className="text-[11.5px] text-[#6A6A80]">{typeLabel}</p>
+          <p className="truncate text-[13.5px] font-medium text-ink">{test.name}</p>
+          <p className="text-[11.5px] text-ink-faint">{typeLabel}</p>
         </div>
 
         <span
@@ -146,20 +146,20 @@ function TestRow({
           <IconButton title="Delete" onClick={() => void onRemove(test.id)} danger>
             <Trash2 className="h-3.5 w-3.5" />
           </IconButton>
-          <ChevronDown className={cn("h-4 w-4 text-[#6A6A80] transition-transform", open && "rotate-180")} />
+          <ChevronDown className={cn("h-4 w-4 text-ink-faint transition-transform", open && "rotate-180")} />
         </div>
       </div>
 
       {open && (
-        <div className="border-t border-[#1E1E2E] px-4 py-4">
+        <div className="border-t border-hairline px-4 py-4">
           {loadingResults ? (
             <div className="grid h-24 place-items-center">
-              <Loader2 className="h-4 w-4 animate-spin text-[#6C47FF]" />
+              <Loader2 className="h-4 w-4 animate-spin text-accent" />
             </div>
           ) : results ? (
             <AbTestResults test={test} results={results} />
           ) : (
-            <p className="text-[12.5px] text-[#6A6A80]">Could not load results.</p>
+            <p className="text-[12.5px] text-ink-faint">Could not load results.</p>
           )}
         </div>
       )}
@@ -185,8 +185,8 @@ function IconButton({
       className={cn(
         "rounded-full p-1.5 transition-colors",
         danger
-          ? "text-[#6A6A80] hover:bg-[#FF3B3B]/10 hover:text-[#FF3B3B]"
-          : "text-[#6A6A80] hover:bg-white/5 hover:text-white"
+          ? "text-ink-faint hover:bg-[#FF3B3B]/10 hover:text-[#FF3B3B]"
+          : "text-ink-faint hover:bg-surface-2 hover:text-ink"
       )}
     >
       {children}
@@ -221,7 +221,7 @@ function CreateTestForm({
 
   return (
     <Fragment>
-      <div className="mb-6 rounded-xl border border-[#1E1E2E] bg-[#12121A] p-4">
+      <div className="mb-6 rounded-xl border border-hairline bg-surface p-4">
         <div className="grid gap-4 sm:grid-cols-2">
           <Field label="Test name" required>
             <TextInput value={name} onChange={(e) => setName(e.target.value)} placeholder="Shorter confirmation copy" />
@@ -230,7 +230,7 @@ function CreateTestForm({
             <select
               value={testType}
               onChange={(e) => setTestType(e.target.value as AbTestType)}
-              className="h-11 w-full rounded-lg border border-[#2A2A3A] bg-[#1A1A2A] px-3.5 text-[13.5px] text-white focus:border-[#6C47FF] focus:outline-none focus:ring-2 focus:ring-[#6C47FF]/20"
+              className="h-11 w-full rounded-lg border border-surface-3 bg-surface-2 px-3.5 text-[13.5px] text-ink focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/20"
             >
               {AB_TEST_TYPES.map((t) => (
                 <option key={t.id} value={t.id}>
@@ -261,7 +261,7 @@ function CreateTestForm({
             max={90}
             value={trafficSplit}
             onChange={(e) => setTrafficSplit(Number(e.target.value))}
-            className="w-full accent-[#6C47FF]"
+            className="w-full accent-accent"
           />
         </Field>
 

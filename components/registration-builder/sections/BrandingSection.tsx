@@ -30,10 +30,10 @@ export function BrandingSection({ config, update }: SectionProps) {
   return (
     <>
       <div>
-        <span className="text-[12px] font-medium text-[#A0A0B0]">Logo</span>
+        <span className="text-[12px] font-medium text-ink-muted">Logo</span>
         <div className="mt-2">
           {config.logo_url ? (
-            <div className="flex items-center gap-3 rounded-lg border border-[#2A2A3A] bg-[#1A1A2A] p-3">
+            <div className="flex items-center gap-3 rounded-lg border border-surface-3 bg-surface-2 p-3">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img src={config.logo_url} alt="" className="h-8 max-w-[140px] object-contain" />
               <AdminButton
@@ -55,7 +55,7 @@ export function BrandingSection({ config, update }: SectionProps) {
       </div>
 
       <div>
-        <span className="text-[12px] font-medium text-[#A0A0B0]">Primary colour</span>
+        <span className="text-[12px] font-medium text-ink-muted">Primary colour</span>
         <div className="mt-2">
           <ColourPicker
             value={config.primary_colour}
@@ -65,7 +65,7 @@ export function BrandingSection({ config, update }: SectionProps) {
       </div>
 
       <div>
-        <span className="text-[12px] font-medium text-[#A0A0B0]">Secondary colour</span>
+        <span className="text-[12px] font-medium text-ink-muted">Secondary colour</span>
         <div className="mt-2">
           <ColourPicker
             value={config.secondary_colour}
@@ -75,7 +75,7 @@ export function BrandingSection({ config, update }: SectionProps) {
       </div>
 
       <div>
-        <span className="text-[12px] font-medium text-[#A0A0B0]">Background</span>
+        <span className="text-[12px] font-medium text-ink-muted">Background</span>
         <div className="mt-2 flex flex-wrap gap-1.5">
           {BACKGROUNDS.map((option) => (
             <button
@@ -84,8 +84,8 @@ export function BrandingSection({ config, update }: SectionProps) {
               className={cn(
                 "rounded-full border px-3 py-1.5 text-[12px] transition-colors",
                 config.background_type === option.id
-                  ? "border-[#6C47FF] bg-[#6C47FF]/15 text-white"
-                  : "border-[#2A2A3A] text-[#A0A0B0] hover:text-white"
+                  ? "border-accent bg-accent/15 text-ink"
+                  : "border-surface-3 text-ink-muted hover:text-ink"
               )}
             >
               {option.label}
@@ -120,8 +120,8 @@ export function BrandingSection({ config, update }: SectionProps) {
                   className={cn(
                     "rounded-lg border px-2.5 py-1 text-[11.5px] transition-colors",
                     angle === deg
-                      ? "border-[#6C47FF] text-white"
-                      : "border-[#2A2A3A] text-[#A0A0B0]"
+                      ? "border-accent text-ink"
+                      : "border-surface-3 text-ink-muted"
                   )}
                 >
                   {deg}

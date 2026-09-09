@@ -46,7 +46,7 @@ export function CoHostManager({ webinarId }: { webinarId: string }) {
       />
 
       <div className="max-w-2xl space-y-6 px-6 py-8 lg:px-8">
-        <div className="space-y-4 rounded-xl border border-[#1E1E2E] bg-[#12121A] p-4">
+        <div className="space-y-4 rounded-xl border border-hairline bg-surface p-4">
           <Field label="Email address">
             <TextInput
               type="email"
@@ -57,12 +57,12 @@ export function CoHostManager({ webinarId }: { webinarId: string }) {
           </Field>
 
           <div>
-            <span className="text-[12px] font-medium text-[#A0A0B0]">Permissions</span>
+            <span className="text-[12px] font-medium text-ink-muted">Permissions</span>
             <div className="mt-2 grid gap-2 sm:grid-cols-2">
               {PERMISSION_LABELS.map((permission) => (
                 <label
                   key={permission.key}
-                  className="flex cursor-pointer items-start gap-2.5 rounded-lg border border-[#1E1E2E] px-3 py-2.5 hover:border-[#2A2A3A]"
+                  className="flex cursor-pointer items-start gap-2.5 rounded-lg border border-hairline px-3 py-2.5 hover:border-surface-3"
                 >
                   <input
                     type="checkbox"
@@ -70,11 +70,11 @@ export function CoHostManager({ webinarId }: { webinarId: string }) {
                     onChange={(event) =>
                       setPermissions((current) => ({ ...current, [permission.key]: event.target.checked }))
                     }
-                    className="mt-0.5 h-4 w-4 shrink-0 accent-[#6C47FF]"
+                    className="mt-0.5 h-4 w-4 shrink-0 accent-accent"
                   />
                   <span>
-                    <span className="block text-[12.5px] text-white">{permission.label}</span>
-                    <span className="mt-0.5 block text-[11px] text-[#6E6E80]">{permission.hint}</span>
+                    <span className="block text-[12.5px] text-ink">{permission.label}</span>
+                    <span className="mt-0.5 block text-[11px] text-ink-faint">{permission.hint}</span>
                   </span>
                 </label>
               ))}
@@ -90,12 +90,12 @@ export function CoHostManager({ webinarId }: { webinarId: string }) {
         </div>
 
         {loading ? (
-          <div className="flex items-center gap-2 text-[12.5px] text-[#A0A0B0]">
+          <div className="flex items-center gap-2 text-[12.5px] text-ink-muted">
             <Loader2 className="h-3.5 w-3.5 animate-spin" />
             Loading…
           </div>
         ) : coHosts.length === 0 ? (
-          <p className="py-4 text-center text-[12.5px] text-[#6E6E80]">No co-hosts yet.</p>
+          <p className="py-4 text-center text-[12.5px] text-ink-faint">No co-hosts yet.</p>
         ) : (
           <div className="space-y-2">
             {coHosts.map((coHost) => {
@@ -105,27 +105,27 @@ export function CoHostManager({ webinarId }: { webinarId: string }) {
               return (
                 <div
                   key={coHost.id}
-                  className="flex items-center justify-between rounded-xl border border-[#1E1E2E] bg-[#12121A] px-4 py-3"
+                  className="flex items-center justify-between rounded-xl border border-hairline bg-surface px-4 py-3"
                 >
                   <div className="min-w-0">
                     <div className="flex items-center gap-2">
-                      <span className="truncate text-[13px] text-white">{coHost.co_host_email}</span>
+                      <span className="truncate text-[13px] text-ink">{coHost.co_host_email}</span>
                       <span
                         className={`rounded-full px-2 py-0.5 text-[10px] ${
-                          coHost.status === "accepted" ? "bg-[#00C851]/15 text-[#00C851]" : "bg-[#3A3A4A] text-[#A0A0B0]"
+                          coHost.status === "accepted" ? "bg-[#00C851]/15 text-[#00C851]" : "bg-surface-3 text-ink-muted"
                         }`}
                       >
                         {coHost.status}
                       </span>
                     </div>
-                    <p className="mt-0.5 truncate text-[11px] text-[#6E6E80]">
+                    <p className="mt-0.5 truncate text-[11px] text-ink-faint">
                       {granted.length > 0 ? granted.join(" · ") : "No permissions"}
                     </p>
                   </div>
                   <button
                     onClick={() => void revoke(coHost.id)}
                     title="Revoke access"
-                    className="grid h-8 w-8 shrink-0 place-items-center rounded-lg text-[#A0A0B0] hover:bg-[#FF3B3B]/10 hover:text-[#FF3B3B]"
+                    className="grid h-8 w-8 shrink-0 place-items-center rounded-lg text-ink-muted hover:bg-[#FF3B3B]/10 hover:text-[#FF3B3B]"
                   >
                     <Trash2 className="h-3.5 w-3.5" />
                   </button>

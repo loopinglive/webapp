@@ -97,18 +97,18 @@ function Shell({
   webinarId?: string;
 }) {
   return (
-    <main className="grid min-h-dvh place-items-center bg-[#0A0A0F] px-5 text-center">
+    <main className="grid min-h-dvh place-items-center bg-void px-5 text-center">
       <div className="max-w-md">
-        <h1 className="text-balance text-[26px] font-semibold tracking-[-0.03em] text-white">
+        <h1 className="text-balance text-[26px] font-semibold tracking-[-0.03em] text-ink">
           {title}
         </h1>
-        <p className="mt-3 text-[14.5px] leading-relaxed text-[#A0A0B0]">
+        <p className="mt-3 text-[14.5px] leading-relaxed text-ink-muted">
           {children}
         </p>
         {webinarId && (
           <Link
             href={`/webinar/${webinarId}/register`}
-            className="mt-8 inline-flex h-12 items-center gap-2 rounded-full bg-[#6C47FF] px-6 text-[14.5px] font-semibold text-white shadow-[0_12px_40px_-10px_#6C47FF] transition-colors hover:bg-[#7C5AFF]"
+            className="mt-8 inline-flex h-12 items-center gap-2 rounded-full bg-accent px-6 text-[14.5px] font-semibold text-white shadow-[0_12px_40px_-10px_#6C47FF] transition-colors hover:bg-accent-soft"
           >
             <CalendarClock className="h-4 w-4" />
             Register for the next session

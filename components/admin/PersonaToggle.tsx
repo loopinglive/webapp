@@ -20,11 +20,11 @@ export function PersonaToggle({
   const isAi = mode === "ai";
 
   return (
-    <div className="flex items-center gap-3 rounded-xl border border-[#1E1E2E] bg-[#12121A]/80 px-3.5 py-3">
+    <div className="flex items-center gap-3 rounded-xl border border-hairline bg-surface/80 px-3.5 py-3">
       <Avatar name={persona.persona_name} avatarUrl={persona.avatar_url} size={32} />
 
       <div className="min-w-0 flex-1">
-        <div className="truncate text-[13.5px] font-semibold text-white">
+        <div className="truncate text-[13.5px] font-semibold text-ink">
           {persona.persona_name}
         </div>
         <div className="mt-0.5 flex items-center gap-1.5 text-[11px]">
@@ -57,7 +57,7 @@ export function PersonaToggle({
       >
         <span
           className={cn(
-            "absolute grid h-6 w-6 place-items-center rounded-full text-white transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)]",
+            "absolute grid h-6 w-6 place-items-center rounded-full text-ink transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)]",
             isAi ? "left-1 bg-[#00C851]" : "left-[38px] bg-[#FF9500]"
           )}
         >

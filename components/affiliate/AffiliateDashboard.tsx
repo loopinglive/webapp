@@ -54,7 +54,7 @@ export function AffiliateDashboard() {
   if (!stats) {
     return (
       <div className="grid h-[50dvh] place-items-center">
-        <Loader2 className="h-5 w-5 animate-spin text-[#6C47FF]" />
+        <Loader2 className="h-5 w-5 animate-spin text-accent" />
       </div>
     );
   }
@@ -73,11 +73,11 @@ export function AffiliateDashboard() {
 
   return (
     <div className="space-y-8 px-6 py-8 lg:px-10">
-      <section className="rounded-2xl border border-[#1E1E2E] bg-gradient-to-br from-[#6C47FF]/10 to-transparent p-6">
-        <h2 className="text-[22px] font-semibold tracking-[-0.02em] text-white">
+      <section className="rounded-2xl border border-hairline bg-gradient-to-br from-accent/10 to-transparent p-6">
+        <h2 className="text-[22px] font-semibold tracking-[-0.02em] text-ink">
           Earn {stats.commissionRate ?? 20}% on every referral
         </h2>
-        <p className="mt-1.5 max-w-[62ch] text-[13.5px] leading-relaxed text-[#A0A0B0]">
+        <p className="mt-1.5 max-w-[62ch] text-[13.5px] leading-relaxed text-ink-muted">
           $9.40 per monthly signup, $69.40 per yearly, and $279.40 per lifetime — paid
           monthly once the 30-day refund window has passed.
         </p>
@@ -86,23 +86,23 @@ export function AffiliateDashboard() {
           <button
             onClick={join}
             disabled={joining}
-            className="mt-5 inline-flex h-11 items-center gap-2 rounded-full bg-[#6C47FF] px-6 text-[14px] font-semibold text-white transition-colors hover:bg-[#7C5AFF] disabled:opacity-50"
+            className="mt-5 inline-flex h-11 items-center gap-2 rounded-full bg-accent px-6 text-[14px] font-semibold text-white transition-colors hover:bg-accent-soft disabled:opacity-50"
           >
             {joining && <Loader2 className="h-3.5 w-3.5 animate-spin" />}
             Join the affiliate programme
           </button>
         ) : (
           <div className="mt-5">
-            <p className="text-[10px] font-semibold uppercase tracking-[0.16em] text-[#6E6E80]">
+            <p className="text-[10px] font-semibold uppercase tracking-[0.16em] text-ink-faint">
               Your referral link
             </p>
             <div className="mt-2 flex flex-wrap items-center gap-2">
-              <code className="flex-1 truncate rounded-full border border-[#1E1E2E] bg-[#0D0D15] px-4 py-2.5 text-[13px] text-[#00D4FF]">
+              <code className="flex-1 truncate rounded-full border border-hairline bg-void px-4 py-2.5 text-[13px] text-cyan">
                 {link}
               </code>
               <button
                 onClick={copy}
-                className="inline-flex h-10 items-center gap-2 rounded-full border border-[#2A2A3A] px-4 text-[13px] text-white transition-colors hover:border-[#6C47FF]/50"
+                className="inline-flex h-10 items-center gap-2 rounded-full border border-surface-3 px-4 text-[13px] text-ink transition-colors hover:border-accent/50"
               >
                 {copied ? (
                   <Check className="h-3.5 w-3.5 text-[#00C851]" />
@@ -127,7 +127,7 @@ export function AffiliateDashboard() {
                   href={target.href}
                   target="_blank"
                   rel="noreferrer"
-                  className="rounded-full border border-[#1E1E2E] px-3.5 py-1.5 text-[12.5px] text-[#A0A0B0] transition-colors hover:border-[#6C47FF]/50 hover:text-white"
+                  className="rounded-full border border-hairline px-3.5 py-1.5 text-[12.5px] text-ink-muted transition-colors hover:border-accent/50 hover:text-ink"
                 >
                   Share on {target.label}
                 </a>
@@ -152,56 +152,56 @@ export function AffiliateDashboard() {
             ].map((tile) => (
               <div
                 key={tile.label}
-                className="rounded-xl border border-[#1E1E2E] bg-[#12121A] px-4 py-3.5"
+                className="rounded-xl border border-hairline bg-surface px-4 py-3.5"
               >
-                <p className="text-[10px] font-semibold uppercase tracking-[0.14em] text-[#6E6E80]">
+                <p className="text-[10px] font-semibold uppercase tracking-[0.14em] text-ink-faint">
                   {tile.label}
                 </p>
-                <p className="mt-1.5 text-[22px] font-semibold tabular-nums tracking-[-0.02em] text-white">
+                <p className="mt-1.5 text-[22px] font-semibold tabular-nums tracking-[-0.02em] text-ink">
                   {tile.value}
                 </p>
                 {tile.hint && (
-                  <p className="mt-1 text-[11px] text-[#6E6E80]">{tile.hint}</p>
+                  <p className="mt-1 text-[11px] text-ink-faint">{tile.hint}</p>
                 )}
               </div>
             ))}
           </div>
 
           <section>
-            <h3 className="text-[15px] font-semibold text-white">Your referrals</h3>
+            <h3 className="text-[15px] font-semibold text-ink">Your referrals</h3>
             {stats.referrals.length === 0 ? (
-              <p className="mt-3 text-[13px] text-[#6E6E80]">
+              <p className="mt-3 text-[13px] text-ink-faint">
                 No referrals yet. Anyone who signs up through your link and upgrades
                 appears here.
               </p>
             ) : (
-              <div className="mt-4 overflow-x-auto rounded-xl border border-[#1E1E2E]">
+              <div className="mt-4 overflow-x-auto rounded-xl border border-hairline">
                 <table className="w-full min-w-[560px]">
-                  <thead className="bg-[#12121A]">
+                  <thead className="bg-surface">
                     <tr>
                       {["Date", "Referred", "Plan", "Commission", "Status"].map((h) => (
                         <th
                           key={h}
-                          className="px-4 py-2.5 text-left text-[10px] font-semibold uppercase tracking-[0.14em] text-[#6E6E80]"
+                          className="px-4 py-2.5 text-left text-[10px] font-semibold uppercase tracking-[0.14em] text-ink-faint"
                         >
                           {h}
                         </th>
                       ))}
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-[#1E1E2E]">
+                  <tbody className="divide-y divide-hairline">
                     {stats.referrals.map((row) => (
                       <tr key={row.id}>
-                        <td className="px-4 py-3 text-[12.5px] text-[#A0A0B0]">
+                        <td className="px-4 py-3 text-[12.5px] text-ink-muted">
                           {new Date(row.date).toLocaleDateString(undefined, {
                             dateStyle: "medium",
                           })}
                         </td>
-                        <td className="px-4 py-3 text-[12.5px] text-white">{row.email}</td>
-                        <td className="px-4 py-3 text-[12.5px] capitalize text-[#A0A0B0]">
+                        <td className="px-4 py-3 text-[12.5px] text-ink">{row.email}</td>
+                        <td className="px-4 py-3 text-[12.5px] capitalize text-ink-muted">
                           {row.plan}
                         </td>
-                        <td className="px-4 py-3 text-[12.5px] tabular-nums text-white">
+                        <td className="px-4 py-3 text-[12.5px] tabular-nums text-ink">
                           {money(row.commission)}
                         </td>
                         <td className="px-4 py-3">
@@ -228,7 +228,7 @@ export function AffiliateDashboard() {
             )}
           </section>
 
-          <p className="text-[12.5px] text-[#6E6E80]">
+          <p className="text-[12.5px] text-ink-faint">
             Payouts run monthly on confirmed balances above $50.
           </p>
         </>

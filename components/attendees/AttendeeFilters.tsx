@@ -58,14 +58,14 @@ export function AttendeeFilters({
 
   return (
     <div className="flex flex-wrap items-center gap-2">
-      <div className="flex min-w-[200px] flex-1 items-center gap-2 rounded-full border border-[#1E1E2E] bg-[#12121A] px-4 py-2 focus-within:border-[#6C47FF]/60">
-        <Search className="h-3.5 w-3.5 shrink-0 text-[#A0A0B0]" />
+      <div className="flex min-w-[200px] flex-1 items-center gap-2 rounded-full border border-hairline bg-surface px-4 py-2 focus-within:border-accent/60">
+        <Search className="h-3.5 w-3.5 shrink-0 text-ink-muted" />
         <input
           value={search}
           onChange={(event) => onSearchChange(event.target.value)}
           placeholder="Search name, email or phone"
           aria-label="Search attendees"
-          className="w-full bg-transparent text-[12.5px] text-white placeholder:text-[#A0A0B0]/60 focus:outline-none"
+          className="w-full bg-transparent text-[12.5px] text-ink placeholder:text-ink-muted/60 focus:outline-none"
         />
       </div>
 
@@ -77,7 +77,7 @@ export function AttendeeFilters({
           aria-label="Registered from"
           className="h-10 w-[150px]"
         />
-        <span className="text-[12px] text-[#A0A0B0]">to</span>
+        <span className="text-[12px] text-ink-muted">to</span>
         <TextInput
           type="date"
           value={dateTo}

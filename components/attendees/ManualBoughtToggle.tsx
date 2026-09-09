@@ -52,7 +52,7 @@ export function ManualBoughtToggle({
         className={cn(
           "relative shrink-0 rounded-full transition-colors duration-200",
           compact ? "h-5 w-9" : "h-6 w-11",
-          bought ? "bg-[#00C851]" : "bg-[#3A3A4A]"
+          bought ? "bg-[#00C851]" : "bg-surface-3"
         )}
       >
         <span
@@ -75,19 +75,19 @@ export function ManualBoughtToggle({
           aria-modal="true"
           onClick={(event) => event.stopPropagation()}
         >
-          <div className="w-full max-w-sm rounded-xl border border-[#1E1E2E] bg-[#12121A] p-6">
-            <h2 className="text-[16px] font-semibold text-white">
+          <div className="w-full max-w-sm rounded-xl border border-hairline bg-surface p-6">
+            <h2 className="text-[16px] font-semibold text-ink">
               {bought ? "Unmark this purchase?" : "Mark as purchased?"}
             </h2>
-            <p className="mt-2 text-[13.5px] leading-relaxed text-[#A0A0B0]">
+            <p className="mt-2 text-[13.5px] leading-relaxed text-ink-muted">
               {bought ? (
                 <>
-                  <span className="text-white">{name}</span> moves back to the
+                  <span className="text-ink">{name}</span> moves back to the
                   segment their behaviour earned, and re-enters follow-up.
                 </>
               ) : (
                 <>
-                  <span className="text-white">{name}</span> moves to the Bought
+                  <span className="text-ink">{name}</span> moves to the Bought
                   segment and stops receiving follow-up for this offer.
                 </>
               )}

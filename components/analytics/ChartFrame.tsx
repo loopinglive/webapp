@@ -30,17 +30,17 @@ export function ChartFrame({
   return (
     <section
       className={cn(
-        "rounded-xl border border-[#1E1E2E] bg-[#12121A] p-5",
+        "rounded-xl border border-hairline bg-surface p-5",
         className
       )}
     >
       <header className="mb-4 flex flex-wrap items-start justify-between gap-3">
         <div className="min-w-0">
-          <h3 className="text-[13.5px] font-semibold tracking-[-0.01em] text-white">
+          <h3 className="text-[13.5px] font-semibold tracking-[-0.01em] text-ink">
             {title}
           </h3>
           {note && (
-            <p className="mt-1 text-[11.5px] leading-relaxed text-[#A0A0B0]">
+            <p className="mt-1 text-[11.5px] leading-relaxed text-ink-muted">
               {note}
             </p>
           )}
@@ -53,7 +53,7 @@ export function ChartFrame({
               {legend.map((item) => (
                 <li
                   key={item.label}
-                  className="flex items-center gap-1.5 text-[11.5px] text-[#A0A0B0]"
+                  className="flex items-center gap-1.5 text-[11.5px] text-ink-muted"
                 >
                   <span
                     aria-hidden
@@ -70,8 +70,8 @@ export function ChartFrame({
       </header>
 
       {empty ? (
-        <div className="grid min-h-[180px] place-items-center rounded-lg border border-dashed border-[#2A2A3A] px-6 text-center">
-          <p className="max-w-[280px] text-[12.5px] leading-relaxed text-[#A0A0B0]">
+        <div className="grid min-h-[180px] place-items-center rounded-lg border border-dashed border-surface-3 px-6 text-center">
+          <p className="max-w-[280px] text-[12.5px] leading-relaxed text-ink-muted">
             {empty}
           </p>
         </div>
@@ -91,13 +91,13 @@ export function TooltipBox({
   rows: { label: string; value: string; colour?: string }[];
 }) {
   return (
-    <div className="rounded-lg border border-[#2A2A3A] bg-[#12121A] px-3 py-2 shadow-[0_16px_40px_-16px_rgba(0,0,0,0.9)]">
-      <p className="text-[11px] text-[#A0A0B0]">{title}</p>
+    <div className="rounded-lg border border-surface-3 bg-surface px-3 py-2 shadow-[0_16px_40px_-16px_rgba(0,0,0,0.9)]">
+      <p className="text-[11px] text-ink-muted">{title}</p>
       <ul className="mt-1 space-y-0.5">
         {rows.map((row) => (
           <li
             key={row.label}
-            className="flex items-center gap-2 text-[12px] text-white"
+            className="flex items-center gap-2 text-[12px] text-ink"
           >
             {row.colour && (
               <span
@@ -106,7 +106,7 @@ export function TooltipBox({
                 style={{ background: row.colour }}
               />
             )}
-            <span className="text-[#A0A0B0]">{row.label}</span>
+            <span className="text-ink-muted">{row.label}</span>
             <span className="ml-auto font-medium tabular-nums">{row.value}</span>
           </li>
         ))}

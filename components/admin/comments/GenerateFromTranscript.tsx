@@ -112,7 +112,7 @@ export function GenerateFromTranscript({
     return (
       <button
         onClick={() => setOpen(true)}
-        className="inline-flex items-center gap-1.5 rounded-full border border-[#2A2A3A] px-3 py-1.5 text-[12px] text-[#A0A0B0] transition-colors hover:text-white"
+        className="inline-flex items-center gap-1.5 rounded-full border border-surface-3 px-3 py-1.5 text-[12px] text-ink-muted transition-colors hover:text-ink"
       >
         <Sparkles className="h-3.5 w-3.5" />
         Generate from transcript
@@ -126,13 +126,13 @@ export function GenerateFromTranscript({
       aria-label="Generate timed comments"
       className="fixed inset-0 z-[70] grid place-items-center bg-black/70 p-4 backdrop-blur-sm"
     >
-      <div className="flex max-h-[85dvh] w-full max-w-2xl flex-col overflow-hidden rounded-2xl border border-[#1E1E2E] bg-[#12121A]">
-        <header className="flex items-center justify-between border-b border-[#1E1E2E] px-5 py-4">
+      <div className="flex max-h-[85dvh] w-full max-w-2xl flex-col overflow-hidden rounded-2xl border border-hairline bg-surface">
+        <header className="flex items-center justify-between border-b border-hairline px-5 py-4">
           <div>
-            <h2 className="text-[15px] font-semibold text-white">
+            <h2 className="text-[15px] font-semibold text-ink">
               Generate from transcript
             </h2>
-            <p className="mt-0.5 text-[12px] text-[#6E6E80]">
+            <p className="mt-0.5 text-[12px] text-ink-faint">
               Read from your video&rsquo;s auto-transcript. Nothing is added until
               you accept it.
             </p>
@@ -140,7 +140,7 @@ export function GenerateFromTranscript({
           <button
             onClick={() => setOpen(false)}
             aria-label="Close"
-            className="grid h-8 w-8 shrink-0 place-items-center rounded-full text-[#A0A0B0] hover:bg-white/5 hover:text-white"
+            className="grid h-8 w-8 shrink-0 place-items-center rounded-full text-ink-muted hover:bg-surface-2 hover:text-ink"
           >
             <X className="h-4 w-4" />
           </button>
@@ -149,14 +149,14 @@ export function GenerateFromTranscript({
         <div className="flex-1 overflow-y-auto px-5 py-4">
           {!proposals && !loading && !error && (
             <div className="py-10 text-center">
-              <p className="mx-auto max-w-sm text-[13px] leading-relaxed text-[#A0A0B0]">
+              <p className="mx-auto max-w-sm text-[13px] leading-relaxed text-ink-muted">
                 Reads the transcript and drafts a scattering of persona
                 reactions at moments it actually gives one — not evenly spaced,
                 because a real audience doesn&rsquo;t react evenly.
               </p>
               <button
                 onClick={() => void generate()}
-                className="mt-4 inline-flex h-10 items-center gap-2 rounded-lg bg-[#6C47FF] px-4 text-[13px] font-medium text-white hover:bg-[#5B39E0]"
+                className="mt-4 inline-flex h-10 items-center gap-2 rounded-lg bg-accent px-4 text-[13px] font-medium text-white hover:bg-accent-deep"
               >
                 <Sparkles className="h-4 w-4" />
                 Generate 15 proposals
@@ -166,8 +166,8 @@ export function GenerateFromTranscript({
 
           {loading && (
             <div className="grid place-items-center py-16">
-              <Loader2 className="h-5 w-5 animate-spin text-[#6C47FF]" />
-              <p className="mt-3 text-[12.5px] text-[#6E6E80]">
+              <Loader2 className="h-5 w-5 animate-spin text-accent" />
+              <p className="mt-3 text-[12.5px] text-ink-faint">
                 Reading the transcript…
               </p>
             </div>
@@ -178,7 +178,7 @@ export function GenerateFromTranscript({
               <p className="text-[13px] text-[#FF5A5A]">{error}</p>
               <button
                 onClick={() => void generate()}
-                className="mt-3 text-[12.5px] text-[#A0A0B0] hover:text-white"
+                className="mt-3 text-[12.5px] text-ink-muted hover:text-ink"
               >
                 Try again
               </button>
@@ -197,15 +197,15 @@ export function GenerateFromTranscript({
                     key={`${proposal.personaId}-${proposal.offsetSeconds}-${index}`}
                     className={`rounded-xl border px-3.5 py-3 transition-opacity ${
                       isDismissed
-                        ? "border-[#1E1E2E] opacity-40"
+                        ? "border-hairline opacity-40"
                         : proposal.flags.length > 0
                           ? "border-[#F5A623]/30 bg-[#F5A623]/[0.05]"
-                          : "border-[#1E1E2E]"
+                          : "border-hairline"
                     }`}
                   >
                     <div className="flex items-start justify-between gap-3">
                       <div className="min-w-0">
-                        <p className="flex items-center gap-2 text-[11px] text-[#6E6E80]">
+                        <p className="flex items-center gap-2 text-[11px] text-ink-faint">
                           <span
                             className="h-2 w-2 shrink-0 rounded-full"
                             style={{ background: colourForPersona(personas, proposal.personaId) }}
@@ -213,7 +213,7 @@ export function GenerateFromTranscript({
                           {personaName(proposal.personaId)} ·{" "}
                           {formatOffset(proposal.offsetSeconds)}
                         </p>
-                        <p className="mt-1 text-[13px] text-white">
+                        <p className="mt-1 text-[13px] text-ink">
                           {proposal.content}
                         </p>
                         {proposal.flags.length > 0 && (
@@ -231,13 +231,13 @@ export function GenerateFromTranscript({
                             Added
                           </span>
                         ) : isDismissed ? (
-                          <span className="text-[11.5px] text-[#6E6E80]">Skipped</span>
+                          <span className="text-[11.5px] text-ink-faint">Skipped</span>
                         ) : (
                           <>
                             <button
                               onClick={() => void accept(index)}
                               disabled={isAccepting}
-                              className="inline-flex h-7 items-center gap-1 rounded-md bg-[#6C47FF] px-2.5 text-[11.5px] font-medium text-white hover:bg-[#5B39E0] disabled:opacity-60"
+                              className="inline-flex h-7 items-center gap-1 rounded-md bg-accent px-2.5 text-[11.5px] font-medium text-white hover:bg-accent-deep disabled:opacity-60"
                             >
                               {isAccepting && (
                                 <Loader2 className="h-3 w-3 animate-spin" />
@@ -248,7 +248,7 @@ export function GenerateFromTranscript({
                               onClick={() =>
                                 setDismissed((current) => new Set(current).add(index))
                               }
-                              className="h-7 rounded-md px-2 text-[11.5px] text-[#6E6E80] hover:text-white"
+                              className="h-7 rounded-md px-2 text-[11.5px] text-ink-faint hover:text-ink"
                             >
                               Skip
                             </button>
@@ -264,14 +264,14 @@ export function GenerateFromTranscript({
         </div>
 
         {proposals && (
-          <footer className="flex items-center justify-between border-t border-[#1E1E2E] px-5 py-3.5">
-            <p className="text-[11.5px] text-[#6E6E80]">
+          <footer className="flex items-center justify-between border-t border-hairline px-5 py-3.5">
+            <p className="text-[11.5px] text-ink-faint">
               {accepted.size} added ·{" "}
               {proposals.filter((p) => p.flags.length > 0).length} flagged
             </p>
             <button
               onClick={() => void acceptAllClean()}
-              className="text-[12px] text-[#00D4FF] hover:underline"
+              className="text-[12px] text-cyan hover:underline"
             >
               Add everything unflagged
             </button>

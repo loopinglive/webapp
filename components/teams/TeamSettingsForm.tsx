@@ -15,7 +15,7 @@ export function TeamSettingsForm({ teamId }: { teamId: string }) {
   if (loading || !team) {
     return (
       <div className="grid h-40 place-items-center">
-        <Loader2 className="h-5 w-5 animate-spin text-[#6C47FF]" />
+        <Loader2 className="h-5 w-5 animate-spin text-accent" />
       </div>
     );
   }
@@ -42,23 +42,23 @@ export function TeamSettingsForm({ teamId }: { teamId: string }) {
 
   return (
     <div className="max-w-lg space-y-5 px-6 py-6 lg:px-10">
-      <section className="rounded-2xl border border-[#1E1E2E] bg-[#12121A] p-5">
+      <section className="rounded-2xl border border-hairline bg-surface p-5">
         <label className="block">
-          <span className="text-[12px] text-[#A0A0B0]">Team name</span>
+          <span className="text-[12px] text-ink-muted">Team name</span>
           <input
             value={value}
             onChange={(event) => setName(event.target.value)}
-            className="mt-1.5 h-10 w-full rounded-lg border border-[#1E1E2E] bg-[#0D0D15] px-3 text-[13.5px] text-white focus:border-[#6C47FF] focus:outline-none"
+            className="mt-1.5 h-10 w-full rounded-lg border border-hairline bg-void px-3 text-[13.5px] text-ink focus:border-accent focus:outline-none"
           />
         </label>
-        <p className="mt-2 text-[11.5px] text-[#6E6E80]">
+        <p className="mt-2 text-[11.5px] text-ink-faint">
           loopinglive.com/team/{team.slug}
         </p>
 
         <button
           onClick={() => void save()}
           disabled={saving || !value.trim() || value === team.name}
-          className="mt-4 inline-flex h-9 items-center gap-2 rounded-lg bg-[#6C47FF] px-3.5 text-[12.5px] font-medium text-white hover:bg-[#5B39E0] disabled:opacity-50"
+          className="mt-4 inline-flex h-9 items-center gap-2 rounded-lg bg-accent px-3.5 text-[12.5px] font-medium text-white hover:bg-accent-deep disabled:opacity-50"
         >
           {saving ? (
             <Loader2 className="h-3.5 w-3.5 animate-spin" />

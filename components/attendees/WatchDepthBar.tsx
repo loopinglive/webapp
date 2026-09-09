@@ -22,7 +22,7 @@ export function WatchDepthBar({
 
   return (
     <span className={cn("flex items-center gap-2", className)} title={tooltip}>
-      <span className="h-1.5 w-full min-w-[54px] overflow-hidden rounded-full bg-[#1E1E2E]">
+      <span className="h-1.5 w-full min-w-[54px] overflow-hidden rounded-full bg-hairline">
         <span
           className="block h-full rounded-full transition-[width] duration-500"
           style={{ width: `${value}%`, background: colour }}

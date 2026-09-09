@@ -35,7 +35,7 @@ export function CreatorCard({ creator }: { creator: CreatorSummary }) {
       </div>
 
       {creator.niche && (
-        <span className="mt-3 inline-block rounded-full bg-white/5 px-2.5 py-1 text-[11px] text-ink-muted">
+        <span className="mt-3 inline-block rounded-full bg-surface-2 px-2.5 py-1 text-[11px] text-ink-muted">
           {creator.niche}
         </span>
       )}

@@ -81,7 +81,7 @@ export function PersonaCommentHistory({
   return (
     <div>
       <div className="flex items-center justify-between">
-        <h3 className="text-[11px] font-semibold uppercase tracking-[0.16em] text-[#A0A0B0]">
+        <h3 className="text-[11px] font-semibold uppercase tracking-[0.16em] text-ink-muted">
           Comments ({comments.length})
         </h3>
         <AdminButton variant="ghost" onClick={() => setAdding((open) => !open)}>
@@ -91,7 +91,7 @@ export function PersonaCommentHistory({
       </div>
 
       {adding && (
-        <div className="mt-3 space-y-3 rounded-xl border border-[#6C47FF]/30 bg-[#12121A] p-3.5">
+        <div className="mt-3 space-y-3 rounded-xl border border-accent/30 bg-surface p-3.5">
           <TextArea
             rows={2}
             value={content}
@@ -110,10 +110,10 @@ export function PersonaCommentHistory({
 
       {loading ? (
         <div className="grid place-items-center py-10">
-          <Loader2 className="h-4 w-4 animate-spin text-[#6C47FF]" />
+          <Loader2 className="h-4 w-4 animate-spin text-accent" />
         </div>
       ) : comments.length === 0 ? (
-        <p className="mt-6 text-center text-[12.5px] text-[#A0A0B0]">
+        <p className="mt-6 text-center text-[12.5px] text-ink-muted">
           Nothing scheduled for {persona.name} yet.
         </p>
       ) : (
@@ -121,18 +121,18 @@ export function PersonaCommentHistory({
           {comments.map((comment) => (
             <li
               key={comment.id}
-              className="group flex items-start gap-3 rounded-lg border border-[#1E1E2E] bg-[#12121A] px-3.5 py-2.5"
+              className="group flex items-start gap-3 rounded-lg border border-hairline bg-surface px-3.5 py-2.5"
             >
-              <span className="shrink-0 pt-0.5 font-mono text-[11px] tabular-nums text-[#6C47FF]">
+              <span className="shrink-0 pt-0.5 font-mono text-[11px] tabular-nums text-accent">
                 {formatOffset(comment.video_offset_seconds)}
               </span>
-              <p className="min-w-0 flex-1 break-words text-[12.5px] leading-relaxed text-[#A0A0B0]">
+              <p className="min-w-0 flex-1 break-words text-[12.5px] leading-relaxed text-ink-muted">
                 {comment.content}
               </p>
               <button
                 onClick={() => remove(comment.id)}
                 aria-label="Delete comment"
-                className="shrink-0 text-[#A0A0B0] opacity-0 transition-opacity hover:text-[#FF3B3B] group-hover:opacity-100"
+                className="shrink-0 text-ink-muted opacity-0 transition-opacity hover:text-[#FF3B3B] group-hover:opacity-100"
               >
                 <Trash2 className="h-3.5 w-3.5" />
               </button>

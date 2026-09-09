@@ -203,7 +203,7 @@ export function UserDetail({ userId }: { userId: string }) {
           title="No such user"
           description="This account may have been deleted, or the link is wrong."
           action={
-            <Link href="/superadmin/users" className="text-[13px] text-[#6C47FF]">
+            <Link href="/superadmin/users" className="text-[13px] text-accent">
               Back to users
             </Link>
           }
@@ -231,17 +231,17 @@ export function UserDetail({ userId }: { userId: string }) {
     <div className="space-y-6 px-6 py-6 lg:px-8">
       <Link
         href="/superadmin/users"
-        className="inline-flex items-center gap-2 text-[13px] text-[#A0A0B0] hover:text-white"
+        className="inline-flex items-center gap-2 text-[13px] text-ink-muted hover:text-ink"
       >
         <ArrowLeft className="h-3.5 w-3.5" />
         All users
       </Link>
 
       {/* Identity */}
-      <header className="rounded-2xl border border-[#1E1E2E] bg-[#12121A] p-5">
+      <header className="rounded-2xl border border-hairline bg-surface p-5">
         <div className="flex flex-wrap items-start justify-between gap-4">
           <div className="min-w-0">
-            <h1 className="text-[22px] font-semibold tracking-[-0.02em] text-white">
+            <h1 className="text-[22px] font-semibold tracking-[-0.02em] text-ink">
               {a.full_name || a.email}
               {a.is_admin && (
                 <span className="ml-2 rounded-full bg-[#FF5A5A]/15 px-2 py-0.5 text-[10px] align-middle text-[#FF5A5A]">
@@ -255,10 +255,10 @@ export function UserDetail({ userId }: { userId: string }) {
                 </span>
               )}
             </h1>
-            <p className="mt-1 text-[13px] text-[#A0A0B0]">{a.email}</p>
-            <p className="mt-1 text-[11.5px] text-[#6E6E80]">
+            <p className="mt-1 text-[13px] text-ink-muted">{a.email}</p>
+            <p className="mt-1 text-[11.5px] text-ink-faint">
               Joined {when(a.created_at)} · last seen {when(a.last_login_at)} · code{" "}
-              <code className="text-[#00D4FF]">{a.referral_code}</code>
+              <code className="text-cyan">{a.referral_code}</code>
             </p>
             {a.is_suspended && a.suspended_reason && (
               <p className="mt-2 rounded-lg bg-[#FF5A5A]/10 px-3 py-2 text-[12px] text-[#FF6B6B]">
@@ -290,7 +290,7 @@ export function UserDetail({ userId }: { userId: string }) {
                   toast.error("Could not grant that plan.");
                 }
               }}
-              className="h-9 rounded-lg border border-[#1E1E2E] bg-[#0D0D15] px-2.5 text-[12.5px] text-white focus:outline-none"
+              className="h-9 rounded-lg border border-hairline bg-void px-2.5 text-[12.5px] text-ink focus:outline-none"
             >
               <option value="">Grant plan…</option>
               {PLANS.map((plan) => (
@@ -314,7 +314,7 @@ export function UserDetail({ userId }: { userId: string }) {
                 );
               }}
               disabled={busy !== null}
-              className="inline-flex h-9 items-center gap-2 rounded-lg border border-[#1E1E2E] px-3 text-[12.5px] text-[#A0A0B0] hover:text-white disabled:opacity-50"
+              className="inline-flex h-9 items-center gap-2 rounded-lg border border-hairline px-3 text-[12.5px] text-ink-muted hover:text-ink disabled:opacity-50"
             >
               {busy === "extend" ? (
                 <Loader2 className="h-3.5 w-3.5 animate-spin" />
@@ -329,7 +329,7 @@ export function UserDetail({ userId }: { userId: string }) {
             <button
               onClick={() => patch({ sendPasswordReset: true }, "reset")}
               disabled={busy !== null}
-              className="inline-flex h-9 items-center gap-2 rounded-lg border border-[#1E1E2E] px-3 text-[12.5px] text-[#A0A0B0] hover:text-white disabled:opacity-50"
+              className="inline-flex h-9 items-center gap-2 rounded-lg border border-hairline px-3 text-[12.5px] text-ink-muted hover:text-ink disabled:opacity-50"
             >
               {busy === "reset" ? (
                 <Loader2 className="h-3.5 w-3.5 animate-spin" />
@@ -353,7 +353,7 @@ export function UserDetail({ userId }: { userId: string }) {
                   await patch({ suspend: true, suspendReason: reason }, "suspend");
                 }}
                 disabled={busy !== null}
-                className="inline-flex h-9 items-center gap-2 rounded-lg border border-[#1E1E2E] px-3 text-[12.5px] text-[#A0A0B0] hover:border-[#FF5A5A]/50 hover:text-[#FF5A5A] disabled:opacity-50"
+                className="inline-flex h-9 items-center gap-2 rounded-lg border border-hairline px-3 text-[12.5px] text-ink-muted hover:border-[#FF5A5A]/50 hover:text-[#FF5A5A] disabled:opacity-50"
               >
                 {busy === "suspend" ? (
                   <Loader2 className="h-3.5 w-3.5 animate-spin" />
@@ -383,7 +383,7 @@ export function UserDetail({ userId }: { userId: string }) {
                   // eslint-disable-next-line @next/next/no-location-assign-relative-destination
                   window.location.assign("/dashboard");
                 }}
-                className="inline-flex h-9 items-center gap-2 rounded-lg border border-[#1E1E2E] px-3 text-[12.5px] text-[#A0A0B0] hover:border-[#6C47FF]/50 hover:text-white"
+                className="inline-flex h-9 items-center gap-2 rounded-lg border border-hairline px-3 text-[12.5px] text-ink-muted hover:border-accent/50 hover:text-ink"
               >
                 <UserCog className="h-3.5 w-3.5" />
                 Impersonate
@@ -418,8 +418,8 @@ export function UserDetail({ userId }: { userId: string }) {
                   title={ROLE_DESCRIPTIONS[role]}
                   className={`inline-flex h-9 items-center gap-2 rounded-lg border px-3 text-[12.5px] transition-colors disabled:opacity-60 ${
                     current
-                      ? "border-[#6C47FF] bg-[#6C47FF]/10 text-white"
-                      : "border-[#1E1E2E] text-[#A0A0B0] hover:border-[#6C47FF]/50 hover:text-white"
+                      ? "border-accent bg-accent/10 text-ink"
+                      : "border-hairline text-ink-muted hover:border-accent/50 hover:text-ink"
                   }`}
                 >
                   {busy === `role-${role}` ? (
@@ -445,7 +445,7 @@ export function UserDetail({ userId }: { userId: string }) {
                   void setRole(null);
                 }}
                 disabled={busy !== null}
-                className="inline-flex h-9 items-center gap-2 rounded-lg border border-[#1E1E2E] px-3 text-[12.5px] text-[#A0A0B0] hover:border-[#FF5A5A]/50 hover:text-[#FF5A5A] disabled:opacity-50"
+                className="inline-flex h-9 items-center gap-2 rounded-lg border border-hairline px-3 text-[12.5px] text-ink-muted hover:border-[#FF5A5A]/50 hover:text-[#FF5A5A] disabled:opacity-50"
               >
                 {busy === "role-none" ? (
                   <Loader2 className="h-3.5 w-3.5 animate-spin" />
@@ -457,7 +457,7 @@ export function UserDetail({ userId }: { userId: string }) {
             )}
           </div>
 
-          <p className="mt-3 text-[11.5px] leading-relaxed text-[#6E6E80]">
+          <p className="mt-3 text-[11.5px] leading-relaxed text-ink-faint">
             {a.is_admin
               ? ROLE_DESCRIPTIONS[(a.admin_role as AdminRole) ?? "owner"]
               : "Not an admin. Choosing a role above grants access to this console."}
@@ -473,12 +473,12 @@ export function UserDetail({ userId }: { userId: string }) {
             onChange={(event) => setNote(event.target.value)}
             rows={4}
             placeholder="Anything the next person handling this account should know."
-            className="w-full rounded-xl border border-[#1E1E2E] bg-[#0D0D15] px-3.5 py-2.5 text-[13px] text-white placeholder:text-[#4A4A5C] focus:border-[#6C47FF] focus:outline-none"
+            className="w-full rounded-xl border border-hairline bg-void px-3.5 py-2.5 text-[13px] text-ink placeholder:text-ink-faint focus:border-accent focus:outline-none"
           />
           <button
             onClick={() => patch({ adminNote: note }, "note")}
             disabled={busy !== null || note === (a.admin_note ?? "")}
-            className="mt-2 inline-flex h-9 items-center gap-2 rounded-full bg-[#6C47FF] px-4 text-[12.5px] font-medium text-white hover:bg-[#7C5AFF] disabled:opacity-40"
+            className="mt-2 inline-flex h-9 items-center gap-2 rounded-full bg-accent px-4 text-[12.5px] font-medium text-white hover:bg-accent-soft disabled:opacity-40"
           >
             {busy === "note" ? (
               <Loader2 className="h-3.5 w-3.5 animate-spin" />
@@ -496,12 +496,12 @@ export function UserDetail({ userId }: { userId: string }) {
           <input
             value={email}
             onChange={(event) => setEmail(event.target.value)}
-            className="h-10 w-full rounded-xl border border-[#1E1E2E] bg-[#0D0D15] px-3.5 text-[13px] text-white focus:border-[#6C47FF] focus:outline-none"
+            className="h-10 w-full rounded-xl border border-hairline bg-void px-3.5 text-[13px] text-ink focus:border-accent focus:outline-none"
           />
           <button
             onClick={() => patch({ email }, "email")}
             disabled={busy !== null || email === a.email || !email.includes("@")}
-            className="mt-2 inline-flex h-9 items-center gap-2 rounded-full border border-[#2A2A3A] px-4 text-[12.5px] text-white hover:border-[#6C47FF]/50 disabled:opacity-40"
+            className="mt-2 inline-flex h-9 items-center gap-2 rounded-full border border-surface-3 px-4 text-[12.5px] text-ink hover:border-accent/50 disabled:opacity-40"
           >
             {busy === "email" ? (
               <Loader2 className="h-3.5 w-3.5 animate-spin" />
@@ -523,35 +523,35 @@ export function UserDetail({ userId }: { userId: string }) {
         }
       >
         {data.messages.length === 0 ? (
-          <p className="text-[13px] text-[#6E6E80]">Nothing queued or sent yet.</p>
+          <p className="text-[13px] text-ink-faint">Nothing queued or sent yet.</p>
         ) : (
-          <div className="max-h-[340px] overflow-auto rounded-xl border border-[#1E1E2E]">
+          <div className="max-h-[340px] overflow-auto rounded-xl border border-hairline">
             <table className="w-full min-w-[640px]">
-              <thead className="sticky top-0 bg-[#12121A]">
+              <thead className="sticky top-0 bg-surface">
                 <tr>
                   {["When", "Channel", "Template", "To", "Status"].map((h) => (
                     <th
                       key={h}
-                      className="px-3 py-2 text-left text-[10px] font-semibold uppercase tracking-[0.12em] text-[#6E6E80]"
+                      className="px-3 py-2 text-left text-[10px] font-semibold uppercase tracking-[0.12em] text-ink-faint"
                     >
                       {h}
                     </th>
                   ))}
                 </tr>
               </thead>
-              <tbody className="divide-y divide-[#1E1E2E]">
+              <tbody className="divide-y divide-hairline">
                 {data.messages.map((message) => (
                   <tr key={message.id}>
-                    <td className="px-3 py-2 text-[11.5px] text-[#6E6E80]">
+                    <td className="px-3 py-2 text-[11.5px] text-ink-faint">
                       {when(message.sent_at ?? message.scheduled_for)}
                     </td>
-                    <td className="px-3 py-2 text-[12px] capitalize text-[#A0A0B0]">
+                    <td className="px-3 py-2 text-[12px] capitalize text-ink-muted">
                       {message.channel}
                     </td>
-                    <td className="px-3 py-2 font-mono text-[11px] text-[#A0A0B0]">
+                    <td className="px-3 py-2 font-mono text-[11px] text-ink-muted">
                       {message.template_key ?? "—"}
                     </td>
-                    <td className="px-3 py-2 text-[11.5px] text-[#6E6E80]">
+                    <td className="px-3 py-2 text-[11.5px] text-ink-faint">
                       {message.recipient_email ?? "—"}
                     </td>
                     <td className="px-3 py-2">
@@ -579,15 +579,15 @@ export function UserDetail({ userId }: { userId: string }) {
         {/* Timeline */}
         <Panel title="Activity" note="Built from what happened, not from steps clicked.">
           {data.timeline.length === 0 ? (
-            <p className="text-[13px] text-[#6E6E80]">Nothing yet.</p>
+            <p className="text-[13px] text-ink-faint">Nothing yet.</p>
           ) : (
             <ol className="space-y-2.5">
               {data.timeline.map((event, index) => (
                 <li key={`${event.at}-${index}`} className="flex gap-3">
-                  <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-[#6C47FF]" />
+                  <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-accent" />
                   <span className="min-w-0 flex-1">
-                    <span className="block text-[12.5px] text-white">{event.label}</span>
-                    <span className="block text-[11px] text-[#6E6E80]">{when(event.at)}</span>
+                    <span className="block text-[12.5px] text-ink">{event.label}</span>
+                    <span className="block text-[11px] text-ink-faint">{when(event.at)}</span>
                   </span>
                 </li>
               ))}
@@ -604,7 +604,7 @@ export function UserDetail({ userId }: { userId: string }) {
             <ul className="mb-3 space-y-1.5">
               {data.flags.map((flag) => (
                 <li key={flag.id} className="flex items-center gap-2 text-[12.5px]">
-                  <code className="text-[#00D4FF]">{flag.flag_name}</code>
+                  <code className="text-cyan">{flag.flag_name}</code>
                   <button
                     onClick={() =>
                       patch(
@@ -632,14 +632,14 @@ export function UserDetail({ userId }: { userId: string }) {
       <div className="grid gap-4 xl:grid-cols-2">
         <Panel title="Invoices">
           {data.invoices.length === 0 ? (
-            <p className="text-[13px] text-[#6E6E80]">No payments.</p>
+            <p className="text-[13px] text-ink-faint">No payments.</p>
           ) : (
             <ul className="space-y-1.5">
               {data.invoices.map((invoice) => (
                 <li key={invoice.id} className="flex items-center gap-3 text-[12.5px]">
-                  <span className="text-[#6E6E80]">{when(invoice.paid_at ?? invoice.created_at)}</span>
-                  <span className="text-white">{money(Number(invoice.amount), invoice.currency)}</span>
-                  <span className="capitalize text-[#A0A0B0]">{invoice.plan_slug}</span>
+                  <span className="text-ink-faint">{when(invoice.paid_at ?? invoice.created_at)}</span>
+                  <span className="text-ink">{money(Number(invoice.amount), invoice.currency)}</span>
+                  <span className="capitalize text-ink-muted">{invoice.plan_slug}</span>
                   <span
                     className="ml-auto"
                     style={{ color: STATUS_COLOUR[invoice.status] ?? "#A0A0B0" }}
@@ -659,7 +659,7 @@ export function UserDetail({ userId }: { userId: string }) {
                         );
                       }}
                       disabled={busy !== null}
-                      className="text-[11.5px] text-[#A0A0B0] hover:text-[#FF6B6B] disabled:opacity-40"
+                      className="text-[11.5px] text-ink-muted hover:text-[#FF6B6B] disabled:opacity-40"
                     >
                       Refund
                     </button>
@@ -672,12 +672,12 @@ export function UserDetail({ userId }: { userId: string }) {
 
         <Panel title="Webinars">
           {data.webinars.length === 0 ? (
-            <p className="text-[13px] text-[#6E6E80]">None created.</p>
+            <p className="text-[13px] text-ink-faint">None created.</p>
           ) : (
             <ul className="space-y-1.5">
               {data.webinars.map((webinar) => (
                 <li key={webinar.id} className="flex items-center gap-3 text-[12.5px]">
-                  <span className="min-w-0 flex-1 truncate text-white">{webinar.title}</span>
+                  <span className="min-w-0 flex-1 truncate text-ink">{webinar.title}</span>
                   {!webinar.video_url && (
                     <span className="text-[11px] text-[#FFB020]">no video</span>
                   )}
@@ -698,13 +698,13 @@ export function UserDetail({ userId }: { userId: string }) {
         <div className="grid gap-4 xl:grid-cols-3">
           <Panel title="Errors they hit">
             {data.errors.length === 0 ? (
-              <p className="text-[13px] text-[#6E6E80]">None recorded.</p>
+              <p className="text-[13px] text-ink-faint">None recorded.</p>
             ) : (
               <ul className="space-y-2">
                 {data.errors.map((error, index) => (
                   <li key={index} className="text-[11.5px]">
                     <span className="block text-[#FF6B6B]">{error.error_message.slice(0, 90)}</span>
-                    <span className="block text-[#6E6E80]">{when(error.created_at)}</span>
+                    <span className="block text-ink-faint">{when(error.created_at)}</span>
                   </li>
                 ))}
               </ul>
@@ -713,13 +713,13 @@ export function UserDetail({ userId }: { userId: string }) {
 
           <Panel title="Admin actions">
             {data.adminActions.length === 0 ? (
-              <p className="text-[13px] text-[#6E6E80]">None.</p>
+              <p className="text-[13px] text-ink-faint">None.</p>
             ) : (
               <ul className="space-y-1.5">
                 {data.adminActions.map((action, index) => (
                   <li key={index} className="text-[11.5px]">
-                    <span className="text-white">{action.action.replace(/_/g, " ")}</span>
-                    <span className="block text-[#6E6E80]">{when(action.created_at)}</span>
+                    <span className="text-ink">{action.action.replace(/_/g, " ")}</span>
+                    <span className="block text-ink-faint">{when(action.created_at)}</span>
                   </li>
                 ))}
               </ul>
@@ -728,13 +728,13 @@ export function UserDetail({ userId }: { userId: string }) {
 
           <Panel title="Impersonations">
             {data.impersonations.length === 0 ? (
-              <p className="text-[13px] text-[#6E6E80]">Never impersonated.</p>
+              <p className="text-[13px] text-ink-faint">Never impersonated.</p>
             ) : (
               <ul className="space-y-1.5">
                 {data.impersonations.map((row, index) => (
                   <li key={index} className="text-[11.5px]">
-                    <span className="text-white">{row.reason ?? "no reason given"}</span>
-                    <span className="block text-[#6E6E80]">
+                    <span className="text-ink">{row.reason ?? "no reason given"}</span>
+                    <span className="block text-ink-faint">
                       {when(row.started_at)}
                       {row.ended_at ? "" : " · still open"}
                     </span>
@@ -751,14 +751,14 @@ export function UserDetail({ userId }: { userId: string }) {
 
 function Stat({ label, value, sub }: { label: string; value: string; sub?: string }) {
   return (
-    <div className="rounded-xl border border-[#1E1E2E] bg-[#12121A] px-4 py-3.5">
-      <p className="text-[10px] font-semibold uppercase tracking-[0.14em] text-[#6E6E80]">
+    <div className="rounded-xl border border-hairline bg-surface px-4 py-3.5">
+      <p className="text-[10px] font-semibold uppercase tracking-[0.14em] text-ink-faint">
         {label}
       </p>
-      <p className="mt-1.5 text-[20px] font-semibold capitalize tabular-nums tracking-[-0.02em] text-white">
+      <p className="mt-1.5 text-[20px] font-semibold capitalize tabular-nums tracking-[-0.02em] text-ink">
         {value}
       </p>
-      {sub && <p className="mt-0.5 text-[11px] capitalize text-[#6E6E80]">{sub}</p>}
+      {sub && <p className="mt-0.5 text-[11px] capitalize text-ink-faint">{sub}</p>}
     </div>
   );
 }
@@ -773,9 +773,9 @@ function Panel({
   children: React.ReactNode;
 }) {
   return (
-    <section className="rounded-2xl border border-[#1E1E2E] bg-[#12121A] p-5">
-      <h2 className="text-[14px] font-semibold text-white">{title}</h2>
-      {note && <p className="mt-0.5 mb-3 text-[11.5px] leading-relaxed text-[#6E6E80]">{note}</p>}
+    <section className="rounded-2xl border border-hairline bg-surface p-5">
+      <h2 className="text-[14px] font-semibold text-ink">{title}</h2>
+      {note && <p className="mt-0.5 mb-3 text-[11.5px] leading-relaxed text-ink-faint">{note}</p>}
       {!note && <div className="mb-3" />}
       {children}
     </section>
@@ -799,7 +799,7 @@ function NewFlag({
           setName(event.target.value.toLowerCase().replace(/[^a-z0-9_]/g, "_"))
         }
         placeholder="new_flag_name"
-        className="h-9 flex-1 rounded-lg border border-[#1E1E2E] bg-[#0D0D15] px-3 font-mono text-[12px] text-white placeholder:text-[#4A4A5C] focus:border-[#6C47FF] focus:outline-none"
+        className="h-9 flex-1 rounded-lg border border-hairline bg-void px-3 font-mono text-[12px] text-ink placeholder:text-ink-faint focus:border-accent focus:outline-none"
       />
       <button
         onClick={async () => {
@@ -807,7 +807,7 @@ function NewFlag({
           if (await onAdd(name)) setName("");
         }}
         disabled={busy || !name}
-        className="inline-flex h-9 items-center rounded-lg border border-[#2A2A3A] px-3 text-[12px] text-white hover:border-[#6C47FF]/50 disabled:opacity-40"
+        className="inline-flex h-9 items-center rounded-lg border border-surface-3 px-3 text-[12px] text-ink hover:border-accent/50 disabled:opacity-40"
       >
         {busy ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : "Enable"}
       </button>

@@ -50,9 +50,9 @@ export function DataRequests({
   }
 
   return (
-    <section className="rounded-2xl border border-[#1E1E2E] bg-[#12121A] p-5">
-      <h2 className="text-[14px] font-semibold text-white">Data requests</h2>
-      <p className="mt-1 text-[11.5px] leading-relaxed text-[#6E6E80]">
+    <section className="rounded-2xl border border-hairline bg-surface p-5">
+      <h2 className="text-[14px] font-semibold text-ink">Data requests</h2>
+      <p className="mt-1 text-[11.5px] leading-relaxed text-ink-faint">
         If {email} asks for a copy of their data, or asks to be deleted.
       </p>
 
@@ -60,7 +60,7 @@ export function DataRequests({
         <a
           href={base}
           download
-          className="inline-flex h-9 items-center gap-2 rounded-lg border border-[#1E1E2E] px-3 text-[12.5px] text-[#A0A0B0] hover:text-white"
+          className="inline-flex h-9 items-center gap-2 rounded-lg border border-hairline px-3 text-[12.5px] text-ink-muted hover:text-ink"
         >
           <Download className="h-3.5 w-3.5" />
           Download their data
@@ -69,7 +69,7 @@ export function DataRequests({
         {!confirming ? (
           <button
             onClick={() => setConfirming(true)}
-            className="inline-flex h-9 items-center gap-2 rounded-lg border border-[#1E1E2E] px-3 text-[12.5px] text-[#A0A0B0] hover:border-[#FF5A5A]/50 hover:text-[#FF5A5A]"
+            className="inline-flex h-9 items-center gap-2 rounded-lg border border-hairline px-3 text-[12.5px] text-ink-muted hover:border-[#FF5A5A]/50 hover:text-[#FF5A5A]"
           >
             <ShieldAlert className="h-3.5 w-3.5" />
             Erase them
@@ -87,7 +87,7 @@ export function DataRequests({
             <button
               onClick={() => setConfirming(false)}
               disabled={erasing}
-              className="h-9 rounded-lg px-3 text-[12.5px] text-[#A0A0B0] hover:text-white"
+              className="h-9 rounded-lg px-3 text-[12.5px] text-ink-muted hover:text-ink"
             >
               Cancel
             </button>
@@ -100,7 +100,7 @@ export function DataRequests({
           This cannot be undone. Their registration, chat, answers, events and
           watch history are deleted outright.
           <br />
-          <span className="text-[#6E6E80]">
+          <span className="text-ink-faint">
             Two things are kept on purpose. Any purchase stays as a financial
             record with its link to them cut — the right to erasure does not
             override the obligation to keep sales records. And if they had

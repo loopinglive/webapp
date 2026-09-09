@@ -78,9 +78,9 @@ export function AIPersonaTestChat({
   }
 
   return (
-    <section className="rounded-xl border border-[#1E1E2E] bg-[#12121A] p-5">
-      <h2 className="text-[13px] font-semibold text-white">Test your moderators</h2>
-      <p className="mt-1 text-[12px] text-[#A0A0B0]">
+    <section className="rounded-xl border border-hairline bg-surface p-5">
+      <h2 className="text-[13px] font-semibold text-ink">Test your moderators</h2>
+      <p className="mt-1 text-[12px] text-ink-muted">
         Type what an attendee might say, then hear how each one answers.
       </p>
 
@@ -116,25 +116,25 @@ export function AIPersonaTestChat({
             <li
               key={index}
               className={cn(
-                "rounded-lg border border-[#1E1E2E] bg-[#0A0A0F] p-3.5",
+                "rounded-lg border border-hairline bg-void p-3.5",
                 index === 0 && "animate-rise"
               )}
             >
-              <p className="text-[11.5px] text-[#A0A0B0]">
-                You: <span className="text-white">{exchange.question}</span>
+              <p className="text-[11.5px] text-ink-muted">
+                You: <span className="text-ink">{exchange.question}</span>
               </p>
               <div className="mt-2.5 flex gap-2.5">
                 <Avatar name={exchange.persona} size={26} className="mt-0.5" />
                 <div className="min-w-0 flex-1">
                   <p className="flex items-baseline gap-2">
-                    <span className="text-[12px] font-semibold text-white">
+                    <span className="text-[12px] font-semibold text-ink">
                       {exchange.persona}
                     </span>
-                    <span className="text-[10px] tabular-nums text-[#A0A0B0]/70">
+                    <span className="text-[10px] tabular-nums text-ink-muted/70">
                       {(exchange.elapsedMs / 1000).toFixed(1)}s
                     </span>
                   </p>
-                  <p className="mt-0.5 text-[12.5px] leading-relaxed text-[#A0A0B0]">
+                  <p className="mt-0.5 text-[12.5px] leading-relaxed text-ink-muted">
                     {exchange.reply}
                   </p>
                 </div>

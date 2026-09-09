@@ -91,20 +91,20 @@ export function InteractiveOverlay({
       ))}
 
       {chapterCard && (
-        <div className="absolute left-4 top-4 rounded-xl bg-black/80 px-4 py-2.5 text-[12.5px] font-medium text-white backdrop-blur-sm">
+        <div className="absolute left-4 top-4 rounded-xl bg-black/80 px-4 py-2.5 text-[12.5px] font-medium text-ink backdrop-blur-sm">
           Now playing: {chapterCard}
         </div>
       )}
 
       {milestoneText && (
-        <div className="absolute bottom-16 left-1/2 flex -translate-x-1/2 items-center gap-2 rounded-full bg-black/80 px-4 py-2 text-[12.5px] font-medium text-white backdrop-blur-sm">
+        <div className="absolute bottom-16 left-1/2 flex -translate-x-1/2 items-center gap-2 rounded-full bg-black/80 px-4 py-2 text-[12.5px] font-medium text-ink backdrop-blur-sm">
           <PartyPopper className="h-3.5 w-3.5 text-[#FFD93D]" />
           {milestoneText}
         </div>
       )}
 
       {activeSharePrompt && (
-        <div className="pointer-events-auto absolute bottom-16 right-4 flex items-center gap-2 rounded-full bg-black/80 px-4 py-2 text-[12.5px] font-medium text-white backdrop-blur-sm">
+        <div className="pointer-events-auto absolute bottom-16 right-4 flex items-center gap-2 rounded-full bg-black/80 px-4 py-2 text-[12.5px] font-medium text-ink backdrop-blur-sm">
           <Share2 className="h-3.5 w-3.5 text-accent-soft" />
           {(activeSharePrompt.config.message as string) || "Share this webinar!"}
         </div>

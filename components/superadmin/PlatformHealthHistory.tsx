@@ -40,8 +40,8 @@ export function PlatformHealthHistory() {
 
   return (
     <section className="px-6 pb-6 lg:px-8">
-      <h2 className="text-[15px] font-semibold text-white">7-day trend</h2>
-      <p className="mt-0.5 text-[12.5px] text-[#6E6E80]">
+      <h2 className="text-[15px] font-semibold text-ink">7-day trend</h2>
+      <p className="mt-0.5 text-[12.5px] text-ink-faint">
         Recorded hourly, so a slow decline is visible before it looks unhealthy on its own.
       </p>
 
@@ -53,9 +53,9 @@ export function PlatformHealthHistory() {
           const max = Math.max(metric.definition.thresholdCritical, ...metric.points.map((p) => p.metric_value), 1);
 
           return (
-            <div key={metric.definition.name} className="rounded-xl border border-[#1E1E2E] bg-[#12121A] p-4">
+            <div key={metric.definition.name} className="rounded-xl border border-hairline bg-surface p-4">
               <div className="flex items-center justify-between">
-                <span className="text-[10px] font-semibold uppercase tracking-[0.12em] text-[#6E6E80]">
+                <span className="text-[10px] font-semibold uppercase tracking-[0.12em] text-ink-faint">
                   {metric.definition.label}
                 </span>
                 {style && Icon && (
@@ -66,9 +66,9 @@ export function PlatformHealthHistory() {
                 )}
               </div>
 
-              <p className="mt-1.5 text-xl font-semibold tabular-nums text-white">
+              <p className="mt-1.5 text-xl font-semibold tabular-nums text-ink">
                 {latest ? latest.metric_value : "—"}
-                <span className="ml-1 text-[12px] font-normal text-[#6E6E80]">{metric.definition.unit}</span>
+                <span className="ml-1 text-[12px] font-normal text-ink-faint">{metric.definition.unit}</span>
               </p>
 
               {metric.points.length > 1 && (
@@ -88,7 +88,7 @@ export function PlatformHealthHistory() {
               )}
 
               {metric.points.length === 0 && (
-                <p className="mt-2 text-[11px] text-[#6E6E80]">No snapshots yet — the hourly cron hasn&apos;t run.</p>
+                <p className="mt-2 text-[11px] text-ink-faint">No snapshots yet — the hourly cron hasn&apos;t run.</p>
               )}
             </div>
           );

@@ -32,7 +32,7 @@ export function RevenueForecastDashboard() {
             <select
               value={periodDays}
               onChange={(e) => setPeriodDays(Number(e.target.value))}
-              className="h-10 rounded-lg border border-[#2A2A3A] bg-[#1A1A2A] px-3 text-[13px] text-white focus:border-[#6C47FF] focus:outline-none"
+              className="h-10 rounded-lg border border-surface-3 bg-surface-2 px-3 text-[13px] text-ink focus:border-accent focus:outline-none"
             >
               {PERIODS.map((p) => (
                 <option key={p.days} value={p.days}>
@@ -43,7 +43,7 @@ export function RevenueForecastDashboard() {
             <button
               onClick={() => void generate(periodDays)}
               disabled={generating}
-              className="flex h-10 items-center gap-2 rounded-full bg-[#6C47FF] px-4 text-[13px] font-semibold text-white shadow-[0_10px_30px_-10px_#6C47FF] transition-colors hover:bg-[#7C5AFF] disabled:opacity-50"
+              className="flex h-10 items-center gap-2 rounded-full bg-accent px-4 text-[13px] font-semibold text-white shadow-[0_10px_30px_-10px_#6C47FF] transition-colors hover:bg-accent-soft disabled:opacity-50"
             >
               {generating ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <RefreshCw className="h-3.5 w-3.5" />}
               {generating ? "Forecasting…" : "Generate forecast"}
@@ -57,7 +57,7 @@ export function RevenueForecastDashboard() {
 
         {loading ? (
           <div className="grid h-40 place-items-center">
-            <Loader2 className="h-5 w-5 animate-spin text-[#6C47FF]" />
+            <Loader2 className="h-5 w-5 animate-spin text-accent" />
           </div>
         ) : !latest ? (
           <EmptyState
@@ -67,7 +67,7 @@ export function RevenueForecastDashboard() {
           />
         ) : (
           <>
-            <p className="mb-5 text-[12.5px] text-[#6A6A80]">
+            <p className="mb-5 text-[12.5px] text-ink-faint">
               Across all your webinars · next {latest.forecast_period.replace("next_", "").replace("_days", " days")}
             </p>
 
@@ -111,15 +111,15 @@ function MetricTile({
   forecast?: Forecast;
 }) {
   return (
-    <div className="rounded-xl border border-[#1E1E2E] bg-[#12121A] px-4 py-3.5">
-      <p className="text-[10px] font-semibold uppercase tracking-[0.14em] text-[#A0A0B0]">{label}</p>
-      <p className="mt-1.5 text-2xl font-semibold tabular-nums tracking-[-0.03em] text-white">{value}</p>
-      {sub && <p className="mt-1 text-[11px] text-[#6A6A80]">{sub}</p>}
+    <div className="rounded-xl border border-hairline bg-surface px-4 py-3.5">
+      <p className="text-[10px] font-semibold uppercase tracking-[0.14em] text-ink-muted">{label}</p>
+      <p className="mt-1.5 text-2xl font-semibold tabular-nums tracking-[-0.03em] text-ink">{value}</p>
+      {sub && <p className="mt-1 text-[11px] text-ink-faint">{sub}</p>}
       {forecast && (
         <div
           className={cn(
             "mt-2 flex items-center gap-1 text-[11px] font-medium",
-            forecast.trend === "up" ? "text-[#00C851]" : forecast.trend === "down" ? "text-[#FF3B3B]" : "text-[#6A6A80]"
+            forecast.trend === "up" ? "text-[#00C851]" : forecast.trend === "down" ? "text-[#FF3B3B]" : "text-ink-faint"
           )}
         >
           {forecast.trend === "up" ? (

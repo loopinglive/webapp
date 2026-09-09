@@ -119,7 +119,7 @@ export function AIPersonaConfig({ webinarId }: { webinarId: string }) {
   if (loading) {
     return (
       <div className="grid h-[60dvh] place-items-center">
-        <Loader2 className="h-5 w-5 animate-spin text-[#6C47FF]" />
+        <Loader2 className="h-5 w-5 animate-spin text-accent" />
       </div>
     );
   }
@@ -157,12 +157,12 @@ export function AIPersonaConfig({ webinarId }: { webinarId: string }) {
           ))}
         </div>
 
-        <section className="space-y-4 rounded-xl border border-[#1E1E2E] bg-[#12121A] p-5">
+        <section className="space-y-4 rounded-xl border border-hairline bg-surface p-5">
           <div>
-            <h2 className="text-[13px] font-semibold text-white">
+            <h2 className="text-[13px] font-semibold text-ink">
               What they both know
             </h2>
-            <p className="mt-1 text-[12px] text-[#A0A0B0]">
+            <p className="mt-1 text-[12px] text-ink-muted">
               Shared context. This is what stops answers sounding generic.
             </p>
           </div>

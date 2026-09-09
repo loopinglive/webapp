@@ -30,8 +30,8 @@ export function EmptyState({
       <span aria-hidden className="text-[30px] leading-none">
         {icon}
       </span>
-      <h3 className="mt-4 text-[15.5px] font-semibold text-white">{title}</h3>
-      <p className="mx-auto mt-1.5 max-w-[46ch] text-[13.5px] leading-relaxed text-[#6E6E80]">
+      <h3 className="mt-4 text-[15.5px] font-semibold text-ink">{title}</h3>
+      <p className="mx-auto mt-1.5 max-w-[46ch] text-[13.5px] leading-relaxed text-ink-faint">
         {description}
       </p>
       {action && <div className="mt-5">{action}</div>}

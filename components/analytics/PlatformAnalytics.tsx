@@ -79,8 +79,8 @@ export function PlatformAnalytics() {
 
   if (!fresh) {
     return (
-      <main className="grid min-h-dvh place-items-center bg-[#0A0A0F]">
-        <Loader2 className="h-6 w-6 animate-spin text-[#6C47FF]" />
+      <main className="grid min-h-dvh place-items-center bg-void">
+        <Loader2 className="h-6 w-6 animate-spin text-accent" />
       </main>
     );
   }
@@ -89,8 +89,8 @@ export function PlatformAnalytics() {
 
   if (!data) {
     return (
-      <main className="grid min-h-dvh place-items-center bg-[#0A0A0F] px-6 text-center">
-        <p className="text-[14px] text-[#A0A0B0]">Could not load platform analytics.</p>
+      <main className="grid min-h-dvh place-items-center bg-void px-6 text-center">
+        <p className="text-[14px] text-ink-muted">Could not load platform analytics.</p>
       </main>
     );
   }
@@ -103,13 +103,13 @@ export function PlatformAnalytics() {
   }).format(totals.revenueCents / 100);
 
   return (
-    <main className="min-h-dvh bg-[#0A0A0F]">
-      <header className="flex flex-wrap items-end justify-between gap-4 border-b border-[#1E1E2E] px-6 py-6 lg:px-10">
+    <main className="min-h-dvh bg-void">
+      <header className="flex flex-wrap items-end justify-between gap-4 border-b border-hairline px-6 py-6 lg:px-10">
         <div>
-          <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-[#6C47FF]">
+          <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-accent">
             Super admin
           </p>
-          <h1 className="mt-1 text-[24px] font-semibold tracking-[-0.025em] text-white">
+          <h1 className="mt-1 text-[24px] font-semibold tracking-[-0.025em] text-ink">
             Platform analytics
           </h1>
         </div>
@@ -117,7 +117,7 @@ export function PlatformAnalytics() {
           <DateRangePicker value={range} onChange={setRange} />
           <Link
             href="/admin/dashboard"
-            className="text-[13px] text-[#A0A0B0] transition-colors hover:text-white"
+            className="text-[13px] text-ink-muted transition-colors hover:text-ink"
           >
             Dashboard
           </Link>
@@ -142,7 +142,7 @@ export function PlatformAnalytics() {
 
         {/* Present, in position, explicitly pending — never faked as zero. */}
         <div>
-          <p className="mb-3 text-[11px] font-semibold uppercase tracking-[0.16em] text-[#A0A0B0]">
+          <p className="mb-3 text-[11px] font-semibold uppercase tracking-[0.16em] text-ink-muted">
             Subscriptions
           </p>
           <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 xl:grid-cols-5">
@@ -173,9 +173,9 @@ export function PlatformAnalytics() {
                 { label: "WhatsApp", value: totals.messages.whatsapp, icon: MessageCircle },
               ].map((row) => (
                 <li key={row.label} className="flex items-center gap-3">
-                  <row.icon className="h-4 w-4 shrink-0 text-[#A0A0B0]" />
-                  <span className="text-[13px] text-white">{row.label}</span>
-                  <span className="ml-auto text-[13px] font-medium tabular-nums text-white">
+                  <row.icon className="h-4 w-4 shrink-0 text-ink-muted" />
+                  <span className="text-[13px] text-ink">{row.label}</span>
+                  <span className="ml-auto text-[13px] font-medium tabular-nums text-ink">
                     {row.value.toLocaleString()}
                   </span>
                 </li>
@@ -200,28 +200,28 @@ export function PlatformAnalytics() {
                   {["Webinar", "Registered", "Attended", "Conversion"].map((h) => (
                     <th
                       key={h}
-                      className="pb-2 text-[10px] font-semibold uppercase tracking-[0.14em] text-[#A0A0B0]"
+                      className="pb-2 text-[10px] font-semibold uppercase tracking-[0.14em] text-ink-muted"
                     >
                       {h}
                     </th>
                   ))}
                 </tr>
               </thead>
-              <tbody className="divide-y divide-[#1E1E2E]">
+              <tbody className="divide-y divide-hairline">
                 {data.topWebinars.map((webinar) => (
                   <tr key={webinar.id}>
                     <td className="py-2.5">
                       <Link
                         href={`/admin/webinar/${webinar.id}/analytics`}
-                        className="text-[12.5px] text-white transition-colors hover:text-[#6C47FF]"
+                        className="text-[12.5px] text-ink transition-colors hover:text-accent"
                       >
                         {webinar.title}
                       </Link>
                     </td>
-                    <td className="py-2.5 text-[12.5px] tabular-nums text-[#A0A0B0]">
+                    <td className="py-2.5 text-[12.5px] tabular-nums text-ink-muted">
                       {webinar.registrations}
                     </td>
-                    <td className="py-2.5 text-[12.5px] tabular-nums text-[#A0A0B0]">
+                    <td className="py-2.5 text-[12.5px] tabular-nums text-ink-muted">
                       {webinar.attendees}
                     </td>
                     <td

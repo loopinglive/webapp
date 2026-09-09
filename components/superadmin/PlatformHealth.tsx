@@ -85,7 +85,7 @@ export function PlatformHealth() {
   return (
     <div className="space-y-6 px-6 py-6 lg:px-8">
       <div className="flex items-center justify-between">
-        <p className="text-[13px] text-[#6E6E80]">
+        <p className="text-[13px] text-ink-faint">
           {unhealthy.length === 0
             ? "All scheduled jobs are running as expected."
             : `${unhealthy.length} job${unhealthy.length === 1 ? "" : "s"} needs attention.`}
@@ -93,7 +93,7 @@ export function PlatformHealth() {
         <button
           onClick={load}
           disabled={refreshing}
-          className="inline-flex h-8 items-center gap-2 rounded-full border border-[#1E1E2E] px-3 text-[12.5px] text-[#A0A0B0] hover:text-white disabled:opacity-50"
+          className="inline-flex h-8 items-center gap-2 rounded-full border border-hairline px-3 text-[12.5px] text-ink-muted hover:text-ink disabled:opacity-50"
         >
           <RefreshCw className={refreshing ? "h-3 w-3 animate-spin" : "h-3 w-3"} />
           Refresh
@@ -130,37 +130,37 @@ export function PlatformHealth() {
 
       {/* Cron jobs */}
       <section>
-        <h2 className="text-[15px] font-semibold text-white">Scheduled jobs</h2>
-        <p className="mt-0.5 text-[12.5px] text-[#6E6E80]">
+        <h2 className="text-[15px] font-semibold text-ink">Scheduled jobs</h2>
+        <p className="mt-0.5 text-[12.5px] text-ink-faint">
           All run in Postgres via pg_cron. &ldquo;Behind schedule&rdquo; means the
           runs that happened succeeded, but fewer happened than the schedule implies.
         </p>
 
-        <div className="mt-4 overflow-x-auto rounded-xl border border-[#1E1E2E]">
+        <div className="mt-4 overflow-x-auto rounded-xl border border-hairline">
           <table className="w-full min-w-[760px]">
-            <thead className="bg-[#12121A]">
+            <thead className="bg-surface">
               <tr>
                 {["Job", "Schedule", "State", "Last run", "Duration", "Runs / 24h"].map((h) => (
                   <th
                     key={h}
-                    className="px-4 py-2.5 text-left text-[10px] font-semibold uppercase tracking-[0.14em] text-[#6E6E80]"
+                    className="px-4 py-2.5 text-left text-[10px] font-semibold uppercase tracking-[0.14em] text-ink-faint"
                   >
                     {h}
                   </th>
                 ))}
               </tr>
             </thead>
-            <tbody className="divide-y divide-[#1E1E2E]">
+            <tbody className="divide-y divide-hairline">
               {data.crons.map((job) => {
                 const verdict = VERDICT[job.verdict];
                 const Icon = verdict.icon;
 
                 return (
                   <tr key={job.jobname}>
-                    <td className="px-4 py-3 font-mono text-[12px] text-white">
+                    <td className="px-4 py-3 font-mono text-[12px] text-ink">
                       {job.jobname.replace("loopinglive-", "")}
                     </td>
-                    <td className="px-4 py-3 font-mono text-[11.5px] text-[#6E6E80]">
+                    <td className="px-4 py-3 font-mono text-[11.5px] text-ink-faint">
                       {job.schedule}
                     </td>
                     <td className="px-4 py-3">
@@ -177,7 +177,7 @@ export function PlatformHealth() {
                         </span>
                       )}
                     </td>
-                    <td className="px-4 py-3 text-[12px] text-[#A0A0B0]">
+                    <td className="px-4 py-3 text-[12px] text-ink-muted">
                       {job.last_run
                         ? new Date(job.last_run).toLocaleTimeString(undefined, {
                             hour: "2-digit",
@@ -185,13 +185,13 @@ export function PlatformHealth() {
                           })
                         : "never"}
                     </td>
-                    <td className="px-4 py-3 text-[12px] tabular-nums text-[#A0A0B0]">
+                    <td className="px-4 py-3 text-[12px] tabular-nums text-ink-muted">
                       {job.last_duration_ms === null ? "—" : `${job.last_duration_ms} ms`}
                     </td>
-                    <td className="px-4 py-3 text-[12px] tabular-nums text-[#A0A0B0]">
+                    <td className="px-4 py-3 text-[12px] tabular-nums text-ink-muted">
                       {job.runs_24h}
                       {job.expected_runs_24h !== null && (
-                        <span className="text-[#4A4A5C]"> / {job.expected_runs_24h}</span>
+                        <span className="text-ink-faint"> / {job.expected_runs_24h}</span>
                       )}
                     </td>
                   </tr>
@@ -204,8 +204,8 @@ export function PlatformHealth() {
 
       {/* Providers */}
       <section>
-        <h2 className="text-[15px] font-semibold text-white">Third-party services</h2>
-        <p className="mt-0.5 text-[12.5px] text-[#6E6E80]">
+        <h2 className="text-[15px] font-semibold text-ink">Third-party services</h2>
+        <p className="mt-0.5 text-[12.5px] text-ink-faint">
           Whether a usable credential is present. A placeholder key counts as missing —
           that is exactly the mistake this is here to catch.
         </p>
@@ -214,14 +214,14 @@ export function PlatformHealth() {
           {Object.entries(data.providers).map(([key, ok]) => (
             <div
               key={key}
-              className="flex items-center gap-2.5 rounded-xl border border-[#1E1E2E] bg-[#12121A] px-4 py-3"
+              className="flex items-center gap-2.5 rounded-xl border border-hairline bg-surface px-4 py-3"
             >
               {ok ? (
                 <CheckCircle2 className="h-4 w-4 shrink-0 text-[#00C851]" />
               ) : (
                 <XCircle className="h-4 w-4 shrink-0 text-[#FF5A5A]" />
               )}
-              <span className="flex-1 text-[13px] text-white">
+              <span className="flex-1 text-[13px] text-ink">
                 {PROVIDER_LABELS[key] ?? key}
               </span>
               <span
@@ -266,8 +266,8 @@ function Tile({
   bad?: boolean;
 }) {
   return (
-    <div className="rounded-xl border border-[#1E1E2E] bg-[#12121A] px-4 py-3.5">
-      <p className="text-[10px] font-semibold uppercase tracking-[0.14em] text-[#6E6E80]">
+    <div className="rounded-xl border border-hairline bg-surface px-4 py-3.5">
+      <p className="text-[10px] font-semibold uppercase tracking-[0.14em] text-ink-faint">
         {label}
       </p>
       <p
@@ -276,7 +276,7 @@ function Tile({
       >
         {value}
       </p>
-      <p className="mt-0.5 text-[11px] text-[#6E6E80]">{hint}</p>
+      <p className="mt-0.5 text-[11px] text-ink-faint">{hint}</p>
     </div>
   );
 }

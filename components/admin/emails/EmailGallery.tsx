@@ -111,19 +111,19 @@ export function EmailGallery() {
   const current = rows.find((row) => row.key === selected);
 
   return (
-    <div className="flex min-h-dvh bg-[#0A0A0F]">
+    <div className="flex min-h-dvh bg-void">
       {/* List */}
-      <aside className="w-[300px] shrink-0 overflow-y-auto border-r border-[#1E1E2E] bg-[#0D0D17]">
-        <div className="sticky top-0 z-10 border-b border-[#1E1E2E] bg-[#0D0D17] px-4 py-4">
+      <aside className="w-[300px] shrink-0 overflow-y-auto border-r border-hairline bg-void">
+        <div className="sticky top-0 z-10 border-b border-hairline bg-void px-4 py-4">
           <div className="flex items-center gap-2">
-            <Mail className="h-4 w-4 text-[#6C47FF]" />
-            <h1 className="text-[14px] font-semibold text-white">Platform email</h1>
-            <span className="ml-auto text-[11px] tabular-nums text-[#6E6E80]">
+            <Mail className="h-4 w-4 text-accent" />
+            <h1 className="text-[14px] font-semibold text-ink">Platform email</h1>
+            <span className="ml-auto text-[11px] tabular-nums text-ink-faint">
               {rows.length}
             </span>
           </div>
 
-          <div className="mt-3 flex gap-1 rounded-full border border-[#1E1E2E] bg-[#12121A] p-1">
+          <div className="mt-3 flex gap-1 rounded-full border border-hairline bg-surface p-1">
             {(["all", "host", "attendee"] as const).map((option) => (
               <button
                 key={option}
@@ -131,8 +131,8 @@ export function EmailGallery() {
                 className={cn(
                   "flex-1 rounded-full px-2 py-1 text-[11.5px] capitalize transition-colors",
                   audience === option
-                    ? "bg-[#6C47FF] text-white"
-                    : "text-[#A0A0B0] hover:text-white"
+                    ? "bg-accent text-white"
+                    : "text-ink-muted hover:text-ink"
                 )}
               >
                 {option}
@@ -145,7 +145,7 @@ export function EmailGallery() {
           const [aud, category] = bucket.split(":");
           return (
             <div key={bucket} className="px-2 py-3">
-              <p className="px-2 pb-1.5 text-[10px] font-semibold uppercase tracking-[0.14em] text-[#6E6E80]">
+              <p className="px-2 pb-1.5 text-[10px] font-semibold uppercase tracking-[0.14em] text-ink-faint">
                 {aud} · {CATEGORY_LABELS[category] ?? category}
               </p>
               {items.map((row) => (
@@ -155,15 +155,15 @@ export function EmailGallery() {
                   className={cn(
                     "flex w-full items-center gap-2 rounded-lg px-2.5 py-2 text-left text-[12.5px] transition-colors",
                     selected === row.key
-                      ? "bg-[#6C47FF]/15 text-white"
-                      : "text-[#A0A0B0] hover:bg-white/5 hover:text-white"
+                      ? "bg-accent/15 text-ink"
+                      : "text-ink-muted hover:bg-surface-2 hover:text-ink"
                   )}
                 >
                   <span className="flex-1 truncate">{row.label}</span>
                   {!row.transactional && (
                     <span
                       title="Lifecycle email — carries an unsubscribe link"
-                      className="h-1.5 w-1.5 shrink-0 rounded-full bg-[#00D4FF]"
+                      className="h-1.5 w-1.5 shrink-0 rounded-full bg-cyan"
                     />
                   )}
                 </button>
@@ -175,13 +175,13 @@ export function EmailGallery() {
 
       {/* Preview */}
       <section className="flex min-w-0 flex-1 flex-col">
-        <header className="flex flex-wrap items-center gap-3 border-b border-[#1E1E2E] px-6 py-4">
+        <header className="flex flex-wrap items-center gap-3 border-b border-hairline px-6 py-4">
           <div className="min-w-0 flex-1">
-            <p className="truncate text-[15px] font-semibold text-white">
+            <p className="truncate text-[15px] font-semibold text-ink">
               {preview?.subject ?? current?.label ?? "—"}
             </p>
-            <p className="mt-0.5 text-[11.5px] text-[#6E6E80]">
-              <code className="text-[#00D4FF]">{selected}</code>
+            <p className="mt-0.5 text-[11.5px] text-ink-faint">
+              <code className="text-cyan">{selected}</code>
               {current && (
                 <>
                   {" · "}
@@ -197,7 +197,7 @@ export function EmailGallery() {
           <button
             onClick={sendTest}
             disabled={sending || !selected}
-            className="inline-flex h-9 items-center gap-2 rounded-full bg-[#6C47FF] px-4 text-[13px] font-medium text-white transition-colors hover:bg-[#7C5AFF] disabled:opacity-40"
+            className="inline-flex h-9 items-center gap-2 rounded-full bg-accent px-4 text-[13px] font-medium text-white transition-colors hover:bg-accent-soft disabled:opacity-40"
           >
             {sending ? (
               <Loader2 className="h-3.5 w-3.5 animate-spin" />
@@ -211,13 +211,13 @@ export function EmailGallery() {
         </header>
 
         {error && (
-          <p className="border-b border-[#1E1E2E] bg-[#FF3B3B]/10 px-6 py-2.5 text-[12.5px] text-[#FF6B6B]">
+          <p className="border-b border-hairline bg-[#FF3B3B]/10 px-6 py-2.5 text-[12.5px] text-[#FF6B6B]">
             {error}
           </p>
         )}
 
         {preview && preview.unresolved.length > 0 && (
-          <p className="flex items-center gap-2 border-b border-[#1E1E2E] bg-[#FFB020]/10 px-6 py-2.5 text-[12.5px] text-[#FFB020]">
+          <p className="flex items-center gap-2 border-b border-hairline bg-[#FFB020]/10 px-6 py-2.5 text-[12.5px] text-[#FFB020]">
             <AlertTriangle className="h-3.5 w-3.5 shrink-0" />
             Unresolved merge fields: {preview.unresolved.join(", ")}
           </p>
@@ -226,7 +226,7 @@ export function EmailGallery() {
         <div className="flex-1 overflow-auto p-6">
           {loadingPreview && !preview ? (
             <div className="grid h-full place-items-center">
-              <Loader2 className="h-5 w-5 animate-spin text-[#6C47FF]" />
+              <Loader2 className="h-5 w-5 animate-spin text-accent" />
             </div>
           ) : (
             <iframe
@@ -235,7 +235,7 @@ export function EmailGallery() {
               sandbox=""
               title="Email preview"
               srcDoc={preview?.html ?? ""}
-              className="mx-auto h-full min-h-[720px] w-full max-w-[680px] rounded-xl border border-[#1E1E2E] bg-white"
+              className="mx-auto h-full min-h-[720px] w-full max-w-[680px] rounded-xl border border-hairline bg-white"
             />
           )}
         </div>

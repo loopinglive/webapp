@@ -84,7 +84,7 @@ export function AccountMenu({ className }: { className?: string }) {
       {open && (
         <div
           role="menu"
-          className="absolute bottom-full left-3 right-3 z-50 mb-2 overflow-hidden rounded-xl border border-[#23232F] bg-[#12121A] py-1 shadow-[0_20px_50px_-12px_rgba(0,0,0,.8)]"
+          className="absolute bottom-full left-3 right-3 z-50 mb-2 overflow-hidden rounded-xl border border-[#23232F] bg-surface py-1 shadow-[0_20px_50px_-12px_rgba(0,0,0,.8)]"
         >
           {items.map((item) => (
             <Link
@@ -92,7 +92,7 @@ export function AccountMenu({ className }: { className?: string }) {
               href={item.href}
               role="menuitem"
               onClick={() => setOpen(false)}
-              className="flex items-center gap-2.5 px-3 py-2.5 text-[13px] text-[#A0A0B0] transition-colors hover:bg-white/5 hover:text-white"
+              className="flex items-center gap-2.5 px-3 py-2.5 text-[13px] text-ink-muted transition-colors hover:bg-surface-2 hover:text-ink"
             >
               <item.icon className="h-3.5 w-3.5" />
               {item.label}
@@ -105,7 +105,7 @@ export function AccountMenu({ className }: { className?: string }) {
             role="menuitem"
             onClick={signOut}
             disabled={signingOut}
-            className="flex w-full items-center gap-2.5 px-3 py-2.5 text-left text-[13px] text-[#A0A0B0] transition-colors hover:bg-[#FF5A5A]/10 hover:text-[#FF6B6B] disabled:opacity-50"
+            className="flex w-full items-center gap-2.5 px-3 py-2.5 text-left text-[13px] text-ink-muted transition-colors hover:bg-[#FF5A5A]/10 hover:text-[#FF6B6B] disabled:opacity-50"
           >
             {signingOut ? (
               <Loader2 className="h-3.5 w-3.5 animate-spin" />
@@ -121,14 +121,14 @@ export function AccountMenu({ className }: { className?: string }) {
         onClick={() => setOpen((value) => !value)}
         aria-expanded={open}
         aria-haspopup="menu"
-        className="flex w-full items-center gap-2.5 rounded-xl border border-transparent px-2 py-2 text-left transition-colors hover:bg-white/5"
+        className="flex w-full items-center gap-2.5 rounded-xl border border-transparent px-2 py-2 text-left transition-colors hover:bg-surface-2"
       >
-        <span className="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-gradient-to-br from-[#6C47FF] to-[#00D4FF] text-[13px] font-semibold text-white">
+        <span className="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-gradient-to-br from-accent to-cyan text-[13px] font-semibold text-white">
           {loading ? "" : initial}
         </span>
 
         <span className="min-w-0 flex-1">
-          <span className="block truncate text-[13px] font-medium text-white">
+          <span className="block truncate text-[13px] font-medium text-ink">
             {loading ? "…" : name}
           </span>
           <span
@@ -141,7 +141,7 @@ export function AccountMenu({ className }: { className?: string }) {
 
         <ChevronUp
           className={cn(
-            "h-3.5 w-3.5 shrink-0 text-[#6E6E80] transition-transform",
+            "h-3.5 w-3.5 shrink-0 text-ink-faint transition-transform",
             !open && "rotate-180"
           )}
         />

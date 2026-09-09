@@ -70,7 +70,7 @@ export function EngagementPanel({ webinarId }: { webinarId: string }) {
       />
 
       <div className="px-6 py-6 lg:px-8">
-        <div className="flex flex-wrap items-center gap-1 rounded-full border border-[#2A2A3A] bg-[#1A1A2A] p-1">
+        <div className="flex flex-wrap items-center gap-1 rounded-full border border-surface-3 bg-surface-2 p-1">
           {TABS.map((option) => (
             <button
               key={option.id}
@@ -78,8 +78,8 @@ export function EngagementPanel({ webinarId }: { webinarId: string }) {
               className={cn(
                 "flex items-center gap-2 rounded-full px-4 py-2 text-[12.5px] transition-colors duration-200",
                 tab === option.id
-                  ? "bg-[#6C47FF] text-white"
-                  : "text-[#A0A0B0] hover:text-white"
+                  ? "bg-accent text-white"
+                  : "text-ink-muted hover:text-ink"
               )}
             >
               <option.icon className="h-3.5 w-3.5" />
@@ -87,7 +87,7 @@ export function EngagementPanel({ webinarId }: { webinarId: string }) {
               <span
                 className={cn(
                   "rounded-full px-1.5 text-[10px] tabular-nums",
-                  tab === option.id ? "bg-white/20" : "bg-white/5"
+                  tab === option.id ? "bg-surface-2" : "bg-surface-2"
                 )}
               >
                 {counts[option.id]}
@@ -99,7 +99,7 @@ export function EngagementPanel({ webinarId }: { webinarId: string }) {
         <div className="mt-6 max-w-3xl">
           {loading || !data ? (
             <div className="grid place-items-center py-20">
-              <Loader2 className="h-5 w-5 animate-spin text-[#6C47FF]" />
+              <Loader2 className="h-5 w-5 animate-spin text-accent" />
             </div>
           ) : tab === "poll" ? (
             <PollBuilder
@@ -147,15 +147,15 @@ export function EngagementRow({
   onDelete: () => void;
 }) {
   return (
-    <li className="group flex items-start gap-3 rounded-xl border border-[#1E1E2E] bg-[#12121A] px-4 py-3">
-      <span className="shrink-0 pt-0.5 font-mono text-[11.5px] tabular-nums text-[#6C47FF]">
+    <li className="group flex items-start gap-3 rounded-xl border border-hairline bg-surface px-4 py-3">
+      <span className="shrink-0 pt-0.5 font-mono text-[11.5px] tabular-nums text-accent">
         {timestamp}
       </span>
       <div className="min-w-0 flex-1">{children}</div>
       <button
         onClick={onDelete}
         aria-label="Delete"
-        className="shrink-0 text-[#A0A0B0] opacity-0 transition-opacity hover:text-[#FF3B3B] group-hover:opacity-100"
+        className="shrink-0 text-ink-muted opacity-0 transition-opacity hover:text-[#FF3B3B] group-hover:opacity-100"
       >
         ✕
       </button>

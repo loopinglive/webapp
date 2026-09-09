@@ -32,7 +32,7 @@ export function EmailSection() {
 
   return (
     <div>
-      <div className="border-b border-[#1E1E2E] px-6 lg:px-8">
+      <div className="border-b border-hairline px-6 lg:px-8">
         <div className="flex gap-1">
           {TABS.map((option) => (
             <button
@@ -41,8 +41,8 @@ export function EmailSection() {
               className={cn(
                 "border-b-2 px-3 py-2.5 text-[13px] transition-colors",
                 tab === option.id
-                  ? "border-[#FF5A5A] text-white"
-                  : "border-transparent text-[#A0A0B0] hover:text-white"
+                  ? "border-[#FF5A5A] text-ink"
+                  : "border-transparent text-ink-muted hover:text-ink"
               )}
             >
               {option.label}
@@ -51,7 +51,7 @@ export function EmailSection() {
         </div>
       </div>
 
-      <p className="px-6 pt-4 text-[12.5px] text-[#6E6E80] lg:px-8">
+      <p className="px-6 pt-4 text-[12.5px] text-ink-faint lg:px-8">
         {TABS.find((option) => option.id === tab)?.note}
       </p>
 

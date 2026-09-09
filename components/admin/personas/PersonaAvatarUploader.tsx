@@ -21,11 +21,11 @@ export function PersonaAvatarUploader({
   const [tab, setTab] = useState<"presets" | "upload">("presets");
 
   return (
-    <div className="rounded-xl border border-[#1E1E2E] bg-[#12121A] p-3.5">
+    <div className="rounded-xl border border-hairline bg-surface p-3.5">
       <div className="flex items-center gap-3">
         <Avatar name={name || "?"} avatarUrl={value || null} size={48} />
 
-        <div className="flex flex-1 items-center gap-1 rounded-full border border-[#2A2A3A] bg-[#1A1A2A] p-1">
+        <div className="flex flex-1 items-center gap-1 rounded-full border border-surface-3 bg-surface-2 p-1">
           {[
             { id: "presets" as const, label: "Presets", icon: ImageIcon },
             { id: "upload" as const, label: "Upload", icon: Upload },
@@ -37,8 +37,8 @@ export function PersonaAvatarUploader({
               className={cn(
                 "flex flex-1 items-center justify-center gap-1.5 rounded-full px-3 py-1.5 text-[12px] transition-colors",
                 tab === option.id
-                  ? "bg-[#6C47FF] text-white"
-                  : "text-[#A0A0B0] hover:text-white"
+                  ? "bg-accent text-white"
+                  : "text-ink-muted hover:text-ink"
               )}
             >
               <option.icon className="h-3.5 w-3.5" />
@@ -51,7 +51,7 @@ export function PersonaAvatarUploader({
           <button
             type="button"
             onClick={() => onChange("")}
-            className="shrink-0 text-[11.5px] text-[#A0A0B0] transition-colors hover:text-[#FF3B3B]"
+            className="shrink-0 text-[11.5px] text-ink-muted transition-colors hover:text-[#FF3B3B]"
           >
             Clear
           </button>
@@ -71,7 +71,7 @@ export function PersonaAvatarUploader({
                   aria-label={`Preset avatar ${index + 1}`}
                   className={cn(
                     "relative aspect-square overflow-hidden rounded-full transition-transform duration-150 hover:scale-110",
-                    selected && "ring-2 ring-[#6C47FF] ring-offset-2 ring-offset-[#12121A]"
+                    selected && "ring-2 ring-accent ring-offset-2 ring-offset-[#12121A]"
                   )}
                 >
                   {/* Generated data URIs — no remote host to configure. */}
@@ -79,7 +79,7 @@ export function PersonaAvatarUploader({
                   <img src={preset} alt="" className="h-full w-full object-cover" />
                   {selected && (
                     <span className="absolute inset-0 grid place-items-center bg-black/40">
-                      <Check className="h-3 w-3 text-white" />
+                      <Check className="h-3 w-3 text-ink" />
                     </span>
                   )}
                 </button>

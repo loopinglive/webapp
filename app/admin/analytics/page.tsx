@@ -12,7 +12,7 @@ export default async function PlatformAnalyticsPage() {
   if (!user) redirect("/admin/login");
 
   return (
-    <Suspense fallback={<div className="min-h-dvh bg-[#0A0A0F]" />}>
+    <Suspense fallback={<div className="min-h-dvh bg-void" />}>
       <PlatformAnalytics />
     </Suspense>
   );

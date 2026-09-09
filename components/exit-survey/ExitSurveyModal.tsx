@@ -45,8 +45,8 @@ export function ExitSurveyModal({
 
   return (
     <div className="fixed inset-0 z-50 grid place-items-center bg-black/70 px-5 backdrop-blur-sm">
-      <div className="w-full max-w-md rounded-xl border border-white/8 bg-[#12121A] p-6">
-        <h2 className="text-[17px] font-semibold text-white">{title}</h2>
+      <div className="w-full max-w-md rounded-xl border border-hairline bg-surface p-6">
+        <h2 className="text-[17px] font-semibold text-ink">{title}</h2>
 
         <div className="mt-5 space-y-5">
           {questions.map((question) => (
@@ -56,7 +56,7 @@ export function ExitSurveyModal({
               {question.type === "text" && (
                 <textarea
                   rows={2}
-                  className="w-full rounded-lg border border-[#2A2A3A] bg-[#1A1A2A] p-2.5 text-[13.5px] text-white focus:border-[#6C47FF] focus:outline-none"
+                  className="w-full rounded-lg border border-surface-3 bg-surface-2 p-2.5 text-[13.5px] text-ink focus:border-accent focus:outline-none"
                   onChange={(event) =>
                     setAnswers((prev) => ({ ...prev, [question.id]: event.target.value }))
                   }
@@ -73,8 +73,8 @@ export function ExitSurveyModal({
                       className={cn(
                         "flex-1 rounded-lg border px-3 py-2 text-[13px]",
                         answers[question.id] === option
-                          ? "border-[#6C47FF] bg-[#6C47FF]/15 text-white"
-                          : "border-[#2A2A3A] text-[#A0A0B0]"
+                          ? "border-accent bg-accent/15 text-ink"
+                          : "border-surface-3 text-ink-muted"
                       )}
                     >
                       {option}
@@ -93,8 +93,8 @@ export function ExitSurveyModal({
                       className={cn(
                         "rounded-lg border px-3 py-1.5 text-[12.5px]",
                         answers[question.id] === option
-                          ? "border-[#6C47FF] bg-[#6C47FF]/15 text-white"
-                          : "border-[#2A2A3A] text-[#A0A0B0]"
+                          ? "border-accent bg-accent/15 text-ink"
+                          : "border-surface-3 text-ink-muted"
                       )}
                     >
                       {option}
@@ -114,8 +114,8 @@ export function ExitSurveyModal({
                         className={cn(
                           "h-8 w-8 rounded-md border text-[12.5px]",
                           answers[question.id] === value
-                            ? "border-[#6C47FF] bg-[#6C47FF]/15 text-white"
-                            : "border-[#2A2A3A] text-[#A0A0B0]"
+                            ? "border-accent bg-accent/15 text-ink"
+                            : "border-surface-3 text-ink-muted"
                         )}
                       >
                         {value}
@@ -132,7 +132,7 @@ export function ExitSurveyModal({
           <button
             type="button"
             onClick={onDone}
-            className="text-[12.5px] text-[#A0A0B0] hover:text-white"
+            className="text-[12.5px] text-ink-muted hover:text-ink"
           >
             Skip
           </button>
@@ -140,7 +140,7 @@ export function ExitSurveyModal({
             type="button"
             onClick={submit}
             disabled={submitting}
-            className="rounded-lg bg-[#6C47FF] px-4 py-2 text-[13px] font-medium text-white hover:bg-[#7C5AFF] disabled:opacity-60"
+            className="rounded-lg bg-accent px-4 py-2 text-[13px] font-medium text-white hover:bg-accent-soft disabled:opacity-60"
           >
             {submitting ? <Loader2 className="h-4 w-4 animate-spin" /> : "Submit"}
           </button>

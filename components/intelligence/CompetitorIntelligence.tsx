@@ -25,7 +25,7 @@ export function CompetitorIntelligence() {
         action={
           <button
             onClick={() => setFormOpen((v) => !v)}
-            className="flex h-10 items-center gap-2 rounded-full bg-[#6C47FF] px-4 text-[13px] font-semibold text-white shadow-[0_10px_30px_-10px_#6C47FF] hover:bg-[#7C5AFF]"
+            className="flex h-10 items-center gap-2 rounded-full bg-accent px-4 text-[13px] font-semibold text-white shadow-[0_10px_30px_-10px_#6C47FF] hover:bg-accent-soft"
           >
             <Plus className="h-3.5 w-3.5" />
             Track a competitor
@@ -35,7 +35,7 @@ export function CompetitorIntelligence() {
 
       <div className="px-6 py-8 lg:px-10">
         {formOpen && (
-          <div className="mb-6 rounded-xl border border-[#1E1E2E] bg-[#12121A] p-4">
+          <div className="mb-6 rounded-xl border border-hairline bg-surface p-4">
             <div className="grid gap-4 sm:grid-cols-2">
               <Field label="Competitor name" required>
                 <TextInput value={name} onChange={(e) => setName(e.target.value)} placeholder="Acme Webinars" />
@@ -70,7 +70,7 @@ export function CompetitorIntelligence() {
 
         {loading ? (
           <div className="grid h-40 place-items-center">
-            <Loader2 className="h-5 w-5 animate-spin text-[#6C47FF]" />
+            <Loader2 className="h-5 w-5 animate-spin text-accent" />
           </div>
         ) : !competitors || competitors.length === 0 ? (
           <EmptyState icon="🔍" title="Nothing tracked yet" description="Add a competitor to start logging what you notice about their pricing and offers." />
@@ -122,17 +122,17 @@ function CompetitorCard({
   }
 
   return (
-    <div className="rounded-xl border border-[#1E1E2E] bg-[#12121A] p-4">
+    <div className="rounded-xl border border-hairline bg-surface p-4">
       <div className="flex items-start justify-between">
         <div>
-          <p className="text-[14px] font-semibold text-white">{competitor.competitor_name}</p>
+          <p className="text-[14px] font-semibold text-ink">{competitor.competitor_name}</p>
           {competitor.competitor_url && (
-            <a href={competitor.competitor_url} target="_blank" rel="noreferrer" className="text-[11.5px] text-[#6C47FF] hover:underline">
+            <a href={competitor.competitor_url} target="_blank" rel="noreferrer" className="text-[11.5px] text-accent hover:underline">
               {competitor.competitor_url}
             </a>
           )}
         </div>
-        <button onClick={() => void onRemove(competitor.id)} className="rounded-full p-1.5 text-[#6A6A80] hover:bg-[#FF3B3B]/10 hover:text-[#FF3B3B]">
+        <button onClick={() => void onRemove(competitor.id)} className="rounded-full p-1.5 text-ink-faint hover:bg-[#FF3B3B]/10 hover:text-[#FF3B3B]">
           <Trash2 className="h-3.5 w-3.5" />
         </button>
       </div>
@@ -141,12 +141,12 @@ function CompetitorCard({
         <div className="mt-3">
           {latest.priceCents !== null && (
             <div className="flex items-center gap-2">
-              <span className="text-xl font-semibold tabular-nums text-white">{money(latest.priceCents)}</span>
+              <span className="text-xl font-semibold tabular-nums text-ink">{money(latest.priceCents)}</span>
               {trend.changePercent !== null && trend.observationCount > 1 && (
                 <span
                   className={cn(
                     "flex items-center gap-0.5 text-[11px] font-medium",
-                    trend.direction === "up" ? "text-[#FF9500]" : trend.direction === "down" ? "text-[#00C851]" : "text-[#6A6A80]"
+                    trend.direction === "up" ? "text-[#FF9500]" : trend.direction === "down" ? "text-[#00C851]" : "text-ink-faint"
                   )}
                 >
                   {trend.direction === "up" ? <TrendingUp className="h-3 w-3" /> : trend.direction === "down" ? <TrendingDown className="h-3 w-3" /> : null}
@@ -157,17 +157,17 @@ function CompetitorCard({
             </div>
           )}
           {latest.offerHeadline && <p className="mt-1 text-[12.5px] text-[#C8C8D4]">{latest.offerHeadline}</p>}
-          {latest.notes && <p className="mt-1 text-[11.5px] text-[#6A6A80]">{latest.notes}</p>}
-          <p className="mt-2 text-[10.5px] text-[#6A6A80]">
+          {latest.notes && <p className="mt-1 text-[11.5px] text-ink-faint">{latest.notes}</p>}
+          <p className="mt-2 text-[10.5px] text-ink-faint">
             {competitor.data_points.length} observation{competitor.data_points.length === 1 ? "" : "s"} · last {latest.date}
           </p>
         </div>
       ) : (
-        <p className="mt-3 text-[12.5px] text-[#6A6A80]">No observations logged yet.</p>
+        <p className="mt-3 text-[12.5px] text-ink-faint">No observations logged yet.</p>
       )}
 
       {logging ? (
-        <div className="mt-3 flex flex-col gap-2 border-t border-[#1E1E2E] pt-3">
+        <div className="mt-3 flex flex-col gap-2 border-t border-hairline pt-3">
           <TextInput value={price} onChange={(e) => setPrice(e.target.value)} placeholder="Price ($)" type="number" className="h-9" />
           <TextInput value={headline} onChange={(e) => setHeadline(e.target.value)} placeholder="Offer headline" className="h-9" />
           <TextArea value={notes} onChange={(e) => setNotes(e.target.value)} placeholder="Notes" rows={2} />
@@ -181,7 +181,7 @@ function CompetitorCard({
           </div>
         </div>
       ) : (
-        <button onClick={() => setLogging(true)} className="mt-3 text-[12px] font-medium text-[#6C47FF] hover:text-[#7C5AFF]">
+        <button onClick={() => setLogging(true)} className="mt-3 text-[12px] font-medium text-accent hover:text-accent-soft">
           + Log an observation
         </button>
       )}

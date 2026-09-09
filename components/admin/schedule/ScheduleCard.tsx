@@ -44,19 +44,19 @@ export function ScheduleCard({
   return (
     <div
       className={cn(
-        "flex flex-wrap items-center gap-4 rounded-xl border border-[#1E1E2E] bg-[#12121A] px-4 py-3.5",
+        "flex flex-wrap items-center gap-4 rounded-xl border border-hairline bg-surface px-4 py-3.5",
         !schedule.is_active && "opacity-55"
       )}
     >
       <div className="min-w-0 flex-1">
-        <p className="text-[13.5px] font-medium text-white">
+        <p className="text-[13.5px] font-medium text-ink">
           {next ? (
             <LocalTime iso={next} />
           ) : (
-            <span className="text-[#A0A0B0]">No upcoming run</span>
+            <span className="text-ink-muted">No upcoming run</span>
           )}
         </p>
-        <p className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-1 text-[11.5px] text-[#A0A0B0]">
+        <p className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-1 text-[11.5px] text-ink-muted">
           <span className="flex items-center gap-1">
             <Repeat className="h-3 w-3" />
             {describeRecurrence(schedule)}
@@ -74,7 +74,7 @@ export function ScheduleCard({
         aria-label={schedule.is_active ? "Disable schedule" : "Enable schedule"}
         className={cn(
           "relative h-6 w-11 shrink-0 rounded-full transition-colors duration-200",
-          schedule.is_active ? "bg-[#00C851]" : "bg-[#3A3A4A]"
+          schedule.is_active ? "bg-[#00C851]" : "bg-surface-3"
         )}
       >
         <span
@@ -89,7 +89,7 @@ export function ScheduleCard({
         onClick={remove}
         disabled={busy}
         aria-label="Delete schedule"
-        className="grid h-8 w-8 shrink-0 place-items-center rounded-lg text-[#A0A0B0] transition-colors hover:bg-[#FF3B3B]/10 hover:text-[#FF3B3B]"
+        className="grid h-8 w-8 shrink-0 place-items-center rounded-lg text-ink-muted transition-colors hover:bg-[#FF3B3B]/10 hover:text-[#FF3B3B]"
       >
         <Trash2 className="h-3.5 w-3.5" />
       </button>

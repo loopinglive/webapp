@@ -58,14 +58,14 @@ export function DuplicateNotice({ webinarId }: { webinarId: string }) {
       >
         <Users className="h-4 w-4 shrink-0 text-[#F5A623]" />
         <span className="flex-1 text-[12.5px] text-[#C4C4D0]">
-          <strong className="font-medium text-white">
+          <strong className="font-medium text-ink">
             {groups.length} {groups.length === 1 ? "person" : "people"} registered
             more than once
           </strong>{" "}
           — your registration count is {extra} higher than the number of people.
         </span>
         <ChevronDown
-          className={`h-4 w-4 shrink-0 text-[#6E6E80] transition-transform ${
+          className={`h-4 w-4 shrink-0 text-ink-faint transition-transform ${
             open ? "rotate-180" : ""
           }`}
         />
@@ -75,7 +75,7 @@ export function DuplicateNotice({ webinarId }: { webinarId: string }) {
         <div className="mt-3 space-y-3 border-t border-[#F5A623]/20 pt-3">
           {groups.map((group) => (
             <div key={group.key}>
-              <p className="text-[11px] uppercase tracking-[0.1em] text-[#6E6E80]">
+              <p className="text-[11px] uppercase tracking-[0.1em] text-ink-faint">
                 {group.key}
               </p>
               <ul className="mt-1 space-y-1">
@@ -83,12 +83,12 @@ export function DuplicateNotice({ webinarId }: { webinarId: string }) {
                   <li key={person.id} className="text-[12.5px]">
                     <Link
                       href={`/admin/webinar/${webinarId}/attendees/${person.id}`}
-                      className="text-[#C4C4D0] hover:text-white"
+                      className="text-[#C4C4D0] hover:text-ink"
                     >
                       {person.full_name}{" "}
-                      <span className="text-[#6E6E80]">{person.email}</span>
+                      <span className="text-ink-faint">{person.email}</span>
                     </Link>
-                    <span className="ml-2 text-[11px] text-[#6E6E80]">
+                    <span className="ml-2 text-[11px] text-ink-faint">
                       {person.bought
                         ? "bought"
                         : person.attended
@@ -101,7 +101,7 @@ export function DuplicateNotice({ webinarId }: { webinarId: string }) {
             </div>
           ))}
 
-          <p className="text-[11.5px] leading-relaxed text-[#6E6E80]">
+          <p className="text-[11.5px] leading-relaxed text-ink-faint">
             These are not merged automatically — merging means choosing which
             watch history and which purchase survives, and that is not a
             decision to make on your behalf. New registrations are matched from
@@ -165,7 +165,7 @@ export function AttendanceNotice({ webinarId }: { webinarId: string }) {
       <div className="flex flex-wrap items-center gap-3">
         <AlertTriangle className="h-4 w-4 shrink-0 text-[#F5A623]" />
         <p className="flex-1 text-[12.5px] text-[#C4C4D0]">
-          <strong className="font-medium text-white">
+          <strong className="font-medium text-ink">
             {mismatches.length}{" "}
             {mismatches.length === 1 ? "record" : "records"} disagree with the
             event log
@@ -208,12 +208,12 @@ export function AttendanceNotice({ webinarId }: { webinarId: string }) {
 
       <ul className="mt-2.5 space-y-0.5 border-t border-[#F5A623]/20 pt-2.5">
         {mismatches.slice(0, 8).map((row) => (
-          <li key={row.registrant_id} className="text-[11.5px] text-[#6E6E80]">
+          <li key={row.registrant_id} className="text-[11.5px] text-ink-faint">
             <span className="text-[#C4C4D0]">{row.full_name}</span> — {row.problem}
           </li>
         ))}
         {mismatches.length > 8 && (
-          <li className="text-[11.5px] text-[#6E6E80]">
+          <li className="text-[11.5px] text-ink-faint">
             and {mismatches.length - 8} more
           </li>
         )}

@@ -37,13 +37,13 @@ export function UpgradePage({ currentPlan }: { currentPlan: string }) {
   const [openFaq, setOpenFaq] = useState<number | null>(0);
 
   return (
-    <main className="min-h-dvh bg-[#0A0A0F] px-5 py-14 lg:px-10">
+    <main className="min-h-dvh bg-void px-5 py-14 lg:px-10">
       <div className="mx-auto max-w-[1080px]">
         <header className="text-center">
-          <h1 className="text-[32px] font-semibold tracking-[-0.03em] text-white sm:text-[42px]">
+          <h1 className="text-[32px] font-semibold tracking-[-0.03em] text-ink sm:text-[42px]">
             Unlock Loopinglive — go live today
           </h1>
-          <p className="mx-auto mt-3 max-w-[52ch] text-[15.5px] leading-relaxed text-[#A0A0B0]">
+          <p className="mx-auto mt-3 max-w-[52ch] text-[15.5px] leading-relaxed text-ink-muted">
             Your webinar is built. Your audience is waiting. One step left.
           </p>
         </header>
@@ -71,14 +71,14 @@ export function UpgradePage({ currentPlan }: { currentPlan: string }) {
             value={coupon}
             onChange={(event) => setCoupon(event.target.value.toUpperCase())}
             placeholder="Coupon code (optional)"
-            className="h-10 w-full rounded-full border border-[#1E1E2E] bg-[#12121A] px-4 text-center text-[13px] text-white placeholder:text-[#6E6E80] focus:border-[#6C47FF] focus:outline-none"
+            className="h-10 w-full rounded-full border border-hairline bg-surface px-4 text-center text-[13px] text-ink placeholder:text-ink-faint focus:border-accent focus:outline-none"
           />
           {error && <p className="text-[12.5px] text-[#FF6B6B]">{error}</p>}
         </div>
 
         <LocalPaymentMethods />
 
-        <div className="mt-8 flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-[12.5px] text-[#6E6E80]">
+        <div className="mt-8 flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-[12.5px] text-ink-faint">
           <span className="inline-flex items-center gap-1.5">
             <ShieldCheck className="h-3.5 w-3.5 text-[#00C851]" />
             30-day money-back guarantee
@@ -92,28 +92,28 @@ export function UpgradePage({ currentPlan }: { currentPlan: string }) {
             &ldquo;I set my webinar up once on a Sunday afternoon. By Wednesday I had
             made six sales while I was at the gym.&rdquo;
           </blockquote>
-          <figcaption className="mt-3 text-[13px] text-[#6E6E80]">
+          <figcaption className="mt-3 text-[13px] text-ink-faint">
             Marcus T. — Business Coach
           </figcaption>
         </figure>
 
         <section className="mx-auto mt-14 max-w-[--container-prose]">
-          <h2 className="text-center text-[20px] font-semibold tracking-[-0.02em] text-white">
+          <h2 className="text-center text-[20px] font-semibold tracking-[-0.02em] text-ink">
             Questions about billing
           </h2>
-          <div className="mx-auto mt-6 max-w-[640px] divide-y divide-[#1E1E2E] rounded-2xl border border-[#1E1E2E] bg-[#12121A]">
+          <div className="mx-auto mt-6 max-w-[640px] divide-y divide-hairline rounded-2xl border border-hairline bg-surface">
             {FAQ.map((item, index) => (
               <div key={item.q}>
                 <button
                   onClick={() => setOpenFaq(openFaq === index ? null : index)}
                   aria-expanded={openFaq === index}
-                  className="flex w-full items-center justify-between gap-4 px-5 py-4 text-left text-[14px] font-medium text-white"
+                  className="flex w-full items-center justify-between gap-4 px-5 py-4 text-left text-[14px] font-medium text-ink"
                 >
                   {item.q}
-                  <span className="text-[#6C47FF]">{openFaq === index ? "−" : "+"}</span>
+                  <span className="text-accent">{openFaq === index ? "−" : "+"}</span>
                 </button>
                 {openFaq === index && (
-                  <p className="px-5 pb-4 text-[13.5px] leading-relaxed text-[#A0A0B0]">
+                  <p className="px-5 pb-4 text-[13.5px] leading-relaxed text-ink-muted">
                     {item.a}
                   </p>
                 )}

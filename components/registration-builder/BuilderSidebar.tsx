@@ -38,16 +38,16 @@ export function BuilderSidebar({
   ];
 
   return (
-    <aside className="w-[380px] shrink-0 overflow-y-auto border-r border-[#1E1E2E] bg-[#0D0D17]">
+    <aside className="w-[380px] shrink-0 overflow-y-auto border-r border-hairline bg-void">
       {sections.map((section) => {
         const expanded = open === section.id;
         return (
-          <section key={section.id} className="border-b border-[#1E1E2E]">
+          <section key={section.id} className="border-b border-hairline">
             <button
               onClick={() => setOpen(expanded ? null : section.id)}
               className={cn(
                 "flex w-full items-center justify-between gap-2 px-5 py-3.5 text-left text-[13px] font-medium transition-colors",
-                expanded ? "text-white" : "text-[#A0A0B0] hover:text-white"
+                expanded ? "text-ink" : "text-ink-muted hover:text-ink"
               )}
             >
               {section.label}

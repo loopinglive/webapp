@@ -24,15 +24,15 @@ export function VariableHelper({
   if (!groups.length) return null;
 
   return (
-    <div className="rounded-xl border border-[#1E1E2E] bg-[#12121A] p-4">
-      <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-[#A0A0B0]">
+    <div className="rounded-xl border border-hairline bg-surface p-4">
+      <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-ink-muted">
         Insert a variable
       </p>
 
       <div className="mt-3 space-y-3">
         {groups.map((group) => (
           <div key={group.group}>
-            <p className="text-[10.5px] text-[#A0A0B0]/70">{group.group}</p>
+            <p className="text-[10.5px] text-ink-muted/70">{group.group}</p>
             <div className="mt-1.5 flex flex-wrap gap-1.5">
               {group.variables.map((variable) => (
                 <button
@@ -40,7 +40,7 @@ export function VariableHelper({
                   type="button"
                   title={variable.description}
                   onClick={() => onInsert(`{{${variable.key}}}`)}
-                  className="rounded-full bg-[#2A2A3A] px-2.5 py-1 font-mono text-[11px] text-[#6C47FF] transition-colors hover:bg-[#6C47FF]/20 hover:text-white"
+                  className="rounded-full bg-surface-3 px-2.5 py-1 font-mono text-[11px] text-accent transition-colors hover:bg-accent/20 hover:text-ink"
                 >
                   {`{{${variable.key}}}`}
                 </button>

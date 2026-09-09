@@ -73,7 +73,7 @@ export function AttendeesPage({ webinarId }: { webinarId: string }) {
 
         {list.totalPages > 1 && (
           <div className="flex items-center justify-between gap-3">
-            <span className="text-[12px] text-[#A0A0B0]">
+            <span className="text-[12px] text-ink-muted">
               Page {list.page} of {list.totalPages} · {list.total} attendees
             </span>
             <div className="flex items-center gap-2">

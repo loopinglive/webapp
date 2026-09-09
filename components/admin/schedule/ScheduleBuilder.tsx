@@ -139,7 +139,7 @@ export function ScheduleBuilder({ webinarId }: { webinarId: string }) {
 
       <div className="max-w-3xl space-y-6 px-6 py-8 lg:px-8">
         {adding && (
-          <section className="rounded-xl border border-[#6C47FF]/30 bg-[#12121A] p-5">
+          <section className="rounded-xl border border-accent/30 bg-surface p-5">
             <div className="grid gap-4 sm:grid-cols-2">
               <Field label="Date" required>
                 <TextInput
@@ -175,7 +175,7 @@ export function ScheduleBuilder({ webinarId }: { webinarId: string }) {
             </div>
 
             {preview && (
-              <p className="mt-4 rounded-lg bg-[#6C47FF]/10 px-3.5 py-2.5 text-[12.5px] text-white">
+              <p className="mt-4 rounded-lg bg-accent/10 px-3.5 py-2.5 text-[12.5px] text-ink">
                 This webinar will next run{" "}
                 <LocalTime iso={preview} className="font-semibold" />
               </p>
@@ -194,10 +194,10 @@ export function ScheduleBuilder({ webinarId }: { webinarId: string }) {
 
         {loading ? (
           <div className="grid place-items-center py-16">
-            <Loader2 className="h-5 w-5 animate-spin text-[#6C47FF]" />
+            <Loader2 className="h-5 w-5 animate-spin text-accent" />
           </div>
         ) : schedules.length === 0 ? (
-          <p className="rounded-xl border border-dashed border-[#3A3A4A] px-6 py-14 text-center text-[13.5px] text-[#A0A0B0]">
+          <p className="rounded-xl border border-dashed border-surface-3 px-6 py-14 text-center text-[13.5px] text-ink-muted">
             No schedules yet. A webinar needs one before it can be published.
           </p>
         ) : (
@@ -215,20 +215,20 @@ export function ScheduleBuilder({ webinarId }: { webinarId: string }) {
 
         {sessions.length > 0 && (
           <section>
-            <h2 className="text-[11px] font-semibold uppercase tracking-[0.16em] text-[#A0A0B0]">
+            <h2 className="text-[11px] font-semibold uppercase tracking-[0.16em] text-ink-muted">
               Sessions
             </h2>
-            <ul className="mt-3 divide-y divide-[#1E1E2E] overflow-hidden rounded-xl border border-[#1E1E2E]">
+            <ul className="mt-3 divide-y divide-hairline overflow-hidden rounded-xl border border-hairline">
               {sessions.slice(0, 10).map((session) => (
                 <li
                   key={session.id}
-                  className="flex items-center justify-between gap-3 bg-[#12121A] px-4 py-3"
+                  className="flex items-center justify-between gap-3 bg-surface px-4 py-3"
                 >
                   <LocalTime
                     iso={session.starts_at}
-                    className="text-[13px] text-white"
+                    className="text-[13px] text-ink"
                   />
-                  <span className="text-[11px] uppercase tracking-[0.12em] text-[#A0A0B0]">
+                  <span className="text-[11px] uppercase tracking-[0.12em] text-ink-muted">
                     {session.status}
                   </span>
                 </li>

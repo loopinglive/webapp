@@ -64,14 +64,14 @@ export function CustomDomainSection({
 
   return (
     <>
-      <div className="rounded-lg border border-[#2A2A3A] bg-[#1A1A2A] p-3">
-        <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-[#A0A0B0]">
+      <div className="rounded-lg border border-surface-3 bg-surface-2 p-3">
+        <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-ink-muted">
           Current URL
         </p>
-        <p className="mt-1.5 break-all font-mono text-[11.5px] text-white/80">
+        <p className="mt-1.5 break-all font-mono text-[11.5px] text-ink/80">
           loopinglive.com/webinar/{webinarId}/register
         </p>
-        <p className="mt-2 text-[11px] text-[#A0A0B0]">
+        <p className="mt-2 text-[11px] text-ink-muted">
           This always works, with or without a custom domain.
         </p>
       </div>
@@ -85,21 +85,21 @@ export function CustomDomainSection({
       </Field>
 
       {domain && (
-        <div className="space-y-3 rounded-lg border border-[#2A2A3A] bg-[#1A1A2A] p-3">
-          <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-[#A0A0B0]">
+        <div className="space-y-3 rounded-lg border border-surface-3 bg-surface-2 p-3">
+          <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-ink-muted">
             DNS setup
           </p>
 
-          <ol className="space-y-2.5 text-[11.5px] leading-relaxed text-white/75">
+          <ol className="space-y-2.5 text-[11.5px] leading-relaxed text-ink/75">
             <li>
-              <span className="text-[#A0A0B0]">1.</span> In your DNS provider,
-              add a <span className="text-white">CNAME</span> record.
+              <span className="text-ink-muted">1.</span> In your DNS provider,
+              add a <span className="text-ink">CNAME</span> record.
             </li>
             <li>
-              <span className="text-[#A0A0B0]">2.</span> Point{" "}
-              <span className="font-mono text-white">{domain}</span> to:
-              <span className="mt-1.5 flex items-center gap-2 rounded border border-[#2A2A3A] bg-[#0A0A0F] px-2 py-1.5">
-                <span className="min-w-0 flex-1 truncate font-mono text-[11px] text-white">
+              <span className="text-ink-muted">2.</span> Point{" "}
+              <span className="font-mono text-ink">{domain}</span> to:
+              <span className="mt-1.5 flex items-center gap-2 rounded border border-surface-3 bg-void px-2 py-1.5">
+                <span className="min-w-0 flex-1 truncate font-mono text-[11px] text-ink">
                   {CNAME_TARGET}
                 </span>
                 <button
@@ -109,7 +109,7 @@ export function CustomDomainSection({
                     setTimeout(() => setCopied(false), 1500);
                   }}
                   aria-label="Copy"
-                  className="shrink-0 text-[#A0A0B0] hover:text-white"
+                  className="shrink-0 text-ink-muted hover:text-ink"
                 >
                   {copied ? (
                     <Check className="h-3 w-3 text-[#00C851]" />
@@ -120,7 +120,7 @@ export function CustomDomainSection({
               </span>
             </li>
             <li>
-              <span className="text-[#A0A0B0]">3.</span> DNS changes can take up
+              <span className="text-ink-muted">3.</span> DNS changes can take up
               to 48 hours to propagate.
             </li>
           </ol>
@@ -148,7 +148,7 @@ export function CustomDomainSection({
             "text-[11.5px] leading-relaxed",
             config.custom_domain_status === "failed"
               ? "text-[#FF3B3B]"
-              : "text-[#A0A0B0]"
+              : "text-ink-muted"
           )}
         >
           {detail}

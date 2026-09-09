@@ -32,11 +32,11 @@ export function LiveEngagementPanels({ webinarId }: { webinarId: string }) {
   return (
     <div className="grid gap-6 lg:grid-cols-2">
       <section>
-        <h2 className="mb-2 text-[13px] font-semibold text-white">Raised hands</h2>
+        <h2 className="mb-2 text-[13px] font-semibold text-ink">Raised hands</h2>
         <RaisedHandsQueue sessionId={sessionId} />
       </section>
       <section>
-        <h2 className="mb-2 text-[13px] font-semibold text-white">Private messages</h2>
+        <h2 className="mb-2 text-[13px] font-semibold text-ink">Private messages</h2>
         <PrivateMessagesAdmin webinarId={webinarId} sessionId={sessionId} />
       </section>
     </div>

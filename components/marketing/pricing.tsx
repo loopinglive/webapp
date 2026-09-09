@@ -38,10 +38,10 @@ export function Pricing() {
             <div
               key={plan.slug}
               className={cn(
-                "relative flex flex-col rounded-2xl border bg-[#12121A] p-7 transition-all duration-300",
+                "relative flex flex-col rounded-2xl border bg-surface p-7 transition-all duration-300",
                 plan.highlight
-                  ? "border-[#6C47FF]/50 shadow-[0_0_70px_-25px_#6C47FF] lg:-my-3 lg:py-10"
-                  : "border-[#1E1E2E] hover:border-[#2A2A3A]"
+                  ? "border-accent/50 shadow-[0_0_70px_-25px_#6C47FF] lg:-my-3 lg:py-10"
+                  : "border-hairline hover:border-surface-3"
               )}
             >
               {plan.badge && (
@@ -49,24 +49,24 @@ export function Pricing() {
                   className={cn(
                     "absolute -top-2.5 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-full px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.1em]",
                     plan.highlight
-                      ? "bg-gradient-to-r from-[#6C47FF] to-[#00D4FF] text-white"
-                      : "bg-[#1E1E2E] text-[#A0A0B0]"
+                      ? "bg-gradient-to-r from-accent to-cyan text-white"
+                      : "bg-hairline text-ink-muted"
                   )}
                 >
                   {plan.badge}
                 </span>
               )}
 
-              <h3 className="text-[12px] font-semibold uppercase tracking-[0.14em] text-[#A0A0B0]">
+              <h3 className="text-[12px] font-semibold uppercase tracking-[0.14em] text-ink-muted">
                 {plan.name}
               </h3>
 
               <div className="mt-3">
-                <span className="text-[36px] font-semibold tracking-[-0.03em] text-white">
+                <span className="text-[36px] font-semibold tracking-[-0.03em] text-ink">
                   {plan.priceDisplay}
                 </span>
               </div>
-              <p className="mt-1 text-[12.5px] text-[#6E6E80]">{plan.cadence}</p>
+              <p className="mt-1 text-[12.5px] text-ink-faint">{plan.cadence}</p>
 
               <ul className="mt-6 flex-1 space-y-2.5">
                 {plan.features.map((feature) => (
@@ -74,12 +74,12 @@ export function Pricing() {
                     {feature.included ? (
                       <Check className="mt-0.5 h-3.5 w-3.5 shrink-0 text-[#00C851]" />
                     ) : (
-                      <X className="mt-0.5 h-3.5 w-3.5 shrink-0 text-[#6E6E80]" />
+                      <X className="mt-0.5 h-3.5 w-3.5 shrink-0 text-ink-faint" />
                     )}
                     <span
                       className={cn(
                         "text-[13px] leading-relaxed",
-                        feature.included ? "text-[#D4D4DE]" : "text-[#6E6E80]"
+                        feature.included ? "text-[#D4D4DE]" : "text-ink-faint"
                       )}
                     >
                       {feature.text}
@@ -93,10 +93,10 @@ export function Pricing() {
                 className={cn(
                   "mt-7 flex h-11 w-full items-center justify-center rounded-full text-[14px] font-semibold transition-all duration-200",
                   plan.slug === "lifetime"
-                    ? "bg-gradient-to-r from-[#6C47FF] to-[#00D4FF] text-white hover:opacity-90"
+                    ? "bg-gradient-to-r from-accent to-cyan text-white hover:opacity-90"
                     : plan.highlight
-                      ? "bg-[#6C47FF] text-white shadow-[0_12px_36px_-10px_#6C47FF] hover:bg-[#7C5AFF]"
-                      : "border border-[#2A2A3A] text-white hover:border-[#6C47FF]/50"
+                      ? "bg-accent text-white shadow-[0_12px_36px_-10px_#6C47FF] hover:bg-accent-soft"
+                      : "border border-surface-3 text-ink hover:border-accent/50"
                 )}
               >
                 {plan.slug === "free"
@@ -109,7 +109,7 @@ export function Pricing() {
           ))}
         </div>
 
-        <div className="mt-10 flex flex-wrap items-center justify-center gap-x-7 gap-y-2 text-[12.5px] text-[#6E6E80]">
+        <div className="mt-10 flex flex-wrap items-center justify-center gap-x-7 gap-y-2 text-[12.5px] text-ink-faint">
           <span>🔒 Secure payment via Stripe</span>
           <span>💳 All major cards accepted</span>
           <span>✅ 30-day money-back guarantee</span>

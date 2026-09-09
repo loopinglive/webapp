@@ -6,6 +6,7 @@ import { usePathname } from "next/navigation";
 import { AccountMenu } from "@/components/dashboard/AccountMenu";
 import { DASHBOARD_NAV as NAV } from "@/components/dashboard/nav-items";
 import { OnboardingChecklist } from "@/components/onboarding/OnboardingChecklist";
+import { ThemeToggle } from "@/components/ui/ThemeToggle";
 import { SITE } from "@/lib/constants";
 import { cn } from "@/lib/utils";
 
@@ -13,7 +14,7 @@ export function Sidebar() {
   const pathname = usePathname();
 
   return (
-    <aside className="sticky top-0 hidden h-screen w-[236px] shrink-0 flex-col border-r border-white/8 bg-surface/40 px-3 py-5 lg:flex">
+    <aside className="sticky top-0 hidden h-screen w-[236px] shrink-0 flex-col border-r border-hairline bg-surface/40 px-3 py-5 lg:flex">
       <Link
         href="/dashboard"
         className="mb-7 flex items-center gap-2.5 px-3 text-[15px] font-semibold tracking-tight"
@@ -34,7 +35,7 @@ export function Sidebar() {
                 "flex items-center gap-3 rounded-xl px-3 py-2.5 text-[13.5px] transition-colors duration-200",
                 active
                   ? "bg-accent/12 text-ink"
-                  : "text-ink-muted hover:bg-white/5 hover:text-ink"
+                  : "text-ink-muted hover:bg-surface-2 hover:text-ink"
               )}
             >
               <item.icon
@@ -51,7 +52,11 @@ export function Sidebar() {
 
       <OnboardingChecklist />
 
-      <div className="border-t border-white/8 pt-2">
+      <div className="border-t border-hairline pt-2">
+        <div className="flex items-center justify-between gap-2 px-1 pb-2">
+          <span className="text-[11px] text-ink-faint">Theme</span>
+          <ThemeToggle />
+        </div>
         <AccountMenu />
       </div>
     </aside>

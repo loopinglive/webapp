@@ -96,7 +96,7 @@ export function DocsSearch() {
                         setOpen(false);
                         router.push(`/docs/${toSlug(result.category)}/${result.slug}`);
                       }}
-                      className="block w-full px-4 py-2.5 text-left transition-colors hover:bg-white/5"
+                      className="block w-full px-4 py-2.5 text-left transition-colors hover:bg-surface-2"
                     >
                       <p className="text-[13px] font-medium text-ink">{result.title}</p>
                       <p className="mt-0.5 line-clamp-1 text-[12px] text-ink-faint">{result.excerpt}</p>

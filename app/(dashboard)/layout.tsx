@@ -9,6 +9,7 @@ import { HelpWidget } from "@/components/docs/HelpWidget";
 import { SecondFactorGate } from "@/components/superadmin/SecondFactorGate";
 import { ErrorBoundary } from "@/components/ui/ErrorBoundary";
 import { PlanProvider } from "@/hooks/usePlan";
+import { ThemeProvider } from "@/hooks/useTheme";
 import { hasPassedSecondFactor } from "@/lib/auth/second-factor";
 import { getUserAccount } from "@/lib/billing/account";
 import { createServiceClient } from "@/lib/supabase/server";
@@ -84,6 +85,7 @@ export default async function DashboardLayout({
 
   return (
     <PlanProvider>
+      <ThemeProvider>
       <div className="flex min-h-screen bg-void">
         <Sidebar />
         <div className="min-w-0 flex-1">
@@ -98,6 +100,7 @@ export default async function DashboardLayout({
         </div>
         <HelpWidget />
       </div>
+      </ThemeProvider>
     </PlanProvider>
   );
 }

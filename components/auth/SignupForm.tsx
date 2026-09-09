@@ -153,7 +153,7 @@ export function SignupForm() {
             type="checkbox"
             checked={agreed}
             onChange={(e) => setAgreed(e.target.checked)}
-            className="mt-0.5 h-4 w-4 shrink-0 accent-[#6C47FF]"
+            className="mt-0.5 h-4 w-4 shrink-0 accent-accent"
           />
           <span>
             I agree to the{" "}

@@ -38,7 +38,7 @@ export function ColourPicker({
         />
       ))}
 
-      <label className="flex h-9 items-center gap-2 rounded-full border border-[#2A2A3A] bg-[#1A1A2A] pl-2 pr-3">
+      <label className="flex h-9 items-center gap-2 rounded-full border border-surface-3 bg-surface-2 pl-2 pr-3">
         <input
           type="color"
           value={value}
@@ -46,7 +46,7 @@ export function ColourPicker({
           className="h-6 w-6 cursor-pointer rounded-full border-0 bg-transparent p-0"
           aria-label="Custom colour"
         />
-        <span className="font-mono text-[11.5px] uppercase text-[#A0A0B0]">
+        <span className="font-mono text-[11.5px] uppercase text-ink-muted">
           {value}
         </span>
       </label>

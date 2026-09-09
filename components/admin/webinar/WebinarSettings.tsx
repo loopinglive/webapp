@@ -98,7 +98,7 @@ export function WebinarSettings({ webinarId }: { webinarId: string }) {
 
           {/* The header carries the same control, but this is where the eyes
               already are after filling the fields in. */}
-          <div className="flex items-center gap-3 border-t border-[#1E1E2E] pt-5">
+          <div className="flex items-center gap-3 border-t border-hairline pt-5">
             <AdminButton onClick={() => void saveNow()} disabled={isSaving || !isDirty}>
               {isSaving ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Save className="h-3.5 w-3.5" />}
               {isSaving ? "Saving…" : "Save changes"}
@@ -114,7 +114,7 @@ export function WebinarSettings({ webinarId }: { webinarId: string }) {
 
         <section className="space-y-6">
           <div>
-            <h2 className="mb-3 text-[11px] font-semibold uppercase tracking-[0.16em] text-[#A0A0B0]">
+            <h2 className="mb-3 text-[11px] font-semibold uppercase tracking-[0.16em] text-ink-muted">
               Your video
             </h2>
             <VideoPreview
@@ -132,14 +132,14 @@ export function WebinarSettings({ webinarId }: { webinarId: string }) {
                 onComplete={refresh}
               />
             </div>
-            <p className="mt-2 text-[11.5px] text-[#A0A0B0]">
+            <p className="mt-2 text-[11.5px] text-ink-muted">
               Replacing the video keeps your comment script. Check your timestamps
               still line up afterwards.
             </p>
           </div>
 
           <div>
-            <h2 className="mb-3 text-[11px] font-semibold uppercase tracking-[0.16em] text-[#A0A0B0]">
+            <h2 className="mb-3 text-[11px] font-semibold uppercase tracking-[0.16em] text-ink-muted">
               Thumbnail
             </h2>
             <VideoUploader

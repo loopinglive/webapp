@@ -59,7 +59,7 @@ export function HandoutUploader({
 
   return (
     <div className="space-y-6">
-      <section className="space-y-4 rounded-xl border border-[#1E1E2E] bg-[#12121A] p-5">
+      <section className="space-y-4 rounded-xl border border-hairline bg-surface p-5">
         <Field label="Title" required>
           <TextInput
             value={title}
@@ -98,8 +98,8 @@ export function HandoutUploader({
                 onChanged();
               }}
             >
-              <p className="flex items-center gap-2 text-[13px] text-white">
-                <Download className="h-3.5 w-3.5 text-[#6C47FF]" />
+              <p className="flex items-center gap-2 text-[13px] text-ink">
+                <Download className="h-3.5 w-3.5 text-accent" />
                 {handout.title}
               </p>
             </EngagementRow>

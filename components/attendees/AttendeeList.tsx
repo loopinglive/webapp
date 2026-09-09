@@ -46,17 +46,17 @@ export function AttendeeList({
 
   if (isLoading) {
     return (
-      <div className="grid place-items-center rounded-xl border border-[#1E1E2E] py-20">
-        <Loader2 className="h-5 w-5 animate-spin text-[#6C47FF]" />
+      <div className="grid place-items-center rounded-xl border border-hairline py-20">
+        <Loader2 className="h-5 w-5 animate-spin text-accent" />
       </div>
     );
   }
 
   if (!attendees.length) {
     return (
-      <div className="rounded-xl border border-dashed border-[#3A3A4A] px-6 py-20 text-center">
-        <Users className="mx-auto h-6 w-6 text-[#3A3A4A]" />
-        <p className="mt-3 text-[13.5px] text-[#A0A0B0]">
+      <div className="rounded-xl border border-dashed border-surface-3 px-6 py-20 text-center">
+        <Users className="mx-auto h-6 w-6 text-surface-3" />
+        <p className="mt-3 text-[13.5px] text-ink-muted">
           No attendees in this segment yet.
         </p>
       </div>
@@ -64,19 +64,19 @@ export function AttendeeList({
   }
 
   return (
-    <div className="overflow-x-auto rounded-xl border border-[#1E1E2E]">
+    <div className="overflow-x-auto rounded-xl border border-hairline">
       <table className="w-full min-w-[980px]">
         <thead>
-          <tr className="border-b border-[#1E1E2E] bg-[#12121A] text-left">
+          <tr className="border-b border-hairline bg-surface text-left">
             {COLUMNS.map((column) => (
               <th
                 key={column.id}
-                className="px-4 py-2.5 text-[10px] font-semibold uppercase tracking-[0.14em] text-[#A0A0B0]"
+                className="px-4 py-2.5 text-[10px] font-semibold uppercase tracking-[0.14em] text-ink-muted"
               >
                 {column.sortable ? (
                   <button
                     onClick={() => onSort(column.id)}
-                    className="flex items-center gap-1 transition-colors hover:text-white"
+                    className="flex items-center gap-1 transition-colors hover:text-ink"
                   >
                     {column.label}
                     {sortBy === column.id &&
@@ -94,7 +94,7 @@ export function AttendeeList({
           </tr>
         </thead>
 
-        <tbody className="divide-y divide-[#1E1E2E]">
+        <tbody className="divide-y divide-hairline">
           {attendees.map((attendee) => (
             <tr
               key={attendee.id}
@@ -103,7 +103,7 @@ export function AttendeeList({
                   `/admin/webinar/${webinarId}/attendees/${attendee.id}`
                 )
               }
-              className="cursor-pointer bg-[#0D0D17] transition-colors hover:bg-[#12121A]"
+              className="cursor-pointer bg-void transition-colors hover:bg-surface"
             >
               <td className="px-4 py-2.5">
                 <Link
@@ -112,13 +112,13 @@ export function AttendeeList({
                   className="flex items-center gap-2.5"
                 >
                   <Avatar name={attendee.full_name} size={26} />
-                  <span className="truncate text-[13px] font-medium text-white">
+                  <span className="truncate text-[13px] font-medium text-ink">
                     {attendee.full_name}
                   </span>
                   {attendee.returning_attendee && (
                     <span
                       title="Returning attendee"
-                      className="shrink-0 rounded-full bg-white/5 px-1.5 py-0.5 text-[9px] text-[#A0A0B0]"
+                      className="shrink-0 rounded-full bg-surface-2 px-1.5 py-0.5 text-[9px] text-ink-muted"
                     >
                       ↻
                     </span>
@@ -126,20 +126,20 @@ export function AttendeeList({
                 </Link>
               </td>
 
-              <td className="max-w-[200px] truncate px-4 py-2.5 text-[12.5px] text-[#A0A0B0]">
+              <td className="max-w-[200px] truncate px-4 py-2.5 text-[12.5px] text-ink-muted">
                 {attendee.email}
               </td>
 
-              <td className="px-4 py-2.5 text-[12.5px] text-[#A0A0B0]">
+              <td className="px-4 py-2.5 text-[12.5px] text-ink-muted">
                 <span className="mr-1.5">{attendee.country_flag}</span>
                 {attendee.phone}
               </td>
 
-              <td className="whitespace-nowrap px-4 py-2.5 text-[12px] text-[#A0A0B0]">
+              <td className="whitespace-nowrap px-4 py-2.5 text-[12px] text-ink-muted">
                 {new Date(attendee.created_at).toLocaleDateString()}
               </td>
 
-              <td className="whitespace-nowrap px-4 py-2.5 text-[12px] text-[#A0A0B0]">
+              <td className="whitespace-nowrap px-4 py-2.5 text-[12px] text-ink-muted">
                 {attendee.last_attended_at
                   ? new Date(attendee.last_attended_at).toLocaleDateString()
                   : "Never"}
@@ -156,7 +156,7 @@ export function AttendeeList({
               <td className="px-4 py-2.5 text-center text-[13px]">
                 <span
                   className={cn(
-                    attendee.clicked_offer ? "text-[#FFD93D]" : "text-[#3A3A4A]"
+                    attendee.clicked_offer ? "text-[#FFD93D]" : "text-surface-3"
                   )}
                 >
                   {attendee.clicked_offer ? "✓" : "—"}

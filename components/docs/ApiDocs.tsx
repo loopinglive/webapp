@@ -129,10 +129,10 @@ const ERRORS = [
 export function ApiDocs() {
   return (
     <div className="mx-auto max-w-[1080px] px-6 py-12">
-      <h1 className="text-[36px] font-semibold tracking-[-0.03em] text-white">
+      <h1 className="text-[36px] font-semibold tracking-[-0.03em] text-ink">
         API documentation
       </h1>
-      <p className="mt-3 max-w-[65ch] text-[15.5px] leading-relaxed text-[#A0A0B0]">
+      <p className="mt-3 max-w-[65ch] text-[15.5px] leading-relaxed text-ink-muted">
         A REST API over your own Loopinglive data. Everything is JSON, everything is
         authenticated with a bearer token, and every list is paginated.
       </p>
@@ -142,9 +142,9 @@ export function ApiDocs() {
       </Section>
 
       <Section title="Authentication">
-        <p className="mb-4 max-w-[65ch] text-[14px] leading-relaxed text-[#A0A0B0]">
+        <p className="mb-4 max-w-[65ch] text-[14px] leading-relaxed text-ink-muted">
           Send your key in the <Mono>Authorization</Mono> header. Create one under{" "}
-          <a href="/settings/api-keys" className="text-[#6C47FF] hover:text-[#8A6BFF]">
+          <a href="/settings/api-keys" className="text-accent hover:text-[#8A6BFF]">
             Settings → API keys
           </a>
           . Keys are shown once at creation — we store only a hash, so a lost key has
@@ -158,7 +158,7 @@ export function ApiDocs() {
       </Section>
 
       <Section title="Rate limits">
-        <p className="max-w-[65ch] text-[14px] leading-relaxed text-[#A0A0B0]">
+        <p className="max-w-[65ch] text-[14px] leading-relaxed text-ink-muted">
           100 requests per minute per key. Every response carries{" "}
           <Mono>X-RateLimit-Limit</Mono>, <Mono>X-RateLimit-Remaining</Mono> and{" "}
           <Mono>X-RateLimit-Reset</Mono>. Exceeding the limit returns{" "}
@@ -175,15 +175,15 @@ export function ApiDocs() {
       </Section>
 
       <Section title="Errors">
-        <div className="overflow-hidden rounded-xl border border-[#1E1E2E]">
+        <div className="overflow-hidden rounded-xl border border-hairline">
           <table className="w-full">
-            <tbody className="divide-y divide-[#1E1E2E]">
+            <tbody className="divide-y divide-hairline">
               {ERRORS.map((row) => (
                 <tr key={row.code}>
                   <td className="w-20 px-4 py-2.5 font-mono text-[13px] text-[#FF9F43]">
                     {row.code}
                   </td>
-                  <td className="px-4 py-2.5 text-[13.5px] text-[#A0A0B0]">
+                  <td className="px-4 py-2.5 text-[13.5px] text-ink-muted">
                     {row.meaning}
                   </td>
                 </tr>
@@ -194,25 +194,25 @@ export function ApiDocs() {
       </Section>
 
       <Section title="Webhooks">
-        <p className="mb-4 max-w-[65ch] text-[14px] leading-relaxed text-[#A0A0B0]">
+        <p className="mb-4 max-w-[65ch] text-[14px] leading-relaxed text-ink-muted">
           Loopinglive can POST to a URL of yours whenever something happens. Configure
           endpoints under{" "}
-          <a href="/settings/webhooks" className="text-[#6C47FF] hover:text-[#8A6BFF]">
+          <a href="/settings/webhooks" className="text-accent hover:text-[#8A6BFF]">
             Settings → Webhooks
           </a>
           . Failed deliveries retry five times with increasing backoff — 5 minutes, 30
           minutes, 2 hours, then 8 hours.
         </p>
 
-        <div className="mb-6 overflow-hidden rounded-xl border border-[#1E1E2E]">
+        <div className="mb-6 overflow-hidden rounded-xl border border-hairline">
           <table className="w-full">
-            <tbody className="divide-y divide-[#1E1E2E]">
+            <tbody className="divide-y divide-hairline">
               {WEBHOOK_EVENTS.map((event) => (
                 <tr key={event}>
-                  <td className="px-4 py-2.5 font-mono text-[12.5px] text-[#00D4FF]">
+                  <td className="px-4 py-2.5 font-mono text-[12.5px] text-cyan">
                     {event}
                   </td>
-                  <td className="px-4 py-2.5 text-[13.5px] text-[#A0A0B0]">
+                  <td className="px-4 py-2.5 text-[13.5px] text-ink-muted">
                     {EVENT_LABELS[event]}
                   </td>
                 </tr>
@@ -221,7 +221,7 @@ export function ApiDocs() {
           </table>
         </div>
 
-        <h3 className="mb-2 text-[15px] font-semibold text-white">Payload</h3>
+        <h3 className="mb-2 text-[15px] font-semibold text-ink">Payload</h3>
         <Code
           language="json"
           code={`{
@@ -237,10 +237,10 @@ export function ApiDocs() {
 }`}
         />
 
-        <h3 className="mb-2 mt-6 text-[15px] font-semibold text-white">
+        <h3 className="mb-2 mt-6 text-[15px] font-semibold text-ink">
           Verifying the signature
         </h3>
-        <p className="mb-4 max-w-[65ch] text-[14px] leading-relaxed text-[#A0A0B0]">
+        <p className="mb-4 max-w-[65ch] text-[14px] leading-relaxed text-ink-muted">
           Every request carries <Mono>X-Loopinglive-Signature</Mono>: an HMAC-SHA256 of
           the <em>raw request body</em>, keyed with your endpoint&rsquo;s signing secret.
           Hash the bytes you received — re-serialising the parsed JSON can reorder keys
@@ -260,7 +260,7 @@ export function verify(rawBody, signatureHeader, secret) {
       </Section>
 
       <Section title="SDKs">
-        <p className="text-[14px] text-[#6E6E80]">
+        <p className="text-[14px] text-ink-faint">
           None yet. The API is plain REST with bearer auth, so any HTTP client works.
         </p>
       </Section>
@@ -270,8 +270,8 @@ export function verify(rawBody, signatureHeader, secret) {
 
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
   return (
-    <section className="mt-12 border-t border-[#1E1E2E] pt-10">
-      <h2 className="mb-5 text-[22px] font-semibold tracking-[-0.02em] text-white">
+    <section className="mt-12 border-t border-hairline pt-10">
+      <h2 className="mb-5 text-[22px] font-semibold tracking-[-0.02em] text-ink">
         {title}
       </h2>
       {children}
@@ -281,7 +281,7 @@ function Section({ title, children }: { title: string; children: React.ReactNode
 
 function Mono({ children }: { children: React.ReactNode }) {
   return (
-    <code className="rounded bg-[#12121A] px-1.5 py-0.5 font-mono text-[0.88em] text-[#00D4FF]">
+    <code className="rounded bg-surface px-1.5 py-0.5 font-mono text-[0.88em] text-cyan">
       {children}
     </code>
   );
@@ -314,7 +314,7 @@ data = response.json()`,
   };
 
   return (
-    <div className="rounded-2xl border border-[#1E1E2E] bg-[#0F0F17] p-5">
+    <div className="rounded-2xl border border-hairline bg-[#0F0F17] p-5">
       <div className="flex flex-wrap items-center gap-3">
         <span
           className="rounded-md px-2 py-1 font-mono text-[11px] font-semibold"
@@ -325,37 +325,37 @@ data = response.json()`,
         >
           {endpoint.method}
         </span>
-        <code className="font-mono text-[13.5px] text-white">{endpoint.path}</code>
+        <code className="font-mono text-[13.5px] text-ink">{endpoint.path}</code>
       </div>
 
-      <p className="mt-2.5 text-[13.5px] text-[#A0A0B0]">{endpoint.summary}</p>
+      <p className="mt-2.5 text-[13.5px] text-ink-muted">{endpoint.summary}</p>
 
       {endpoint.params && (
-        <div className="mt-4 overflow-x-auto rounded-lg border border-[#1E1E2E]">
+        <div className="mt-4 overflow-x-auto rounded-lg border border-hairline">
           <table className="w-full min-w-[520px]">
-            <thead className="bg-[#12121A]">
+            <thead className="bg-surface">
               <tr>
                 {["Parameter", "Type", "Required", "Description"].map((h) => (
                   <th
                     key={h}
-                    className="px-3 py-2 text-left text-[10px] font-semibold uppercase tracking-[0.12em] text-[#6E6E80]"
+                    className="px-3 py-2 text-left text-[10px] font-semibold uppercase tracking-[0.12em] text-ink-faint"
                   >
                     {h}
                   </th>
                 ))}
               </tr>
             </thead>
-            <tbody className="divide-y divide-[#1E1E2E]">
+            <tbody className="divide-y divide-hairline">
               {endpoint.params.map((param) => (
                 <tr key={param.name}>
-                  <td className="px-3 py-2 font-mono text-[12px] text-[#00D4FF]">
+                  <td className="px-3 py-2 font-mono text-[12px] text-cyan">
                     {param.name}
                   </td>
-                  <td className="px-3 py-2 text-[12px] text-[#6E6E80]">{param.type}</td>
-                  <td className="px-3 py-2 text-[12px] text-[#6E6E80]">
+                  <td className="px-3 py-2 text-[12px] text-ink-faint">{param.type}</td>
+                  <td className="px-3 py-2 text-[12px] text-ink-faint">
                     {param.required ? "yes" : "no"}
                   </td>
-                  <td className="px-3 py-2 text-[12.5px] text-[#A0A0B0]">
+                  <td className="px-3 py-2 text-[12.5px] text-ink-muted">
                     {param.description}
                   </td>
                 </tr>
@@ -372,8 +372,8 @@ data = response.json()`,
             onClick={() => setTab(option)}
             className={
               tab === option
-                ? "rounded-md bg-[#6C47FF]/15 px-2.5 py-1 text-[12px] text-[#8A6BFF]"
-                : "rounded-md px-2.5 py-1 text-[12px] text-[#6E6E80] hover:text-white"
+                ? "rounded-md bg-accent/15 px-2.5 py-1 text-[12px] text-[#8A6BFF]"
+                : "rounded-md px-2.5 py-1 text-[12px] text-ink-faint hover:text-ink"
             }
           >
             {option === "curl" ? "cURL" : option === "javascript" ? "JavaScript" : "Python"}
@@ -385,7 +385,7 @@ data = response.json()`,
         <Code language={tab} code={samples[tab]} />
       </div>
 
-      <p className="mb-2 mt-4 text-[12px] font-semibold uppercase tracking-[0.12em] text-[#6E6E80]">
+      <p className="mb-2 mt-4 text-[12px] font-semibold uppercase tracking-[0.12em] text-ink-faint">
         Response
       </p>
       <Code language="json" code={endpoint.response} />
@@ -398,7 +398,7 @@ function Code({ code }: { code: string; language: string }) {
 
   return (
     <div className="group relative">
-      <pre className="overflow-x-auto rounded-xl border border-[#1E1E2E] bg-[#0B0B12] p-4 font-mono text-[12.5px] leading-relaxed text-[#D4D4DE]">
+      <pre className="overflow-x-auto rounded-xl border border-hairline bg-[#0B0B12] p-4 font-mono text-[12.5px] leading-relaxed text-[#D4D4DE]">
         <code>{code}</code>
       </pre>
       <button
@@ -408,7 +408,7 @@ function Code({ code }: { code: string; language: string }) {
           setTimeout(() => setCopied(false), 2000);
         }}
         aria-label="Copy code"
-        className="absolute right-2.5 top-2.5 rounded-lg border border-[#2A2A3A] bg-[#12121A] p-1.5 text-[#6E6E80] opacity-0 transition-opacity hover:text-white focus:opacity-100 group-hover:opacity-100"
+        className="absolute right-2.5 top-2.5 rounded-lg border border-surface-3 bg-surface p-1.5 text-ink-faint opacity-0 transition-opacity hover:text-ink focus:opacity-100 group-hover:opacity-100"
       >
         {copied ? (
           <Check className="h-3.5 w-3.5 text-[#00C851]" />

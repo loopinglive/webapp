@@ -32,20 +32,20 @@ export function AIPersonaForm({
   return (
     <section
       className={cn(
-        "space-y-4 rounded-xl border bg-[#12121A] p-5 transition-colors",
-        draft.isActive ? "border-[#1E1E2E]" : "border-[#1E1E2E] opacity-60"
+        "space-y-4 rounded-xl border bg-surface p-5 transition-colors",
+        draft.isActive ? "border-hairline" : "border-hairline opacity-60"
       )}
     >
       <div className="flex items-center justify-between gap-3">
-        <span className="text-[10px] font-semibold uppercase tracking-[0.16em] text-[#A0A0B0]">
+        <span className="text-[10px] font-semibold uppercase tracking-[0.16em] text-ink-muted">
           Moderator {index + 1}
         </span>
-        <label className="flex cursor-pointer items-center gap-2 text-[11.5px] text-[#A0A0B0]">
+        <label className="flex cursor-pointer items-center gap-2 text-[11.5px] text-ink-muted">
           <input
             type="checkbox"
             checked={draft.isActive}
             onChange={(event) => set("isActive", event.target.checked)}
-            className="h-3.5 w-3.5 accent-[#6C47FF]"
+            className="h-3.5 w-3.5 accent-accent"
           />
           Active
         </label>
@@ -81,10 +81,10 @@ export function AIPersonaForm({
 
       <div>
         <div className="flex items-baseline justify-between">
-          <span className="text-[12px] font-medium text-[#A0A0B0]">
+          <span className="text-[12px] font-medium text-ink-muted">
             Replies to persona chatter
           </span>
-          <span className="text-[12px] tabular-nums text-white">
+          <span className="text-[12px] tabular-nums text-ink">
             {draft.fakeCommentReplyPercentage}%
           </span>
         </div>
@@ -97,9 +97,9 @@ export function AIPersonaForm({
           onChange={(event) =>
             set("fakeCommentReplyPercentage", Number(event.target.value))
           }
-          className="mt-2 w-full accent-[#6C47FF]"
+          className="mt-2 w-full accent-accent"
         />
-        <p className="mt-1.5 text-[11px] leading-relaxed text-[#A0A0B0]">
+        <p className="mt-1.5 text-[11px] leading-relaxed text-ink-muted">
           Real attendees always get a reply. This is how much of your scripted
           chatter they answer on top.
         </p>

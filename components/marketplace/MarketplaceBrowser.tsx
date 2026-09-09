@@ -27,16 +27,16 @@ export function MarketplaceBrowser() {
     <div className="px-6 py-6 lg:px-10">
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div>
-          <h1 className="text-[22px] font-semibold tracking-[-0.02em] text-white">
+          <h1 className="text-[22px] font-semibold tracking-[-0.02em] text-ink">
             Marketplace
           </h1>
-          <p className="mt-1 text-[13px] text-[#A0A0B0]">
+          <p className="mt-1 text-[13px] text-ink-muted">
             Launch your webinar faster with proven templates and packs.
           </p>
         </div>
         <Link
           href="/marketplace/sell"
-          className="inline-flex h-9 items-center gap-2 rounded-full border border-[#1E1E2E] px-3.5 text-[13px] text-white hover:border-[#6C47FF]/50"
+          className="inline-flex h-9 items-center gap-2 rounded-full border border-hairline px-3.5 text-[13px] text-ink hover:border-accent/50"
         >
           <Store className="h-3.5 w-3.5" />
           Sell on the marketplace
@@ -45,18 +45,18 @@ export function MarketplaceBrowser() {
 
       <div className="mt-5 flex flex-wrap items-center gap-2">
         <div className="relative">
-          <Search className="pointer-events-none absolute left-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-[#6E6E80]" />
+          <Search className="pointer-events-none absolute left-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-ink-faint" />
           <input
             value={query}
             onChange={(event) => setQuery(event.target.value)}
             placeholder="Search listings"
-            className="h-9 w-[220px] rounded-full border border-[#1E1E2E] bg-[#0D0D15] pl-9 pr-4 text-[13px] text-white placeholder:text-[#4A4A5C] focus:border-[#6C47FF] focus:outline-none"
+            className="h-9 w-[220px] rounded-full border border-hairline bg-void pl-9 pr-4 text-[13px] text-ink placeholder:text-ink-faint focus:border-accent focus:outline-none"
           />
         </div>
         <select
           value={sort}
           onChange={(event) => setSort(event.target.value)}
-          className="h-9 rounded-full border border-[#1E1E2E] bg-[#0D0D15] px-3 text-[13px] text-white focus:outline-none"
+          className="h-9 rounded-full border border-hairline bg-void px-3 text-[13px] text-ink focus:outline-none"
         >
           <option value="newest">Newest</option>
           <option value="popular">Most popular</option>
@@ -73,8 +73,8 @@ export function MarketplaceBrowser() {
             onClick={() => setCategory(option.id)}
             className={`h-8 rounded-full px-3 text-[12.5px] transition-colors ${
               category === option.id
-                ? "bg-[#6C47FF] text-white"
-                : "text-[#A0A0B0] hover:text-white"
+                ? "bg-accent text-white"
+                : "text-ink-muted hover:text-white"
             }`}
           >
             {option.label}
@@ -85,7 +85,7 @@ export function MarketplaceBrowser() {
       <div className="mt-6">
         {!listings ? (
           <div className="grid h-40 place-items-center">
-            <Loader2 className="h-5 w-5 animate-spin text-[#6C47FF]" />
+            <Loader2 className="h-5 w-5 animate-spin text-accent" />
           </div>
         ) : listings.length === 0 ? (
           <EmptyState

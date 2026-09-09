@@ -63,7 +63,7 @@ export function PluginReviewQueue() {
             key={value}
             onClick={() => setStatus(value)}
             className={`h-8 rounded-full px-3 text-[12.5px] capitalize transition-colors ${
-              status === value ? "bg-[#6C47FF] text-white" : "text-[#A0A0B0] hover:text-white"
+              status === value ? "bg-accent text-white" : "text-ink-muted hover:text-white"
             }`}
           >
             {value}
@@ -73,7 +73,7 @@ export function PluginReviewQueue() {
 
       {!plugins ? (
         <div className="grid h-40 place-items-center">
-          <Loader2 className="h-5 w-5 animate-spin text-[#6C47FF]" />
+          <Loader2 className="h-5 w-5 animate-spin text-accent" />
         </div>
       ) : plugins.length === 0 ? (
         <EmptyState
@@ -86,14 +86,14 @@ export function PluginReviewQueue() {
           {plugins.map((plugin) => (
             <li
               key={plugin.id}
-              className="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-[#1E1E2E] bg-[#12121A] px-4 py-3"
+              className="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-hairline bg-surface px-4 py-3"
             >
               <div className="min-w-0 flex-1">
-                <p className="truncate text-[13.5px] font-medium text-white">
-                  {plugin.name} <span className="text-[#6E6E80]">v{plugin.version}</span>
+                <p className="truncate text-[13.5px] font-medium text-ink">
+                  {plugin.name} <span className="text-ink-faint">v{plugin.version}</span>
                 </p>
-                <p className="mt-0.5 line-clamp-1 text-[12px] text-[#A0A0B0]">{plugin.description}</p>
-                <p className="mt-1 truncate font-mono text-[11px] text-[#4A4A5C]">{plugin.bundle_url}</p>
+                <p className="mt-0.5 line-clamp-1 text-[12px] text-ink-muted">{plugin.description}</p>
+                <p className="mt-1 truncate font-mono text-[11px] text-ink-faint">{plugin.bundle_url}</p>
               </div>
 
               <div className="flex shrink-0 gap-1.5">
@@ -120,7 +120,7 @@ export function PluginReviewQueue() {
                   <button
                     onClick={() => act(plugin.id, "deactivate")}
                     disabled={busy === plugin.id}
-                    className="inline-flex h-8 items-center rounded-lg border border-[#1E1E2E] px-3 text-[12px] text-[#A0A0B0] hover:text-white disabled:opacity-50"
+                    className="inline-flex h-8 items-center rounded-lg border border-hairline px-3 text-[12px] text-ink-muted hover:text-ink disabled:opacity-50"
                   >
                     Deactivate
                   </button>

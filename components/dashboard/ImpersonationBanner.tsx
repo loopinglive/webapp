@@ -18,15 +18,15 @@ export function ImpersonationBanner({ name }: { name: string }) {
 
   return (
     <div className="flex items-center gap-3 bg-[#FF5A5A] px-6 py-2.5 lg:px-10">
-      <AlertTriangle className="h-4 w-4 shrink-0 text-white" />
-      <p className="flex-1 text-[13px] font-medium text-white">
+      <AlertTriangle className="h-4 w-4 shrink-0 text-ink" />
+      <p className="flex-1 text-[13px] font-medium text-ink">
         You are viewing as {name}. Everything you do is recorded against your admin
         account.
       </p>
       <button
         onClick={exit}
         disabled={leaving}
-        className="inline-flex h-8 shrink-0 items-center gap-2 rounded-full bg-white/20 px-3.5 text-[12.5px] font-semibold text-white transition-colors hover:bg-white/30 disabled:opacity-60"
+        className="inline-flex h-8 shrink-0 items-center gap-2 rounded-full bg-surface-2 px-3.5 text-[12.5px] font-semibold text-ink transition-colors hover:bg-surface-2 disabled:opacity-60"
       >
         {leaving && <Loader2 className="h-3 w-3 animate-spin" />}
         Exit impersonation

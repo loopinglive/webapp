@@ -26,7 +26,7 @@ function Field({
 }
 
 const inputClass =
-  "w-full rounded-lg border border-[#1E1E2E] bg-[#1A1A24] px-3 py-2.5 text-[13px] text-white placeholder:text-[#6E6E80] focus:border-[#6C47FF] focus:outline-none";
+  "w-full rounded-lg border border-hairline bg-[#1A1A24] px-3 py-2.5 text-[13px] text-white placeholder:text-ink-faint focus:border-accent focus:outline-none";
 
 export function WhiteLabelConfig() {
   const { form, update, save, verifyDomain, entitled, loading, saving, verifying, error, savedAt } =
@@ -36,7 +36,7 @@ export function WhiteLabelConfig() {
   if (loading) {
     return (
       <div className="grid place-items-center py-24">
-        <Loader2 className="h-6 w-6 animate-spin text-[#6C47FF]" />
+        <Loader2 className="h-6 w-6 animate-spin text-accent" />
       </div>
     );
   }
@@ -44,9 +44,9 @@ export function WhiteLabelConfig() {
   if (!entitled) {
     return (
       <div className="px-6 py-8 lg:px-8">
-        <div className="mb-8 rounded-2xl border border-[#1E1E2E] bg-[#12121A] p-6 text-center">
-          <h2 className="text-[18px] font-semibold text-white">White label is a Yearly/Lifetime feature</h2>
-          <p className="mx-auto mt-2 max-w-md text-[13px] text-[#A0A0B0]">
+        <div className="mb-8 rounded-2xl border border-hairline bg-surface p-6 text-center">
+          <h2 className="text-[18px] font-semibold text-ink">White label is a Yearly/Lifetime feature</h2>
+          <p className="mx-auto mt-2 max-w-md text-[13px] text-ink-muted">
             Remove all Loopinglive branding, connect your own domain, and send emails from your own
             address — available on the Yearly and Lifetime plans.
           </p>
@@ -64,8 +64,8 @@ export function WhiteLabelConfig() {
     <div className="grid gap-6 px-6 py-8 lg:grid-cols-[1fr_360px] lg:px-8">
       <div className="space-y-6">
         {/* Branding */}
-        <section className="space-y-4 rounded-2xl border border-[#1E1E2E] bg-[#12121A] p-5">
-          <h2 className="text-[15px] font-semibold text-white">Branding</h2>
+        <section className="space-y-4 rounded-2xl border border-hairline bg-surface p-5">
+          <h2 className="text-[15px] font-semibold text-ink">Branding</h2>
 
           <Field label="Brand name">
             <input
@@ -109,7 +109,7 @@ export function WhiteLabelConfig() {
                     type="color"
                     value={form[key]}
                     onChange={(event) => update(key, event.target.value)}
-                    className="h-9 w-9 shrink-0 cursor-pointer rounded border border-[#1E1E2E] bg-transparent p-0"
+                    className="h-9 w-9 shrink-0 cursor-pointer rounded border border-hairline bg-transparent p-0"
                   />
                   <input
                     value={form[key]}
@@ -123,8 +123,8 @@ export function WhiteLabelConfig() {
 
           <label className="flex items-center justify-between pt-2">
             <div>
-              <p className="text-[13px] font-medium text-white">Remove Loopinglive branding</p>
-              <p className="text-[12px] text-[#6E6E80]">
+              <p className="text-[13px] font-medium text-ink">Remove Loopinglive branding</p>
+              <p className="text-[12px] text-ink-faint">
                 No &quot;Powered by Loopinglive&quot; anywhere your attendees can see.
               </p>
             </div>
@@ -132,20 +132,20 @@ export function WhiteLabelConfig() {
               type="checkbox"
               checked={form.hide_loopinglive_branding}
               onChange={(event) => update("hide_loopinglive_branding", event.target.checked)}
-              className="h-5 w-9 shrink-0 accent-[#6C47FF]"
+              className="h-5 w-9 shrink-0 accent-accent"
             />
           </label>
         </section>
 
         {/* Custom domain */}
-        <section className="rounded-2xl border border-[#1E1E2E] bg-[#12121A] p-5">
-          <h2 className="mb-4 text-[15px] font-semibold text-white">Custom domain</h2>
+        <section className="rounded-2xl border border-hairline bg-surface p-5">
+          <h2 className="mb-4 text-[15px] font-semibold text-ink">Custom domain</h2>
           <CustomDomainSetup form={form} update={update} verifyDomain={verifyDomain} verifying={verifying} />
         </section>
 
         {/* Custom login page */}
-        <section className="space-y-4 rounded-2xl border border-[#1E1E2E] bg-[#12121A] p-5">
-          <h2 className="text-[15px] font-semibold text-white">Custom login page</h2>
+        <section className="space-y-4 rounded-2xl border border-hairline bg-surface p-5">
+          <h2 className="text-[15px] font-semibold text-ink">Custom login page</h2>
           <Field label="Headline">
             <input
               value={form.custom_login_page_headline ?? ""}
@@ -165,7 +165,7 @@ export function WhiteLabelConfig() {
         </section>
 
         {/* Support */}
-        <section className="grid grid-cols-1 gap-4 rounded-2xl border border-[#1E1E2E] bg-[#12121A] p-5 sm:grid-cols-3">
+        <section className="grid grid-cols-1 gap-4 rounded-2xl border border-hairline bg-surface p-5 sm:grid-cols-3">
           <Field label="Support email">
             <input
               value={form.custom_support_email ?? ""}
@@ -193,8 +193,8 @@ export function WhiteLabelConfig() {
         </section>
 
         {/* Email */}
-        <section className="space-y-4 rounded-2xl border border-[#1E1E2E] bg-[#12121A] p-5">
-          <h2 className="text-[15px] font-semibold text-white">Email</h2>
+        <section className="space-y-4 rounded-2xl border border-hairline bg-surface p-5">
+          <h2 className="text-[15px] font-semibold text-ink">Email</h2>
           <div className="grid grid-cols-2 gap-3">
             <Field label="From name">
               <input
@@ -223,7 +223,7 @@ export function WhiteLabelConfig() {
             type="button"
             onClick={() => save(smtpPassword)}
             disabled={saving}
-            className="flex items-center gap-2 rounded-lg bg-[#6C47FF] px-5 py-2.5 text-[13px] font-semibold text-white transition hover:bg-[#7C57FF] disabled:opacity-50"
+            className="flex items-center gap-2 rounded-lg bg-accent px-5 py-2.5 text-[13px] font-semibold text-white transition hover:bg-[#7C57FF] disabled:opacity-50"
           >
             {saving && <Loader2 className="h-3.5 w-3.5 animate-spin" />}
             Save changes

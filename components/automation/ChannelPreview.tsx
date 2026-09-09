@@ -34,7 +34,7 @@ export function ChannelPreview({
     return (
       <div>
         <Label>Preview</Label>
-        <div className="overflow-hidden rounded-xl border border-[#2A2A3A] bg-white">
+        <div className="overflow-hidden rounded-xl border border-surface-3 bg-white">
           <div className="border-b border-[#e6e6ec] px-4 py-3">
             <p className="text-[12px] text-[#6a6a7a]">
               {fromName} &lt;{fromEmail}&gt;
@@ -56,14 +56,14 @@ export function ChannelPreview({
     return (
       <div>
         <Label>Preview</Label>
-        <div className="rounded-[28px] border border-[#2A2A3A] bg-[#0A0A0F] p-4">
+        <div className="rounded-[28px] border border-surface-3 bg-void p-4">
           <div className="max-w-[80%] rounded-2xl rounded-bl-md bg-white px-3.5 py-2.5">
             <p className="whitespace-pre-wrap text-[13px] leading-relaxed text-[#1a1a24]">
               {resolved}
             </p>
           </div>
         </div>
-        <p className="mt-2 text-[11.5px] text-[#A0A0B0]">
+        <p className="mt-2 text-[11.5px] text-ink-muted">
           {characters} characters — {segments} SMS segment
           {segments === 1 ? "" : "s"}
           {unicode && " (unicode: 70 chars per segment)"}
@@ -75,14 +75,14 @@ export function ChannelPreview({
   return (
     <div>
       <Label>Preview</Label>
-      <div className="rounded-[28px] border border-[#2A2A3A] bg-[#0b141a] p-4">
+      <div className="rounded-[28px] border border-surface-3 bg-[#0b141a] p-4">
         <div className="ml-auto max-w-[85%] rounded-2xl rounded-br-md bg-[#005c4b] px-3.5 py-2.5">
-          <p className="whitespace-pre-wrap text-[13px] leading-relaxed text-white">
+          <p className="whitespace-pre-wrap text-[13px] leading-relaxed text-ink">
             {resolved}
           </p>
         </div>
       </div>
-      <p className="mt-2 text-[11.5px] text-[#A0A0B0]">
+      <p className="mt-2 text-[11.5px] text-ink-muted">
         {resolved.length} / {WHATSAPP_LIMIT} characters
       </p>
     </div>
@@ -91,7 +91,7 @@ export function ChannelPreview({
 
 function Label({ children }: { children: React.ReactNode }) {
   return (
-    <p className="mb-2 text-[11px] font-semibold uppercase tracking-[0.16em] text-[#A0A0B0]">
+    <p className="mb-2 text-[11px] font-semibold uppercase tracking-[0.16em] text-ink-muted">
       {children}
     </p>
   );

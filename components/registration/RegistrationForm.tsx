@@ -13,9 +13,9 @@ import { cn } from "@/lib/utils";
 import type { CustomField, StoredRegistrant } from "@/types";
 
 const field = cn(
-  "h-[52px] w-full rounded-lg border border-white/10 bg-black/25 px-4 text-sm text-white",
-  "placeholder:text-white/40 transition-colors duration-200",
-  "hover:border-white/20",
+  "h-[52px] w-full rounded-lg border border-hairline bg-black/25 px-4 text-sm text-ink",
+  "placeholder:text-ink/40 transition-colors duration-200",
+  "hover:border-hairline",
   "focus:border-[var(--brand)] focus:outline-none focus:ring-2 focus:ring-[var(--brand)]/25"
 );
 
@@ -176,7 +176,7 @@ export function RegistrationForm({
       {customFields.map((item) => (
         <div key={item.id}>
           {item.type === "checkbox" ? (
-            <label className="flex cursor-pointer items-start gap-2.5 py-1 text-[12.5px] leading-relaxed text-white/70">
+            <label className="flex cursor-pointer items-start gap-2.5 py-1 text-[12.5px] leading-relaxed text-ink/70">
               <input
                 type="checkbox"
                 name={`custom_${item.id}`}
@@ -193,11 +193,11 @@ export function RegistrationForm({
               aria-label={item.label}
               className={field}
             >
-              <option value="" disabled className="bg-[#12121A]">
+              <option value="" disabled className="bg-surface">
                 {item.label}
               </option>
               {(item.options ?? []).map((option) => (
-                <option key={option} value={option} className="bg-[#12121A]">
+                <option key={option} value={option} className="bg-surface">
                   {option}
                 </option>
               ))}
@@ -214,7 +214,7 @@ export function RegistrationForm({
         </div>
       ))}
 
-      <label className="flex cursor-pointer items-start gap-2.5 pt-1.5 text-[12.5px] leading-relaxed text-white/65">
+      <label className="flex cursor-pointer items-start gap-2.5 pt-1.5 text-[12.5px] leading-relaxed text-ink/65">
         <input
           type="checkbox"
           name="gdprConsent"
@@ -240,7 +240,7 @@ export function RegistrationForm({
         }}
         className={cn(
           "group mt-1 flex h-[52px] w-full items-center justify-center gap-2 rounded-full",
-          "text-[15px] font-semibold text-white transition-all duration-200",
+          "text-[15px] font-semibold text-ink transition-all duration-200",
           "hover:brightness-110 active:scale-[0.99]",
           "disabled:pointer-events-none disabled:opacity-60"
         )}
@@ -258,7 +258,7 @@ export function RegistrationForm({
         )}
       </button>
 
-      <p className="pt-1 text-center text-[11.5px] text-white/45">
+      <p className="pt-1 text-center text-[11.5px] text-ink/45">
         Free to attend · Seats are limited
       </p>
     </form>

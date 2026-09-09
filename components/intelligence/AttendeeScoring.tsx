@@ -21,7 +21,7 @@ export function AttendeeScoring({ webinarId }: { webinarId: string }) {
           <button
             onClick={() => void rescoreAll()}
             disabled={rescoring}
-            className="flex h-9 items-center gap-2 rounded-full bg-[#6C47FF] px-4 text-[12.5px] font-semibold text-white shadow-[0_10px_30px_-10px_#6C47FF] transition-colors hover:bg-[#7C5AFF] disabled:pointer-events-none disabled:opacity-50"
+            className="flex h-9 items-center gap-2 rounded-full bg-accent px-4 text-[12.5px] font-semibold text-white shadow-[0_10px_30px_-10px_#6C47FF] transition-colors hover:bg-accent-soft disabled:pointer-events-none disabled:opacity-50"
           >
             <RefreshCw className={cn("h-3.5 w-3.5", rescoring && "animate-spin")} />
             {rescoring ? "Rescoring…" : "Rescore all attendees"}
@@ -32,7 +32,7 @@ export function AttendeeScoring({ webinarId }: { webinarId: string }) {
       <div className="px-6 py-6 lg:px-8">
         {loading ? (
           <div className="grid h-40 place-items-center">
-            <Loader2 className="h-5 w-5 animate-spin text-[#6C47FF]" />
+            <Loader2 className="h-5 w-5 animate-spin text-accent" />
           </div>
         ) : (
           <>
@@ -59,8 +59,8 @@ export function AttendeeScoring({ webinarId }: { webinarId: string }) {
 
 function Tile({ label, value, tone }: { label: string; value: number; tone?: string }) {
   return (
-    <div className="rounded-xl border border-[#1E1E2E] bg-[#12121A] px-4 py-3.5">
-      <p className="text-[10px] font-semibold uppercase tracking-[0.14em] text-[#A0A0B0]">
+    <div className="rounded-xl border border-hairline bg-surface px-4 py-3.5">
+      <p className="text-[10px] font-semibold uppercase tracking-[0.14em] text-ink-muted">
         {label}
       </p>
       <p

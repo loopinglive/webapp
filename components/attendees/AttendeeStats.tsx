@@ -43,8 +43,8 @@ export function AttendeeStats({
             key={card.id}
             onClick={() => onSelect(selected ? "all" : filter)}
             className={cn(
-              "rounded-xl border bg-[#12121A] px-4 py-3.5 text-left transition-colors duration-200",
-              selected ? "border-transparent" : "border-[#1E1E2E] hover:border-[#2A2A3A]"
+              "rounded-xl border bg-surface px-4 py-3.5 text-left transition-colors duration-200",
+              selected ? "border-transparent" : "border-hairline hover:border-surface-3"
             )}
             style={selected ? { borderColor: card.colour } : undefined}
           >
@@ -55,10 +55,10 @@ export function AttendeeStats({
               {card.label}
             </span>
             <div className="mt-1.5 flex items-baseline gap-1.5">
-              <span className="text-2xl font-semibold tabular-nums tracking-[-0.03em] text-white">
+              <span className="text-2xl font-semibold tabular-nums tracking-[-0.03em] text-ink">
                 {count.toLocaleString()}
               </span>
-              <span className="text-[11.5px] tabular-nums text-[#A0A0B0]">
+              <span className="text-[11.5px] tabular-nums text-ink-muted">
                 {share}%
               </span>
             </div>

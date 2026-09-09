@@ -77,7 +77,7 @@ export function AuditLog() {
           return (
             <li
               key={`${entry.kind}-${entry.id}`}
-              className="flex items-start gap-3 rounded-xl border border-[#1E1E2E] bg-[#12121A] px-4 py-3"
+              className="flex items-start gap-3 rounded-xl border border-hairline bg-surface px-4 py-3"
               style={
                 impersonation
                   ? { borderLeftColor: "#FF5A5A", borderLeftWidth: 3 }
@@ -87,21 +87,21 @@ export function AuditLog() {
               {impersonation ? (
                 <UserCog className="mt-0.5 h-3.5 w-3.5 shrink-0 text-[#FF5A5A]" />
               ) : (
-                <ScrollText className="mt-0.5 h-3.5 w-3.5 shrink-0 text-[#6C47FF]" />
+                <ScrollText className="mt-0.5 h-3.5 w-3.5 shrink-0 text-accent" />
               )}
 
               <div className="min-w-0 flex-1">
-                <p className="text-[13px] text-white">
+                <p className="text-[13px] text-ink">
                   <span className="font-medium">{entry.admin}</span>{" "}
-                  <span className="text-[#A0A0B0]">{entry.action.replace(/_/g, " ")}</span>
+                  <span className="text-ink-muted">{entry.action.replace(/_/g, " ")}</span>
                   {entry.target && (
                     <>
                       {" "}
-                      <span className="text-[#6E6E80]">→</span>{" "}
+                      <span className="text-ink-faint">→</span>{" "}
                       {entry.targetId ? (
                         <Link
                           href={`/superadmin/users/${entry.targetId}`}
-                          className="text-[#00D4FF] hover:underline"
+                          className="text-cyan hover:underline"
                         >
                           {entry.target}
                         </Link>
@@ -113,11 +113,11 @@ export function AuditLog() {
                 </p>
 
                 {detail && (
-                  <p className="mt-0.5 text-[11.5px] text-[#6E6E80]">{detail}</p>
+                  <p className="mt-0.5 text-[11.5px] text-ink-faint">{detail}</p>
                 )}
               </div>
 
-              <span className="shrink-0 text-[11px] text-[#6E6E80]">
+              <span className="shrink-0 text-[11px] text-ink-faint">
                 {new Date(entry.at).toLocaleString(undefined, {
                   dateStyle: "short",
                   timeStyle: "short",

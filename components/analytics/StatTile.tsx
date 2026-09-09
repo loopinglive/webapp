@@ -31,24 +31,24 @@ export function StatTile({
   return (
     <div
       className={cn(
-        "rounded-xl border border-[#1E1E2E] bg-[#12121A] px-4 py-3.5",
+        "rounded-xl border border-hairline bg-surface px-4 py-3.5",
         pending && "opacity-55"
       )}
     >
-      <p className="text-[10px] font-semibold uppercase tracking-[0.14em] text-[#A0A0B0]">
+      <p className="text-[10px] font-semibold uppercase tracking-[0.14em] text-ink-muted">
         {label}
       </p>
 
       {pending ? (
         <>
-          <p className="mt-1.5 text-[15px] font-medium text-[#6A6A80]">—</p>
-          <p className="mt-1 text-[10.5px] leading-snug text-[#6A6A80]">
+          <p className="mt-1.5 text-[15px] font-medium text-ink-faint">—</p>
+          <p className="mt-1 text-[10.5px] leading-snug text-ink-faint">
             {pending}
           </p>
         </>
       ) : (
         <>
-          <p className="mt-1.5 text-2xl font-semibold tabular-nums tracking-[-0.03em] text-white">
+          <p className="mt-1.5 text-2xl font-semibold tabular-nums tracking-[-0.03em] text-ink">
             {value}
           </p>
           <div className="mt-1 flex items-center gap-2">
@@ -65,7 +65,7 @@ export function StatTile({
                 {Math.abs(delta)}%
               </span>
             )}
-            {hint && <span className="text-[11px] text-[#6A6A80]">{hint}</span>}
+            {hint && <span className="text-[11px] text-ink-faint">{hint}</span>}
           </div>
         </>
       )}

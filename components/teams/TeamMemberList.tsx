@@ -129,7 +129,7 @@ export function TeamMemberList({
   if (loading) {
     return (
       <div className="grid h-40 place-items-center">
-        <Loader2 className="h-5 w-5 animate-spin text-[#6C47FF]" />
+        <Loader2 className="h-5 w-5 animate-spin text-accent" />
       </div>
     );
   }
@@ -137,22 +137,22 @@ export function TeamMemberList({
   return (
     <div className="space-y-6 px-6 py-6 lg:px-10">
       {canManage && (
-        <section className="rounded-2xl border border-[#1E1E2E] bg-[#12121A] p-5">
-          <h2 className="text-[13px] font-semibold text-white">Invite someone</h2>
+        <section className="rounded-2xl border border-hairline bg-surface p-5">
+          <h2 className="text-[13px] font-semibold text-ink">Invite someone</h2>
           <div className="mt-3 flex flex-wrap gap-2">
             <input
               value={inviteEmail}
               onChange={(event) => setInviteEmail(event.target.value)}
               type="email"
               placeholder="teammate@example.com"
-              className="h-10 min-w-0 flex-1 rounded-lg border border-[#1E1E2E] bg-[#0D0D15] px-3 text-[13px] text-white placeholder:text-[#4A4A5C] focus:border-[#6C47FF] focus:outline-none"
+              className="h-10 min-w-0 flex-1 rounded-lg border border-hairline bg-void px-3 text-[13px] text-ink placeholder:text-ink-faint focus:border-accent focus:outline-none"
             />
             <select
               value={inviteRole}
               onChange={(event) =>
                 setInviteRole(event.target.value as (typeof ASSIGNABLE)[number])
               }
-              className="h-10 rounded-lg border border-[#1E1E2E] bg-[#0D0D15] px-2.5 text-[13px] text-white focus:outline-none"
+              className="h-10 rounded-lg border border-hairline bg-void px-2.5 text-[13px] text-ink focus:outline-none"
             >
               {ASSIGNABLE.map((role) => (
                 <option key={role} value={role}>
@@ -163,13 +163,13 @@ export function TeamMemberList({
             <button
               onClick={() => void invite()}
               disabled={inviting || !inviteEmail.trim()}
-              className="inline-flex h-10 items-center gap-2 rounded-lg bg-[#6C47FF] px-4 text-[13px] font-medium text-white hover:bg-[#5B39E0] disabled:opacity-50"
+              className="inline-flex h-10 items-center gap-2 rounded-lg bg-accent px-4 text-[13px] font-medium text-white hover:bg-accent-deep disabled:opacity-50"
             >
               {inviting && <Loader2 className="h-3.5 w-3.5 animate-spin" />}
               Invite
             </button>
           </div>
-          <p className="mt-2 text-[11.5px] text-[#6E6E80]">
+          <p className="mt-2 text-[11.5px] text-ink-faint">
             {TEAM_ROLE_DESCRIPTIONS[inviteRole]}
           </p>
         </section>
@@ -177,20 +177,20 @@ export function TeamMemberList({
 
       {invitations.length > 0 && (
         <section>
-          <h2 className="text-[11px] font-semibold uppercase tracking-[0.14em] text-[#6E6E80]">
+          <h2 className="text-[11px] font-semibold uppercase tracking-[0.14em] text-ink-faint">
             Pending invitations
           </h2>
           <ul className="mt-2 space-y-1.5">
             {invitations.map((invite) => (
               <li
                 key={invite.id}
-                className="flex items-center gap-3 rounded-lg border border-[#1E1E2E] bg-[#0D0D15] px-3.5 py-2.5"
+                className="flex items-center gap-3 rounded-lg border border-hairline bg-void px-3.5 py-2.5"
               >
-                <Mail className="h-3.5 w-3.5 shrink-0 text-[#6E6E80]" />
-                <span className="min-w-0 flex-1 truncate text-[13px] text-white">
+                <Mail className="h-3.5 w-3.5 shrink-0 text-ink-faint" />
+                <span className="min-w-0 flex-1 truncate text-[13px] text-ink">
                   {invite.invited_email}
                 </span>
-                <span className="shrink-0 text-[11.5px] text-[#6E6E80]">
+                <span className="shrink-0 text-[11.5px] text-ink-faint">
                   {TEAM_ROLE_LABELS[invite.role]} · expires{" "}
                   {new Date(invite.expires_at).toLocaleDateString()}
                 </span>
@@ -201,7 +201,7 @@ export function TeamMemberList({
       )}
 
       <section>
-        <h2 className="text-[11px] font-semibold uppercase tracking-[0.14em] text-[#6E6E80]">
+        <h2 className="text-[11px] font-semibold uppercase tracking-[0.14em] text-ink-faint">
           Members
         </h2>
         <ul className="mt-2 space-y-1.5">
@@ -212,14 +212,14 @@ export function TeamMemberList({
             return (
               <li
                 key={member.id}
-                className="flex flex-wrap items-center gap-3 rounded-xl border border-[#1E1E2E] bg-[#12121A] px-4 py-3"
+                className="flex flex-wrap items-center gap-3 rounded-xl border border-hairline bg-surface px-4 py-3"
               >
                 <div className="min-w-0 flex-1">
-                  <p className="text-[13.5px] text-white">
+                  <p className="text-[13.5px] text-ink">
                     {member.full_name || member.email || "—"}
-                    {isSelf && <span className="ml-2 text-[11px] text-[#6E6E80]">(you)</span>}
+                    {isSelf && <span className="ml-2 text-[11px] text-ink-faint">(you)</span>}
                   </p>
-                  <p className="text-[11.5px] text-[#6E6E80]">{member.email}</p>
+                  <p className="text-[11.5px] text-ink-faint">{member.email}</p>
                 </div>
 
                 {canManage && !isOwner && !isSelf ? (
@@ -229,7 +229,7 @@ export function TeamMemberList({
                     onChange={(event) =>
                       void changeRole(member.id, event.target.value as TeamRole)
                     }
-                    className="h-8 rounded-lg border border-[#1E1E2E] bg-[#0D0D15] px-2 text-[12px] text-white focus:outline-none"
+                    className="h-8 rounded-lg border border-hairline bg-void px-2 text-[12px] text-ink focus:outline-none"
                   >
                     {ASSIGNABLE.map((role) => (
                       <option key={role} value={role}>
@@ -238,7 +238,7 @@ export function TeamMemberList({
                     ))}
                   </select>
                 ) : (
-                  <span className="rounded-full bg-[#1E1E2E] px-2.5 py-1 text-[11px] text-[#A0A0B0]">
+                  <span className="rounded-full bg-hairline px-2.5 py-1 text-[11px] text-ink-muted">
                     {TEAM_ROLE_LABELS[member.role]}
                   </span>
                 )}
@@ -250,7 +250,7 @@ export function TeamMemberList({
                     }
                     disabled={busy === member.id}
                     aria-label={`Remove ${member.full_name || member.email}`}
-                    className="grid h-8 w-8 shrink-0 place-items-center rounded-lg text-[#6E6E80] hover:text-[#FF5A5A] disabled:opacity-50"
+                    className="grid h-8 w-8 shrink-0 place-items-center rounded-lg text-ink-faint hover:text-[#FF5A5A] disabled:opacity-50"
                   >
                     {busy === member.id ? (
                       <Loader2 className="h-3.5 w-3.5 animate-spin" />

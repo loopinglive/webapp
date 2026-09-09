@@ -63,15 +63,15 @@ export default async function SeriesPage({
   if (!first) notFound();
 
   return (
-    <main className="min-h-dvh bg-[#0A0A0F] px-6 py-16 text-white">
+    <main className="min-h-dvh bg-void px-6 py-16 text-ink">
       <div className="mx-auto grid max-w-5xl gap-10 lg:grid-cols-[1fr_400px]">
         <div>
-          <p className="mb-2 text-[12px] font-semibold uppercase tracking-[0.08em] text-[#6C47FF]">
+          <p className="mb-2 text-[12px] font-semibold uppercase tracking-[0.08em] text-accent">
             {data.items.length}-part series
           </p>
           <h1 className="text-[32px] font-semibold tracking-[-0.02em]">{data.series.title}</h1>
           {data.series.description && (
-            <p className="mt-3 max-w-xl text-[15px] leading-relaxed text-white/60">
+            <p className="mt-3 max-w-xl text-[15px] leading-relaxed text-ink/60">
               {data.series.description}
             </p>
           )}
@@ -82,15 +82,15 @@ export default async function SeriesPage({
               return (
                 <li
                   key={item.position}
-                  className="flex items-start gap-3 rounded-xl border border-[#1E1E2E] bg-[#12121A] p-4"
+                  className="flex items-start gap-3 rounded-xl border border-hairline bg-surface p-4"
                 >
-                  <span className="grid h-7 w-7 shrink-0 place-items-center rounded-full bg-[#6C47FF]/20 text-[12px] font-semibold text-[#6C47FF]">
+                  <span className="grid h-7 w-7 shrink-0 place-items-center rounded-full bg-accent/20 text-[12px] font-semibold text-accent">
                     {index + 1}
                   </span>
                   <div>
-                    <p className="text-[14px] font-medium text-white">{webinar?.title}</p>
+                    <p className="text-[14px] font-medium text-ink">{webinar?.title}</p>
                     {webinar?.description && (
-                      <p className="mt-1 text-[12.5px] text-white/50">{webinar.description}</p>
+                      <p className="mt-1 text-[12.5px] text-ink/50">{webinar.description}</p>
                     )}
                   </div>
                 </li>
@@ -99,8 +99,8 @@ export default async function SeriesPage({
           </ol>
         </div>
 
-        <div className="rounded-2xl border border-[#1E1E2E] bg-[#12121A] p-6">
-          <h2 className="mb-4 text-[16px] font-semibold text-white">Reserve your spot</h2>
+        <div className="rounded-2xl border border-hairline bg-surface p-6">
+          <h2 className="mb-4 text-[16px] font-semibold text-ink">Reserve your spot</h2>
           <SeriesRegistration seriesId={data.series.id} firstWebinarId={first.id} />
         </div>
       </div>

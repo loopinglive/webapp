@@ -90,7 +90,7 @@ export function RegistrationPagePreview({
           <div>
             <h1
               className={cn(
-                "text-balance font-semibold leading-[1.06] tracking-[-0.035em] text-white",
+                "text-balance font-semibold leading-[1.06] tracking-[-0.035em] text-ink",
                 compact ? "text-[26px]" : "text-4xl sm:text-5xl"
               )}
             >
@@ -100,7 +100,7 @@ export function RegistrationPagePreview({
             {config.subheadline && (
               <p
                 className={cn(
-                  "mt-4 text-pretty leading-relaxed text-white/70",
+                  "mt-4 text-pretty leading-relaxed text-ink/70",
                   compact ? "text-[14px]" : "text-[16.5px]"
                 )}
               >
@@ -109,7 +109,7 @@ export function RegistrationPagePreview({
             )}
 
             {config.show_session_time && sessionTime && (
-              <p className="mt-5 inline-flex items-center gap-2 rounded-full border border-white/12 bg-black/25 px-3.5 py-1.5 text-[13px] text-white/85 backdrop-blur-sm">
+              <p className="mt-5 inline-flex items-center gap-2 rounded-full border border-hairline bg-black/25 px-3.5 py-1.5 text-[13px] text-ink/85 backdrop-blur-sm">
                 <CalendarClock className="h-3.5 w-3.5" style={{ color: "var(--brand)" }} />
                 {sessionTime}
               </p>
@@ -127,7 +127,7 @@ export function RegistrationPagePreview({
                     </span>
                     <span
                       className={cn(
-                        "leading-relaxed text-white/85",
+                        "leading-relaxed text-ink/85",
                         compact ? "text-[13px]" : "text-[15px]"
                       )}
                     >
@@ -149,27 +149,27 @@ export function RegistrationPagePreview({
                   />
                 ) : (
                   <span
-                    className="grid h-11 w-11 place-items-center rounded-full text-[13px] font-semibold text-white"
+                    className="grid h-11 w-11 place-items-center rounded-full text-[13px] font-semibold text-ink"
                     style={{ background: "var(--brand)" }}
                   >
                     {(config.host_name ?? "?").slice(0, 1)}
                   </span>
                 )}
                 <div>
-                  <p className="text-[14px] font-semibold text-white">
+                  <p className="text-[14px] font-semibold text-ink">
                     {config.host_name}
                   </p>
                   {config.host_title && (
-                    <p className="text-[12.5px] text-white/60">{config.host_title}</p>
+                    <p className="text-[12.5px] text-ink/60">{config.host_title}</p>
                   )}
                 </div>
               </div>
             )}
 
             {socialProof > 0 && (
-              <p className="mt-7 inline-flex items-center gap-2 text-[13px] text-white/65">
+              <p className="mt-7 inline-flex items-center gap-2 text-[13px] text-ink/65">
                 <Users className="h-3.5 w-3.5" style={{ color: "var(--brand-2)" }} />
-                <span className="font-semibold text-white">
+                <span className="font-semibold text-ink">
                   {socialProof.toLocaleString()}
                 </span>
                 {config.social_proof_label}
@@ -178,7 +178,7 @@ export function RegistrationPagePreview({
           </div>
 
           {/* Form */}
-          <div className="rounded-xl border border-white/10 bg-[#12121A]/85 p-6 shadow-[0_40px_100px_-30px_rgba(0,0,0,0.9)] backdrop-blur-2xl sm:p-7">
+          <div className="rounded-xl border border-hairline bg-surface/85 p-6 shadow-[0_40px_100px_-30px_rgba(0,0,0,0.9)] backdrop-blur-2xl sm:p-7">
             {interactive ? (
               children
             ) : (
@@ -204,7 +204,7 @@ function DummyForm({
   compact: boolean;
 }) {
   const input =
-    "h-[46px] w-full rounded-lg border border-white/10 bg-black/25 px-3.5 text-[13px] text-white/45 flex items-center";
+    "h-[46px] w-full rounded-lg border border-hairline bg-black/25 px-3.5 text-[13px] text-ink/45 flex items-center";
 
   return (
     <div className="space-y-3">
@@ -219,13 +219,13 @@ function DummyForm({
 
       {fields.map((field) => (
         <div key={field.id}>
-          <p className="mb-1.5 text-[11.5px] text-white/55">
+          <p className="mb-1.5 text-[11.5px] text-ink/55">
             {field.label}
             {field.required && <span style={{ color: "var(--brand)" }}> *</span>}
           </p>
           {field.type === "checkbox" ? (
-            <div className="flex items-center gap-2 text-[12.5px] text-white/45">
-              <span className="h-4 w-4 rounded border border-white/20" />
+            <div className="flex items-center gap-2 text-[12.5px] text-ink/45">
+              <span className="h-4 w-4 rounded border border-hairline" />
               {field.label}
             </div>
           ) : field.type === "dropdown" ? (
@@ -238,14 +238,14 @@ function DummyForm({
         </div>
       ))}
 
-      <div className="flex items-start gap-2.5 pt-1 text-[11.5px] leading-relaxed text-white/55">
-        <span className="mt-0.5 h-4 w-4 shrink-0 rounded border border-white/20" />
+      <div className="flex items-start gap-2.5 pt-1 text-[11.5px] leading-relaxed text-ink/55">
+        <span className="mt-0.5 h-4 w-4 shrink-0 rounded border border-hairline" />
         I agree to receive webinar reminders and follow-up emails.
       </div>
 
       <div
         className={cn(
-          "mt-1 flex h-[50px] items-center justify-center rounded-full font-semibold text-white",
+          "mt-1 flex h-[50px] items-center justify-center rounded-full font-semibold text-ink",
           compact ? "text-[14px]" : "text-[15px]"
         )}
         style={{

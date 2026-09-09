@@ -122,7 +122,7 @@ export function PluginSandbox({
           />
         )}
         {!ready && (
-          <div className="absolute inset-0 grid place-items-center bg-black/70 text-white">
+          <div className="absolute inset-0 grid place-items-center bg-black/70 text-ink">
             <Loader2 className="h-6 w-6 animate-spin" />
           </div>
         )}

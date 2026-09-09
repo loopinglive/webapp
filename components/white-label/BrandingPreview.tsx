@@ -8,18 +8,18 @@ export function BrandingPreview({ form }: { form: WhiteLabelForm }) {
   const brand = form.brand_name || "Your Brand";
 
   return (
-    <div className="rounded-2xl border border-[#1E1E2E] bg-[#0D0D17] p-5">
-      <p className="mb-4 text-[11px] font-semibold uppercase tracking-[0.08em] text-[#6E6E80]">
+    <div className="rounded-2xl border border-hairline bg-void p-5">
+      <p className="mb-4 text-[11px] font-semibold uppercase tracking-[0.08em] text-ink-faint">
         Live preview
       </p>
 
       <div className="space-y-4">
         {/* Registration page */}
         <div
-          className="overflow-hidden rounded-lg border border-[#1E1E2E]"
+          className="overflow-hidden rounded-lg border border-hairline"
           style={{ backgroundColor: form.background_colour }}
         >
-          <div className="flex items-center gap-2 border-b border-white/5 px-3 py-2">
+          <div className="flex items-center gap-2 border-b border-hairline px-3 py-2">
             {form.brand_logo_url ? (
               // eslint-disable-next-line @next/next/no-img-element
               <img src={form.brand_logo_url} alt="" className="h-5 w-5 rounded object-cover" />
@@ -29,12 +29,12 @@ export function BrandingPreview({ form }: { form: WhiteLabelForm }) {
                 style={{ backgroundColor: form.primary_colour }}
               />
             )}
-            <span className="text-[11px] font-medium text-white">{brand}</span>
+            <span className="text-[11px] font-medium text-ink">{brand}</span>
           </div>
           <div className="px-3 py-4">
-            <div className="mb-2 h-2 w-2/3 rounded bg-white/10" />
+            <div className="mb-2 h-2 w-2/3 rounded bg-surface-2" />
             <div
-              className="inline-block rounded px-3 py-1.5 text-[10px] font-semibold text-white"
+              className="inline-block rounded px-3 py-1.5 text-[10px] font-semibold text-ink"
               style={{ backgroundColor: form.primary_colour }}
             >
               Register Now
@@ -43,9 +43,9 @@ export function BrandingPreview({ form }: { form: WhiteLabelForm }) {
         </div>
 
         {/* Watch room header */}
-        <div className="overflow-hidden rounded-lg border border-[#1E1E2E] bg-[#12121A]">
+        <div className="overflow-hidden rounded-lg border border-hairline bg-surface">
           <div className="flex items-center justify-between px-3 py-2">
-            <span className="text-[11px] font-medium text-white">{brand}</span>
+            <span className="text-[11px] font-medium text-ink">{brand}</span>
             <span
               className="rounded-full px-2 py-0.5 text-[9px] font-semibold text-black"
               style={{ backgroundColor: form.secondary_colour }}
@@ -57,9 +57,9 @@ export function BrandingPreview({ form }: { form: WhiteLabelForm }) {
         </div>
 
         {/* Email header */}
-        <div className="overflow-hidden rounded-lg border border-[#1E1E2E] bg-white">
+        <div className="overflow-hidden rounded-lg border border-hairline bg-white">
           <div
-            className="px-3 py-2.5 text-[11px] font-semibold text-white"
+            className="px-3 py-2.5 text-[11px] font-semibold text-ink"
             style={{ backgroundColor: form.primary_colour }}
           >
             {brand}

@@ -118,11 +118,11 @@ export function GlobalSearch() {
     <>
       <button
         onClick={() => setOpen(true)}
-        className="flex w-full items-center gap-2 rounded-xl border border-[#1E1E2E] bg-[#12121A] px-3 py-2 text-left text-[12.5px] text-[#6E6E80] transition-colors hover:border-[#2A2A3A] hover:text-[#A0A0B0]"
+        className="flex w-full items-center gap-2 rounded-xl border border-hairline bg-surface px-3 py-2 text-left text-[12.5px] text-ink-faint transition-colors hover:border-surface-3 hover:text-ink-muted"
       >
         <Search className="h-3.5 w-3.5" />
         <span className="flex-1">Search anything</span>
-        <kbd className="rounded border border-[#2A2A3A] px-1.5 py-0.5 font-mono text-[10px]">
+        <kbd className="rounded border border-surface-3 px-1.5 py-0.5 font-mono text-[10px]">
           ⌘K
         </kbd>
       </button>
@@ -135,23 +135,23 @@ export function GlobalSearch() {
             className="absolute inset-0"
           />
 
-          <div className="relative w-full max-w-[560px] overflow-hidden rounded-2xl border border-[#23232F] bg-[#0D0D15] shadow-2xl">
-            <div className="flex items-center gap-3 border-b border-[#1E1E2E] px-4">
-              <Search className="h-4 w-4 shrink-0 text-[#6E6E80]" />
+          <div className="relative w-full max-w-[560px] overflow-hidden rounded-2xl border border-[#23232F] bg-void shadow-2xl">
+            <div className="flex items-center gap-3 border-b border-hairline px-4">
+              <Search className="h-4 w-4 shrink-0 text-ink-faint" />
               <input
                 ref={input}
                 value={query}
                 onChange={(event) => setQuery(event.target.value)}
                 onKeyDown={onKeyDown}
                 placeholder="Email, name, webinar title, referral code, invoice id…"
-                className="h-14 flex-1 bg-transparent text-[14px] text-white placeholder:text-[#4A4A5C] focus:outline-none"
+                className="h-14 flex-1 bg-transparent text-[14px] text-ink placeholder:text-ink-faint focus:outline-none"
               />
-              {loading && <Loader2 className="h-4 w-4 animate-spin text-[#6C47FF]" />}
+              {loading && <Loader2 className="h-4 w-4 animate-spin text-accent" />}
             </div>
 
             <div className="max-h-[52vh] overflow-y-auto">
               {visible.length === 0 ? (
-                <p className="px-4 py-8 text-center text-[13px] text-[#6E6E80]">
+                <p className="px-4 py-8 text-center text-[13px] text-ink-faint">
                   {tooShort
                     ? "Type at least two characters."
                     : loading
@@ -168,20 +168,20 @@ export function GlobalSearch() {
                       onMouseEnter={() => setCursor(index)}
                       className={
                         index === cursor
-                          ? "flex w-full items-center gap-3 bg-[#6C47FF]/12 px-4 py-2.5 text-left"
+                          ? "flex w-full items-center gap-3 bg-accent/12 px-4 py-2.5 text-left"
                           : "flex w-full items-center gap-3 px-4 py-2.5 text-left"
                       }
                     >
-                      <Icon className="h-3.5 w-3.5 shrink-0 text-[#6C47FF]" />
+                      <Icon className="h-3.5 w-3.5 shrink-0 text-accent" />
                       <span className="min-w-0 flex-1">
-                        <span className="block truncate text-[13.5px] text-white">
+                        <span className="block truncate text-[13.5px] text-ink">
                           {result.title}
                         </span>
-                        <span className="block truncate text-[11.5px] text-[#6E6E80]">
+                        <span className="block truncate text-[11.5px] text-ink-faint">
                           {result.subtitle}
                         </span>
                       </span>
-                      <span className="shrink-0 font-mono text-[10px] uppercase tracking-[0.1em] text-[#4A4A5C]">
+                      <span className="shrink-0 font-mono text-[10px] uppercase tracking-[0.1em] text-ink-faint">
                         {KIND_LABEL[result.kind]}
                       </span>
                     </button>

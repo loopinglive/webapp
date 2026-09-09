@@ -25,7 +25,7 @@ export function CertificateTemplateEditor() {
       <div className="grid gap-8 px-6 py-8 lg:grid-cols-[380px_1fr] lg:px-10">
         {loading ? (
           <div className="grid h-40 place-items-center">
-            <Loader2 className="h-5 w-5 animate-spin text-[#6C47FF]" />
+            <Loader2 className="h-5 w-5 animate-spin text-accent" />
           </div>
         ) : (
           <>
@@ -44,7 +44,7 @@ export function CertificateTemplateEditor() {
                       type="color"
                       value={design.accent_colour}
                       onChange={(e) => update("accent_colour", e.target.value)}
-                      className="h-10 w-10 shrink-0 cursor-pointer rounded-lg border border-[#2A2A3A] bg-transparent"
+                      className="h-10 w-10 shrink-0 cursor-pointer rounded-lg border border-surface-3 bg-transparent"
                     />
                     <TextInput value={design.accent_colour} onChange={(e) => update("accent_colour", e.target.value)} />
                   </div>
@@ -55,7 +55,7 @@ export function CertificateTemplateEditor() {
                       type="color"
                       value={design.background_colour}
                       onChange={(e) => update("background_colour", e.target.value)}
-                      className="h-10 w-10 shrink-0 cursor-pointer rounded-lg border border-[#2A2A3A] bg-transparent"
+                      className="h-10 w-10 shrink-0 cursor-pointer rounded-lg border border-surface-3 bg-transparent"
                     />
                     <TextInput
                       value={design.background_colour}
@@ -84,7 +84,7 @@ export function CertificateTemplateEditor() {
                 <button
                   onClick={() => void save()}
                   disabled={saving}
-                  className="flex h-10 items-center gap-2 rounded-full bg-[#6C47FF] px-4 text-[13px] font-semibold text-white shadow-[0_10px_30px_-10px_#6C47FF] transition-colors hover:bg-[#7C5AFF] disabled:opacity-50"
+                  className="flex h-10 items-center gap-2 rounded-full bg-accent px-4 text-[13px] font-semibold text-white shadow-[0_10px_30px_-10px_#6C47FF] transition-colors hover:bg-accent-soft disabled:opacity-50"
                 >
                   {saving ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : null}
                   {saving ? "Saving…" : "Save design"}

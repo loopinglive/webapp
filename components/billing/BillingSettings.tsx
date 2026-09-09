@@ -40,16 +40,16 @@ export function BillingSettings({
   return (
     <div className="space-y-8 px-6 py-8 lg:px-10">
       {/* Current plan */}
-      <section className="rounded-2xl border border-[#1E1E2E] bg-[#12121A] p-6">
+      <section className="rounded-2xl border border-hairline bg-surface p-6">
         <div className="flex flex-wrap items-start justify-between gap-4">
           <div>
-            <p className="text-[10px] font-semibold uppercase tracking-[0.16em] text-[#6E6E80]">
+            <p className="text-[10px] font-semibold uppercase tracking-[0.16em] text-ink-faint">
               Current plan
             </p>
-            <h2 className="mt-1.5 text-[24px] font-semibold tracking-[-0.02em] text-white">
+            <h2 className="mt-1.5 text-[24px] font-semibold tracking-[-0.02em] text-ink">
               {planName}
             </h2>
-            <p className="mt-1 text-[13px] text-[#A0A0B0]">
+            <p className="mt-1 text-[13px] text-ink-muted">
               {isLifetime
                 ? "Yours forever — no renewal, no expiry."
                 : isFree
@@ -70,7 +70,7 @@ export function BillingSettings({
             <button
               onClick={openPortal}
               disabled={pending === "portal"}
-              className="inline-flex h-10 items-center gap-2 rounded-full border border-[#2A2A3A] px-4 text-[13px] text-white transition-colors hover:border-[#6C47FF]/50 disabled:opacity-50"
+              className="inline-flex h-10 items-center gap-2 rounded-full border border-surface-3 px-4 text-[13px] text-ink transition-colors hover:border-accent/50 disabled:opacity-50"
             >
               {pending === "portal" ? (
                 <Loader2 className="h-3.5 w-3.5 animate-spin" />
@@ -86,8 +86,8 @@ export function BillingSettings({
       {/* Upgrade options */}
       {isFree && (
         <section>
-          <h3 className="text-[15px] font-semibold text-white">Choose a plan</h3>
-          <p className="mt-1 text-[13px] text-[#A0A0B0]">
+          <h3 className="text-[15px] font-semibold text-ink">Choose a plan</h3>
+          <p className="mt-1 text-[13px] text-ink-muted">
             Everything you have already built carries over.
           </p>
 
@@ -108,7 +108,7 @@ export function BillingSettings({
               value={coupon}
               onChange={(event) => setCoupon(event.target.value.toUpperCase())}
               placeholder="Coupon code (optional)"
-              className="h-10 flex-1 rounded-full border border-[#1E1E2E] bg-[#12121A] px-4 text-[13px] text-white placeholder:text-[#6E6E80] focus:border-[#6C47FF] focus:outline-none"
+              className="h-10 flex-1 rounded-full border border-hairline bg-surface px-4 text-[13px] text-ink placeholder:text-ink-faint focus:border-accent focus:outline-none"
             />
           </div>
         </section>
@@ -118,40 +118,40 @@ export function BillingSettings({
 
       {/* Invoices */}
       <section>
-        <h3 className="text-[15px] font-semibold text-white">Invoice history</h3>
+        <h3 className="text-[15px] font-semibold text-ink">Invoice history</h3>
 
         {invoices.length === 0 ? (
-          <p className="mt-3 text-[13px] text-[#6E6E80]">
+          <p className="mt-3 text-[13px] text-ink-faint">
             No payments yet. Invoices appear here as soon as you upgrade.
           </p>
         ) : (
-          <div className="mt-4 overflow-x-auto rounded-xl border border-[#1E1E2E]">
+          <div className="mt-4 overflow-x-auto rounded-xl border border-hairline">
             <table className="w-full min-w-[560px]">
-              <thead className="bg-[#12121A]">
+              <thead className="bg-surface">
                 <tr>
                   {["Date", "Plan", "Amount", "Status", ""].map((heading) => (
                     <th
                       key={heading}
-                      className="px-4 py-2.5 text-left text-[10px] font-semibold uppercase tracking-[0.14em] text-[#6E6E80]"
+                      className="px-4 py-2.5 text-left text-[10px] font-semibold uppercase tracking-[0.14em] text-ink-faint"
                     >
                       {heading}
                     </th>
                   ))}
                 </tr>
               </thead>
-              <tbody className="divide-y divide-[#1E1E2E]">
+              <tbody className="divide-y divide-hairline">
                 {invoices.map((invoice) => (
                   <tr key={invoice.id}>
-                    <td className="px-4 py-3 text-[12.5px] text-[#A0A0B0]">
+                    <td className="px-4 py-3 text-[12.5px] text-ink-muted">
                       {new Date(invoice.paid_at ?? invoice.created_at).toLocaleDateString(
                         undefined,
                         { dateStyle: "medium" }
                       )}
                     </td>
-                    <td className="px-4 py-3 text-[12.5px] capitalize text-white">
+                    <td className="px-4 py-3 text-[12.5px] capitalize text-ink">
                       {invoice.plan_slug}
                     </td>
-                    <td className="px-4 py-3 text-[12.5px] tabular-nums text-white">
+                    <td className="px-4 py-3 text-[12.5px] tabular-nums text-ink">
                       {new Intl.NumberFormat(undefined, {
                         style: "currency",
                         currency: invoice.currency?.toUpperCase() || "USD",
@@ -177,7 +177,7 @@ export function BillingSettings({
                           href={invoice.invoice_pdf_url}
                           target="_blank"
                           rel="noreferrer"
-                          className="inline-flex items-center gap-1.5 text-[12px] text-[#6C47FF] hover:text-[#8A6BFF]"
+                          className="inline-flex items-center gap-1.5 text-[12px] text-accent hover:text-[#8A6BFF]"
                         >
                           <Download className="h-3 w-3" />
                           PDF
@@ -192,7 +192,7 @@ export function BillingSettings({
         )}
       </section>
 
-      <p className="text-[12.5px] text-[#6E6E80]">
+      <p className="text-[12.5px] text-ink-faint">
         Not satisfied? Contact us within 30 days for a full refund — no questions asked.
       </p>
     </div>

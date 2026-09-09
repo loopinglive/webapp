@@ -98,29 +98,29 @@ export function OnboardingChecklist() {
   const total = ONBOARDING_STEPS.length;
 
   return (
-    <div className="mx-3 mb-3 rounded-xl border border-[#1E1E2E] bg-[#12121A] p-3">
+    <div className="mx-3 mb-3 rounded-xl border border-hairline bg-surface p-3">
       <button
         onClick={() => setExpanded((value) => !value)}
         aria-expanded={expanded}
         className="flex w-full items-center gap-2 text-left"
       >
-        <span className="text-[11px] font-semibold uppercase tracking-[0.14em] text-[#A0A0B0]">
+        <span className="text-[11px] font-semibold uppercase tracking-[0.14em] text-ink-muted">
           Setup
         </span>
-        <span className="text-[11.5px] tabular-nums text-white">
+        <span className="text-[11.5px] tabular-nums text-ink">
           {done}/{total}
         </span>
         <ChevronDown
           className={cn(
-            "ml-auto h-3.5 w-3.5 text-[#6E6E80] transition-transform",
+            "ml-auto h-3.5 w-3.5 text-ink-faint transition-transform",
             expanded && "rotate-180"
           )}
         />
       </button>
 
-      <div className="mt-2 h-1 overflow-hidden rounded-full bg-[#1A1A2A]">
+      <div className="mt-2 h-1 overflow-hidden rounded-full bg-surface-2">
         <div
-          className="h-full rounded-full bg-gradient-to-r from-[#6C47FF] to-[#00D4FF] transition-[width] duration-500"
+          className="h-full rounded-full bg-gradient-to-r from-accent to-cyan transition-[width] duration-500"
           style={{ width: `${(done / total) * 100}%` }}
         />
       </div>
@@ -135,15 +135,15 @@ export function OnboardingChecklist() {
                   <span
                     className={cn(
                       "mt-0.5 grid h-3.5 w-3.5 shrink-0 place-items-center rounded-full",
-                      complete ? "bg-[#00C851]" : "bg-[#2A2A3A]"
+                      complete ? "bg-[#00C851]" : "bg-surface-3"
                     )}
                   >
-                    {complete && <Check className="h-2 w-2 text-[#0A0A0F]" />}
+                    {complete && <Check className="h-2 w-2 text-void" />}
                   </span>
                   <span
                     className={cn(
                       "text-[12px] leading-snug",
-                      complete ? "text-[#6E6E80] line-through" : "text-[#C4C4D0]"
+                      complete ? "text-ink-faint line-through" : "text-[#C4C4D0]"
                     )}
                   >
                     {step.title}
@@ -155,7 +155,7 @@ export function OnboardingChecklist() {
 
           <button
             onClick={dismiss}
-            className="mt-3 flex items-center gap-1.5 text-[11.5px] text-[#6E6E80] transition-colors hover:text-white"
+            className="mt-3 flex items-center gap-1.5 text-[11.5px] text-ink-faint transition-colors hover:text-ink"
           >
             <X className="h-3 w-3" />
             Hide this
@@ -186,33 +186,33 @@ export function OnboardingWizard({
 
   return (
     <div className="fixed inset-0 z-[120] grid place-items-center bg-black/80 p-4 backdrop-blur-sm">
-      <div className="w-full max-w-[520px] rounded-3xl border border-[#1E1E2E] bg-[#0D0D15] p-7">
+      <div className="w-full max-w-[520px] rounded-3xl border border-hairline bg-void p-7">
         <div className="flex items-center gap-3">
-          <div className="h-1 flex-1 overflow-hidden rounded-full bg-[#1A1A2A]">
+          <div className="h-1 flex-1 overflow-hidden rounded-full bg-surface-2">
             <div
-              className="h-full rounded-full bg-gradient-to-r from-[#6C47FF] to-[#00D4FF] transition-[width] duration-300"
+              className="h-full rounded-full bg-gradient-to-r from-accent to-cyan transition-[width] duration-300"
               style={{ width: `${((index + 1) / total) * 100}%` }}
             />
           </div>
-          <span className="shrink-0 text-[11.5px] tabular-nums text-[#6E6E80]">
+          <span className="shrink-0 text-[11.5px] tabular-nums text-ink-faint">
             {index + 1} of {total}
           </span>
         </div>
 
         {index === 0 && stepsCompleted.length === 0 && (
-          <p className="mt-6 text-[13px] text-[#6C47FF]">Welcome, {name}</p>
+          <p className="mt-6 text-[13px] text-accent">Welcome, {name}</p>
         )}
 
-        <h2 className="mt-3 text-[24px] font-semibold tracking-[-0.025em] text-white">
+        <h2 className="mt-3 text-[24px] font-semibold tracking-[-0.025em] text-ink">
           {step.title}
         </h2>
-        <p className="mt-2 text-[14.5px] leading-relaxed text-[#A0A0B0]">{step.body}</p>
+        <p className="mt-2 text-[14.5px] leading-relaxed text-ink-muted">{step.body}</p>
 
         <div className="mt-7 flex flex-wrap items-center gap-3">
           <Link
             href={step.href}
             onClick={onClose}
-            className="inline-flex h-10 items-center rounded-full bg-[#6C47FF] px-5 text-[13.5px] font-semibold text-white transition-colors hover:bg-[#7C5AFF]"
+            className="inline-flex h-10 items-center rounded-full bg-accent px-5 text-[13.5px] font-semibold text-white transition-colors hover:bg-accent-soft"
           >
             {step.cta}
           </Link>
@@ -220,7 +220,7 @@ export function OnboardingWizard({
           {index > 0 && (
             <button
               onClick={() => setIndex((value) => value - 1)}
-              className="h-10 px-2 text-[13px] text-[#A0A0B0] hover:text-white"
+              className="h-10 px-2 text-[13px] text-ink-muted hover:text-ink"
             >
               Back
             </button>
@@ -228,7 +228,7 @@ export function OnboardingWizard({
           {index < total - 1 && (
             <button
               onClick={() => setIndex((value) => value + 1)}
-              className="h-10 px-2 text-[13px] text-[#A0A0B0] hover:text-white"
+              className="h-10 px-2 text-[13px] text-ink-muted hover:text-ink"
             >
               Next
             </button>
@@ -236,7 +236,7 @@ export function OnboardingWizard({
 
           <button
             onClick={onClose}
-            className="ml-auto h-10 text-[13px] text-[#6E6E80] hover:text-white"
+            className="ml-auto h-10 text-[13px] text-ink-faint hover:text-ink"
           >
             Skip for now
           </button>

@@ -19,10 +19,10 @@ export function Skeleton({
       aria-hidden
       style={style}
       className={cn(
-        "relative overflow-hidden rounded-md bg-[#1A1A2A]",
+        "relative overflow-hidden rounded-md bg-surface-2",
         "motion-safe:after:absolute motion-safe:after:inset-0",
         "motion-safe:after:animate-[skeleton-sweep_1.5s_ease-in-out_infinite]",
-        "motion-safe:after:bg-gradient-to-r motion-safe:after:from-transparent motion-safe:after:via-[#2A2A3A] motion-safe:after:to-transparent",
+        "motion-safe:after:bg-gradient-to-r motion-safe:after:from-transparent motion-safe:after:via-surface-3 motion-safe:after:to-transparent",
         className
       )}
     />
@@ -36,7 +36,7 @@ export function SkeletonCards({ count = 6 }: { count?: number }) {
       {Array.from({ length: count }, (_, index) => (
         <div
           key={index}
-          className="rounded-2xl border border-[#1E1E2E] bg-[#12121A] p-5"
+          className="rounded-2xl border border-hairline bg-surface p-5"
         >
           <Skeleton className="h-32 w-full rounded-xl" />
           <Skeleton className="mt-4 h-4 w-3/4" />
@@ -56,7 +56,7 @@ export function SkeletonRows({
   columns?: number;
 }) {
   return (
-    <div className="divide-y divide-[#1E1E2E] rounded-xl border border-[#1E1E2E]">
+    <div className="divide-y divide-hairline rounded-xl border border-hairline">
       {Array.from({ length: rows }, (_, row) => (
         <div key={row} className="flex items-center gap-4 px-4 py-3.5">
           {/* First column wider: it is almost always the name. */}
@@ -75,7 +75,7 @@ export function SkeletonRows({
 /** Chart placeholder with the axis furniture in place, so nothing shifts. */
 export function SkeletonChart({ height = 240 }: { height?: number }) {
   return (
-    <div className="rounded-2xl border border-[#1E1E2E] bg-[#12121A] p-5">
+    <div className="rounded-2xl border border-hairline bg-surface p-5">
       <Skeleton className="h-3.5 w-40" />
       <Skeleton className="mt-2 h-3 w-56" />
       <Skeleton className="mt-5 w-full rounded-lg" style={{ height }} />
@@ -89,7 +89,7 @@ export function SkeletonTiles({ count = 6 }: { count?: number }) {
       {Array.from({ length: count }, (_, index) => (
         <div
           key={index}
-          className="rounded-xl border border-[#1E1E2E] bg-[#12121A] px-4 py-3.5"
+          className="rounded-xl border border-hairline bg-surface px-4 py-3.5"
         >
           <Skeleton className="h-2.5 w-16" />
           <Skeleton className="mt-3 h-6 w-20" />

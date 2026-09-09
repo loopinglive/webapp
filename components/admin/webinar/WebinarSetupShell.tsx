@@ -5,6 +5,7 @@ import { AlertCircle, Check, Loader2, Save } from "lucide-react";
 
 import { WebinarSidebar } from "@/components/admin/webinar/WebinarSidebar";
 import { useWebinarSetup } from "@/hooks/useWebinarSetup";
+import { ThemeProvider } from "@/hooks/useTheme";
 
 type SetupContext = ReturnType<typeof useWebinarSetup>;
 
@@ -30,7 +31,8 @@ export function WebinarSetupShell({
 
   return (
     <Context.Provider value={setup}>
-      <div className="flex min-h-dvh bg-[#0A0A0F]">
+      <ThemeProvider>
+      <div className="flex min-h-dvh bg-void">
         <WebinarSidebar
           webinarId={webinarId}
           checklist={setup.checklist}
@@ -41,17 +43,18 @@ export function WebinarSetupShell({
         <div className="min-w-0 flex-1">
           {setup.isLoading ? (
             <div className="grid h-dvh place-items-center">
-              <Loader2 className="h-6 w-6 animate-spin text-[#6C47FF]" />
+              <Loader2 className="h-6 w-6 animate-spin text-accent" />
             </div>
           ) : setup.error && !setup.webinar ? (
             <div className="grid h-dvh place-items-center px-6 text-center">
-              <p className="text-[14px] text-[#A0A0B0]">{setup.error}</p>
+              <p className="text-[14px] text-ink-muted">{setup.error}</p>
             </div>
           ) : (
             children
           )}
         </div>
       </div>
+      </ThemeProvider>
     </Context.Provider>
   );
 }
@@ -98,7 +101,7 @@ export function SaveStatus() {
 
   if (isSaving) {
     return (
-      <span className="flex items-center gap-1.5 text-[11.5px] text-[#A0A0B0]">
+      <span className="flex items-center gap-1.5 text-[11.5px] text-ink-muted">
         <Loader2 className="h-3.5 w-3.5 animate-spin" />
         Saving…
       </span>
@@ -111,7 +114,7 @@ export function SaveStatus() {
         <span className="text-[11.5px] text-[#F5A623]">Unsaved changes</span>
         <button
           onClick={() => void saveNow()}
-          className="inline-flex h-9 items-center gap-1.5 rounded-full bg-[#6C47FF] px-4 text-[12.5px] font-semibold text-white shadow-[0_8px_28px_-10px_#6C47FF] transition-colors hover:bg-[#7C5AFF]"
+          className="inline-flex h-9 items-center gap-1.5 rounded-full bg-accent px-4 text-[12.5px] font-semibold text-white shadow-[0_8px_28px_-10px_#6C47FF] transition-colors hover:bg-accent-soft"
         >
           <Save className="h-3.5 w-3.5" />
           Save
@@ -146,13 +149,13 @@ export function SectionHeader({
   action?: React.ReactNode;
 }) {
   return (
-    <div className="flex flex-wrap items-end justify-between gap-4 border-b border-[#1E1E2E] px-6 py-6 lg:px-8">
+    <div className="flex flex-wrap items-end justify-between gap-4 border-b border-hairline px-6 py-6 lg:px-8">
       <div>
-        <h1 className="text-[22px] font-semibold tracking-[-0.025em] text-white">
+        <h1 className="text-[22px] font-semibold tracking-[-0.025em] text-ink">
           {title}
         </h1>
         {description && (
-          <p className="mt-1.5 text-[13px] text-[#A0A0B0]">{description}</p>
+          <p className="mt-1.5 text-[13px] text-ink-muted">{description}</p>
         )}
       </div>
       <div className="flex items-center gap-3">

@@ -136,10 +136,10 @@ export function TemplateEditor({
     <div className="space-y-5">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <h2 className="text-[16px] font-semibold tracking-[-0.01em] text-white">
+          <h2 className="text-[16px] font-semibold tracking-[-0.01em] text-ink">
             {def?.label ?? template.template_key}
           </h2>
-          <p className="mt-0.5 font-mono text-[11px] text-[#A0A0B0]">
+          <p className="mt-0.5 font-mono text-[11px] text-ink-muted">
             {template.template_key}
           </p>
         </div>
@@ -152,7 +152,7 @@ export function TemplateEditor({
       </div>
 
       {/* Channel tabs */}
-      <div className="flex items-center gap-1 rounded-full border border-[#2A2A3A] bg-[#1A1A2A] p-1">
+      <div className="flex items-center gap-1 rounded-full border border-surface-3 bg-surface-2 p-1">
         {channels.map((channel) => {
           const meta = CHANNEL_META[channel];
           const active = channel === activeChannel;
@@ -162,7 +162,7 @@ export function TemplateEditor({
               onClick={() => onChannelChange(channel)}
               className={cn(
                 "flex items-center gap-1.5 rounded-full px-3.5 py-1.5 text-[12.5px] transition-colors",
-                active ? "text-white" : "text-[#A0A0B0] hover:text-white"
+                active ? "text-ink" : "text-ink-muted hover:text-ink"
               )}
               style={active ? { background: meta.colour } : undefined}
             >
@@ -206,7 +206,7 @@ export function TemplateEditor({
         />
       </Field>
 
-      <p className="rounded-lg border border-[#2A2A3A] bg-[#1A1A2A] px-3.5 py-2.5 text-[11.5px] leading-relaxed text-[#A0A0B0]">
+      <p className="rounded-lg border border-surface-3 bg-surface-2 px-3.5 py-2.5 text-[11.5px] leading-relaxed text-ink-muted">
         {activeChannel === "email"
           ? "An unsubscribe link is added to every email automatically. You do not need to include one."
           : activeChannel === "sms"
@@ -256,7 +256,7 @@ export function TemplateEditor({
         )}
       </div>
 
-      <p className="text-[11px] text-[#A0A0B0]">
+      <p className="text-[11px] text-ink-muted">
         Tests always use example data — never a real attendee&rsquo;s details.
       </p>
 

@@ -105,40 +105,40 @@ export function WebinarOverview({ webinarId }: { webinarId: string }) {
       <div className="space-y-8 px-6 py-8 lg:px-8">
         <div className="grid gap-6 lg:grid-cols-[1fr_340px]">
           <section>
-            <h2 className="text-[11px] font-semibold uppercase tracking-[0.16em] text-[#A0A0B0]">
+            <h2 className="text-[11px] font-semibold uppercase tracking-[0.16em] text-ink-muted">
               Setup checklist
             </h2>
 
-            <ul className="mt-4 divide-y divide-[#1E1E2E] overflow-hidden rounded-xl border border-[#1E1E2E]">
+            <ul className="mt-4 divide-y divide-hairline overflow-hidden rounded-xl border border-hairline">
               {ITEMS.map((item) => {
                 const complete = checklist[item.key];
                 return (
                   <li key={item.key}>
                     <Link
                       href={`/admin/webinar/${webinarId}${item.href}`}
-                      className="flex items-center gap-3 bg-[#12121A] px-4 py-3.5 transition-colors hover:bg-[#1A1A2A]"
+                      className="flex items-center gap-3 bg-surface px-4 py-3.5 transition-colors hover:bg-surface-2"
                     >
                       <span
                         className={cn(
                           "grid h-5 w-5 shrink-0 place-items-center rounded-full",
-                          complete ? "bg-[#00C851]" : "bg-[#3A3A4A]"
+                          complete ? "bg-[#00C851]" : "bg-surface-3"
                         )}
                       >
                         {complete ? (
-                          <Check className="h-3 w-3 text-[#0A0A0F]" />
+                          <Check className="h-3 w-3 text-void" />
                         ) : (
-                          <X className="h-3 w-3 text-[#0A0A0F]" />
+                          <X className="h-3 w-3 text-void" />
                         )}
                       </span>
-                      <span className="flex-1 text-[13.5px] text-white">
+                      <span className="flex-1 text-[13.5px] text-ink">
                         {item.label}
                         {item.optional && (
-                          <span className="ml-2 text-[11px] text-[#A0A0B0]">
+                          <span className="ml-2 text-[11px] text-ink-muted">
                             optional
                           </span>
                         )}
                       </span>
-                      <span className="text-[11.5px] tabular-nums text-[#A0A0B0]">
+                      <span className="text-[11.5px] tabular-nums text-ink-muted">
                         {countFor(item.key, counts)}
                       </span>
                     </Link>
@@ -147,11 +147,11 @@ export function WebinarOverview({ webinarId }: { webinarId: string }) {
               })}
             </ul>
 
-            <h2 className="mt-8 text-[11px] font-semibold uppercase tracking-[0.16em] text-[#A0A0B0]">
+            <h2 className="mt-8 text-[11px] font-semibold uppercase tracking-[0.16em] text-ink-muted">
               Registration link
             </h2>
-            <div className="mt-3 flex items-center gap-2 rounded-xl border border-[#1E1E2E] bg-[#12121A] p-2 pl-4">
-              <span className="min-w-0 flex-1 truncate font-mono text-[12px] text-[#A0A0B0]">
+            <div className="mt-3 flex items-center gap-2 rounded-xl border border-hairline bg-surface p-2 pl-4">
+              <span className="min-w-0 flex-1 truncate font-mono text-[12px] text-ink-muted">
                 {registrationUrl}
               </span>
               <AdminButton
@@ -172,7 +172,7 @@ export function WebinarOverview({ webinarId }: { webinarId: string }) {
               </Link>
             </div>
             {webinar.status !== "published" && (
-              <p className="mt-2 text-[11.5px] text-[#A0A0B0]">
+              <p className="mt-2 text-[11.5px] text-ink-muted">
                 This link goes live once the webinar is published.
               </p>
             )}
@@ -180,7 +180,7 @@ export function WebinarOverview({ webinarId }: { webinarId: string }) {
 
           <aside>
             <div className="flex items-center justify-between gap-3">
-              <h2 className="text-[11px] font-semibold uppercase tracking-[0.16em] text-[#A0A0B0]">
+              <h2 className="text-[11px] font-semibold uppercase tracking-[0.16em] text-ink-muted">
                 Your video
               </h2>
               <Link href={`/admin/webinar/${webinarId}/settings`}>
@@ -198,7 +198,7 @@ export function WebinarOverview({ webinarId }: { webinarId: string }) {
               />
             </div>
             <div className="mt-3 flex items-center justify-between gap-3">
-              <span className="text-[11px] font-semibold uppercase tracking-[0.16em] text-[#A0A0B0]">
+              <span className="text-[11px] font-semibold uppercase tracking-[0.16em] text-ink-muted">
                 Thumbnail
               </span>
               <Link href={`/admin/webinar/${webinarId}/settings`}>
@@ -222,9 +222,9 @@ export function WebinarOverview({ webinarId }: { webinarId: string }) {
           </div>
 
           <div className="mt-5 border-t border-[#FF3B3B]/15 pt-5">
-            <p className="text-[12.5px] leading-relaxed text-[#A0A0B0]">
+            <p className="text-[12.5px] leading-relaxed text-ink-muted">
               Deleting removes every session, registrant and chat message with it.
-              Type <span className="text-white">{webinar.title}</span> to confirm.
+              Type <span className="text-ink">{webinar.title}</span> to confirm.
             </p>
             <div className="mt-3 flex flex-wrap items-center gap-2">
               <TextInput

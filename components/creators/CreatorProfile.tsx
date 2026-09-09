@@ -35,7 +35,7 @@ export function CreatorProfile({
         </h1>
         <p className="mt-0.5 text-[13.5px] text-ink-faint">@{profile.creator_handle}</p>
         {profile.niche && (
-          <span className="mt-2 inline-block rounded-full bg-white/5 px-3 py-1 text-[11.5px] text-ink-muted">
+          <span className="mt-2 inline-block rounded-full bg-surface-2 px-3 py-1 text-[11.5px] text-ink-muted">
             {profile.niche}
           </span>
         )}

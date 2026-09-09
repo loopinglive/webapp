@@ -57,7 +57,7 @@ export function PinnedMessageBuilder({
 
   return (
     <div className="space-y-6">
-      <section className="space-y-4 rounded-xl border border-[#1E1E2E] bg-[#12121A] p-5">
+      <section className="space-y-4 rounded-xl border border-hairline bg-surface p-5">
         <Field label="Message" required>
           <TextArea
             rows={2}
@@ -81,13 +81,13 @@ export function PinnedMessageBuilder({
           </Field>
         </div>
 
-        <div className="rounded-lg border border-[#2A2A3A] bg-[#0A0A0F] p-4">
-          <p className="mb-3 text-[10px] font-semibold uppercase tracking-[0.14em] text-[#A0A0B0]">
+        <div className="rounded-lg border border-surface-3 bg-void p-4">
+          <p className="mb-3 text-[10px] font-semibold uppercase tracking-[0.14em] text-ink-muted">
             Preview
           </p>
-          <div className="flex items-start gap-2 rounded-lg border border-[#6C47FF]/40 bg-[#6C47FF]/10 px-3 py-2.5">
-            <Pin className="mt-0.5 h-3.5 w-3.5 shrink-0 text-[#6C47FF]" />
-            <p className="text-[12.5px] leading-relaxed text-white">
+          <div className="flex items-start gap-2 rounded-lg border border-accent/40 bg-accent/10 px-3 py-2.5">
+            <Pin className="mt-0.5 h-3.5 w-3.5 shrink-0 text-accent" />
+            <p className="text-[12.5px] leading-relaxed text-ink">
               {content || "Your pinned message appears here"}
             </p>
           </div>
@@ -112,7 +112,7 @@ export function PinnedMessageBuilder({
                 onChanged();
               }}
             >
-              <p className="text-[13px] text-white">{message.content}</p>
+              <p className="text-[13px] text-ink">{message.content}</p>
             </EngagementRow>
           ))}
         </ul>

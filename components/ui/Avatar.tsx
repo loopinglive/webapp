@@ -3,12 +3,12 @@ import { cn, initials } from "@/lib/utils";
 // Six accent-family gradients, picked deterministically from the name so the
 // same person always keeps the same colour across the session.
 const TONES = [
-  "from-[#6C47FF] to-[#4A2BE0]",
-  "from-[#00D4FF] to-[#6C47FF]",
-  "from-[#8B6DFF] to-[#00D4FF]",
-  "from-[#FF3B3B] to-[#8B6DFF]",
-  "from-[#00C851] to-[#00D4FF]",
-  "from-[#6C47FF] to-[#FF3B3B]",
+  "from-accent to-accent-deep",
+  "from-cyan to-accent",
+  "from-accent-soft to-cyan",
+  "from-[#FF3B3B] to-accent-soft",
+  "from-[#00C851] to-cyan",
+  "from-accent to-[#FF3B3B]",
 ];
 
 function toneFor(name: string) {

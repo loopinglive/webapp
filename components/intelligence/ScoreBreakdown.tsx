@@ -26,11 +26,11 @@ export function ScoreBreakdown({
   return (
     <div className="grid gap-4 sm:grid-cols-2">
       <div>
-        <p className="mb-2 text-[10px] font-semibold uppercase tracking-[0.14em] text-[#A0A0B0]">
+        <p className="mb-2 text-[10px] font-semibold uppercase tracking-[0.14em] text-ink-muted">
           What earned the score
         </p>
         {contributions.length === 0 ? (
-          <p className="text-[12.5px] text-[#6A6A80]">No engagement signals yet.</p>
+          <p className="text-[12.5px] text-ink-faint">No engagement signals yet.</p>
         ) : (
           <ul className="flex flex-col gap-1.5">
             {contributions
@@ -41,13 +41,13 @@ export function ScoreBreakdown({
                   <span className="w-[130px] shrink-0 truncate text-[12px] text-[#C8C8D4]">
                     {item.label}
                   </span>
-                  <span className="h-1.5 flex-1 overflow-hidden rounded-full bg-[#1A1A2A]">
+                  <span className="h-1.5 flex-1 overflow-hidden rounded-full bg-surface-2">
                     <span
-                      className="block h-full rounded-full bg-gradient-to-r from-[#6C47FF] to-[#00D4FF]"
+                      className="block h-full rounded-full bg-gradient-to-r from-accent to-cyan"
                       style={{ width: `${Math.min((item.points / total) * 100, 100)}%` }}
                     />
                   </span>
-                  <span className="w-9 shrink-0 text-right text-[11.5px] tabular-nums text-white">
+                  <span className="w-9 shrink-0 text-right text-[11.5px] tabular-nums text-ink">
                     +{item.points}
                   </span>
                 </li>
@@ -58,12 +58,12 @@ export function ScoreBreakdown({
 
       {missing.length > 0 && (
         <div>
-          <p className="mb-2 text-[10px] font-semibold uppercase tracking-[0.14em] text-[#A0A0B0]">
+          <p className="mb-2 text-[10px] font-semibold uppercase tracking-[0.14em] text-ink-muted">
             Not measured on this deployment
           </p>
           <ul className="flex flex-col gap-1">
             {missing.map(([key, label]) => (
-              <li key={key} className="text-[12px] text-[#6A6A80]">
+              <li key={key} className="text-[12px] text-ink-faint">
                 {label} — excluded, not scored as zero
               </li>
             ))}

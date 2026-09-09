@@ -62,7 +62,7 @@ export function CommentPin({
       <span
         className={cn(
           "pointer-events-none absolute bottom-[calc(100%+10px)] left-1/2 z-40 w-max max-w-[220px] -translate-x-1/2",
-          "rounded-lg border border-[#2A2A3A] bg-[#12121A] px-3 py-2 text-left opacity-0 shadow-xl transition-opacity duration-150",
+          "rounded-lg border border-surface-3 bg-surface px-3 py-2 text-left opacity-0 shadow-xl transition-opacity duration-150",
           (selected || dragging) && "opacity-100",
           "group-hover:opacity-100"
         )}
@@ -72,14 +72,14 @@ export function CommentPin({
             className="h-1.5 w-1.5 shrink-0 rounded-full"
             style={{ background: colour }}
           />
-          <span className="truncate text-[11.5px] font-semibold text-white">
+          <span className="truncate text-[11.5px] font-semibold text-ink">
             {persona?.name ?? "Unknown"}
           </span>
-          <span className="ml-auto shrink-0 font-mono text-[10px] tabular-nums text-[#A0A0B0]">
+          <span className="ml-auto shrink-0 font-mono text-[10px] tabular-nums text-ink-muted">
             {formatOffset(comment.video_offset_seconds)}
           </span>
         </span>
-        <span className="mt-1 block line-clamp-2 text-[11.5px] leading-snug text-[#A0A0B0]">
+        <span className="mt-1 block line-clamp-2 text-[11.5px] leading-snug text-ink-muted">
           {comment.content}
         </span>
       </span>

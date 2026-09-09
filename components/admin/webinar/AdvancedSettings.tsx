@@ -32,16 +32,16 @@ function Toggle({
   onChange: (value: boolean) => void;
 }) {
   return (
-    <label className="flex items-center justify-between rounded-lg border border-[#2A2A3A] bg-[#1A1A2A] px-4 py-3.5">
+    <label className="flex items-center justify-between rounded-lg border border-surface-3 bg-surface-2 px-4 py-3.5">
       <div>
-        <p className="text-[13px] font-medium text-white">{label}</p>
-        <p className="mt-0.5 text-[12px] text-[#A0A0B0]">{hint}</p>
+        <p className="text-[13px] font-medium text-ink">{label}</p>
+        <p className="mt-0.5 text-[12px] text-ink-muted">{hint}</p>
       </div>
       <input
         type="checkbox"
         checked={checked}
         onChange={(event) => onChange(event.target.checked)}
-        className="h-5 w-9 shrink-0 accent-[#6C47FF]"
+        className="h-5 w-9 shrink-0 accent-accent"
       />
     </label>
   );
@@ -105,7 +105,7 @@ export function AdvancedSettings({ webinarId }: { webinarId: string }) {
   if (!settings) {
     return (
       <div className="grid place-items-center py-24">
-        <Loader2 className="h-6 w-6 animate-spin text-[#6C47FF]" />
+        <Loader2 className="h-6 w-6 animate-spin text-accent" />
       </div>
     );
   }
@@ -115,12 +115,12 @@ export function AdvancedSettings({ webinarId }: { webinarId: string }) {
       <SectionHeader
         title="Advanced"
         description="On-demand replays, certificates, exit surveys, and messaging — all optional, all off by default."
-        action={saving ? <Loader2 className="h-4 w-4 animate-spin text-[#6C47FF]" /> : undefined}
+        action={saving ? <Loader2 className="h-4 w-4 animate-spin text-accent" /> : undefined}
       />
 
       <div className="max-w-3xl space-y-8 px-6 py-8 lg:px-8">
         <section className="space-y-3">
-          <h2 className="text-[13.5px] font-semibold text-white">On-demand mode</h2>
+          <h2 className="text-[13.5px] font-semibold text-ink">On-demand mode</h2>
           <Toggle
             label="Allow replay after the live session"
             hint="Attendees get a private link to watch whenever they like."
@@ -150,7 +150,7 @@ export function AdvancedSettings({ webinarId }: { webinarId: string }) {
         </section>
 
         <section className="space-y-3">
-          <h2 className="text-[13.5px] font-semibold text-white">Certificate of attendance</h2>
+          <h2 className="text-[13.5px] font-semibold text-ink">Certificate of attendance</h2>
           <Toggle
             label="Issue a certificate on completion"
             hint="Uses your default certificate design from Settings → White label."
@@ -173,7 +173,7 @@ export function AdvancedSettings({ webinarId }: { webinarId: string }) {
         </section>
 
         <section className="space-y-3">
-          <h2 className="text-[13.5px] font-semibold text-white">Exit survey</h2>
+          <h2 className="text-[13.5px] font-semibold text-ink">Exit survey</h2>
           <Toggle
             label="Ask a quick question when attendees leave"
             hint="Build the questions on the Exit Survey tab."
@@ -183,7 +183,7 @@ export function AdvancedSettings({ webinarId }: { webinarId: string }) {
         </section>
 
         <section className="space-y-3">
-          <h2 className="text-[13.5px] font-semibold text-white">Live messaging</h2>
+          <h2 className="text-[13.5px] font-semibold text-ink">Live messaging</h2>
           <Toggle
             label="Private messaging"
             hint="Attendees can message the host privately during the live session."
@@ -199,7 +199,7 @@ export function AdvancedSettings({ webinarId }: { webinarId: string }) {
         </section>
 
         <section className="space-y-3">
-          <h2 className="text-[13.5px] font-semibold text-white">Language</h2>
+          <h2 className="text-[13.5px] font-semibold text-ink">Language</h2>
           <Field label="Primary language" hint="Manage translations from the Translations tab">
             <TextInput
               value={settings.primary_language}
@@ -211,7 +211,7 @@ export function AdvancedSettings({ webinarId }: { webinarId: string }) {
         </section>
 
         <section className="space-y-3">
-          <h2 className="text-[13.5px] font-semibold text-white">Cele.bio</h2>
+          <h2 className="text-[13.5px] font-semibold text-ink">Cele.bio</h2>
           {celeBioConnected ? (
             <Toggle
               label="List on Cele.bio"
@@ -220,9 +220,9 @@ export function AdvancedSettings({ webinarId }: { webinarId: string }) {
               onChange={() => !celeBioBusy && toggleCeleBioSync()}
             />
           ) : (
-            <p className="rounded-lg border border-[#2A2A3A] bg-[#1A1A2A] px-4 py-3.5 text-[12.5px] text-[#A0A0B0]">
+            <p className="rounded-lg border border-surface-3 bg-surface-2 px-4 py-3.5 text-[12.5px] text-ink-muted">
               Connect Cele.bio from{" "}
-              <Link href="/settings/cele-bio" className="text-[#6C47FF] hover:text-[#7C5AFF]">
+              <Link href="/settings/cele-bio" className="text-accent hover:text-accent-soft">
                 Settings → Cele.bio
               </Link>{" "}
               to list this webinar there.

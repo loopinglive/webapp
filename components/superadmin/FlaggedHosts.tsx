@@ -59,7 +59,7 @@ export function FlaggedHosts() {
   if (!hosts) {
     return (
       <div className="grid h-24 place-items-center">
-        <Loader2 className="h-5 w-5 animate-spin text-[#6C47FF]" />
+        <Loader2 className="h-5 w-5 animate-spin text-accent" />
       </div>
     );
   }
@@ -82,7 +82,7 @@ export function FlaggedHosts() {
           className="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-[#FF5A5A]/30 bg-[#FF5A5A]/[0.06] px-4 py-3"
         >
           <div className="min-w-0">
-            <p className="flex items-center gap-2 text-[13px] font-medium text-white">
+            <p className="flex items-center gap-2 text-[13px] font-medium text-ink">
               <AlertOctagon className="h-3.5 w-3.5 shrink-0 text-[#FF5A5A]" />
               <Link
                 href={`/superadmin/users/${host.owner_id}`}
@@ -91,14 +91,14 @@ export function FlaggedHosts() {
                 {host.full_name || host.email}
               </Link>
             </p>
-            <p className="mt-0.5 text-[11.5px] text-[#A0A0B0]">
+            <p className="mt-0.5 text-[11.5px] text-ink-muted">
               {host.email} · {host.plan_slug}
             </p>
           </div>
 
-          <div className="text-right text-[11.5px] text-[#6E6E80]">
+          <div className="text-right text-[11.5px] text-ink-faint">
             <p>
-              <span className="text-white">{host.signals.disputes}</span>{" "}
+              <span className="text-ink">{host.signals.disputes}</span>{" "}
               {host.signals.disputes === 1 ? "dispute" : "disputes"}
               {host.signals.open_disputes > 0 && (
                 <span className="text-[#FF5A5A]">

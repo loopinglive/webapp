@@ -61,7 +61,7 @@ export function ScriptToWebinar({ scriptId }: { scriptId: string }) {
       <select
         value={selected}
         onChange={(event) => setSelected(event.target.value)}
-        className="h-8 w-full rounded-lg border border-[#1E1E2E] bg-[#0D0D15] px-2 text-[11.5px] text-white focus:outline-none"
+        className="h-8 w-full rounded-lg border border-hairline bg-void px-2 text-[11.5px] text-ink focus:outline-none"
       >
         {webinars.map((webinar) => (
           <option key={webinar.id} value={webinar.id}>
@@ -72,7 +72,7 @@ export function ScriptToWebinar({ scriptId }: { scriptId: string }) {
       <button
         onClick={() => void apply()}
         disabled={applying}
-        className="inline-flex h-8 w-full items-center justify-center gap-1.5 rounded-lg bg-[#1E1E2E] text-[11.5px] text-white hover:bg-[#2A2A3A] disabled:opacity-60"
+        className="inline-flex h-8 w-full items-center justify-center gap-1.5 rounded-lg bg-hairline text-[11.5px] text-ink hover:bg-surface-3 disabled:opacity-60"
       >
         {applying && <Loader2 className="h-3 w-3 animate-spin" />}
         Link to this webinar

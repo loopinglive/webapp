@@ -12,8 +12,8 @@ import { cn } from "@/lib/utils";
 const LABEL_STYLE: Record<ReturnType<typeof scoreLabel>, string> = {
   hot: "bg-[#FF3B3B]/15 text-[#FF3B3B]",
   warm: "bg-[#FF9500]/15 text-[#FF9500]",
-  engaged: "bg-[#00D4FF]/15 text-[#00D4FF]",
-  cold: "bg-[#3A3A4A] text-[#A0A0B0]",
+  engaged: "bg-cyan/15 text-cyan",
+  cold: "bg-surface-3 text-ink-muted",
 };
 
 export function ScoringLeaderboard({
@@ -27,17 +27,17 @@ export function ScoringLeaderboard({
 
   if (rows.length === 0) {
     return (
-      <div className="grid h-40 place-items-center rounded-xl border border-dashed border-[#1E1E2E] text-[13px] text-[#6A6A80]">
+      <div className="grid h-40 place-items-center rounded-xl border border-dashed border-hairline text-[13px] text-ink-faint">
         No unconverted attendees have been scored yet.
       </div>
     );
   }
 
   return (
-    <div className="overflow-x-auto rounded-xl border border-[#1E1E2E]">
+    <div className="overflow-x-auto rounded-xl border border-hairline">
       <table className="w-full min-w-[720px] border-collapse text-left">
         <thead>
-          <tr className="border-b border-[#1E1E2E] bg-[#12121A] text-[10px] font-semibold uppercase tracking-[0.12em] text-[#A0A0B0]">
+          <tr className="border-b border-hairline bg-surface text-[10px] font-semibold uppercase tracking-[0.12em] text-ink-muted">
             <th className="px-4 py-3">Attendee</th>
             <th className="px-4 py-3">Score</th>
             <th className="px-4 py-3">Watched</th>
@@ -57,13 +57,13 @@ export function ScoringLeaderboard({
               <Fragment key={row.registrant_id}>
                 <tr
                   onClick={() => setOpenId(open ? null : row.registrant_id)}
-                  className="cursor-pointer border-b border-[#1E1E2E] text-[13px] transition-colors hover:bg-white/[0.03]"
+                  className="cursor-pointer border-b border-hairline text-[13px] transition-colors hover:bg-white/[0.03]"
                 >
                   <td className="px-4 py-3">
-                    <p className="font-medium text-white">
+                    <p className="font-medium text-ink">
                       {row.registrant?.full_name ?? "Unknown"}
                     </p>
-                    <p className="text-[11.5px] text-[#6A6A80]">{row.registrant?.email}</p>
+                    <p className="text-[11.5px] text-ink-faint">{row.registrant?.email}</p>
                   </td>
                   <td className="px-4 py-3">
                     <span
@@ -91,13 +91,13 @@ export function ScoringLeaderboard({
                           onRescoreOne(row.registrant_id);
                         }}
                         title="Rescore this attendee"
-                        className="rounded-full p-1.5 text-[#6A6A80] transition-colors hover:bg-white/5 hover:text-white"
+                        className="rounded-full p-1.5 text-ink-faint transition-colors hover:bg-surface-2 hover:text-ink"
                       >
                         <RefreshCw className="h-3.5 w-3.5" />
                       </button>
                       <ChevronDown
                         className={cn(
-                          "h-3.5 w-3.5 text-[#6A6A80] transition-transform",
+                          "h-3.5 w-3.5 text-ink-faint transition-transform",
                           open && "rotate-180"
                         )}
                       />
@@ -105,7 +105,7 @@ export function ScoringLeaderboard({
                   </td>
                 </tr>
                 {open && (
-                  <tr className="border-b border-[#1E1E2E] bg-[#0D0D17]">
+                  <tr className="border-b border-hairline bg-void">
                     <td colSpan={6} className="px-4 py-4">
                       <div className="grid gap-5 lg:grid-cols-[1fr_240px]">
                         <ScoreBreakdown contributions={contributions} available={available} />

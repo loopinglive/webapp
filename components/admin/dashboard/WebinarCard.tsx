@@ -32,9 +32,9 @@ export function WebinarCard({ webinar }: { webinar: WebinarSummary }) {
   }
 
   return (
-    <article className="group overflow-hidden rounded-xl border border-[#1E1E2E] bg-[#12121A] transition-colors duration-300 hover:border-[#6C47FF]/40">
+    <article className="group overflow-hidden rounded-xl border border-hairline bg-surface transition-colors duration-300 hover:border-accent/40">
       <Link href={`/admin/webinar/${webinar.id}`} className="block">
-        <div className="relative aspect-video overflow-hidden bg-gradient-to-br from-[#6C47FF]/25 via-[#12121A] to-[#00D4FF]/12">
+        <div className="relative aspect-video overflow-hidden bg-gradient-to-br from-accent/25 via-surface to-cyan/12">
           {webinar.thumbnail_url && (
             // Host-uploaded thumbnails live at arbitrary storage paths.
             // eslint-disable-next-line @next/next/no-img-element
@@ -50,11 +50,11 @@ export function WebinarCard({ webinar }: { webinar: WebinarSummary }) {
         </div>
 
         <div className="p-4">
-          <h3 className="truncate text-[15px] font-semibold tracking-[-0.01em] text-white">
+          <h3 className="truncate text-[15px] font-semibold tracking-[-0.01em] text-ink">
             {webinar.title}
           </h3>
 
-          <p className="mt-1.5 flex items-center gap-1.5 text-[12px] text-[#A0A0B0]">
+          <p className="mt-1.5 flex items-center gap-1.5 text-[12px] text-ink-muted">
             <CalendarClock className="h-3 w-3 shrink-0" />
             {webinar.nextSessionAt ? (
               <LocalTime iso={webinar.nextSessionAt} fallback="Scheduled" />
@@ -63,7 +63,7 @@ export function WebinarCard({ webinar }: { webinar: WebinarSummary }) {
             )}
           </p>
 
-          <dl className="mt-4 grid grid-cols-3 gap-2 border-t border-[#1E1E2E] pt-3.5">
+          <dl className="mt-4 grid grid-cols-3 gap-2 border-t border-hairline pt-3.5">
             <Stat label="Registered" value={webinar.registrants} />
             <Stat label="Attended" value={webinar.attendees} />
             <Stat label="Show rate" value={`${conversion}%`} />
@@ -71,7 +71,7 @@ export function WebinarCard({ webinar }: { webinar: WebinarSummary }) {
         </div>
       </Link>
 
-      <div className="flex items-center gap-1 border-t border-[#1E1E2E] p-2">
+      <div className="flex items-center gap-1 border-t border-hairline p-2">
         <Action href={`/admin/webinar/${webinar.id}`} icon={Settings2}>
           Edit
         </Action>
@@ -83,7 +83,7 @@ export function WebinarCard({ webinar }: { webinar: WebinarSummary }) {
           disabled={cloning}
           className={cn(
             "flex flex-1 items-center justify-center gap-1.5 rounded-lg px-2 py-2 text-[12px]",
-            "text-[#A0A0B0] transition-colors hover:bg-white/5 hover:text-white",
+            "text-ink-muted transition-colors hover:bg-surface-2 hover:text-ink",
             "disabled:opacity-50"
           )}
         >
@@ -98,11 +98,11 @@ export function WebinarCard({ webinar }: { webinar: WebinarSummary }) {
 function Stat({ label, value }: { label: string; value: string | number }) {
   return (
     <div>
-      <dt className="text-[9.5px] font-semibold uppercase tracking-[0.14em] text-[#A0A0B0]/70">
+      <dt className="text-[9.5px] font-semibold uppercase tracking-[0.14em] text-ink-muted/70">
         {label}
       </dt>
-      <dd className="mt-0.5 flex items-center gap-1 text-[15px] font-semibold tabular-nums text-white">
-        {typeof value === "number" && <Users className="h-3 w-3 text-[#6C47FF]" />}
+      <dd className="mt-0.5 flex items-center gap-1 text-[15px] font-semibold tabular-nums text-ink">
+        {typeof value === "number" && <Users className="h-3 w-3 text-accent" />}
         {value.toLocaleString()}
       </dd>
     </div>
@@ -121,7 +121,7 @@ function Action({
   return (
     <Link
       href={href}
-      className="flex flex-1 items-center justify-center gap-1.5 rounded-lg px-2 py-2 text-[12px] text-[#A0A0B0] transition-colors hover:bg-white/5 hover:text-white"
+      className="flex flex-1 items-center justify-center gap-1.5 rounded-lg px-2 py-2 text-[12px] text-ink-muted transition-colors hover:bg-surface-2 hover:text-ink"
     >
       <Icon className="h-3.5 w-3.5" />
       {children}

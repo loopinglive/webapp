@@ -87,7 +87,7 @@ export function VideoScrubber({
 
   return (
     <div>
-      <div className="relative overflow-hidden rounded-xl border border-[#1E1E2E] bg-black">
+      <div className="relative overflow-hidden rounded-xl border border-hairline bg-black">
         {src ? (
           <video
             ref={videoRef}
@@ -99,7 +99,7 @@ export function VideoScrubber({
             className="aspect-video w-full cursor-pointer bg-black"
           />
         ) : (
-          <div className="grid aspect-video place-items-center text-[13px] text-[#A0A0B0]">
+          <div className="grid aspect-video place-items-center text-[13px] text-ink-muted">
             Upload a video to start placing comments.
           </div>
         )}
@@ -110,7 +110,7 @@ export function VideoScrubber({
           onClick={onTogglePlay}
           disabled={!src}
           aria-label={playing ? "Pause" : "Play"}
-          className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-[#6C47FF] text-white transition-transform duration-200 hover:bg-[#7C5AFF] active:scale-95 disabled:opacity-40"
+          className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-accent text-white transition-transform duration-200 hover:bg-accent-soft active:scale-95 disabled:opacity-40"
         >
           {playing ? (
             <Pause className="h-4 w-4" />
@@ -119,7 +119,7 @@ export function VideoScrubber({
           )}
         </button>
 
-        <span className="shrink-0 font-mono text-[12px] tabular-nums text-white">
+        <span className="shrink-0 font-mono text-[12px] tabular-nums text-ink">
           {formatOffset(Math.floor(currentTime))}
         </span>
 
@@ -154,10 +154,10 @@ export function VideoScrubber({
           <div
             ref={barRef}
             onClick={(event) => onSeek(secondsAt(event.clientX))}
-            className="group relative h-2 cursor-pointer rounded-full bg-[#1A1A2A]"
+            className="group relative h-2 cursor-pointer rounded-full bg-surface-2"
           >
             <div
-              className="h-full rounded-full bg-gradient-to-r from-[#6C47FF] to-[#00D4FF]"
+              className="h-full rounded-full bg-gradient-to-r from-accent to-cyan"
               style={{ width: `${duration ? (currentTime / duration) * 100 : 0}%` }}
             />
             <span
@@ -167,7 +167,7 @@ export function VideoScrubber({
           </div>
         </div>
 
-        <span className="shrink-0 font-mono text-[12px] tabular-nums text-[#A0A0B0]">
+        <span className="shrink-0 font-mono text-[12px] tabular-nums text-ink-muted">
           {formatOffset(duration)}
         </span>
 

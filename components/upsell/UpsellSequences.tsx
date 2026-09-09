@@ -102,7 +102,7 @@ export function UpsellSequences() {
   if (loading) {
     return (
       <div className="grid place-items-center py-24">
-        <Loader2 className="h-6 w-6 animate-spin text-[#6C47FF]" />
+        <Loader2 className="h-6 w-6 animate-spin text-accent" />
       </div>
     );
   }
@@ -116,13 +116,13 @@ export function UpsellSequences() {
       </div>
 
       {creating && (
-        <div className="max-w-xl space-y-4 rounded-xl border border-[#6C47FF]/30 bg-[#12121A] p-5">
+        <div className="max-w-xl space-y-4 rounded-xl border border-accent/30 bg-surface p-5">
           <div className="grid grid-cols-2 gap-3">
             <Field label="After finishing">
               <select
                 value={sourceId}
                 onChange={(event) => setSourceId(event.target.value)}
-                className="h-11 w-full rounded-lg border border-[#2A2A3A] bg-[#1A1A2A] px-3 text-[13.5px] text-white"
+                className="h-11 w-full rounded-lg border border-surface-3 bg-surface-2 px-3 text-[13.5px] text-ink"
               >
                 <option value="">Select webinar…</option>
                 {webinars.map((w) => (
@@ -136,7 +136,7 @@ export function UpsellSequences() {
               <select
                 value={targetId}
                 onChange={(event) => setTargetId(event.target.value)}
-                className="h-11 w-full rounded-lg border border-[#2A2A3A] bg-[#1A1A2A] px-3 text-[13.5px] text-white"
+                className="h-11 w-full rounded-lg border border-surface-3 bg-surface-2 px-3 text-[13.5px] text-ink"
               >
                 <option value="">Select webinar…</option>
                 {webinars.map((w) => (
@@ -163,7 +163,7 @@ export function UpsellSequences() {
           </Field>
           {error && <p className="text-[12px] text-[#FF3B3B]">{error}</p>}
           <div className="flex justify-end gap-2">
-            <button onClick={() => setCreating(false)} className="text-[12.5px] text-[#A0A0B0] hover:text-white">
+            <button onClick={() => setCreating(false)} className="text-[12.5px] text-ink-muted hover:text-ink">
               Cancel
             </button>
             <AdminButton onClick={create}>Create</AdminButton>
@@ -172,7 +172,7 @@ export function UpsellSequences() {
       )}
 
       {sequences.length === 0 ? (
-        <p className="rounded-xl border border-dashed border-[#3A3A4A] px-6 py-14 text-center text-[13.5px] text-[#A0A0B0]">
+        <p className="rounded-xl border border-dashed border-surface-3 px-6 py-14 text-center text-[13.5px] text-ink-muted">
           No upsell sequences yet. Set one up to automatically pitch a related webinar once someone finishes another.
         </p>
       ) : (
@@ -181,24 +181,24 @@ export function UpsellSequences() {
             <div
               key={sequence.id}
               className={cn(
-                "flex items-center justify-between rounded-lg border border-[#2A2A3A] bg-[#12121A] px-4 py-3",
+                "flex items-center justify-between rounded-lg border border-surface-3 bg-surface px-4 py-3",
                 !sequence.is_active && "opacity-60"
               )}
             >
               <div>
-                <p className="text-[13px] text-white">
-                  {titleOf(sequence.source)} <span className="text-[#A0A0B0]">→</span> {titleOf(sequence.target)}
+                <p className="text-[13px] text-ink">
+                  {titleOf(sequence.source)} <span className="text-ink-muted">→</span> {titleOf(sequence.target)}
                 </p>
-                <p className="text-[11.5px] text-[#A0A0B0]">{sequence.delay_days} days after completion</p>
+                <p className="text-[11.5px] text-ink-muted">{sequence.delay_days} days after completion</p>
               </div>
               <div className="flex items-center gap-3">
                 <button
                   onClick={() => toggle(sequence.id, !sequence.is_active)}
-                  className="text-[11.5px] font-medium text-[#6C47FF] hover:text-[#7C5AFF]"
+                  className="text-[11.5px] font-medium text-accent hover:text-accent-soft"
                 >
                   {sequence.is_active ? "Pause" : "Activate"}
                 </button>
-                <button onClick={() => remove(sequence.id)} className="text-[#A0A0B0] hover:text-[#FF3B3B]">
+                <button onClick={() => remove(sequence.id)} className="text-ink-muted hover:text-[#FF3B3B]">
                   <Trash2 className="h-3.5 w-3.5" />
                 </button>
               </div>

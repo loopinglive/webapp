@@ -134,7 +134,7 @@ export function WebinarPreview({ webinarId }: { webinarId: string }) {
   if (loading && !data) {
     return (
       <div className="grid h-[60dvh] place-items-center">
-        <Loader2 className="h-5 w-5 animate-spin text-[#6C47FF]" />
+        <Loader2 className="h-5 w-5 animate-spin text-accent" />
       </div>
     );
   }
@@ -149,7 +149,7 @@ export function WebinarPreview({ webinarId }: { webinarId: string }) {
           action={
             <Link
               href={`/admin/webinar/${webinarId}`}
-              className="text-[13px] text-[#6C47FF]"
+              className="text-[13px] text-accent"
             >
               Back to setup
             </Link>
@@ -166,7 +166,7 @@ export function WebinarPreview({ webinarId }: { webinarId: string }) {
   return (
     <div className="px-6 py-6 lg:px-8">
       {/* Impossible to mistake for the real room. */}
-      <div className="mb-4 flex flex-wrap items-center gap-3 rounded-xl border border-[#6C47FF]/40 bg-[#6C47FF]/10 px-4 py-2.5">
+      <div className="mb-4 flex flex-wrap items-center gap-3 rounded-xl border border-accent/40 bg-accent/10 px-4 py-2.5">
         <Eye className="h-4 w-4 shrink-0 text-[#8A6BFF]" />
         <p className="flex-1 text-[12.5px] text-[#C4C4D0]">
           Preview — nothing here is recorded. No attendance, no analytics, no
@@ -177,7 +177,7 @@ export function WebinarPreview({ webinarId }: { webinarId: string }) {
           onClick={() => void startTestRun()}
           disabled={starting}
           title="Opens the real watch page against a session that never counts"
-          className="inline-flex h-8 items-center gap-1.5 rounded-full bg-[#6C47FF] px-3 text-[12px] font-medium text-white hover:bg-[#5B39E0] disabled:opacity-60"
+          className="inline-flex h-8 items-center gap-1.5 rounded-full bg-accent px-3 text-[12px] font-medium text-white hover:bg-accent-deep disabled:opacity-60"
         >
           {starting ? (
             <Loader2 className="h-3 w-3 animate-spin" />
@@ -195,8 +195,8 @@ export function WebinarPreview({ webinarId }: { webinarId: string }) {
               className={cn(
                 "rounded-full px-2.5 py-1 text-[11.5px] transition-colors",
                 offset === skip
-                  ? "bg-[#6C47FF] text-white"
-                  : "text-[#A0A0B0] hover:text-white"
+                  ? "bg-accent text-white"
+                  : "text-ink-muted hover:text-ink"
               )}
             >
               {skip === 0 ? "Start" : formatOffset(skip)}
@@ -207,7 +207,7 @@ export function WebinarPreview({ webinarId }: { webinarId: string }) {
               onClick={() =>
                 setOffset(Math.max(0, (offer.trigger_video_offset_seconds ?? 0) - 10))
               }
-              className="rounded-full px-2.5 py-1 text-[11.5px] text-[#00D4FF] hover:text-white"
+              className="rounded-full px-2.5 py-1 text-[11.5px] text-cyan hover:text-ink"
               title="Jump to just before the offer appears"
             >
               Offer
@@ -216,7 +216,7 @@ export function WebinarPreview({ webinarId }: { webinarId: string }) {
           <button
             onClick={() => load(offset)}
             title="Restart from here"
-            className="grid h-7 w-7 place-items-center rounded-full text-[#A0A0B0] hover:text-white"
+            className="grid h-7 w-7 place-items-center rounded-full text-ink-muted hover:text-ink"
           >
             <RotateCcw className="h-3.5 w-3.5" />
           </button>
@@ -261,17 +261,17 @@ export function WebinarPreview({ webinarId }: { webinarId: string }) {
         </div>
 
         {/* Chat, exactly as it will fill. */}
-        <aside className="flex h-[520px] flex-col rounded-xl border border-[#1E1E2E] bg-[#0D0D15]">
-          <header className="border-b border-[#1E1E2E] px-4 py-2.5">
-            <h2 className="text-[13px] font-semibold text-white">Chat</h2>
-            <p className="text-[11px] text-[#6E6E80]">
+        <aside className="flex h-[520px] flex-col rounded-xl border border-hairline bg-void">
+          <header className="border-b border-hairline px-4 py-2.5">
+            <h2 className="text-[13px] font-semibold text-ink">Chat</h2>
+            <p className="text-[11px] text-ink-faint">
               {visible.length} of {data.comments.length} timed comments shown
             </p>
           </header>
 
           <div className="flex-1 space-y-2.5 overflow-y-auto p-3">
             {visible.length === 0 ? (
-              <p className="px-2 py-6 text-center text-[12px] text-[#6E6E80]">
+              <p className="px-2 py-6 text-center text-[12px] text-ink-faint">
                 No comments scheduled this early. The first lands at{" "}
                 {data.comments[0]
                   ? formatOffset(data.comments[0].offsetSeconds)
@@ -287,11 +287,11 @@ export function WebinarPreview({ webinarId }: { webinarId: string }) {
                       {comment.senderName}
                     </span>
                     {comment.senderLocation && (
-                      <span className="ml-1.5 text-[10.5px] text-[#6E6E80]">
+                      <span className="ml-1.5 text-[10.5px] text-ink-faint">
                         {comment.senderLocation}
                       </span>
                     )}
-                    <span className="ml-1.5 font-mono text-[10px] text-[#4A4A5C]">
+                    <span className="ml-1.5 font-mono text-[10px] text-ink-faint">
                       {formatOffset(comment.offsetSeconds)}
                     </span>
                     <p className="mt-0.5 leading-relaxed text-[#C4C4D0]">
@@ -304,13 +304,13 @@ export function WebinarPreview({ webinarId }: { webinarId: string }) {
         </aside>
       </div>
 
-      <p className="mt-4 flex items-center gap-2 text-[12px] text-[#6E6E80]">
+      <p className="mt-4 flex items-center gap-2 text-[12px] text-ink-faint">
         <ArrowLeft className="h-3 w-3" />
-        <Link href={`/admin/webinar/${webinarId}/comments`} className="hover:text-white">
+        <Link href={`/admin/webinar/${webinarId}/comments`} className="hover:text-ink">
           Edit timed comments
         </Link>
         <span>·</span>
-        <Link href={`/admin/webinar/${webinarId}/offer`} className="hover:text-white">
+        <Link href={`/admin/webinar/${webinarId}/offer`} className="hover:text-ink">
           Edit the offer
         </Link>
       </p>
