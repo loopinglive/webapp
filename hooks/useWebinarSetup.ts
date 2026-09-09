@@ -24,11 +24,19 @@ const AUTOSAVE_DELAY_MS = 2000;
  * Edits land locally straight away and reach the server two seconds after the
  * host stops typing, so a long personality brief is one request rather than
  * three hundred.
+ *
+ * Autosave alone was not enough, though: a spinner that appears for a moment
+ * and vanishes gives a host no way to tell whether their work is safe, and no
+ * way to make it safe on demand. So the debounce is now a safety net behind an
+ * explicit Save — isDirty and lastSavedAt drive a control that says which of
+ * the two states you are in, and saveNow lets you settle it yourself.
  */
 export function useWebinarSetup(webinarId: string) {
   const [data, setData] = useState<WebinarSetupPayload | null>(null);
   const [loading, setLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
+  const [isDirty, setIsDirty] = useState(false);
+  const [lastSavedAt, setLastSavedAt] = useState<number | null>(null);
   const [error, setError] = useState<string | null>(null);
   const pending = useRef<Editable>({});
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -60,6 +68,13 @@ export function useWebinarSetup(webinarId: string) {
   }, [load]);
 
   const flush = useCallback(async () => {
+    // A manual save cancels the pending debounce, so clicking Save while the
+    // timer is still counting sends one request rather than two.
+    if (timer.current) {
+      clearTimeout(timer.current);
+      timer.current = null;
+    }
+
     const patch = pending.current;
     if (!Object.keys(patch).length) return;
     pending.current = {};
@@ -73,11 +88,16 @@ export function useWebinarSetup(webinarId: string) {
       });
       if (!response.ok) {
         const payload = (await response.json()) as { error?: string };
+        // Put the edits back so a failed save can be retried rather than lost.
+        pending.current = { ...patch, ...pending.current };
         setError(payload.error ?? "Those changes did not save.");
       } else {
         setError(null);
+        setIsDirty(Object.keys(pending.current).length > 0);
+        setLastSavedAt(Date.now());
       }
     } catch {
+      pending.current = { ...patch, ...pending.current };
       setError("Those changes did not save.");
     } finally {
       setIsSaving(false);
@@ -93,6 +113,7 @@ export function useWebinarSetup(webinarId: string) {
       );
 
       pending.current = { ...pending.current, ...patch };
+      setIsDirty(true);
       if (timer.current) clearTimeout(timer.current);
       timer.current = setTimeout(() => void flush(), AUTOSAVE_DELAY_MS);
     },
@@ -108,6 +129,27 @@ export function useWebinarSetup(webinarId: string) {
     [flush]
   );
 
+  // Closing the tab kills the pending request with it, so the browser's own
+  // "leave site?" prompt is the only thing that can stop that.
+  useEffect(() => {
+    if (!isDirty) return;
+    const warn = (event: BeforeUnloadEvent) => event.preventDefault();
+    window.addEventListener("beforeunload", warn);
+    return () => window.removeEventListener("beforeunload", warn);
+  }, [isDirty]);
+
+  // Ctrl/Cmd+S saves, because that is what everyone's hands already do.
+  useEffect(() => {
+    const onKey = (event: KeyboardEvent) => {
+      if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === "s") {
+        event.preventDefault();
+        void flush();
+      }
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [flush]);
+
   return {
     webinar: data?.webinar ?? null,
     checklist: data?.checklist ?? null,
@@ -117,6 +159,8 @@ export function useWebinarSetup(webinarId: string) {
     refresh: load,
     isLoading: loading,
     isSaving,
+    isDirty,
+    lastSavedAt,
     error,
   };
 }

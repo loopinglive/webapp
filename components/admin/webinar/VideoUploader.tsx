@@ -55,16 +55,20 @@ export function VideoUploader({
   );
 
   if (status === "complete" || (status === "idle" && existingLabel)) {
+    const noun = kind === "video" ? "Video" : kind === "image" ? "Image" : "File";
     return (
       <div className="flex items-center gap-3 rounded-xl border border-[#00C851]/30 bg-[#00C851]/8 px-4 py-4">
         <CheckCircle2 className="h-5 w-5 shrink-0 text-[#00C851]" />
         <div className="min-w-0 flex-1">
+          {/* "Saved", not "uploaded": the confirm step has already written it
+              to this webinar, and the host needs to know it is kept, not that
+              some bytes arrived somewhere. */}
           <p className="text-[13.5px] font-medium text-white">
-            {status === "complete" ? "Upload complete" : "Already uploaded"}
+            {status === "complete" ? `${noun} saved` : `${noun} saved earlier`}
           </p>
-          {existingLabel && (
-            <p className="truncate text-[12px] text-[#A0A0B0]">{existingLabel}</p>
-          )}
+          <p className="truncate text-[12px] text-[#A0A0B0]">
+            {existingLabel ?? "Attached to this webinar — nothing else to do."}
+          </p>
         </div>
         <AdminButton
           variant="secondary"

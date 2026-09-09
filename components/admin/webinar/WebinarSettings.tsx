@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Loader2, Wand2 } from "lucide-react";
+import { Check, Loader2, Save, Wand2 } from "lucide-react";
 
 import { AdminButton, Field, TextArea, TextInput } from "@/components/admin/ui/Field";
 import { DisclosureSettings } from "@/components/admin/webinar/DisclosureSettings";
@@ -13,7 +13,7 @@ import {
 } from "@/components/admin/webinar/WebinarSetupShell";
 
 export function WebinarSettings({ webinarId }: { webinarId: string }) {
-  const { webinar, updateWebinar, refresh } = useSetupContext();
+  const { webinar, updateWebinar, refresh, saveNow, isSaving, isDirty } = useSetupContext();
   const [grabbing, setGrabbing] = useState(false);
   const [grabError, setGrabError] = useState<string | null>(null);
 
@@ -45,7 +45,7 @@ export function WebinarSettings({ webinarId }: { webinarId: string }) {
     <>
       <SectionHeader
         title="Settings"
-        description="Details, video and thumbnail. Changes save as you type."
+        description="Details, video and thumbnail. Changes save automatically — or click Save any time."
       />
 
       <div className="grid max-w-5xl gap-8 px-6 py-8 lg:grid-cols-2 lg:px-8">
@@ -95,6 +95,21 @@ export function WebinarSettings({ webinarId }: { webinarId: string }) {
           </Field>
 
           <DisclosureSettings />
+
+          {/* The header carries the same control, but this is where the eyes
+              already are after filling the fields in. */}
+          <div className="flex items-center gap-3 border-t border-[#1E1E2E] pt-5">
+            <AdminButton onClick={() => void saveNow()} disabled={isSaving || !isDirty}>
+              {isSaving ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Save className="h-3.5 w-3.5" />}
+              {isSaving ? "Saving…" : "Save changes"}
+            </AdminButton>
+            {!isDirty && !isSaving && (
+              <span className="flex items-center gap-1.5 text-[12px] text-[#00C851]">
+                <Check className="h-3.5 w-3.5" />
+                Everything saved
+              </span>
+            )}
+          </div>
         </section>
 
         <section className="space-y-6">

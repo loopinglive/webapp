@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { ArrowLeft, ArrowRight, Check, Loader2 } from "lucide-react";
+import { ArrowLeft, ArrowRight, Check, Loader2, Save } from "lucide-react";
 
 import { AdminButton, Field, TextArea, TextInput } from "@/components/admin/ui/Field";
 import { VideoPreview } from "@/components/admin/webinar/VideoPreview";
@@ -250,19 +250,25 @@ export function WebinarForm() {
 
           {error && <p className="text-[12.5px] text-[#FF3B3B]">{error}</p>}
 
-          <AdminButton onClick={createDraft} disabled={creating} className="h-11">
-            {creating ? (
-              <>
-                <Loader2 className="h-4 w-4 animate-spin" />
-                Creating…
-              </>
-            ) : (
-              <>
-                Continue
-                <ArrowRight className="h-4 w-4" />
-              </>
-            )}
-          </AdminButton>
+          <div className="flex flex-wrap items-center gap-3">
+            <AdminButton onClick={createDraft} disabled={creating} className="h-11">
+              {creating ? (
+                <>
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                  Saving…
+                </>
+              ) : (
+                <>
+                  <Save className="h-4 w-4" />
+                  Save &amp; continue
+                  <ArrowRight className="h-4 w-4" />
+                </>
+              )}
+            </AdminButton>
+            <span className="text-[11.5px] text-[#6E6E80]">
+              Saves as a draft — you can come back and change any of this later.
+            </span>
+          </div>
         </section>
       )}
 

@@ -1,7 +1,7 @@
 "use client";
 
-import { createContext, useContext } from "react";
-import { Loader2 } from "lucide-react";
+import { createContext, useContext, useEffect, useState } from "react";
+import { AlertCircle, Check, Loader2, Save } from "lucide-react";
 
 import { WebinarSidebar } from "@/components/admin/webinar/WebinarSidebar";
 import { useWebinarSetup } from "@/hooks/useWebinarSetup";
@@ -56,7 +56,86 @@ export function WebinarSetupShell({
   );
 }
 
-/** Consistent section heading, with the autosave indicator. */
+/**
+ * Save state, and the button that settles it.
+ *
+ * Renders nothing until there is actually something to say — a page that
+ * never edits the webinar (personas, comments, analytics) shows no save
+ * control at all, rather than an inert button implying work is pending.
+ */
+export function SaveStatus() {
+  const { isSaving, isDirty, lastSavedAt, saveNow, error } = useSetupContext();
+  const [justSaved, setJustSaved] = useState(false);
+
+  // "Saved" is worth holding on screen for a few seconds. A confirmation that
+  // disappears as fast as the old spinner did would not have fixed anything.
+  useEffect(() => {
+    if (!lastSavedAt) return;
+    const show = setTimeout(() => setJustSaved(true), 0);
+    const hide = setTimeout(() => setJustSaved(false), 4000);
+    return () => {
+      clearTimeout(show);
+      clearTimeout(hide);
+    };
+  }, [lastSavedAt]);
+
+  if (error && isDirty) {
+    return (
+      <div className="flex items-center gap-2.5">
+        <span className="flex items-center gap-1.5 text-[11.5px] text-[#FF3B3B]">
+          <AlertCircle className="h-3.5 w-3.5" />
+          Not saved
+        </span>
+        <button
+          onClick={() => void saveNow()}
+          className="inline-flex h-9 items-center gap-1.5 rounded-full bg-[#FF3B3B] px-4 text-[12.5px] font-semibold text-white transition-colors hover:bg-[#FF5555]"
+        >
+          Try again
+        </button>
+      </div>
+    );
+  }
+
+  if (isSaving) {
+    return (
+      <span className="flex items-center gap-1.5 text-[11.5px] text-[#A0A0B0]">
+        <Loader2 className="h-3.5 w-3.5 animate-spin" />
+        Saving…
+      </span>
+    );
+  }
+
+  if (isDirty) {
+    return (
+      <div className="flex items-center gap-2.5">
+        <span className="text-[11.5px] text-[#F5A623]">Unsaved changes</span>
+        <button
+          onClick={() => void saveNow()}
+          className="inline-flex h-9 items-center gap-1.5 rounded-full bg-[#6C47FF] px-4 text-[12.5px] font-semibold text-white shadow-[0_8px_28px_-10px_#6C47FF] transition-colors hover:bg-[#7C5AFF]"
+        >
+          <Save className="h-3.5 w-3.5" />
+          Save
+        </button>
+      </div>
+    );
+  }
+
+  if (justSaved) {
+    return (
+      <span className="flex items-center gap-1.5 text-[11.5px] text-[#00C851]">
+        <Check className="h-3.5 w-3.5" />
+        Saved
+      </span>
+    );
+  }
+
+  // Nothing pending and nothing recent: stay quiet. The shell is a layout that
+  // survives navigation between sections, so a lingering "all saved" would
+  // follow the host onto pages that never touched the webinar at all.
+  return null;
+}
+
+/** Consistent section heading, with the save control. */
 export function SectionHeader({
   title,
   description,
@@ -66,8 +145,6 @@ export function SectionHeader({
   description?: string;
   action?: React.ReactNode;
 }) {
-  const { isSaving } = useSetupContext();
-
   return (
     <div className="flex flex-wrap items-end justify-between gap-4 border-b border-[#1E1E2E] px-6 py-6 lg:px-8">
       <div>
@@ -79,12 +156,7 @@ export function SectionHeader({
         )}
       </div>
       <div className="flex items-center gap-3">
-        {isSaving && (
-          <span className="flex items-center gap-1.5 text-[11.5px] text-[#A0A0B0]">
-            <Loader2 className="h-3 w-3 animate-spin" />
-            Saving
-          </span>
-        )}
+        <SaveStatus />
         {action}
       </div>
     </div>

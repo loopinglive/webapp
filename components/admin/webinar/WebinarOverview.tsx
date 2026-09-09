@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { Check, Copy, ExternalLink, Loader2, X } from "lucide-react";
+import { Check, Copy, ExternalLink, Loader2, Pencil, X } from "lucide-react";
 
 import { AdminButton, TextInput } from "@/components/admin/ui/Field";
 import { VideoPreview } from "@/components/admin/webinar/VideoPreview";
@@ -87,7 +87,19 @@ export function WebinarOverview({ webinarId }: { webinarId: string }) {
       <SectionHeader
         title={webinar.title}
         description={webinar.description ?? undefined}
-        action={<WebinarStatusBadge status={webinar.status} />}
+        action={
+          <div className="flex items-center gap-2.5">
+            {/* The title and description are shown here but only editable on
+                Settings — without this the way back is guesswork. */}
+            <Link href={`/admin/webinar/${webinarId}/settings`}>
+              <AdminButton variant="secondary">
+                <Pencil className="h-3.5 w-3.5" />
+                Edit details
+              </AdminButton>
+            </Link>
+            <WebinarStatusBadge status={webinar.status} />
+          </div>
+        }
       />
 
       <div className="space-y-8 px-6 py-8 lg:px-8">
@@ -167,15 +179,34 @@ export function WebinarOverview({ webinarId }: { webinarId: string }) {
           </section>
 
           <aside>
-            <h2 className="text-[11px] font-semibold uppercase tracking-[0.16em] text-[#A0A0B0]">
-              Your video
-            </h2>
+            <div className="flex items-center justify-between gap-3">
+              <h2 className="text-[11px] font-semibold uppercase tracking-[0.16em] text-[#A0A0B0]">
+                Your video
+              </h2>
+              <Link href={`/admin/webinar/${webinarId}/settings`}>
+                <AdminButton variant="ghost">
+                  <Pencil className="h-3.5 w-3.5" />
+                  {webinar.video_url ? "Replace" : "Upload"}
+                </AdminButton>
+              </Link>
+            </div>
             <div className="mt-4">
               <VideoPreview
                 src={webinar.video_url}
                 durationSeconds={webinar.video_duration_seconds}
                 poster={webinar.thumbnail_url}
               />
+            </div>
+            <div className="mt-3 flex items-center justify-between gap-3">
+              <span className="text-[11px] font-semibold uppercase tracking-[0.16em] text-[#A0A0B0]">
+                Thumbnail
+              </span>
+              <Link href={`/admin/webinar/${webinarId}/settings`}>
+                <AdminButton variant="ghost">
+                  <Pencil className="h-3.5 w-3.5" />
+                  {webinar.thumbnail_url ? "Change" : "Add"}
+                </AdminButton>
+              </Link>
             </div>
           </aside>
         </div>
