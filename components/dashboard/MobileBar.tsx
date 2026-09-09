@@ -5,6 +5,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Menu, X } from "lucide-react";
 
+import { LogoMark } from "@/components/brand/Logo";
 import { AccountMenu } from "@/components/dashboard/AccountMenu";
 import { DASHBOARD_NAV } from "@/components/dashboard/nav-items";
 import { SITE } from "@/lib/constants";
@@ -36,7 +37,8 @@ export function MobileBar() {
   return (
     <>
       <header className="sticky top-0 z-40 flex items-center gap-3 border-b border-hairline bg-void/90 px-4 py-3 backdrop-blur lg:hidden">
-        <Link href="/dashboard" className="text-[15px] font-semibold tracking-[-0.02em] text-ink">
+        <Link href="/dashboard" className="flex items-center gap-2 text-[15px] font-semibold tracking-[-0.02em] text-ink">
+          <LogoMark size={26} title={SITE.name} />
           {SITE.name}
         </Link>
 

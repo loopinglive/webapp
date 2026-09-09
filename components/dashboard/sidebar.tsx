@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
+import { LogoMark } from "@/components/brand/Logo";
 import { AccountMenu } from "@/components/dashboard/AccountMenu";
 import { DASHBOARD_NAV as NAV } from "@/components/dashboard/nav-items";
 import { OnboardingChecklist } from "@/components/onboarding/OnboardingChecklist";
@@ -17,9 +18,9 @@ export function Sidebar() {
     <aside className="sticky top-0 hidden h-screen w-[236px] shrink-0 flex-col border-r border-hairline bg-surface/40 px-3 py-5 lg:flex">
       <Link
         href="/dashboard"
-        className="mb-7 flex items-center gap-2.5 px-3 text-[15px] font-semibold tracking-tight"
+        className="mb-7 flex items-center gap-2.5 px-3 text-[16px] font-semibold tracking-[-0.02em] text-ink"
       >
-        <span className="h-2 w-2 rounded-full bg-accent" />
+        <LogoMark size={30} title={SITE.name} />
         {SITE.name}
       </Link>
 

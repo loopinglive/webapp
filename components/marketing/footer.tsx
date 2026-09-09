@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 
+import { LogoMark } from "@/components/brand/Logo";
 import { Aurora } from "@/components/ui/aurora";
 import { Button } from "@/components/ui/button";
 import { SITE } from "@/lib/constants";
@@ -27,7 +28,8 @@ export function Footer() {
         </div>
 
         <div className="mt-12 flex flex-col items-center justify-between gap-4 text-[12.5px] text-ink-faint sm:flex-row">
-          <span>
+          <span className="flex items-center gap-2">
+            <LogoMark size={18} />
             © {new Date().getFullYear()} {SITE.name}. {SITE.tagline}
           </span>
           <div className="flex items-center gap-6">

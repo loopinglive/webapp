@@ -5,9 +5,10 @@ import { SITE } from "@/lib/constants";
 /**
  * PWA manifest.
  *
- * Icons point at the dynamic ImageResponse route (app/api/pwa-icon) rather
- * than a static PNG in /public — there is no design asset to ship yet, and a
- * generated monogram in brand colours beats a missing/broken icon.
+ * Icons point at the dynamic ImageResponse route (app/api/pwa-icon), which
+ * draws the brand mark at whatever size is requested — so there is one source
+ * of geometry for the favicon, the touch icon and these, instead of a folder
+ * of exported PNGs to keep in sync.
  */
 export default function manifest(): MetadataRoute.Manifest {
   return {

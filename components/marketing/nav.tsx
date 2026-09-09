@@ -1,5 +1,6 @@
 import Link from "next/link";
 
+import { LogoMark } from "@/components/brand/Logo";
 import { Button } from "@/components/ui/button";
 import { SITE } from "@/lib/constants";
 
@@ -15,11 +16,8 @@ export function Nav() {
     <header className="fixed inset-x-0 top-0 z-50 px-4 pt-4">
       <nav className="glass mx-auto flex h-14 max-w-6xl items-center justify-between rounded-full px-3 pl-5">
         <Link href="/" className="flex items-center gap-2.5">
-          <span className="relative flex h-2 w-2">
-            <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-accent opacity-70" />
-            <span className="relative inline-flex h-2 w-2 rounded-full bg-accent" />
-          </span>
-          <span className="text-[15px] font-semibold tracking-tight">
+          <LogoMark size={30} title={SITE.name} />
+          <span className="text-[16px] font-semibold tracking-[-0.02em]">
             {SITE.name}
           </span>
         </Link>

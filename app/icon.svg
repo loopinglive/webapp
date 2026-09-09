@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="32" height="32">
+  <!--
+    Favicon: the 16px cut of the mark in components/brand/Logo.tsx.
+
+    Deliberately not the same drawing. Rendered at 16px the full mark falls
+    apart — the live dot merges into the loop and the whole thing turns to
+    mush — so this cut drops the dot, thickens the stroke from 3.4 to 5, and
+    scales the mark to fill the tile. What survives is the part that has to:
+    a play triangle inside a loop whose gap is still visible. The dot returns
+    at apple-icon and PWA sizes, where there is room for it.
+
+    A filled tile with a white mark rather than a transparent outline, because
+    a tab bar can be light or dark and an outline disappears against one of
+    them. Static SVG, so it stays sharp at any density.
+  -->
+  <defs>
+    <linearGradient id="tile" x1="0" y1="0" x2="32" y2="32" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#6C47FF"/>
+      <stop offset="1" stop-color="#00D4FF"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="32" height="32" rx="7.5" fill="url(#tile)"/>
+
+  <g transform="translate(16 16) scale(0.94) translate(-16 -16)">
+    <circle cx="16" cy="16" r="12" fill="none" stroke="#fff" stroke-width="5"
+            stroke-linecap="round" stroke-dasharray="64.9 10.5"/>
+    <path d="M13.0 10.2 L22.8 16 L13.0 21.8 Z" fill="#fff" stroke="#fff"
+          stroke-width="1.6" stroke-linejoin="round"/>
+  </g>
+</svg>
