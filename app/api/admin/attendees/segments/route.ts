@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 
+import { deriveSegments } from "@/lib/attendee-tracking";
 import { SEGMENTS } from "@/lib/segments";
 import { createServiceClient } from "@/lib/supabase/server";
 import { requireWebinarAccess } from "@/lib/webinar-access";
@@ -18,33 +19,20 @@ export async function GET(request: Request) {
 
   const supabase = createServiceClient();
 
-  const [{ data: rows, error }, { count: total }] = await Promise.all([
-    supabase
-      .from("attendee_segments")
-      .select("segment")
-      .eq("webinar_id", webinarId),
-    supabase
-      .from("registrants")
-      .select("id", { count: "exact", head: true })
-      .eq("webinar_id", webinarId),
-  ]);
-
-  if (error) {
-    return NextResponse.json({ error: error.message }, { status: 500 });
-  }
+  // Derived from the registrant rows rather than read from attendee_segments.
+  // That cache is only written when something moves a registrant, and reading
+  // it counted anyone missing as REGISTERED — so a webinar whose rows predate
+  // the cache showed "2 registered, 0 no-show, 0 watched" after the session
+  // had ended, which cannot be true of anybody.
+  const segments = await deriveSegments(supabase, webinarId);
 
   const counts: Record<string, number> = Object.fromEntries(
     SEGMENTS.map((segment) => [segment, 0])
   );
 
-  for (const row of rows ?? []) {
-    counts[row.segment] = (counts[row.segment] ?? 0) + 1;
+  for (const segment of segments.values()) {
+    counts[segment] = (counts[segment] ?? 0) + 1;
   }
 
-  // Registrants with no segment row yet have simply not been processed — they
-  // are registered.
-  const assigned = (rows ?? []).length;
-  counts.REGISTERED += Math.max(0, (total ?? 0) - assigned);
-
-  return NextResponse.json({ ...counts, total: total ?? 0 });
+  return NextResponse.json({ ...counts, total: segments.size });
 }

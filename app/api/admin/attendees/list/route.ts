@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 
+import { deriveSegments } from "@/lib/attendee-tracking";
 import { createServiceClient } from "@/lib/supabase/server";
 import { requireWebinarAccess } from "@/lib/webinar-access";
 import type { AttendeeListItem } from "@/types";
@@ -41,18 +42,17 @@ export async function GET(request: Request) {
 
   const supabase = createServiceClient();
 
-  // Segment lives in its own table, so filtering by it means resolving the ids
-  // first rather than joining — PostgREST cannot filter a parent by an embedded
-  // resource's column.
+  // Filtering resolves ids first — PostgREST cannot filter a parent by an
+  // embedded resource's column. Those ids are derived from the registrant
+  // rows rather than read from attendee_segments: that cache is only written
+  // when something moves a registrant, so filtering against it returned an
+  // empty list for any webinar whose rows were never processed, even when
+  // people plainly matched the segment.
   let ids: string[] | null = null;
   if (segment && segment !== "all") {
-    const segments = segment.split(",");
-    const { data: rows } = await supabase
-      .from("attendee_segments")
-      .select("registrant_id")
-      .eq("webinar_id", webinarId)
-      .in("segment", segments);
-    ids = (rows ?? []).map((row) => row.registrant_id);
+    const wanted = new Set(segment.split(","));
+    const derived = await deriveSegments(supabase, webinarId);
+    ids = [...derived.entries()].filter(([, value]) => wanted.has(value)).map(([id]) => id);
     if (!ids.length) {
       return NextResponse.json({ attendees: [], total: 0, page, totalPages: 0 });
     }

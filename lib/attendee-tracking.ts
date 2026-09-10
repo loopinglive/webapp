@@ -152,3 +152,46 @@ export async function clearAttendeeHistory(
     data: { at: now },
   });
 }
+
+/**
+ * Segments for every registrant on a webinar, computed from their own rows.
+ *
+ * The attendee_segments table is a cache written by syncSegment when
+ * something moves a registrant. Reads used to trust it outright and treat a
+ * missing row as REGISTERED — but a missing row means "never processed",
+ * which says nothing about whether they turned up. A webinar whose
+ * registrants predate the cache, or whose events never fired, reported
+ * everyone as registered: zero no-shows and zero watchers even after the
+ * session had ended and someone had watched it.
+ *
+ * Deriving instead is correct by construction. registrants already carries
+ * everything assignSegment needs, so this cannot disagree with the rules the
+ * way a stale cache can, and it reuses assignSegment rather than restating
+ * the thresholds in SQL where the two could drift.
+ */
+export async function deriveSegments(
+  supabase: Client,
+  webinarId: string
+): Promise<Map<string, Segment>> {
+  const [{ data: registrants }, { data: sessions }] = await Promise.all([
+    supabase
+      .from("registrants")
+      .select("id, session_id, bought, clicked_offer, attended, watch_percentage")
+      .eq("webinar_id", webinarId),
+    supabase.from("webinar_sessions").select("id, starts_at").eq("webinar_id", webinarId),
+  ]);
+
+  const startsAt = new Map((sessions ?? []).map((session) => [session.id, session.starts_at]));
+  const now = Date.now();
+  const result = new Map<string, Segment>();
+
+  for (const registrant of registrants ?? []) {
+    const start = registrant.session_id ? startsAt.get(registrant.session_id) : null;
+    // No session attached means nothing has been scheduled for them yet, so
+    // the webinar cannot have passed and they are simply registered.
+    const webinarHasPassed = start ? new Date(start).getTime() < now : false;
+    result.set(registrant.id, assignSegment(registrant, { webinarHasPassed }));
+  }
+
+  return result;
+}
