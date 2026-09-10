@@ -4,9 +4,8 @@ import { SITE } from "@/lib/constants";
 import { createServiceClient } from "@/lib/supabase/server";
 
 export const runtime = "nodejs";
-export const alt = "Webinar registration";
-export const size = { width: 1200, height: 630 };
-export const contentType = "image/png";
+
+const size = { width: 1200, height: 630 };
 
 /**
  * The share card for a webinar, covering its register / waiting-room /
@@ -22,12 +21,18 @@ export const contentType = "image/png";
  * Falls back to the generic root card's styling if the webinar cannot be
  * read, rather than erroring — a broken image and no image look the same to
  * a scraper, and both lose the preview.
+ *
+ * A route handler at a stable URL rather than an opengraph-image file. The
+ * file convention attaches images to the segment it sits in, and the register
+ * page's own generateMetadata returns an openGraph block, which replaced the
+ * inherited images and left the shared link with no og:image at all — the
+ * exact failure this was meant to fix. Referencing an explicit URL removes
+ * the dependency on that merge order entirely.
  */
-export default async function WebinarOpengraphImage({
-  params,
-}: {
-  params: Promise<{ webinarId: string }>;
-}) {
+export async function GET(
+  _request: Request,
+  { params }: { params: Promise<{ webinarId: string }> }
+) {
   const { webinarId } = await params;
   const supabase = createServiceClient();
 

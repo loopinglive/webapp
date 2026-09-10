@@ -111,12 +111,21 @@ export async function generateMetadata({
   const description =
     data?.config?.subheadline ?? data?.webinar.description ?? undefined;
 
-  // openGraph/twitter blocks, not just title and description: without them a
-  // scraper has no card to build, so this link — the one hosts actually
-  // share — arrived in WhatsApp as a bare grey URL. The image itself comes
-  // from the sibling opengraph-image.tsx, which Next attaches automatically
-  // along with the width and height WhatsApp needs before it will render a
-  // preview at all.
+  // The image is named explicitly rather than left to Next's file convention.
+  // An opengraph-image file attaches to the segment it sits in, and returning
+  // an openGraph block here replaced those inherited images — the link went
+  // out with og:title and og:description and no picture, which is the bug
+  // this set out to fix.
+  //
+  // width/height are spelled out because WhatsApp and iMessage will not render
+  // a preview without them.
+  const image = {
+    url: `${SITE.url}/api/og/webinar/${webinarId}`,
+    width: 1200,
+    height: 630,
+    alt: title,
+  };
+
   return {
     title,
     description,
@@ -126,8 +135,9 @@ export async function generateMetadata({
       type: "website",
       url: `${SITE.url}/webinar/${webinarId}/register`,
       siteName: SITE.name,
+      images: [image],
     },
-    twitter: { card: "summary_large_image", title, description },
+    twitter: { card: "summary_large_image", title, description, images: [image] },
   };
 }
 
