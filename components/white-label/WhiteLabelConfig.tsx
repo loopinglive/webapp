@@ -46,9 +46,13 @@ export function WhiteLabelConfig() {
       <div className="px-6 py-8 lg:px-8">
         <div className="mb-8 rounded-2xl border border-hairline bg-surface p-6 text-center">
           <h2 className="text-[18px] font-semibold text-ink">White label is a Yearly/Lifetime feature</h2>
+          {/* No email claim here. Custom sending is collected by SmtpConfig
+              but nothing reads it at send time — there is no SMTP client in
+              the project — so promising it would be selling something that
+              silently does not happen. Branding and domains are real. */}
           <p className="mx-auto mt-2 max-w-md text-[13px] text-ink-muted">
-            Remove all Loopinglive branding, connect your own domain, and send emails from your own
-            address — available on the Yearly and Lifetime plans.
+            Your own logo, colours and domain, with every trace of Loopinglive removed — available on
+            the Yearly and Lifetime plans.
           </p>
         </div>
         <div className="mx-auto grid max-w-3xl gap-4 sm:grid-cols-2">
@@ -213,7 +217,12 @@ export function WhiteLabelConfig() {
               />
             </Field>
           </div>
-          <SmtpConfig form={form} update={update} onPasswordChange={setSmtpPassword} />
+          {/* Hidden rather than deleted. The fields save correctly and the
+              password is encrypted at rest, but no SMTP client exists in the
+              project and the send path never reads any of it — so leaving the
+              form visible invites hosts to configure something that silently
+              does nothing. Restore this once sending actually honours it. */}
+          {false && <SmtpConfig form={form} update={update} onPasswordChange={setSmtpPassword} />}
         </section>
 
         {error && <p className="text-[13px] text-[#FF5A5A]">{error}</p>}
