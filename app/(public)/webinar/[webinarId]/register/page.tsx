@@ -6,6 +6,7 @@ import type { Metadata } from "next";
 import { RegistrationPagePreview } from "@/components/registration-builder/preview/RegistrationPagePreview";
 import { RegistrationForm } from "@/components/registration/RegistrationForm";
 import { LocalTime } from "@/components/webinar/LocalTime";
+import { SITE } from "@/lib/constants";
 import { createServiceClient } from "@/lib/supabase/server";
 import {
   facebookPixelSnippet,
@@ -105,9 +106,28 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { webinarId } = await params;
   const data = await load(webinarId);
+
+  const title = data?.config?.headline ?? data?.webinar.title ?? "Register";
+  const description =
+    data?.config?.subheadline ?? data?.webinar.description ?? undefined;
+
+  // openGraph/twitter blocks, not just title and description: without them a
+  // scraper has no card to build, so this link — the one hosts actually
+  // share — arrived in WhatsApp as a bare grey URL. The image itself comes
+  // from the sibling opengraph-image.tsx, which Next attaches automatically
+  // along with the width and height WhatsApp needs before it will render a
+  // preview at all.
   return {
-    title: data?.config?.headline ?? data?.webinar.title ?? "Register",
-    description: data?.config?.subheadline ?? data?.webinar.description ?? undefined,
+    title,
+    description,
+    openGraph: {
+      title,
+      description,
+      type: "website",
+      url: `${SITE.url}/webinar/${webinarId}/register`,
+      siteName: SITE.name,
+    },
+    twitter: { card: "summary_large_image", title, description },
   };
 }
 
