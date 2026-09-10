@@ -42,16 +42,17 @@ export async function GET(request: Request) {
 
   const supabase = createServiceClient();
 
-  // Filtering resolves ids first — PostgREST cannot filter a parent by an
-  // embedded resource's column. Those ids are derived from the registrant
-  // rows rather than read from attendee_segments: that cache is only written
-  // when something moves a registrant, so filtering against it returned an
-  // empty list for any webinar whose rows were never processed, even when
-  // people plainly matched the segment.
+  // Derived once and used for both the filter and each row's badge. Reading
+  // attendee_segments for either meant a webinar whose rows were never
+  // processed filtered to nobody and displayed everyone as "Registered" —
+  // including, visibly, people the stat tiles had just counted as no-shows.
+  const derived = await deriveSegments(supabase, webinarId);
+
+  // Filtering resolves ids first: PostgREST cannot filter a parent by an
+  // embedded resource's column.
   let ids: string[] | null = null;
   if (segment && segment !== "all") {
     const wanted = new Set(segment.split(","));
-    const derived = await deriveSegments(supabase, webinarId);
     ids = [...derived.entries()].filter(([, value]) => wanted.has(value)).map(([id]) => id);
     if (!ids.length) {
       return NextResponse.json({ attendees: [], total: 0, page, totalPages: 0 });
@@ -83,29 +84,23 @@ export async function GET(request: Request) {
   const rows = data ?? [];
   const rowIds = rows.map((row) => row.id);
 
-  // Two wide reads rather than a join per row.
-  const [{ data: segmentRows }, { data: sourceRows }] = await Promise.all([
-    supabase
-      .from("attendee_segments")
-      .select("registrant_id, segment")
-      .eq("webinar_id", webinarId)
-      .in("registrant_id", rowIds.length ? rowIds : ["-"]),
-    supabase
-      .from("attendee_sources")
-      .select("registrant_id, utm_source, utm_campaign")
-      .in("registrant_id", rowIds.length ? rowIds : ["-"]),
-  ]);
+  const { data: sourceRows } = await supabase
+    .from("attendee_sources")
+    .select("registrant_id, utm_source, utm_campaign")
+    .in("registrant_id", rowIds.length ? rowIds : ["-"]);
 
-  const segmentBy = new Map(
-    (segmentRows ?? []).map((row) => [row.registrant_id, row.segment])
-  );
   const sourceBy = new Map(
     (sourceRows ?? []).map((row) => [row.registrant_id, row])
   );
 
   const attendees: AttendeeListItem[] = rows.map((row) => ({
     ...row,
-    segment: segmentBy.get(row.id) ?? "REGISTERED",
+    segment: derived.get(row.id) ?? "REGISTERED",
+    // last_attended_at is only written by the live attendance route. Rows that
+    // recorded attendance another way still have the older joined_at, and
+    // showing "Never" beside a row the tiles counted as watched is the page
+    // contradicting itself.
+    last_attended_at: row.last_attended_at ?? row.joined_at ?? null,
     utm_source: sourceBy.get(row.id)?.utm_source ?? null,
     utm_campaign: sourceBy.get(row.id)?.utm_campaign ?? null,
   }));

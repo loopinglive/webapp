@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 
+import { deriveSegments } from "@/lib/attendee-tracking";
 import { createServiceClient } from "@/lib/supabase/server";
 import { requireWebinarAccess } from "@/lib/webinar-access";
 import type { AttendeeProfilePayload, ChatMessage } from "@/types";
@@ -83,7 +84,14 @@ export async function GET(
 
   const payload: AttendeeProfilePayload = {
     attendee,
-    segment: segmentRow?.segment ?? "REGISTERED",
+    // The cached row is used when present, but a miss falls back to the
+    // derived value rather than to "REGISTERED" — an unprocessed registrant
+    // is not a registered one, and this profile sat beside stat tiles that
+    // had already worked that out.
+    segment:
+      segmentRow?.segment ??
+      (await deriveSegments(supabase, attendee.webinar_id)).get(registrantId) ??
+      "REGISTERED",
     source: source ?? null,
     events: events ?? [],
     messages: sent.map((message) => ({

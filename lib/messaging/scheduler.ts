@@ -1,5 +1,6 @@
 import "server-only";
 
+import { deriveSegments } from "@/lib/attendee-tracking";
 import { TEMPLATE_BY_KEY, TEMPLATE_DEFS } from "@/lib/messaging/defaults";
 import type { Channel } from "@/lib/messaging/providers";
 import { createServiceClient } from "@/lib/supabase/server";
@@ -242,20 +243,18 @@ export async function schedulePostWebinarMessages(
   const settings = await getSettings(supabase, webinarId);
   const endsAt = new Date(session.ends_at ?? session.starts_at).getTime();
 
-  const [{ data: registrants }, { data: segments }] = await Promise.all([
+  // Derived rather than read from attendee_segments. That cache is only
+  // written when something moves a registrant, and a miss here fell through
+  // to "REGISTERED" — which has no entry in BY_SEGMENT below, so the follow-up
+  // was silently not scheduled at all. Anyone the cache had not processed got
+  // no no-show email, no watched email, nothing, with no error to notice.
+  const [{ data: registrants }, segmentBy] = await Promise.all([
     supabase
       .from("registrants")
       .select("id, bought")
       .eq("session_id", sessionId),
-    supabase
-      .from("attendee_segments")
-      .select("registrant_id, segment")
-      .eq("webinar_id", webinarId),
+    deriveSegments(supabase, webinarId),
   ]);
-
-  const segmentBy = new Map(
-    (segments ?? []).map((row) => [row.registrant_id, row.segment])
-  );
 
   const BY_SEGMENT: Record<string, string> = {
     NO_SHOW: "followup_no_show",

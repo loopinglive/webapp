@@ -1,3 +1,4 @@
+import { deriveSegments } from "@/lib/attendee-tracking";
 import { createServiceClient } from "@/lib/supabase/server";
 import { requireWebinarAccess } from "@/lib/webinar-access";
 
@@ -60,14 +61,14 @@ export async function GET(request: Request) {
     .eq("id", webinarId)
     .maybeSingle();
 
+  // Derived, not read from attendee_segments — see lib/attendee-tracking.ts.
+  // A CSV built from that cache exported everyone as "REGISTERED".
+  const derived = await deriveSegments(supabase, webinarId);
+
   let ids: string[] | null = null;
   if (segment && segment !== "all") {
-    const { data: rows } = await supabase
-      .from("attendee_segments")
-      .select("registrant_id")
-      .eq("webinar_id", webinarId)
-      .in("segment", segment.split(","));
-    ids = (rows ?? []).map((row) => row.registrant_id);
+    const wanted = new Set(segment.split(","));
+    ids = [...derived.entries()].filter(([, v]) => wanted.has(v)).map(([id]) => id);
   }
 
   let query = supabase
@@ -88,21 +89,13 @@ export async function GET(request: Request) {
   }
 
   const rowIds = (registrants ?? []).map((row) => row.id);
-  const [{ data: sources }, { data: segmentRows }] = await Promise.all([
-    supabase
-      .from("attendee_sources")
-      .select("*")
-      .in("registrant_id", rowIds.length ? rowIds : ["-"]),
-    supabase
-      .from("attendee_segments")
-      .select("registrant_id, segment")
-      .eq("webinar_id", webinarId),
-  ]);
+  const { data: sources } = await supabase
+    .from("attendee_sources")
+    .select("*")
+    .in("registrant_id", rowIds.length ? rowIds : ["-"]);
 
   const sourceBy = new Map((sources ?? []).map((row) => [row.registrant_id, row]));
-  const segmentBy = new Map(
-    (segmentRows ?? []).map((row) => [row.registrant_id, row.segment])
-  );
+  const segmentBy = derived;
 
   const lines = [COLUMNS.map(cell).join(",")];
 
