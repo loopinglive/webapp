@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { BarChart3, LogOut, Mail, Plus } from "lucide-react";
 
+import { LogoMark } from "@/components/brand/Logo";
 import { SITE } from "@/lib/constants";
 
 type Totals = {
@@ -10,18 +11,32 @@ type Totals = {
   buyers: number;
 };
 
+/**
+ * Shared by the platform operator and by every customer running their own
+ * webinars, so it has to know which it is showing.
+ *
+ * The email gallery and platform analytics behind these two links are
+ * operator-only — their pages check the operator identity server-side and
+ * always did — but the links were rendered for everyone. A customer saw
+ * "Email" and "Analytics" in their own dashboard and, on clicking, got
+ * bounced to a login page while already signed in. Nothing leaked, but
+ * offering someone a door into your internals and then slamming it is its
+ * own kind of broken.
+ */
 export function DashboardHeader({
   adminEmail,
   totals,
+  isPlatformAdmin = false,
 }: {
   adminEmail: string | null;
   totals: Totals;
+  isPlatformAdmin?: boolean;
 }) {
   return (
     <header className="border-b border-hairline px-5 py-6 lg:px-10">
       <div className="flex flex-wrap items-center justify-between gap-4">
         <div className="flex items-center gap-3">
-          <span className="h-2 w-2 rounded-full bg-accent" />
+          <LogoMark size={32} title={SITE.name} />
           <div>
             <h1 className="text-[20px] font-semibold tracking-[-0.02em] text-ink">
               {SITE.name}
@@ -33,21 +48,25 @@ export function DashboardHeader({
         </div>
 
         <div className="flex items-center gap-3">
-          <Link
-            href="/admin/emails"
-            className="inline-flex h-11 items-center gap-2 rounded-full border border-surface-3 px-4 text-[14px] text-ink-muted transition-colors duration-200 hover:border-surface-3 hover:text-ink"
-          >
-            <Mail className="h-4 w-4" />
-            Email
-          </Link>
+          {isPlatformAdmin && (
+            <>
+              <Link
+                href="/admin/emails"
+                className="inline-flex h-11 items-center gap-2 rounded-full border border-surface-3 px-4 text-[14px] text-ink-muted transition-colors duration-200 hover:border-surface-3 hover:text-ink"
+              >
+                <Mail className="h-4 w-4" />
+                Email
+              </Link>
 
-          <Link
-            href="/admin/analytics"
-            className="inline-flex h-11 items-center gap-2 rounded-full border border-surface-3 px-4 text-[14px] text-ink-muted transition-colors duration-200 hover:border-surface-3 hover:text-ink"
-          >
-            <BarChart3 className="h-4 w-4" />
-            Analytics
-          </Link>
+              <Link
+                href="/admin/analytics"
+                className="inline-flex h-11 items-center gap-2 rounded-full border border-surface-3 px-4 text-[14px] text-ink-muted transition-colors duration-200 hover:border-surface-3 hover:text-ink"
+              >
+                <BarChart3 className="h-4 w-4" />
+                Analytics
+              </Link>
+            </>
+          )}
 
           <Link
             href="/admin/webinar/new"

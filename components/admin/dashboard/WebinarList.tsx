@@ -15,7 +15,13 @@ type Totals = {
   buyers: number;
 };
 
-export function WebinarList({ adminEmail }: { adminEmail: string | null }) {
+export function WebinarList({
+  adminEmail,
+  isPlatformAdmin = false,
+}: {
+  adminEmail: string | null;
+  isPlatformAdmin?: boolean;
+}) {
   const [webinars, setWebinars] = useState<WebinarSummary[]>([]);
   const [totals, setTotals] = useState<Totals>({
     webinars: 0,
@@ -58,7 +64,7 @@ export function WebinarList({ adminEmail }: { adminEmail: string | null }) {
 
   return (
     <main className="min-h-dvh bg-void">
-      <DashboardHeader adminEmail={adminEmail} totals={totals} />
+      <DashboardHeader adminEmail={adminEmail} totals={totals} isPlatformAdmin={isPlatformAdmin} />
 
       <div className="px-5 py-8 lg:px-10">
         {loading ? (

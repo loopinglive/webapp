@@ -1,3 +1,4 @@
+import { SITE } from "@/lib/constants";
 import { ACCENT_RAMP, COLOUR, FONT, SIZE } from "@/lib/email/theme";
 
 /**
@@ -203,13 +204,30 @@ export function renderEmail(content: EmailContent) {
         <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="${SIZE.card}"
                style="width:${SIZE.card}px;max-width:100%;border-collapse:separate;">
 
-          <!-- Wordmark -->
+          <!-- Logo and wordmark.
+               The mark is a PNG from /api/pwa-icon rather than inline SVG,
+               which Gmail strips outright, and it is requested bare so the
+               tile has no opaque backing to seam against the page. Sized at
+               2x and displayed at half for retina. A blocked or failed image
+               leaves the wordmark alone, which is why the two are separate
+               cells rather than one composite image. -->
           <tr>
             <td class="pad" style="padding:0 ${SIZE.padding}px 16px ${SIZE.padding}px;">
-              <span style="font-family:${FONT};font-size:12px;font-weight:700;letter-spacing:0.2em;text-transform:uppercase;color:${COLOUR.ink};">
-                ${escape(brand)}
-              </span>
-              <span style="color:${COLOUR.accent};font-size:12px;font-weight:700;">.</span>
+              <table role="presentation" cellpadding="0" cellspacing="0" border="0">
+                <tr>
+                  <td valign="middle" style="padding:0 9px 0 0;line-height:0;">
+                    <img src="${SITE.url}/api/pwa-icon?size=64&bare=1"
+                         width="26" height="26" alt=""
+                         style="display:block;width:26px;height:26px;border:0;outline:none;text-decoration:none;" />
+                  </td>
+                  <td valign="middle">
+                    <span style="font-family:${FONT};font-size:12px;font-weight:700;letter-spacing:0.2em;text-transform:uppercase;color:${COLOUR.ink};">
+                      ${escape(brand)}
+                    </span>
+                    <span style="color:${COLOUR.accent};font-size:12px;font-weight:700;">.</span>
+                  </td>
+                </tr>
+              </table>
             </td>
           </tr>
 

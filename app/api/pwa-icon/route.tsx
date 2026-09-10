@@ -15,7 +15,11 @@ export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
   const size = Math.min(Math.max(Number(searchParams.get("size")) || 512, 32), 512);
   const maskable = searchParams.get("maskable") === "1";
-  const padding = maskable ? Math.round(size * 0.2) : Math.round(size * 0.08);
+  // bare=1 drops the opaque backing so the tile sits on whatever is behind it.
+  // Email is the caller that needs this: a PNG with a baked-in #0A0A0F square
+  // shows a visible seam against the email's own #07070B page.
+  const bare = searchParams.get("bare") === "1";
+  const padding = bare ? 0 : maskable ? Math.round(size * 0.2) : Math.round(size * 0.08);
 
   return new ImageResponse(
     (
@@ -26,7 +30,7 @@ export async function GET(request: Request) {
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
-          backgroundColor: "#0A0A0F",
+          ...(bare ? {} : { backgroundColor: "#0A0A0F" }),
         }}
       >
         <div

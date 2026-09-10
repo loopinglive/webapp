@@ -1,5 +1,6 @@
 import Link from "next/link";
 
+import { LogoMark } from "@/components/brand/Logo";
 import { Aurora } from "@/components/ui/aurora";
 import { SITE } from "@/lib/constants";
 
@@ -16,7 +17,7 @@ export default function AuthLayout({
           href="/"
           className="mb-8 flex items-center justify-center gap-2.5 text-[15px] font-semibold tracking-tight"
         >
-          <span className="h-2 w-2 rounded-full bg-accent" />
+          <LogoMark size={30} title={SITE.name} />
           {SITE.name}
         </Link>
         {children}
