@@ -80,6 +80,21 @@ export function AuthForm({ mode }: { mode: "login" | "signup" }) {
         </Button>
       </form>
 
+      {/* Password recovery was fully built — /forgot-password, /reset-password,
+          the forms and a rate-limited API route — and then nothing linked to
+          it, so anyone who forgot their password had no way back into their
+          own account. This is that link. */}
+      {!isSignup && (
+        <p className="mt-4 text-center text-[13px]">
+          <Link
+            href="/forgot-password"
+            className="text-ink-muted transition-colors hover:text-ink"
+          >
+            Forgot your password?
+          </Link>
+        </p>
+      )}
+
       <p className="mt-6 text-center text-[13px] text-ink-faint">
         {isSignup ? "Already have an account? " : "New to Loopinglive? "}
         <Link

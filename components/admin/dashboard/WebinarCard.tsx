@@ -71,9 +71,15 @@ export function WebinarCard({ webinar }: { webinar: WebinarSummary }) {
         </div>
       </Link>
 
-      <div className="flex items-center gap-1 border-t border-hairline p-2">
+      <div className="flex flex-wrap items-center gap-1 border-t border-hairline p-2">
         <Action href={`/admin/webinar/${webinar.id}`} icon={Settings2}>
           Edit
+        </Action>
+        {/* The card reported a registrant count with no way to act on it —
+            the names were only reachable by opening the builder and finding
+            "Attendees" in a thirty-item sidebar. */}
+        <Action href={`/admin/webinar/${webinar.id}/attendees`} icon={Users}>
+          People
         </Action>
         <Action href={`/admin/webinar/${webinar.id}/schedule`} icon={Radio}>
           Sessions
