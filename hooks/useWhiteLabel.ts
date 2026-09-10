@@ -105,10 +105,15 @@ export function useWhiteLabel() {
     const response = await fetch("/api/white-label/verify-domain", { method: "POST" });
     const payload = await response.json();
     setVerifying(false);
-    if (payload.verified) {
-      setForm((prev) => ({ ...prev, custom_domain_verified: true }));
-    }
-    return payload as { verified: boolean; expected: string; detail: string };
+    // Mirrors both ways: a domain that stops resolving, or one detached at
+    // the edge, must not keep showing as live.
+    setForm((prev) => ({ ...prev, custom_domain_verified: Boolean(payload.verified) }));
+    return payload as {
+      verified: boolean;
+      expected: string;
+      detail: string;
+      records?: { type: string; name: string; value: string }[];
+    };
   }, []);
 
   return { form, update, save, verifyDomain, entitled, loading, saving, verifying, error, savedAt };
