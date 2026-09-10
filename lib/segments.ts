@@ -29,7 +29,18 @@ export const SEGMENT_META: Record<
   Segment,
   { label: string; colour: string; outlined?: boolean }
 > = {
-  REGISTERED: { label: "Registered", colour: "#6C47FF" },
+  /*
+   * "Awaiting session", not "Registered".
+   *
+   * This bucket is specifically people who signed up for a session that has
+   * not run yet — assignSegment only returns it when the webinar has not
+   * passed. Everyone in the list is registered, so labelling it "Registered"
+   * put the word on screen twice meaning two different things: the header
+   * counts every signup ("2 registered for this webinar") while the tile
+   * counted only this bucket, which correctly reads 0 once everyone has moved
+   * on to no-show or a watch band. Two right numbers that looked like a bug.
+   */
+  REGISTERED: { label: "Awaiting session", colour: "#6C47FF" },
   NO_SHOW: { label: "No show", colour: "#FF9500" },
   WATCHED_LOW: { label: "0–30%", colour: "#FF6B6B" },
   WATCHED_MID_LOW: { label: "30–50%", colour: "#FF9500" },

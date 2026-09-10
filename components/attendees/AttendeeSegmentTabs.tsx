@@ -22,7 +22,7 @@ export function AttendeeSegmentTabs({
 
   const tabs = [
     { id: "all", label: "All", count: segments.total },
-    { id: "REGISTERED", label: "Registered", count: segments.REGISTERED ?? 0 },
+    { id: "REGISTERED", label: "Awaiting session", count: segments.REGISTERED ?? 0 },
     { id: "NO_SHOW", label: "No show", count: segments.NO_SHOW ?? 0 },
     { id: WATCHED_FILTER, label: "Watched", count: watchedTotal },
     {

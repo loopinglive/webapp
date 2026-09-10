@@ -30,7 +30,10 @@ export function AttendeesPage({ webinarId }: { webinarId: string }) {
     <>
       <SectionHeader
         title="Attendees"
-        description={`${segments.total.toLocaleString()} registered for this webinar`}
+        // "people" rather than "registered": the tiles below break those same
+        // people into buckets, one of which used to also be called Registered
+        // and correctly read 0. Same word, two meanings, on one screen.
+        description={`${segments.total.toLocaleString()} ${segments.total === 1 ? "person has" : "people have"} signed up for this webinar`}
       />
 
       <div className="space-y-5 px-6 py-6 lg:px-8">

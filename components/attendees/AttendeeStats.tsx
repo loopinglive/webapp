@@ -5,7 +5,10 @@ import { cn } from "@/lib/utils";
 import type { SegmentCounts } from "@/types";
 
 const CARDS = [
-  { id: "REGISTERED", label: "Registered", colour: "#6C47FF" },
+  // See SEGMENT_META in lib/segments.ts — this bucket is "signed up, session
+  // has not run yet", which is not the same thing as the total signup count
+  // in the header above it.
+  { id: "REGISTERED", label: "Awaiting session", colour: "#6C47FF" },
   { id: "NO_SHOW", label: "No show", colour: "#FF9500" },
   { id: "WATCHED", label: "Watched", colour: "#00D4FF" },
   { id: "CLICKED_OFFER", label: "Clicked offer", colour: "#FFD93D" },
